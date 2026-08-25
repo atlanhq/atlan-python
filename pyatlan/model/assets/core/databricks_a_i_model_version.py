@@ -329,6 +329,64 @@ class DatabricksAIModelVersion(AIModelVersion):
     """
     Number of relationship insights associated with this asset.
     """
+    SQL_COALESCE_LAST_RUN_STATUS: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+    )
+    """
+    Status of the Coalesce run. One of: success, failure, cancelled, or skipped.
+    """
+    SQL_COALESCE_NODE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+    )
+    """
+    Status of the Coalesce node for a given run.
+    """
+    SQL_COALESCE_LAST_RUN_AT: ClassVar[NumericField] = NumericField(
+        "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+    )
+    """
+    Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds.
+    """
+    SQL_COALESCE_NODE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+    )
+    """
+    Type of the Coalesce node.
+    """
+    SQL_COALESCE_ENVIRONMENT_ID: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+    )
+    """
+    Identifier of the Coalesce environment.
+    """
+    SQL_COALESCE_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sqlCoalesceEnvironmentName",
+        "sqlCoalesceEnvironmentName.keyword",
+        "sqlCoalesceEnvironmentName",
+    )
+    """
+    Name of the Coalesce environment.
+    """
+    SQL_COALESCE_PROJECT_ID: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+    )
+    """
+    Identifier of the Coalesce project.
+    """
+    SQL_COALESCE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sqlCoalesceProjectName",
+        "sqlCoalesceProjectName.keyword",
+        "sqlCoalesceProjectName",
+    )
+    """
+    Name of the Coalesce project.
+    """
+    SQL_SHARE_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+    )
+    """
+    Qualified names of data shares this asset is granted to.
+    """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
     """
@@ -433,6 +491,15 @@ class DatabricksAIModelVersion(AIModelVersion):
         "sql_ai_insights_popular_join_count",
         "sql_ai_insights_popular_filter_count",
         "sql_ai_insights_relationship_count",
+        "sql_coalesce_last_run_status",
+        "sql_coalesce_node_status",
+        "sql_coalesce_last_run_at",
+        "sql_coalesce_node_type",
+        "sql_coalesce_environment_id",
+        "sql_coalesce_environment_name",
+        "sql_coalesce_project_id",
+        "sql_coalesce_project_name",
+        "sql_share_qualified_names",
         "dbt_sources",
         "snowflake_semantic_logical_tables",
         "sql_dbt_models",
@@ -1161,6 +1228,130 @@ class DatabricksAIModelVersion(AIModelVersion):
         )
 
     @property
+    def sql_coalesce_last_run_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_last_run_status
+        )
+
+    @sql_coalesce_last_run_status.setter
+    def sql_coalesce_last_run_status(self, sql_coalesce_last_run_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_last_run_status = sql_coalesce_last_run_status
+
+    @property
+    def sql_coalesce_node_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_node_status
+        )
+
+    @sql_coalesce_node_status.setter
+    def sql_coalesce_node_status(self, sql_coalesce_node_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_node_status = sql_coalesce_node_status
+
+    @property
+    def sql_coalesce_last_run_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_last_run_at
+        )
+
+    @sql_coalesce_last_run_at.setter
+    def sql_coalesce_last_run_at(self, sql_coalesce_last_run_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_last_run_at = sql_coalesce_last_run_at
+
+    @property
+    def sql_coalesce_node_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sql_coalesce_node_type
+        )
+
+    @sql_coalesce_node_type.setter
+    def sql_coalesce_node_type(self, sql_coalesce_node_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_node_type = sql_coalesce_node_type
+
+    @property
+    def sql_coalesce_environment_id(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_environment_id
+        )
+
+    @sql_coalesce_environment_id.setter
+    def sql_coalesce_environment_id(self, sql_coalesce_environment_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_environment_id = sql_coalesce_environment_id
+
+    @property
+    def sql_coalesce_environment_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_environment_name
+        )
+
+    @sql_coalesce_environment_name.setter
+    def sql_coalesce_environment_name(
+        self, sql_coalesce_environment_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_environment_name = sql_coalesce_environment_name
+
+    @property
+    def sql_coalesce_project_id(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sql_coalesce_project_id
+        )
+
+    @sql_coalesce_project_id.setter
+    def sql_coalesce_project_id(self, sql_coalesce_project_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_project_id = sql_coalesce_project_id
+
+    @property
+    def sql_coalesce_project_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_project_name
+        )
+
+    @sql_coalesce_project_name.setter
+    def sql_coalesce_project_name(self, sql_coalesce_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_project_name = sql_coalesce_project_name
+
+    @property
+    def sql_share_qualified_names(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_share_qualified_names
+        )
+
+    @sql_share_qualified_names.setter
+    def sql_share_qualified_names(self, sql_share_qualified_names: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_share_qualified_names = sql_share_qualified_names
+
+    @property
     def dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.dbt_sources
 
@@ -1411,6 +1602,23 @@ class DatabricksAIModelVersion(AIModelVersion):
             default=None, description=""
         )
         sql_ai_insights_relationship_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_last_run_status: Optional[str] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_node_status: Optional[str] = Field(default=None, description="")
+        sql_coalesce_last_run_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_node_type: Optional[str] = Field(default=None, description="")
+        sql_coalesce_environment_id: Optional[str] = Field(default=None, description="")
+        sql_coalesce_environment_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_project_id: Optional[str] = Field(default=None, description="")
+        sql_coalesce_project_name: Optional[str] = Field(default=None, description="")
+        sql_share_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
         dbt_sources: Optional[List[DbtSource]] = Field(

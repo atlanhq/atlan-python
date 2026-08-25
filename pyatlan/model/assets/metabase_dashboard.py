@@ -71,7 +71,7 @@ class MetabaseDashboard(Metabase):
         "metabaseQuestionCount", "metabaseQuestionCount"
     )
     """
-
+    
     """
 
     METABASE_QUESTIONS: ClassVar[RelationField] = RelationField("metabaseQuestions")

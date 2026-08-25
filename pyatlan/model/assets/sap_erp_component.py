@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
 
-from .s_a_p import SAP
+from .core.s_a_p import SAP
 
 
 class SapErpComponent(SAP):
@@ -45,6 +45,10 @@ class SapErpComponent(SAP):
     """
     TBC
     """
+    SAP_ERP_FIORI_APPS: ClassVar[RelationField] = RelationField("sapErpFioriApps")
+    """
+    TBC
+    """
     SAP_ERP_FUNCTION_MODULES: ClassVar[RelationField] = RelationField(
         "sapErpFunctionModules"
     )
@@ -71,6 +75,7 @@ class SapErpComponent(SAP):
         "sap_erp_views",
         "child_components",
         "sap_erp_cds_views",
+        "sap_erp_fiori_apps",
         "sap_erp_function_modules",
         "sap_erp_abap_programs",
         "sap_erp_transaction_codes",
@@ -116,6 +121,16 @@ class SapErpComponent(SAP):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sap_erp_cds_views = sap_erp_cds_views
+
+    @property
+    def sap_erp_fiori_apps(self) -> Optional[List[SapErpFioriApp]]:
+        return None if self.attributes is None else self.attributes.sap_erp_fiori_apps
+
+    @sap_erp_fiori_apps.setter
+    def sap_erp_fiori_apps(self, sap_erp_fiori_apps: Optional[List[SapErpFioriApp]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sap_erp_fiori_apps = sap_erp_fiori_apps
 
     @property
     def sap_erp_function_modules(self) -> Optional[List[SapErpFunctionModule]]:
@@ -186,6 +201,9 @@ class SapErpComponent(SAP):
         sap_erp_cds_views: Optional[List[SapErpCdsView]] = Field(
             default=None, description=""
         )  # relationship
+        sap_erp_fiori_apps: Optional[List[SapErpFioriApp]] = Field(
+            default=None, description=""
+        )  # relationship
         sap_erp_function_modules: Optional[List[SapErpFunctionModule]] = Field(
             default=None, description=""
         )  # relationship
@@ -211,6 +229,7 @@ class SapErpComponent(SAP):
 
 from .sap_erp_abap_program import SapErpAbapProgram  # noqa: E402, F401
 from .sap_erp_cds_view import SapErpCdsView  # noqa: E402, F401
+from .sap_erp_fiori_app import SapErpFioriApp  # noqa: E402, F401
 from .sap_erp_function_module import SapErpFunctionModule  # noqa: E402, F401
 from .sap_erp_table import SapErpTable  # noqa: E402, F401
 from .sap_erp_transaction_code import SapErpTransactionCode  # noqa: E402, F401

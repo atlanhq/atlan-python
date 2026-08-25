@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
-from .s_a_p import SAP
+from .core.s_a_p import SAP
 
 
 class SapErpTable(SAP):
@@ -50,12 +50,19 @@ class SapErpTable(SAP):
     """
     TBC
     """
+    SAP_ERP_RELATED_TABLES: ClassVar[RelationField] = RelationField(
+        "sapErpRelatedTables"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "sap_erp_table_type",
         "sap_erp_table_delivery_class",
         "sap_erp_component",
         "sap_erp_columns",
+        "sap_erp_related_tables",
     ]
 
     @property
@@ -102,6 +109,20 @@ class SapErpTable(SAP):
             self.attributes = self.Attributes()
         self.attributes.sap_erp_columns = sap_erp_columns
 
+    @property
+    def sap_erp_related_tables(self) -> Optional[List[SapErpTable]]:
+        return (
+            None if self.attributes is None else self.attributes.sap_erp_related_tables
+        )
+
+    @sap_erp_related_tables.setter
+    def sap_erp_related_tables(
+        self, sap_erp_related_tables: Optional[List[SapErpTable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sap_erp_related_tables = sap_erp_related_tables
+
     class Attributes(SAP.Attributes):
         sap_erp_table_type: Optional[str] = Field(default=None, description="")
         sap_erp_table_delivery_class: Optional[str] = Field(
@@ -111,6 +132,9 @@ class SapErpTable(SAP):
             default=None, description=""
         )  # relationship
         sap_erp_columns: Optional[List[SapErpColumn]] = Field(
+            default=None, description=""
+        )  # relationship
+        sap_erp_related_tables: Optional[List[SapErpTable]] = Field(
             default=None, description=""
         )  # relationship
 

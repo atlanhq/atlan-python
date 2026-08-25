@@ -10,7 +10,12 @@ from warnings import warn
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType, FileType
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    NumericField,
+    RelationField,
+    TextField,
+)
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .resource import Resource
@@ -72,6 +77,12 @@ class File(Resource):
     """
     URL giving the online location where the file can be accessed.
     """
+    RESOURCE_FILE_SIZE: ClassVar[NumericField] = NumericField(
+        "resourceFileSize", "resourceFileSize"
+    )
+    """
+    Size of the file in bytes.
+    """
 
     FILE_ASSETS: ClassVar[RelationField] = RelationField("fileAssets")
     """
@@ -81,6 +92,7 @@ class File(Resource):
     _convenience_properties: ClassVar[List[str]] = [
         "file_type",
         "file_path",
+        "resource_file_size",
         "file_assets",
     ]
 
@@ -105,6 +117,16 @@ class File(Resource):
         self.attributes.file_path = file_path
 
     @property
+    def resource_file_size(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.resource_file_size
+
+    @resource_file_size.setter
+    def resource_file_size(self, resource_file_size: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.resource_file_size = resource_file_size
+
+    @property
     def file_assets(self) -> Optional[Asset]:
         return None if self.attributes is None else self.attributes.file_assets
 
@@ -117,6 +139,7 @@ class File(Resource):
     class Attributes(Resource.Attributes):
         file_type: Optional[FileType] = Field(default=None, description="")
         file_path: Optional[str] = Field(default=None, description="")
+        resource_file_size: Optional[int] = Field(default=None, description="")
         file_assets: Optional[Asset] = Field(
             default=None, description=""
         )  # relationship

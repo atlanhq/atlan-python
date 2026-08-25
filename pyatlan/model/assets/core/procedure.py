@@ -176,6 +176,12 @@ class Procedure(SQL):
     """
     TBC
     """
+    COSMOS_MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBCollection"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "definition",
@@ -192,6 +198,7 @@ class Procedure(SQL):
         "sql_catalog_id",
         "sql_processes",
         "atlan_schema",
+        "cosmos_mongo_d_b_collection",
     ]
 
     @property
@@ -344,6 +351,22 @@ class Procedure(SQL):
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
+    @property
+    def cosmos_mongo_d_b_collection(self) -> Optional[CosmosMongoDBCollection]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_collection
+        )
+
+    @cosmos_mongo_d_b_collection.setter
+    def cosmos_mongo_d_b_collection(
+        self, cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_collection = cosmos_mongo_d_b_collection
+
     class Attributes(SQL.Attributes):
         definition: Optional[str] = Field(default=None, description="")
         sql_language: Optional[str] = Field(default=None, description="")
@@ -367,6 +390,9 @@ class Procedure(SQL):
             default=None, description=""
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
+            default=None, description=""
+        )  # relationship
+        cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection] = Field(
             default=None, description=""
         )  # relationship
 
@@ -430,5 +456,6 @@ class Procedure(SQL):
     )
 
 
+from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection  # noqa: E402, F401
 from .process import Process  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401

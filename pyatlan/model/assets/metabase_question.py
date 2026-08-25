@@ -75,19 +75,19 @@ class MetabaseQuestion(Metabase):
         "metabaseDashboardCount", "metabaseDashboardCount"
     )
     """
-
+    
     """
     METABASE_QUERY_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "metabaseQueryType", "metabaseQueryType", "metabaseQueryType.text"
     )
     """
-
+    
     """
     METABASE_QUERY: ClassVar[KeywordTextField] = KeywordTextField(
         "metabaseQuery", "metabaseQuery.keyword", "metabaseQuery"
     )
     """
-
+    
     """
 
     METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")

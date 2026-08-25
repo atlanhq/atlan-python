@@ -40,6 +40,7 @@ from .asset import (
 )
 from .bigquery_related import RelatedBigqueryRoutine
 from .context_related import RelatedContextRepository
+from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -135,6 +136,7 @@ class BigqueryRoutine(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
+    COSMOS_MONGO_DB_COLLECTION: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -346,6 +348,11 @@ class BigqueryRoutine(Asset):
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
+
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    """Cosmos collection in which this procedure exists."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -781,6 +788,11 @@ class BigqueryRoutineRelationshipAttributes(AssetRelationshipAttributes):
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    """Cosmos collection in which this procedure exists."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -943,6 +955,7 @@ _BIGQUERY_ROUTINE_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "context_repositories",
+    "cosmos_mongo_db_collection",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -1357,6 +1370,7 @@ BigqueryRoutine.ANOMALO_CHECKS = RelationField("anomaloChecks")
 BigqueryRoutine.APPLICATION = RelationField("application")
 BigqueryRoutine.APPLICATION_FIELD = RelationField("applicationField")
 BigqueryRoutine.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+BigqueryRoutine.COSMOS_MONGO_DB_COLLECTION = RelationField("cosmosMongoDBCollection")
 BigqueryRoutine.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 BigqueryRoutine.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

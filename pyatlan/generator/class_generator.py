@@ -375,7 +375,15 @@ class AssetInfo:
     def imports_for_referenced_assets(self):
         imports = []
 
-        for required_asset in self.required_asset_infos:
+        # Emit the deferred (bottom-of-file) imports in a deterministic,
+        # module-name-alphabetical order. The order is otherwise driven by the
+        # input typedef order, and a different order can trigger circular-import
+        # failures at runtime (e.g. dbt_metric importing dbt_model before column).
+        # Alphabetical-by-module is the cycle-safe convention the committed models
+        # already follow, and makes generation reproducible across typedef sources.
+        for required_asset in sorted(
+            self.required_asset_infos, key=lambda a: a.module_name
+        ):
             # To avoid circular import issues with DataQualityRule and Column
             # Though we import Column in data_quality_rule.py for type hinting purposes,
             if self.name == "DataQualityRule" and required_asset.name == "Column":
@@ -416,6 +424,12 @@ class AssetInfo:
 
             if not self.is_core_asset and required_asset.is_core_asset:
                 import_statement = f"from .core.{required_asset.module_name} import {required_asset.name} # noqa: E402, F401"
+            elif self.is_core_asset and not required_asset.is_core_asset:
+                # A core asset (in assets/core/) referencing a non-core asset
+                # (in assets/) has to reach up one package level. Core-vs-non-core
+                # is classified in a single BFS pass, so a core asset can end up
+                # depending on a sibling that was never promoted to core.
+                import_statement = f"from ..{required_asset.module_name} import {required_asset.name} # noqa: E402, F401"
             else:
                 import_statement = f"from .{required_asset.module_name} import {required_asset.name} # noqa: E402, F401"
 
@@ -581,6 +595,27 @@ class AssetInfo:
                             ]
                             super_asset.is_core_asset = True
                             cls._CORE_ASSETS.add(related_asset.super_class)
+
+        # A core asset's referenced assets must also be core. The BFS pass above
+        # can miss this when an asset is promoted to core only after its
+        # dependants were visited (single-pass, order-dependent). If a core
+        # asset ends up referencing a non-core sibling, the core module imports
+        # it across the assets/ -> assets/core/ package boundary, which turns a
+        # normal same-package deferred-import cycle into a cross-package circular
+        # import that fails at runtime. Close over that rule to a fixpoint so the
+        # classification is order-independent (promote-only; nothing is demoted).
+        promotion_pending = True
+        while promotion_pending:
+            promotion_pending = False
+            for asset_info in cls.asset_info_by_name.values():
+                if not asset_info.is_core_asset:
+                    continue
+                for related_asset in asset_info.required_asset_infos:
+                    if related_asset.is_core_asset:
+                        continue
+                    related_asset.is_core_asset = True
+                    cls._CORE_ASSETS.add(related_asset.name)
+                    promotion_pending = True
 
 
 class RelationshipDefInfo:

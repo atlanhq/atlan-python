@@ -256,6 +256,64 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
     """
     Number of relationship insights associated with this asset.
     """
+    SQL_COALESCE_LAST_RUN_STATUS: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+    )
+    """
+    Status of the Coalesce run. One of: success, failure, cancelled, or skipped.
+    """
+    SQL_COALESCE_NODE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+    )
+    """
+    Status of the Coalesce node for a given run.
+    """
+    SQL_COALESCE_LAST_RUN_AT: ClassVar[NumericField] = NumericField(
+        "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+    )
+    """
+    Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds.
+    """
+    SQL_COALESCE_NODE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+    )
+    """
+    Type of the Coalesce node.
+    """
+    SQL_COALESCE_ENVIRONMENT_ID: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+    )
+    """
+    Identifier of the Coalesce environment.
+    """
+    SQL_COALESCE_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sqlCoalesceEnvironmentName",
+        "sqlCoalesceEnvironmentName.keyword",
+        "sqlCoalesceEnvironmentName",
+    )
+    """
+    Name of the Coalesce environment.
+    """
+    SQL_COALESCE_PROJECT_ID: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+    )
+    """
+    Identifier of the Coalesce project.
+    """
+    SQL_COALESCE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sqlCoalesceProjectName",
+        "sqlCoalesceProjectName.keyword",
+        "sqlCoalesceProjectName",
+    )
+    """
+    Name of the Coalesce project.
+    """
+    SQL_SHARE_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+    )
+    """
+    Qualified names of data shares this asset is granted to.
+    """
 
     SNOWFLAKE_SEMANTIC_METRICS: ClassVar[RelationField] = RelationField(
         "snowflakeSemanticMetrics"
@@ -267,12 +325,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
     """
     TBC
     """
-    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[RelationField] = RelationField(
-        "snowflakeSemanticLogicalTables"
-    )
-    """
-    TBC
-    """
     SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
     """
     TBC
@@ -280,10 +332,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[RelationField] = RelationField(
         "sqlInsightIncomingJoins"
     )
-    """
-    TBC
-    """
-    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
     """
     TBC
     """
@@ -309,6 +357,32 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
     """
     TBC
     """
+    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
+    """
+    TBC
+    """
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[RelationField] = RelationField(
+        "sqlInsightOutgoingJoins"
+    )
+    """
+    TBC
+    """
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[RelationField] = RelationField(
+        "snowflakeSemanticLogicalTables"
+    )
+    """
+    TBC
+    """
+    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLE_JOINS: ClassVar[RelationField] = RelationField(
+        "snowflakeSemanticLogicalTableJoins"
+    )
+    """
+    TBC
+    """
     SNOWFLAKE_SEMANTIC_VIEW: ClassVar[RelationField] = RelationField(
         "snowflakeSemanticView"
     )
@@ -319,17 +393,7 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
     """
     TBC
     """
-    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
-    """
-    TBC
-    """
     DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
-    """
-    TBC
-    """
-    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[RelationField] = RelationField(
-        "sqlInsightOutgoingJoins"
-    )
     """
     TBC
     """
@@ -372,21 +436,31 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         "sql_ai_insights_popular_join_count",
         "sql_ai_insights_popular_filter_count",
         "sql_ai_insights_relationship_count",
+        "sql_coalesce_last_run_status",
+        "sql_coalesce_node_status",
+        "sql_coalesce_last_run_at",
+        "sql_coalesce_node_type",
+        "sql_coalesce_environment_id",
+        "sql_coalesce_environment_name",
+        "sql_coalesce_project_id",
+        "sql_coalesce_project_name",
+        "sql_share_qualified_names",
         "snowflake_semantic_metrics",
         "dbt_sources",
-        "snowflake_semantic_logical_tables",
         "sql_dbt_models",
         "sql_insight_incoming_joins",
-        "dbt_tests",
         "snowflake_base_table",
         "snowflake_semantic_dimensions",
         "snowflake_semantic_facts",
         "sql_insight_business_questions",
+        "dbt_models",
+        "sql_insight_outgoing_joins",
+        "snowflake_semantic_logical_tables",
+        "dbt_tests",
+        "snowflake_semantic_logical_table_joins",
         "snowflake_semantic_view",
         "sql_dbt_sources",
-        "dbt_models",
         "dbt_seed_assets",
-        "sql_insight_outgoing_joins",
     ]
 
     @property
@@ -866,6 +940,130 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         )
 
     @property
+    def sql_coalesce_last_run_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_last_run_status
+        )
+
+    @sql_coalesce_last_run_status.setter
+    def sql_coalesce_last_run_status(self, sql_coalesce_last_run_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_last_run_status = sql_coalesce_last_run_status
+
+    @property
+    def sql_coalesce_node_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_node_status
+        )
+
+    @sql_coalesce_node_status.setter
+    def sql_coalesce_node_status(self, sql_coalesce_node_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_node_status = sql_coalesce_node_status
+
+    @property
+    def sql_coalesce_last_run_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_last_run_at
+        )
+
+    @sql_coalesce_last_run_at.setter
+    def sql_coalesce_last_run_at(self, sql_coalesce_last_run_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_last_run_at = sql_coalesce_last_run_at
+
+    @property
+    def sql_coalesce_node_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sql_coalesce_node_type
+        )
+
+    @sql_coalesce_node_type.setter
+    def sql_coalesce_node_type(self, sql_coalesce_node_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_node_type = sql_coalesce_node_type
+
+    @property
+    def sql_coalesce_environment_id(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_environment_id
+        )
+
+    @sql_coalesce_environment_id.setter
+    def sql_coalesce_environment_id(self, sql_coalesce_environment_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_environment_id = sql_coalesce_environment_id
+
+    @property
+    def sql_coalesce_environment_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_environment_name
+        )
+
+    @sql_coalesce_environment_name.setter
+    def sql_coalesce_environment_name(
+        self, sql_coalesce_environment_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_environment_name = sql_coalesce_environment_name
+
+    @property
+    def sql_coalesce_project_id(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sql_coalesce_project_id
+        )
+
+    @sql_coalesce_project_id.setter
+    def sql_coalesce_project_id(self, sql_coalesce_project_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_project_id = sql_coalesce_project_id
+
+    @property
+    def sql_coalesce_project_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_project_name
+        )
+
+    @sql_coalesce_project_name.setter
+    def sql_coalesce_project_name(self, sql_coalesce_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_project_name = sql_coalesce_project_name
+
+    @property
+    def sql_share_qualified_names(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_share_qualified_names
+        )
+
+    @sql_share_qualified_names.setter
+    def sql_share_qualified_names(self, sql_share_qualified_names: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_share_qualified_names = sql_share_qualified_names
+
+    @property
     def snowflake_semantic_metrics(self) -> Optional[List[SnowflakeSemanticMetric]]:
         return (
             None
@@ -892,29 +1090,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         self.attributes.dbt_sources = dbt_sources
 
     @property
-    def snowflake_semantic_logical_tables(
-        self,
-    ) -> Optional[List[SnowflakeSemanticLogicalTable]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_semantic_logical_tables
-        )
-
-    @snowflake_semantic_logical_tables.setter
-    def snowflake_semantic_logical_tables(
-        self,
-        snowflake_semantic_logical_tables: Optional[
-            List[SnowflakeSemanticLogicalTable]
-        ],
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_semantic_logical_tables = (
-            snowflake_semantic_logical_tables
-        )
-
-    @property
     def sql_dbt_models(self) -> Optional[List[DbtModel]]:
         return None if self.attributes is None else self.attributes.sql_dbt_models
 
@@ -939,16 +1114,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_insight_incoming_joins = sql_insight_incoming_joins
-
-    @property
-    def dbt_tests(self) -> Optional[List[DbtTest]]:
-        return None if self.attributes is None else self.attributes.dbt_tests
-
-    @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_tests = dbt_tests
 
     @property
     def snowflake_base_table(self) -> Optional[SQL]:
@@ -1013,6 +1178,88 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         self.attributes.sql_insight_business_questions = sql_insight_business_questions
 
     @property
+    def dbt_models(self) -> Optional[List[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
+
+    @property
+    def sql_insight_outgoing_joins(self) -> Optional[List[SqlInsightJoin]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_insight_outgoing_joins
+        )
+
+    @sql_insight_outgoing_joins.setter
+    def sql_insight_outgoing_joins(
+        self, sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_insight_outgoing_joins = sql_insight_outgoing_joins
+
+    @property
+    def snowflake_semantic_logical_tables(
+        self,
+    ) -> Optional[List[SnowflakeSemanticLogicalTable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_semantic_logical_tables
+        )
+
+    @snowflake_semantic_logical_tables.setter
+    def snowflake_semantic_logical_tables(
+        self,
+        snowflake_semantic_logical_tables: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_semantic_logical_tables = (
+            snowflake_semantic_logical_tables
+        )
+
+    @property
+    def dbt_tests(self) -> Optional[List[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
+    def snowflake_semantic_logical_table_joins(
+        self,
+    ) -> Optional[List[SnowflakeSemanticLogicalTable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_semantic_logical_table_joins
+        )
+
+    @snowflake_semantic_logical_table_joins.setter
+    def snowflake_semantic_logical_table_joins(
+        self,
+        snowflake_semantic_logical_table_joins: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_semantic_logical_table_joins = (
+            snowflake_semantic_logical_table_joins
+        )
+
+    @property
     def snowflake_semantic_view(self) -> Optional[SnowflakeSemanticView]:
         return (
             None if self.attributes is None else self.attributes.snowflake_semantic_view
@@ -1037,16 +1284,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         self.attributes.sql_dbt_sources = sql_dbt_sources
 
     @property
-    def dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
-
-    @property
     def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
         return None if self.attributes is None else self.attributes.dbt_seed_assets
 
@@ -1055,22 +1292,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_seed_assets = dbt_seed_assets
-
-    @property
-    def sql_insight_outgoing_joins(self) -> Optional[List[SqlInsightJoin]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sql_insight_outgoing_joins
-        )
-
-    @sql_insight_outgoing_joins.setter
-    def sql_insight_outgoing_joins(
-        self, sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_insight_outgoing_joins = sql_insight_outgoing_joins
 
     class Attributes(SemanticEntity.Attributes):
         snowflake_semantic_view_qualified_name: Optional[str] = Field(
@@ -1134,22 +1355,33 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         sql_ai_insights_relationship_count: Optional[int] = Field(
             default=None, description=""
         )
+        sql_coalesce_last_run_status: Optional[str] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_node_status: Optional[str] = Field(default=None, description="")
+        sql_coalesce_last_run_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_node_type: Optional[str] = Field(default=None, description="")
+        sql_coalesce_environment_id: Optional[str] = Field(default=None, description="")
+        sql_coalesce_environment_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_project_id: Optional[str] = Field(default=None, description="")
+        sql_coalesce_project_name: Optional[str] = Field(default=None, description="")
+        sql_share_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         snowflake_semantic_metrics: Optional[List[SnowflakeSemanticMetric]] = Field(
             default=None, description=""
         )  # relationship
         dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_semantic_logical_tables: Optional[
-            List[SnowflakeSemanticLogicalTable]
-        ] = Field(default=None, description="")  # relationship
         sql_dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
         sql_insight_incoming_joins: Optional[List[SqlInsightJoin]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
             default=None, description=""
         )  # relationship
         snowflake_base_table: Optional[SQL] = Field(
@@ -1164,19 +1396,28 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         sql_insight_business_questions: Optional[List[SqlInsightBusinessQuestion]] = (
             Field(default=None, description="")
         )  # relationship
+        dbt_models: Optional[List[DbtModel]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_semantic_logical_tables: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ] = Field(default=None, description="")  # relationship
+        dbt_tests: Optional[List[DbtTest]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_semantic_logical_table_joins: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ] = Field(default=None, description="")  # relationship
         snowflake_semantic_view: Optional[SnowflakeSemanticView] = Field(
             default=None, description=""
         )  # relationship
         sql_dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
         dbt_seed_assets: Optional[List[DbtSeed]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -55,13 +55,13 @@ class SodaCheck(Soda):
         "sodaCheckLastScanAt", "sodaCheckLastScanAt"
     )
     """
-
+    
     """
     SODA_CHECK_INCIDENT_COUNT: ClassVar[NumericField] = NumericField(
         "sodaCheckIncidentCount", "sodaCheckIncidentCount"
     )
     """
-
+    
     """
     SODA_CHECK_LINKED_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "sodaCheckLinkedAssetQualifiedName", "sodaCheckLinkedAssetQualifiedName"

@@ -67,6 +67,7 @@ class KnowledgeFolder(Asset):
 
     KNOWLEDGE_FOLDER_TYPE: ClassVar[Any] = None
     AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -107,6 +108,9 @@ class KnowledgeFolder(Asset):
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -346,6 +350,9 @@ class KnowledgeFolderAttributes(AssetAttributes):
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -527,6 +534,7 @@ def _populate_knowledge_folder_attrs(
     _populate_asset_attrs(attrs, obj)
     attrs.knowledge_folder_type = obj.knowledge_folder_type
     attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -535,6 +543,7 @@ def _extract_knowledge_folder_attrs(attrs: KnowledgeFolderAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["knowledge_folder_type"] = attrs.knowledge_folder_type
     result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -655,6 +664,7 @@ KnowledgeFolder.KNOWLEDGE_FOLDER_TYPE = KeywordField(
     "knowledgeFolderType", "knowledgeFolderType"
 )
 KnowledgeFolder.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+KnowledgeFolder.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
 KnowledgeFolder.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Dict, List, Optional
+from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -421,6 +421,64 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Number of relationship insights associated with this asset.
     """
+    SQL_COALESCE_LAST_RUN_STATUS: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+    )
+    """
+    Status of the Coalesce run. One of: success, failure, cancelled, or skipped.
+    """
+    SQL_COALESCE_NODE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+    )
+    """
+    Status of the Coalesce node for a given run.
+    """
+    SQL_COALESCE_LAST_RUN_AT: ClassVar[NumericField] = NumericField(
+        "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+    )
+    """
+    Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds.
+    """
+    SQL_COALESCE_NODE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+    )
+    """
+    Type of the Coalesce node.
+    """
+    SQL_COALESCE_ENVIRONMENT_ID: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+    )
+    """
+    Identifier of the Coalesce environment.
+    """
+    SQL_COALESCE_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sqlCoalesceEnvironmentName",
+        "sqlCoalesceEnvironmentName.keyword",
+        "sqlCoalesceEnvironmentName",
+    )
+    """
+    Name of the Coalesce environment.
+    """
+    SQL_COALESCE_PROJECT_ID: ClassVar[KeywordField] = KeywordField(
+        "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+    )
+    """
+    Identifier of the Coalesce project.
+    """
+    SQL_COALESCE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sqlCoalesceProjectName",
+        "sqlCoalesceProjectName.keyword",
+        "sqlCoalesceProjectName",
+    )
+    """
+    Name of the Coalesce project.
+    """
+    SQL_SHARE_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+    )
+    """
+    Qualified names of data shares this asset is granted to.
+    """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
     """
@@ -432,6 +490,12 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[RelationField] = RelationField(
         "sqlInsightIncomingJoins"
+    )
+    """
+    TBC
+    """
+    COSMOS_MONGO_DB_STORED_PROCEDURES: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBStoredProcedures"
     )
     """
     TBC
@@ -454,8 +518,20 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     TBC
     """
+    SNOWFLAKE_TARGET_TABLE: ClassVar[RelationField] = RelationField(
+        "snowflakeTargetTable"
+    )
+    """
+    TBC
+    """
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[RelationField] = RelationField(
         "sqlInsightOutgoingJoins"
+    )
+    """
+    TBC
+    """
+    COSMOS_MONGO_DB_FUNCTIONS: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBFunctions"
     )
     """
     TBC
@@ -576,14 +652,26 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "sql_ai_insights_popular_join_count",
         "sql_ai_insights_popular_filter_count",
         "sql_ai_insights_relationship_count",
+        "sql_coalesce_last_run_status",
+        "sql_coalesce_node_status",
+        "sql_coalesce_last_run_at",
+        "sql_coalesce_node_type",
+        "sql_coalesce_environment_id",
+        "sql_coalesce_environment_name",
+        "sql_coalesce_project_id",
+        "sql_coalesce_project_name",
+        "sql_share_qualified_names",
         "dbt_sources",
         "sql_dbt_models",
         "sql_insight_incoming_joins",
+        "cosmos_mongo_d_b_stored_procedures",
         "atlan_schema",
         "partitions",
         "sql_insight_business_questions",
         "dbt_models",
+        "snowflake_target_table",
         "sql_insight_outgoing_joins",
+        "cosmos_mongo_d_b_functions",
         "mongo_d_b_database",
         "snowflake_semantic_logical_tables",
         "columns",
@@ -1456,6 +1544,130 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         )
 
     @property
+    def sql_coalesce_last_run_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_last_run_status
+        )
+
+    @sql_coalesce_last_run_status.setter
+    def sql_coalesce_last_run_status(self, sql_coalesce_last_run_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_last_run_status = sql_coalesce_last_run_status
+
+    @property
+    def sql_coalesce_node_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_node_status
+        )
+
+    @sql_coalesce_node_status.setter
+    def sql_coalesce_node_status(self, sql_coalesce_node_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_node_status = sql_coalesce_node_status
+
+    @property
+    def sql_coalesce_last_run_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_last_run_at
+        )
+
+    @sql_coalesce_last_run_at.setter
+    def sql_coalesce_last_run_at(self, sql_coalesce_last_run_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_last_run_at = sql_coalesce_last_run_at
+
+    @property
+    def sql_coalesce_node_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sql_coalesce_node_type
+        )
+
+    @sql_coalesce_node_type.setter
+    def sql_coalesce_node_type(self, sql_coalesce_node_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_node_type = sql_coalesce_node_type
+
+    @property
+    def sql_coalesce_environment_id(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_environment_id
+        )
+
+    @sql_coalesce_environment_id.setter
+    def sql_coalesce_environment_id(self, sql_coalesce_environment_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_environment_id = sql_coalesce_environment_id
+
+    @property
+    def sql_coalesce_environment_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_environment_name
+        )
+
+    @sql_coalesce_environment_name.setter
+    def sql_coalesce_environment_name(
+        self, sql_coalesce_environment_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_environment_name = sql_coalesce_environment_name
+
+    @property
+    def sql_coalesce_project_id(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sql_coalesce_project_id
+        )
+
+    @sql_coalesce_project_id.setter
+    def sql_coalesce_project_id(self, sql_coalesce_project_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_project_id = sql_coalesce_project_id
+
+    @property
+    def sql_coalesce_project_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_coalesce_project_name
+        )
+
+    @sql_coalesce_project_name.setter
+    def sql_coalesce_project_name(self, sql_coalesce_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_coalesce_project_name = sql_coalesce_project_name
+
+    @property
+    def sql_share_qualified_names(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_share_qualified_names
+        )
+
+    @sql_share_qualified_names.setter
+    def sql_share_qualified_names(self, sql_share_qualified_names: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_share_qualified_names = sql_share_qualified_names
+
+    @property
     def dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.dbt_sources
 
@@ -1490,6 +1702,24 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_insight_incoming_joins = sql_insight_incoming_joins
+
+    @property
+    def cosmos_mongo_d_b_stored_procedures(self) -> Optional[List[Procedure]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_stored_procedures
+        )
+
+    @cosmos_mongo_d_b_stored_procedures.setter
+    def cosmos_mongo_d_b_stored_procedures(
+        self, cosmos_mongo_d_b_stored_procedures: Optional[List[Procedure]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_stored_procedures = (
+            cosmos_mongo_d_b_stored_procedures
+        )
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
@@ -1540,6 +1770,20 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.dbt_models = dbt_models
 
     @property
+    def snowflake_target_table(self) -> Optional[SnowflakeV1CortexSearchService]:
+        return (
+            None if self.attributes is None else self.attributes.snowflake_target_table
+        )
+
+    @snowflake_target_table.setter
+    def snowflake_target_table(
+        self, snowflake_target_table: Optional[SnowflakeV1CortexSearchService]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_target_table = snowflake_target_table
+
+    @property
     def sql_insight_outgoing_joins(self) -> Optional[List[SqlInsightJoin]]:
         return (
             None
@@ -1554,6 +1798,22 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_insight_outgoing_joins = sql_insight_outgoing_joins
+
+    @property
+    def cosmos_mongo_d_b_functions(self) -> Optional[List[Function]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_functions
+        )
+
+    @cosmos_mongo_d_b_functions.setter
+    def cosmos_mongo_d_b_functions(
+        self, cosmos_mongo_d_b_functions: Optional[List[Function]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_functions = cosmos_mongo_d_b_functions
 
     @property
     def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
@@ -1797,6 +2057,23 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         sql_ai_insights_relationship_count: Optional[int] = Field(
             default=None, description=""
         )
+        sql_coalesce_last_run_status: Optional[str] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_node_status: Optional[str] = Field(default=None, description="")
+        sql_coalesce_last_run_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_node_type: Optional[str] = Field(default=None, description="")
+        sql_coalesce_environment_id: Optional[str] = Field(default=None, description="")
+        sql_coalesce_environment_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        sql_coalesce_project_id: Optional[str] = Field(default=None, description="")
+        sql_coalesce_project_name: Optional[str] = Field(default=None, description="")
+        sql_share_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
@@ -1804,6 +2081,9 @@ class CosmosMongoDBCollection(CosmosMongoDB):
             default=None, description=""
         )  # relationship
         sql_insight_incoming_joins: Optional[List[SqlInsightJoin]] = Field(
+            default=None, description=""
+        )  # relationship
+        cosmos_mongo_d_b_stored_procedures: Optional[List[Procedure]] = Field(
             default=None, description=""
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
@@ -1818,7 +2098,13 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
+        snowflake_target_table: Optional[SnowflakeV1CortexSearchService] = Field(
+            default=None, description=""
+        )  # relationship
         sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]] = Field(
+            default=None, description=""
+        )  # relationship
+        cosmos_mongo_d_b_functions: Optional[List[Function]] = Field(
             default=None, description=""
         )  # relationship
         mongo_d_b_database: Optional[MongoDBDatabase] = Field(
@@ -1871,11 +2157,16 @@ from .dbt_model import DbtModel  # noqa: E402, F401
 from .dbt_seed import DbtSeed  # noqa: E402, F401
 from .dbt_source import DbtSource  # noqa: E402, F401
 from .dbt_test import DbtTest  # noqa: E402, F401
+from .function import Function  # noqa: E402, F401
 from .mongo_d_b_database import MongoDBDatabase  # noqa: E402, F401
+from .procedure import Procedure  # noqa: E402, F401
 from .query import Query  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401
 from .snowflake_semantic_logical_table import (
     SnowflakeSemanticLogicalTable,  # noqa: E402, F401
+)
+from .snowflake_v1_cortex_search_service import (
+    SnowflakeV1CortexSearchService,  # noqa: E402, F401
 )
 from .sql_insight_business_question import (
     SqlInsightBusinessQuestion,  # noqa: E402, F401

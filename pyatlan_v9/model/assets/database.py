@@ -152,6 +152,7 @@ class Database(Asset):
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
     SCHEMAS: ClassVar[Any] = None
+    SQL_SCHEMAS: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
@@ -391,6 +392,9 @@ class Database(Asset):
 
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
+
+    sql_schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
+    """Schemas grouped under this database."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -837,6 +841,9 @@ class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
 
+    sql_schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
+    """Schemas grouped under this database."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -927,6 +934,7 @@ _DATABASE_REL_FIELDS: List[str] = [
     "links",
     "readme",
     "schemas",
+    "sql_schemas",
     "schema_registry_subjects",
     "snowflake_semantic_logical_tables",
     "soda_checks",
@@ -1265,6 +1273,7 @@ Database.FILES = RelationField("files")
 Database.LINKS = RelationField("links")
 Database.README = RelationField("readme")
 Database.SCHEMAS = RelationField("schemas")
+Database.SQL_SCHEMAS = RelationField("sqlSchemas")
 Database.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 Database.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
     "snowflakeSemanticLogicalTables"

@@ -73,7 +73,12 @@ class Skill(Asset):
     SKILL_STATUS: ClassVar[Any] = None
     SKILL_ARTIFACT_PATHS: ClassVar[Any] = None
     SKILL_ARTIFACT_FILE_QUALIFIED_NAMES: ClassVar[Any] = None
+    SKILL_IS_DORMANT: ClassVar[Any] = None
+    SKILL_SOURCE_PATH: ClassVar[Any] = None
+    SKILL_SCOPE: ClassVar[Any] = None
+    SKILL_CHECKSUM: ClassVar[Any] = None
     AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     AGENT_AGENTS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -118,7 +123,7 @@ class Skill(Asset):
     """URL-safe unique identifier for this skill (for example, my-sql-skill)."""
 
     skill_type: Union[str, None, UnsetType] = UNSET
-    """Origin type of this skill — system-provided, context repository output, or custom user/agent created."""
+    """Origin type of this skill — system-provided, context repository output, custom user/agent created, or connector-synced from an external system."""
 
     skill_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of this skill version (draft or published)."""
@@ -129,8 +134,23 @@ class Skill(Asset):
     skill_artifact_file_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Denormalized list of qualifiedNames of the SkillArtifact entities belonging to this skill version."""
 
+    skill_is_dormant: Union[bool, None, UnsetType] = UNSET
+    """Health signal — true when the skill was discovered with a missing, empty, or insufficiently descriptive description and is surfaced for governance review. Orthogonal to status: a published skill can also be dormant."""
+
+    skill_source_path: Union[str, None, UnsetType] = UNSET
+    """Source-system path the skill was synced from (for example, the Databricks workspace SKILL.md path)."""
+
+    skill_scope: Union[str, None, UnsetType] = UNSET
+    """Scope under which the skill was discovered, as a keyword string (for example, user or workspace)."""
+
+    skill_checksum: Union[str, None, UnsetType] = UNSET
+    """SHA-256 hex digest of the source SKILL.md content (UTF-8), used for change detection across crawls."""
+
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -375,7 +395,7 @@ class SkillAttributes(AssetAttributes):
     """URL-safe unique identifier for this skill (for example, my-sql-skill)."""
 
     skill_type: Union[str, None, UnsetType] = UNSET
-    """Origin type of this skill — system-provided, context repository output, or custom user/agent created."""
+    """Origin type of this skill — system-provided, context repository output, custom user/agent created, or connector-synced from an external system."""
 
     skill_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of this skill version (draft or published)."""
@@ -386,8 +406,23 @@ class SkillAttributes(AssetAttributes):
     skill_artifact_file_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Denormalized list of qualifiedNames of the SkillArtifact entities belonging to this skill version."""
 
+    skill_is_dormant: Union[bool, None, UnsetType] = UNSET
+    """Health signal — true when the skill was discovered with a missing, empty, or insufficiently descriptive description and is surfaced for governance review. Orthogonal to status: a published skill can also be dormant."""
+
+    skill_source_path: Union[str, None, UnsetType] = UNSET
+    """Source-system path the skill was synced from (for example, the Databricks workspace SKILL.md path)."""
+
+    skill_scope: Union[str, None, UnsetType] = UNSET
+    """Scope under which the skill was discovered, as a keyword string (for example, user or workspace)."""
+
+    skill_checksum: Union[str, None, UnsetType] = UNSET
+    """SHA-256 hex digest of the source SKILL.md content (UTF-8), used for change detection across crawls."""
+
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -578,7 +613,12 @@ def _populate_skill_attrs(attrs: SkillAttributes, obj: Skill) -> None:
     attrs.skill_status = obj.skill_status
     attrs.skill_artifact_paths = obj.skill_artifact_paths
     attrs.skill_artifact_file_qualified_names = obj.skill_artifact_file_qualified_names
+    attrs.skill_is_dormant = obj.skill_is_dormant
+    attrs.skill_source_path = obj.skill_source_path
+    attrs.skill_scope = obj.skill_scope
+    attrs.skill_checksum = obj.skill_checksum
     attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -593,7 +633,12 @@ def _extract_skill_attrs(attrs: SkillAttributes) -> dict:
     result["skill_artifact_file_qualified_names"] = (
         attrs.skill_artifact_file_qualified_names
     )
+    result["skill_is_dormant"] = attrs.skill_is_dormant
+    result["skill_source_path"] = attrs.skill_source_path
+    result["skill_scope"] = attrs.skill_scope
+    result["skill_checksum"] = attrs.skill_checksum
     result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -695,6 +740,7 @@ def _skill_from_nested_bytes(data: bytes, serde: Serde) -> Skill:
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
     KeywordField,
     NumericField,
     RelationField,
@@ -708,7 +754,12 @@ Skill.SKILL_ARTIFACT_PATHS = KeywordField("skillArtifactPaths", "skillArtifactPa
 Skill.SKILL_ARTIFACT_FILE_QUALIFIED_NAMES = KeywordField(
     "skillArtifactFileQualifiedNames", "skillArtifactFileQualifiedNames"
 )
+Skill.SKILL_IS_DORMANT = BooleanField("skillIsDormant", "skillIsDormant")
+Skill.SKILL_SOURCE_PATH = KeywordField("skillSourcePath", "skillSourcePath")
+Skill.SKILL_SCOPE = KeywordField("skillScope", "skillScope")
+Skill.SKILL_CHECKSUM = KeywordField("skillChecksum", "skillChecksum")
 Skill.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+Skill.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
 Skill.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Skill.AGENT_AGENTS = RelationField("agentAgents")
 Skill.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

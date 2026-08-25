@@ -104,6 +104,7 @@ class DataQualityRule(Asset):
     DQ_RULE_LATEST_RESULT_COMPUTED_AT: ClassVar[Any] = None
     DQ_RULE_LATEST_RESULT_FETCHED_AT: ClassVar[Any] = None
     DQ_RULE_LATEST_METRIC_VALUE: ClassVar[Any] = None
+    DQ_RULE_LATEST_TOTAL_ROWS_EVALUATED: ClassVar[Any] = None
     DQ_RULE_LATEST_METRIC_VALUE_COMPUTED_AT: ClassVar[Any] = None
     DQ_RULE_DIMENSION: ClassVar[Any] = None
     DQ_RULE_TEMPLATE_NAME: ClassVar[Any] = None
@@ -194,6 +195,9 @@ class DataQualityRule(Asset):
 
     dq_rule_latest_metric_value: Union[str, None, UnsetType] = UNSET
     """Last result metrics value of the rule."""
+
+    dq_rule_latest_total_rows_evaluated: Union[int, None, UnsetType] = UNSET
+    """Total number of rows that the rule's last run evaluated."""
 
     dq_rule_latest_metric_value_computed_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the latest metric value was evaluated in the source."""
@@ -1208,6 +1212,9 @@ class DataQualityRuleAttributes(AssetAttributes):
     dq_rule_latest_metric_value: Union[str, None, UnsetType] = UNSET
     """Last result metrics value of the rule."""
 
+    dq_rule_latest_total_rows_evaluated: Union[int, None, UnsetType] = UNSET
+    """Total number of rows that the rule's last run evaluated."""
+
     dq_rule_latest_metric_value_computed_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the latest metric value was evaluated in the source."""
 
@@ -1467,6 +1474,7 @@ def _populate_data_quality_rule_attrs(
     attrs.dq_rule_latest_result_computed_at = obj.dq_rule_latest_result_computed_at
     attrs.dq_rule_latest_result_fetched_at = obj.dq_rule_latest_result_fetched_at
     attrs.dq_rule_latest_metric_value = obj.dq_rule_latest_metric_value
+    attrs.dq_rule_latest_total_rows_evaluated = obj.dq_rule_latest_total_rows_evaluated
     attrs.dq_rule_latest_metric_value_computed_at = (
         obj.dq_rule_latest_metric_value_computed_at
     )
@@ -1513,6 +1521,9 @@ def _extract_data_quality_rule_attrs(attrs: DataQualityRuleAttributes) -> dict:
     )
     result["dq_rule_latest_result_fetched_at"] = attrs.dq_rule_latest_result_fetched_at
     result["dq_rule_latest_metric_value"] = attrs.dq_rule_latest_metric_value
+    result["dq_rule_latest_total_rows_evaluated"] = (
+        attrs.dq_rule_latest_total_rows_evaluated
+    )
     result["dq_rule_latest_metric_value_computed_at"] = (
         attrs.dq_rule_latest_metric_value_computed_at
     )
@@ -1685,6 +1696,9 @@ DataQualityRule.DQ_RULE_LATEST_RESULT_FETCHED_AT = NumericField(
 )
 DataQualityRule.DQ_RULE_LATEST_METRIC_VALUE = KeywordField(
     "dqRuleLatestMetricValue", "dqRuleLatestMetricValue"
+)
+DataQualityRule.DQ_RULE_LATEST_TOTAL_ROWS_EVALUATED = NumericField(
+    "dqRuleLatestTotalRowsEvaluated", "dqRuleLatestTotalRowsEvaluated"
 )
 DataQualityRule.DQ_RULE_LATEST_METRIC_VALUE_COMPUTED_AT = NumericField(
     "dqRuleLatestMetricValueComputedAt", "dqRuleLatestMetricValueComputedAt"

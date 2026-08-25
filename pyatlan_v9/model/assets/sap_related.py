@@ -16,6 +16,7 @@ from typing import Dict, List, Union
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
+from .flow_related import RelatedFlowControlOperation
 from .referenceable_related import RelatedReferenceable
 
 __all__ = [
@@ -31,6 +32,7 @@ __all__ = [
     "RelatedSapErpTable",
     "RelatedSapErpAbapProgram",
     "RelatedSapErpFioriApp",
+    "RelatedSapDatasphereReplicationFlow",
 ]
 
 
@@ -350,3 +352,42 @@ class RelatedSapErpFioriApp(RelatedSAP):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpFioriApp"
+
+
+class RelatedSapDatasphereReplicationFlow(RelatedFlowControlOperation):
+    """
+    Related entity reference for SapDatasphereReplicationFlow assets.
+
+    Extends RelatedFlowControlOperation with SapDatasphereReplicationFlow-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SapDatasphereReplicationFlow" so it serializes correctly
+
+    sap_datasphere_replication_flow_space_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the Datasphere space in which this replication flow runs and creates its target tables."""
+
+    sap_datasphere_replication_flow_space_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
+    """Unique name of the Datasphere space in which this replication flow runs and creates its target tables."""
+
+    sap_datasphere_replication_flow_source_connection: Union[str, None, UnsetType] = (
+        UNSET
+    )
+    """Name of the source connection from which this replication flow reads data, such as an S/4HANA, SAP ECC, SAP BW, or S3 connection outside Datasphere."""
+
+    sap_datasphere_replication_flow_target_connection: Union[str, None, UnsetType] = (
+        UNSET
+    )
+    """Name of the target connection into which this replication flow writes data, such as the local Datasphere repository."""
+
+    sap_datasphere_replication_flow_load_type: Union[str, None, UnsetType] = UNSET
+    """Type of load performed by this replication flow, such as INITIAL or INITIAL_AND_DELTA."""
+
+    sap_datasphere_replication_flow_dataset_count: Union[int, None, UnsetType] = UNSET
+    """Number of datasets moved by this replication flow."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SapDatasphereReplicationFlow"

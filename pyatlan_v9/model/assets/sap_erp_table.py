@@ -105,6 +105,7 @@ class SapErpTable(Asset):
     README: ClassVar[Any] = None
     SAP_ERP_COLUMNS: ClassVar[Any] = None
     SAP_ERP_COMPONENT: ClassVar[Any] = None
+    SAP_ERP_RELATED_TABLES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
@@ -237,6 +238,9 @@ class SapErpTable(Asset):
 
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP Tables that are associated with this SAP ERP Component."""
+
+    sap_erp_related_tables: Union[List[RelatedSapErpTable], None, UnsetType] = UNSET
+    """SAP ERP Tables that are related to this SAP ERP Table."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -502,6 +506,9 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP Tables that are associated with this SAP ERP Component."""
 
+    sap_erp_related_tables: Union[List[RelatedSapErpTable], None, UnsetType] = UNSET
+    """SAP ERP Tables that are related to this SAP ERP Table."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -566,6 +573,7 @@ _SAP_ERP_TABLE_REL_FIELDS: List[str] = [
     "readme",
     "sap_erp_columns",
     "sap_erp_component",
+    "sap_erp_related_tables",
     "schema_registry_subjects",
     "soda_checks",
     "input_to_spark_jobs",
@@ -758,6 +766,7 @@ SapErpTable.LINKS = RelationField("links")
 SapErpTable.README = RelationField("readme")
 SapErpTable.SAP_ERP_COLUMNS = RelationField("sapErpColumns")
 SapErpTable.SAP_ERP_COMPONENT = RelationField("sapErpComponent")
+SapErpTable.SAP_ERP_RELATED_TABLES = RelationField("sapErpRelatedTables")
 SapErpTable.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SapErpTable.SODA_CHECKS = RelationField("sodaChecks")
 SapErpTable.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")

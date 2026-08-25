@@ -138,7 +138,7 @@ class Query(SQL):
     """
     RAW_QUERY_TEXT: ClassVar[RelationField] = RelationField("rawQueryText")
     """
-
+    
     """
     DEFAULT_SCHEMA_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "defaultSchemaQualifiedName",

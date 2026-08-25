@@ -72,6 +72,8 @@ from .sql_insight_related import (
 )
 from .sql_related import (
     RelatedColumn,
+    RelatedFunction,
+    RelatedProcedure,
     RelatedQuery,
     RelatedSchema,
     RelatedTable,
@@ -172,6 +174,8 @@ class CosmosMongoDBCollection(Asset):
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     COSMOS_MONGO_DB_DATABASE: ClassVar[Any] = None
     COLUMNS: ClassVar[Any] = None
+    COSMOS_MONGO_DB_STORED_PROCEDURES: ClassVar[Any] = None
+    COSMOS_MONGO_DB_FUNCTIONS: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -496,6 +500,16 @@ class CosmosMongoDBCollection(Asset):
 
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this cosmos collection."""
+
+    cosmos_mongo_db_stored_procedures: Union[
+        List[RelatedProcedure], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBStoredProcedures")
+    """Stored procedures and triggers that exist within this collection."""
+
+    cosmos_mongo_db_functions: Union[List[RelatedFunction], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBFunctions")
+    )
+    """User-defined functions that exist within this collection."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -1079,6 +1093,16 @@ class CosmosMongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes)
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this cosmos collection."""
 
+    cosmos_mongo_db_stored_procedures: Union[
+        List[RelatedProcedure], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBStoredProcedures")
+    """Stored procedures and triggers that exist within this collection."""
+
+    cosmos_mongo_db_functions: Union[List[RelatedFunction], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBFunctions")
+    )
+    """User-defined functions that exist within this collection."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -1262,6 +1286,8 @@ _COSMOS_MONGO_DB_COLLECTION_REL_FIELDS: List[str] = [
     "context_repositories",
     "cosmos_mongo_db_database",
     "columns",
+    "cosmos_mongo_db_stored_procedures",
+    "cosmos_mongo_db_functions",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -1847,6 +1873,12 @@ CosmosMongoDBCollection.COSMOS_MONGO_DB_DATABASE = RelationField(
     "cosmosMongoDBDatabase"
 )
 CosmosMongoDBCollection.COLUMNS = RelationField("columns")
+CosmosMongoDBCollection.COSMOS_MONGO_DB_STORED_PROCEDURES = RelationField(
+    "cosmosMongoDBStoredProcedures"
+)
+CosmosMongoDBCollection.COSMOS_MONGO_DB_FUNCTIONS = RelationField(
+    "cosmosMongoDBFunctions"
+)
 CosmosMongoDBCollection.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CosmosMongoDBCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

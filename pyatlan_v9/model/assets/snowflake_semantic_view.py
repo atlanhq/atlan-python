@@ -1128,9 +1128,10 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
-SnowflakeSemanticView.SNOWFLAKE_DEFINITION = KeywordField(
+SnowflakeSemanticView.SNOWFLAKE_DEFINITION = TextField(
     "snowflakeDefinition", "snowflakeDefinition"
 )
 SnowflakeSemanticView.QUERY_COUNT = NumericField("queryCount", "queryCount")

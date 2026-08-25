@@ -148,6 +148,11 @@ class RelatedSqlInsightBusinessQuestion(RelatedSqlInsight):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SqlInsightBusinessQuestion" so it serializes correctly
 
+    sql_insight_business_question_dataset_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
+    """Qualified name of the dataset this business question relates to."""
+
     sql_insight_business_question_text: Union[str, None, UnsetType] = UNSET
     """Natural language text of the business question."""
 
@@ -164,6 +169,11 @@ class RelatedSqlInsightBusinessQuestion(RelatedSqlInsight):
 
     sql_insight_business_question_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this question was last observed, in milliseconds."""
+
+    sql_insight_business_question_example_queries: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
+    """Example SQL queries that demonstrate this business question, with usage details."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

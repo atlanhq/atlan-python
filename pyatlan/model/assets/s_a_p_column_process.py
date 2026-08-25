@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
@@ -13,157 +12,69 @@ from pyatlan.model.enums import AIDatasetType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
-    KeywordTextField,
     NumericField,
     RelationField,
     TextField,
 )
-from pyatlan.model.structs import DbtInputContext, DbtJobRun
 
-from .core.process import Process
+from .core.s_a_p import SAP
 
 
-class DbtProcess(Process):
+class SAPColumnProcess(SAP):
     """Description"""
 
-    type_name: str = Field(default="DbtProcess", allow_mutation=False)
+    type_name: str = Field(default="SAPColumnProcess", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DbtProcess":
-            raise ValueError("must be DbtProcess")
+        if v != "SAPColumnProcess":
+            raise ValueError("must be SAPColumnProcess")
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtProcess._convenience_properties:
+        if name in SAPColumnProcess._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DBT_PROCESS_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
-        "dbtProcessJobStatus", "dbtProcessJobStatus"
+    SAP_TECHNICAL_NAME: ClassVar[KeywordField] = KeywordField(
+        "sapTechnicalName", "sapTechnicalName"
     )
     """
-    Status of the dbt process job.
+    Technical identifier for SAP data objects, used for integration and internal reference.
     """
-    DBT_UPSTREAM_CONTEXTS: ClassVar[KeywordField] = KeywordField(
-        "dbtUpstreamContexts", "dbtUpstreamContexts"
+    SAP_LOGICAL_NAME: ClassVar[KeywordField] = KeywordField(
+        "sapLogicalName", "sapLogicalName"
     )
     """
-    Context for inputs to this Process.
+    Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts.
     """
-    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtAlias", "dbtAlias.keyword", "dbtAlias"
+    SAP_PACKAGE_NAME: ClassVar[KeywordField] = KeywordField(
+        "sapPackageName", "sapPackageName"
     )
     """
-    Alias of this asset in dbt.
+    Name of the SAP package, representing a logical grouping of related SAP data objects.
     """
-    DBT_META: ClassVar[TextField] = TextField("dbtMeta", "dbtMeta")
-    """
-    Metadata for this asset in dbt, specifically everything under the 'meta' key in the dbt object.
-    """
-    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
+    SAP_COMPONENT_NAME: ClassVar[KeywordField] = KeywordField(
+        "sapComponentName", "sapComponentName"
     )
     """
-    Unique identifier of this asset in dbt.
+    Name of the SAP component, representing a specific functional area in SAP.
     """
-    DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
+    SAP_DATA_TYPE: ClassVar[KeywordField] = KeywordField("sapDataType", "sapDataType")
+    """
+    SAP-specific data types.
+    """
+    SAP_FIELD_COUNT: ClassVar[NumericField] = NumericField(
+        "sapFieldCount", "sapFieldCount"
     )
     """
-    Name of the account in which this asset exists in dbt.
+    Represents the total number of fields, columns, or child assets present in a given SAP asset.
     """
-    DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
+    SAP_FIELD_ORDER: ClassVar[NumericField] = NumericField(
+        "sapFieldOrder", "sapFieldOrder"
     )
     """
-    Name of the project in which this asset exists in dbt.
-    """
-    DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
-    )
-    """
-    Name of the package in which this asset exists in dbt.
-    """
-    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtJobName", "dbtJobName.keyword", "dbtJobName"
-    )
-    """
-    Name of the job that materialized this asset in dbt.
-    """
-    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField(
-        "dbtJobSchedule", "dbtJobSchedule"
-    )
-    """
-    Schedule of the job that materialized this asset in dbt.
-    """
-    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
-        "dbtJobStatus", "dbtJobStatus"
-    )
-    """
-    Status of the job that materialized this asset in dbt.
-    """
-    DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtJobScheduleCronHumanized",
-        "dbtJobScheduleCronHumanized.keyword",
-        "dbtJobScheduleCronHumanized",
-    )
-    """
-    Human-readable cron schedule of the job that materialized this asset in dbt.
-    """
-    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
-        "dbtJobLastRun", "dbtJobLastRun"
-    )
-    """
-    Time (epoch) at which the job that materialized this asset in dbt last ran, in milliseconds.
-    """
-    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
-        "dbtJobNextRun", "dbtJobNextRun"
-    )
-    """
-    Time (epoch) at which the job that materialized this asset in dbt will next run, in milliseconds.
-    """
-    DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtJobNextRunHumanized",
-        "dbtJobNextRunHumanized.keyword",
-        "dbtJobNextRunHumanized",
-    )
-    """
-    Human-readable time at which the job that materialized this asset in dbt will next run.
-    """
-    DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
-    )
-    """
-    Name of the environment in which this asset exists in dbt.
-    """
-    DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtEnvironmentDbtVersion",
-        "dbtEnvironmentDbtVersion.keyword",
-        "dbtEnvironmentDbtVersion",
-    )
-    """
-    Version of dbt used in the environment.
-    """
-    DBT_TAGS: ClassVar[TextField] = TextField("dbtTags", "dbtTags")
-    """
-    List of tags attached to this asset in dbt.
-    """
-    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField(
-        "dbtConnectionContext", "dbtConnectionContext"
-    )
-    """
-    Connection context for this asset in dbt.
-    """
-    DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
-        "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
-    )
-    """
-    URL of the semantic layer proxy for this asset in dbt.
-    """
-    DBT_JOB_RUNS: ClassVar[KeywordField] = KeywordField("dbtJobRuns", "dbtJobRuns")
-    """
-    List of latest dbt job runs across all environments.
+    Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1.
     """
     CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
         "catalogDatasetGuid", "catalogDatasetGuid"
@@ -183,7 +94,7 @@ class DbtProcess(Process):
         "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
     )
     """
-
+    
     """
     AST: ClassVar[TextField] = TextField("ast", "ast")
     """
@@ -216,6 +127,12 @@ class DbtProcess(Process):
     """
     TBC
     """
+    SAP_BW_TRANSFORMATIONS: ClassVar[RelationField] = RelationField(
+        "sapBwTransformations"
+    )
+    """
+    TBC
+    """
     FABRIC_ACTIVITIES: ClassVar[RelationField] = RelationField("fabricActivities")
     """
     TBC
@@ -240,6 +157,10 @@ class DbtProcess(Process):
     """
     TBC
     """
+    PROCESS: ClassVar[RelationField] = RelationField("process")
+    """
+    TBC
+    """
     AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
     """
     TBC
@@ -258,27 +179,13 @@ class DbtProcess(Process):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "dbt_process_job_status",
-        "dbt_upstream_contexts",
-        "dbt_alias",
-        "dbt_meta",
-        "dbt_unique_id",
-        "dbt_account_name",
-        "dbt_project_name",
-        "dbt_package_name",
-        "dbt_job_name",
-        "dbt_job_schedule",
-        "dbt_job_status",
-        "dbt_job_schedule_cron_humanized",
-        "dbt_job_last_run",
-        "dbt_job_next_run",
-        "dbt_job_next_run_humanized",
-        "dbt_environment_name",
-        "dbt_environment_dbt_version",
-        "dbt_tags",
-        "dbt_connection_context",
-        "dbt_semantic_layer_proxy_url",
-        "dbt_job_runs",
+        "sap_technical_name",
+        "sap_logical_name",
+        "sap_package_name",
+        "sap_component_name",
+        "sap_data_type",
+        "sap_field_count",
+        "sap_field_order",
         "catalog_dataset_guid",
         "inputs",
         "outputs",
@@ -291,12 +198,14 @@ class DbtProcess(Process):
         "is_pass_through",
         "flow_orchestrated_by",
         "sql_procedures",
+        "sap_bw_transformations",
         "fabric_activities",
         "adf_activity",
         "bigquery_routines",
         "spark_jobs",
         "sql_functions",
         "matillion_component",
+        "process",
         "airflow_tasks",
         "fivetran_connector",
         "power_b_i_dataflow",
@@ -304,242 +213,74 @@ class DbtProcess(Process):
     ]
 
     @property
-    def dbt_process_job_status(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dbt_process_job_status
-        )
+    def sap_technical_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sap_technical_name
 
-    @dbt_process_job_status.setter
-    def dbt_process_job_status(self, dbt_process_job_status: Optional[str]):
+    @sap_technical_name.setter
+    def sap_technical_name(self, sap_technical_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_process_job_status = dbt_process_job_status
+        self.attributes.sap_technical_name = sap_technical_name
 
     @property
-    def dbt_upstream_contexts(self) -> Optional[List[DbtInputContext]]:
-        return (
-            None if self.attributes is None else self.attributes.dbt_upstream_contexts
-        )
+    def sap_logical_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sap_logical_name
 
-    @dbt_upstream_contexts.setter
-    def dbt_upstream_contexts(
-        self, dbt_upstream_contexts: Optional[List[DbtInputContext]]
-    ):
+    @sap_logical_name.setter
+    def sap_logical_name(self, sap_logical_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_upstream_contexts = dbt_upstream_contexts
+        self.attributes.sap_logical_name = sap_logical_name
 
     @property
-    def dbt_alias(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_alias
+    def sap_package_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sap_package_name
 
-    @dbt_alias.setter
-    def dbt_alias(self, dbt_alias: Optional[str]):
+    @sap_package_name.setter
+    def sap_package_name(self, sap_package_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_alias = dbt_alias
+        self.attributes.sap_package_name = sap_package_name
 
     @property
-    def dbt_meta(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_meta
+    def sap_component_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sap_component_name
 
-    @dbt_meta.setter
-    def dbt_meta(self, dbt_meta: Optional[str]):
+    @sap_component_name.setter
+    def sap_component_name(self, sap_component_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_meta = dbt_meta
+        self.attributes.sap_component_name = sap_component_name
 
     @property
-    def dbt_unique_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_unique_id
+    def sap_data_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sap_data_type
 
-    @dbt_unique_id.setter
-    def dbt_unique_id(self, dbt_unique_id: Optional[str]):
+    @sap_data_type.setter
+    def sap_data_type(self, sap_data_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_unique_id = dbt_unique_id
+        self.attributes.sap_data_type = sap_data_type
 
     @property
-    def dbt_account_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_account_name
+    def sap_field_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.sap_field_count
 
-    @dbt_account_name.setter
-    def dbt_account_name(self, dbt_account_name: Optional[str]):
+    @sap_field_count.setter
+    def sap_field_count(self, sap_field_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_account_name = dbt_account_name
+        self.attributes.sap_field_count = sap_field_count
 
     @property
-    def dbt_project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_project_name
+    def sap_field_order(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.sap_field_order
 
-    @dbt_project_name.setter
-    def dbt_project_name(self, dbt_project_name: Optional[str]):
+    @sap_field_order.setter
+    def sap_field_order(self, sap_field_order: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_project_name = dbt_project_name
-
-    @property
-    def dbt_package_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_package_name
-
-    @dbt_package_name.setter
-    def dbt_package_name(self, dbt_package_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_package_name = dbt_package_name
-
-    @property
-    def dbt_job_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_job_name
-
-    @dbt_job_name.setter
-    def dbt_job_name(self, dbt_job_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_job_name = dbt_job_name
-
-    @property
-    def dbt_job_schedule(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_job_schedule
-
-    @dbt_job_schedule.setter
-    def dbt_job_schedule(self, dbt_job_schedule: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_job_schedule = dbt_job_schedule
-
-    @property
-    def dbt_job_status(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_job_status
-
-    @dbt_job_status.setter
-    def dbt_job_status(self, dbt_job_status: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_job_status = dbt_job_status
-
-    @property
-    def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_job_schedule_cron_humanized
-        )
-
-    @dbt_job_schedule_cron_humanized.setter
-    def dbt_job_schedule_cron_humanized(
-        self, dbt_job_schedule_cron_humanized: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_job_schedule_cron_humanized = (
-            dbt_job_schedule_cron_humanized
-        )
-
-    @property
-    def dbt_job_last_run(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.dbt_job_last_run
-
-    @dbt_job_last_run.setter
-    def dbt_job_last_run(self, dbt_job_last_run: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_job_last_run = dbt_job_last_run
-
-    @property
-    def dbt_job_next_run(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.dbt_job_next_run
-
-    @dbt_job_next_run.setter
-    def dbt_job_next_run(self, dbt_job_next_run: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_job_next_run = dbt_job_next_run
-
-    @property
-    def dbt_job_next_run_humanized(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_job_next_run_humanized
-        )
-
-    @dbt_job_next_run_humanized.setter
-    def dbt_job_next_run_humanized(self, dbt_job_next_run_humanized: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_job_next_run_humanized = dbt_job_next_run_humanized
-
-    @property
-    def dbt_environment_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_environment_name
-
-    @dbt_environment_name.setter
-    def dbt_environment_name(self, dbt_environment_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_environment_name = dbt_environment_name
-
-    @property
-    def dbt_environment_dbt_version(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_environment_dbt_version
-        )
-
-    @dbt_environment_dbt_version.setter
-    def dbt_environment_dbt_version(self, dbt_environment_dbt_version: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
-
-    @property
-    def dbt_tags(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.dbt_tags
-
-    @dbt_tags.setter
-    def dbt_tags(self, dbt_tags: Optional[Set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_tags = dbt_tags
-
-    @property
-    def dbt_connection_context(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dbt_connection_context
-        )
-
-    @dbt_connection_context.setter
-    def dbt_connection_context(self, dbt_connection_context: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_connection_context = dbt_connection_context
-
-    @property
-    def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_semantic_layer_proxy_url
-        )
-
-    @dbt_semantic_layer_proxy_url.setter
-    def dbt_semantic_layer_proxy_url(self, dbt_semantic_layer_proxy_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
-
-    @property
-    def dbt_job_runs(self) -> Optional[List[DbtJobRun]]:
-        return None if self.attributes is None else self.attributes.dbt_job_runs
-
-    @dbt_job_runs.setter
-    def dbt_job_runs(self, dbt_job_runs: Optional[List[DbtJobRun]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_job_runs = dbt_job_runs
+        self.attributes.sap_field_order = sap_field_order
 
     @property
     def catalog_dataset_guid(self) -> Optional[str]:
@@ -674,6 +415,20 @@ class DbtProcess(Process):
         self.attributes.sql_procedures = sql_procedures
 
     @property
+    def sap_bw_transformations(self) -> Optional[List[SAPBWTransformation]]:
+        return (
+            None if self.attributes is None else self.attributes.sap_bw_transformations
+        )
+
+    @sap_bw_transformations.setter
+    def sap_bw_transformations(
+        self, sap_bw_transformations: Optional[List[SAPBWTransformation]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sap_bw_transformations = sap_bw_transformations
+
+    @property
     def fabric_activities(self) -> Optional[List[FabricActivity]]:
         return None if self.attributes is None else self.attributes.fabric_activities
 
@@ -734,6 +489,16 @@ class DbtProcess(Process):
         self.attributes.matillion_component = matillion_component
 
     @property
+    def process(self) -> Optional[Process]:
+        return None if self.attributes is None else self.attributes.process
+
+    @process.setter
+    def process(self, process: Optional[Process]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.process = process
+
+    @property
     def airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return None if self.attributes is None else self.attributes.airflow_tasks
 
@@ -773,34 +538,14 @@ class DbtProcess(Process):
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
-    class Attributes(Process.Attributes):
-        dbt_process_job_status: Optional[str] = Field(default=None, description="")
-        dbt_upstream_contexts: Optional[List[DbtInputContext]] = Field(
-            default=None, description=""
-        )
-        dbt_alias: Optional[str] = Field(default=None, description="")
-        dbt_meta: Optional[str] = Field(default=None, description="")
-        dbt_unique_id: Optional[str] = Field(default=None, description="")
-        dbt_account_name: Optional[str] = Field(default=None, description="")
-        dbt_project_name: Optional[str] = Field(default=None, description="")
-        dbt_package_name: Optional[str] = Field(default=None, description="")
-        dbt_job_name: Optional[str] = Field(default=None, description="")
-        dbt_job_schedule: Optional[str] = Field(default=None, description="")
-        dbt_job_status: Optional[str] = Field(default=None, description="")
-        dbt_job_schedule_cron_humanized: Optional[str] = Field(
-            default=None, description=""
-        )
-        dbt_job_last_run: Optional[datetime] = Field(default=None, description="")
-        dbt_job_next_run: Optional[datetime] = Field(default=None, description="")
-        dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
-        dbt_environment_name: Optional[str] = Field(default=None, description="")
-        dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
-        dbt_tags: Optional[Set[str]] = Field(default=None, description="")
-        dbt_connection_context: Optional[str] = Field(default=None, description="")
-        dbt_semantic_layer_proxy_url: Optional[str] = Field(
-            default=None, description=""
-        )
-        dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
+    class Attributes(SAP.Attributes):
+        sap_technical_name: Optional[str] = Field(default=None, description="")
+        sap_logical_name: Optional[str] = Field(default=None, description="")
+        sap_package_name: Optional[str] = Field(default=None, description="")
+        sap_component_name: Optional[str] = Field(default=None, description="")
+        sap_data_type: Optional[str] = Field(default=None, description="")
+        sap_field_count: Optional[int] = Field(default=None, description="")
+        sap_field_order: Optional[int] = Field(default=None, description="")
         catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         inputs: Optional[List[Catalog]] = Field(default=None, description="")
         outputs: Optional[List[Catalog]] = Field(default=None, description="")
@@ -817,6 +562,9 @@ class DbtProcess(Process):
             default=None, description=""
         )  # relationship
         sql_procedures: Optional[List[Procedure]] = Field(
+            default=None, description=""
+        )  # relationship
+        sap_bw_transformations: Optional[List[SAPBWTransformation]] = Field(
             default=None, description=""
         )  # relationship
         fabric_activities: Optional[List[FabricActivity]] = Field(
@@ -837,6 +585,7 @@ class DbtProcess(Process):
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
+        process: Optional[Process] = Field(default=None, description="")  # relationship
         airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
@@ -850,8 +599,8 @@ class DbtProcess(Process):
             default=None, description=""
         )  # relationship
 
-    attributes: DbtProcess.Attributes = Field(
-        default_factory=lambda: DbtProcess.Attributes(),
+    attributes: SAPColumnProcess.Attributes = Field(
+        default_factory=lambda: SAPColumnProcess.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -872,6 +621,8 @@ from .core.function import Function  # noqa: E402, F401
 from .core.matillion_component import MatillionComponent  # noqa: E402, F401
 from .core.power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
 from .core.procedure import Procedure  # noqa: E402, F401
+from .core.process import Process  # noqa: E402, F401
 from .core.spark_job import SparkJob  # noqa: E402, F401
+from .s_a_p_b_w_transformation import SAPBWTransformation  # noqa: E402, F401
 
-DbtProcess.Attributes.update_forward_refs()
+SAPColumnProcess.Attributes.update_forward_refs()

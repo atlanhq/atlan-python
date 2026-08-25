@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
 
-from .s_a_p import SAP
+from .core.s_a_p import SAP
 
 
 class SapErpTransactionCode(SAP):

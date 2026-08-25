@@ -59,6 +59,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereReplicationFlow
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeAIModelContext,
@@ -172,6 +173,7 @@ class Schema(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_REPLICATION_FLOWS: ClassVar[Any] = None
     CALCULATION_VIEWS: ClassVar[Any] = None
     FUNCTIONS: ClassVar[Any] = None
     MATERIALISED_VIEWS: ClassVar[Any] = None
@@ -179,6 +181,7 @@ class Schema(Asset):
     DATABASE: ClassVar[Any] = None
     TABLES: ClassVar[Any] = None
     VIEWS: ClassVar[Any] = None
+    SQL_DATABASES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_DYNAMIC_TABLES: ClassVar[Any] = None
     SNOWFLAKE_PIPES: ClassVar[Any] = None
@@ -431,6 +434,11 @@ class Schema(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_replication_flows: Union[
+        List[RelatedSapDatasphereReplicationFlow], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
+
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
 
@@ -451,6 +459,9 @@ class Schema(Asset):
 
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
+
+    sql_databases: Union[List[RelatedDatabase], None, UnsetType] = UNSET
+    """Databases to which this schema belongs."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -979,6 +990,11 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_replication_flows: Union[
+        List[RelatedSapDatasphereReplicationFlow], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
+
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
 
@@ -999,6 +1015,9 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
 
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
+
+    sql_databases: Union[List[RelatedDatabase], None, UnsetType] = UNSET
+    """Databases to which this schema belongs."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -1117,6 +1136,7 @@ _SCHEMA_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_replication_flows",
     "calculation_views",
     "functions",
     "materialised_views",
@@ -1124,6 +1144,7 @@ _SCHEMA_REL_FIELDS: List[str] = [
     "database",
     "tables",
     "views",
+    "sql_databases",
     "schema_registry_subjects",
     "snowflake_dynamic_tables",
     "snowflake_pipes",
@@ -1470,6 +1491,7 @@ Schema.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 Schema.FILES = RelationField("files")
 Schema.LINKS = RelationField("links")
 Schema.README = RelationField("readme")
+Schema.SAP_DATASPHERE_REPLICATION_FLOWS = RelationField("sapDatasphereReplicationFlows")
 Schema.CALCULATION_VIEWS = RelationField("calculationViews")
 Schema.FUNCTIONS = RelationField("functions")
 Schema.MATERIALISED_VIEWS = RelationField("materialisedViews")
@@ -1477,6 +1499,7 @@ Schema.PROCEDURES = RelationField("procedures")
 Schema.DATABASE = RelationField("database")
 Schema.TABLES = RelationField("tables")
 Schema.VIEWS = RelationField("views")
+Schema.SQL_DATABASES = RelationField("sqlDatabases")
 Schema.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 Schema.SNOWFLAKE_DYNAMIC_TABLES = RelationField("snowflakeDynamicTables")
 Schema.SNOWFLAKE_PIPES = RelationField("snowflakePipes")

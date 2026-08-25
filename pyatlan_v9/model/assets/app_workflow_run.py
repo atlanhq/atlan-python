@@ -70,6 +70,7 @@ class AppWorkflowRun(Asset):
     APP_WORKFLOW_RUN_STATUS: ClassVar[Any] = None
     APP_WORKFLOW_RUN_STARTED_AT: ClassVar[Any] = None
     APP_WORKFLOW_RUN_STARTED_BY: ClassVar[Any] = None
+    APP_WORKFLOW_RUN_STOPPED_BY: ClassVar[Any] = None
     APP_WORKFLOW_RUN_COMPLETED_AT: ClassVar[Any] = None
     APP_WORKFLOW_RUN_OUTPUTS: ClassVar[Any] = None
     APP_WORKFLOW_RUN_STEPS: ClassVar[Any] = None
@@ -79,6 +80,8 @@ class AppWorkflowRun(Asset):
     APP_WORKFLOW_RUN_APP_WORKFLOW_NAME: ClassVar[Any] = None
     APP_WORKFLOW_RUN_APP_WORKFLOW_SLUG: ClassVar[Any] = None
     APP_WORKFLOW_RUN_APP_WORKFLOW_VERSION: ClassVar[Any] = None
+    APP_WORKFLOW_RUN_WORKFLOW_OWNERSHIP: ClassVar[Any] = None
+    APP_WORKFLOW_RUN_SOURCE: ClassVar[Any] = None
     APP_WORKFLOW_RUN_TEMPORAL_RUN_ID: ClassVar[Any] = None
     APP_WORKFLOW_RUN_IS_TEST_RUN: ClassVar[Any] = None
     APP_WORKFLOW_RUN_DAG: ClassVar[Any] = None
@@ -130,6 +133,9 @@ class AppWorkflowRun(Asset):
     app_workflow_run_started_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who started the workflow run."""
 
+    app_workflow_run_stopped_by: Union[str, None, UnsetType] = UNSET
+    """Username of the user who stopped the workflow run."""
+
     app_workflow_run_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the workflow run finished execution."""
 
@@ -156,6 +162,12 @@ class AppWorkflowRun(Asset):
 
     app_workflow_run_app_workflow_version: Union[str, None, UnsetType] = UNSET
     """Version of the parent workflow."""
+
+    app_workflow_run_workflow_ownership: Union[str, None, UnsetType] = UNSET
+    """Ownership of the parent workflow at execution time: SYSTEM (managed by Atlan) or USER (user-authored). Denormalized from the workflow so run-history listings can filter without a join."""
+
+    app_workflow_run_source: Union[str, None, UnsetType] = UNSET
+    """Product surface of the parent workflow (marketplace, enrichment_studio, context_studio), denormalized onto the run and emitted as a metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028)."""
 
     app_workflow_run_temporal_run_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the temporal run associated with this workflow execution."""
@@ -411,6 +423,9 @@ class AppWorkflowRunAttributes(AssetAttributes):
     app_workflow_run_started_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who started the workflow run."""
 
+    app_workflow_run_stopped_by: Union[str, None, UnsetType] = UNSET
+    """Username of the user who stopped the workflow run."""
+
     app_workflow_run_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the workflow run finished execution."""
 
@@ -437,6 +452,12 @@ class AppWorkflowRunAttributes(AssetAttributes):
 
     app_workflow_run_app_workflow_version: Union[str, None, UnsetType] = UNSET
     """Version of the parent workflow."""
+
+    app_workflow_run_workflow_ownership: Union[str, None, UnsetType] = UNSET
+    """Ownership of the parent workflow at execution time: SYSTEM (managed by Atlan) or USER (user-authored). Denormalized from the workflow so run-history listings can filter without a join."""
+
+    app_workflow_run_source: Union[str, None, UnsetType] = UNSET
+    """Product surface of the parent workflow (marketplace, enrichment_studio, context_studio), denormalized onto the run and emitted as a metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028)."""
 
     app_workflow_run_temporal_run_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the temporal run associated with this workflow execution."""
@@ -633,6 +654,7 @@ def _populate_app_workflow_run_attrs(
     attrs.app_workflow_run_status = obj.app_workflow_run_status
     attrs.app_workflow_run_started_at = obj.app_workflow_run_started_at
     attrs.app_workflow_run_started_by = obj.app_workflow_run_started_by
+    attrs.app_workflow_run_stopped_by = obj.app_workflow_run_stopped_by
     attrs.app_workflow_run_completed_at = obj.app_workflow_run_completed_at
     attrs.app_workflow_run_outputs = obj.app_workflow_run_outputs
     attrs.app_workflow_run_steps = obj.app_workflow_run_steps
@@ -646,6 +668,8 @@ def _populate_app_workflow_run_attrs(
     attrs.app_workflow_run_app_workflow_version = (
         obj.app_workflow_run_app_workflow_version
     )
+    attrs.app_workflow_run_workflow_ownership = obj.app_workflow_run_workflow_ownership
+    attrs.app_workflow_run_source = obj.app_workflow_run_source
     attrs.app_workflow_run_temporal_run_id = obj.app_workflow_run_temporal_run_id
     attrs.app_workflow_run_is_test_run = obj.app_workflow_run_is_test_run
     attrs.app_workflow_run_dag = obj.app_workflow_run_dag
@@ -660,6 +684,7 @@ def _extract_app_workflow_run_attrs(attrs: AppWorkflowRunAttributes) -> dict:
     result["app_workflow_run_status"] = attrs.app_workflow_run_status
     result["app_workflow_run_started_at"] = attrs.app_workflow_run_started_at
     result["app_workflow_run_started_by"] = attrs.app_workflow_run_started_by
+    result["app_workflow_run_stopped_by"] = attrs.app_workflow_run_stopped_by
     result["app_workflow_run_completed_at"] = attrs.app_workflow_run_completed_at
     result["app_workflow_run_outputs"] = attrs.app_workflow_run_outputs
     result["app_workflow_run_steps"] = attrs.app_workflow_run_steps
@@ -679,6 +704,10 @@ def _extract_app_workflow_run_attrs(attrs: AppWorkflowRunAttributes) -> dict:
     result["app_workflow_run_app_workflow_version"] = (
         attrs.app_workflow_run_app_workflow_version
     )
+    result["app_workflow_run_workflow_ownership"] = (
+        attrs.app_workflow_run_workflow_ownership
+    )
+    result["app_workflow_run_source"] = attrs.app_workflow_run_source
     result["app_workflow_run_temporal_run_id"] = attrs.app_workflow_run_temporal_run_id
     result["app_workflow_run_is_test_run"] = attrs.app_workflow_run_is_test_run
     result["app_workflow_run_dag"] = attrs.app_workflow_run_dag
@@ -813,6 +842,9 @@ AppWorkflowRun.APP_WORKFLOW_RUN_STARTED_AT = NumericField(
 AppWorkflowRun.APP_WORKFLOW_RUN_STARTED_BY = KeywordField(
     "appWorkflowRunStartedBy", "appWorkflowRunStartedBy"
 )
+AppWorkflowRun.APP_WORKFLOW_RUN_STOPPED_BY = KeywordField(
+    "appWorkflowRunStoppedBy", "appWorkflowRunStoppedBy"
+)
 AppWorkflowRun.APP_WORKFLOW_RUN_COMPLETED_AT = NumericField(
     "appWorkflowRunCompletedAt", "appWorkflowRunCompletedAt"
 )
@@ -839,6 +871,12 @@ AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_SLUG = KeywordField(
 )
 AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_VERSION = KeywordField(
     "appWorkflowRunAppWorkflowVersion", "appWorkflowRunAppWorkflowVersion"
+)
+AppWorkflowRun.APP_WORKFLOW_RUN_WORKFLOW_OWNERSHIP = KeywordField(
+    "appWorkflowRunWorkflowOwnership", "appWorkflowRunWorkflowOwnership"
+)
+AppWorkflowRun.APP_WORKFLOW_RUN_SOURCE = KeywordField(
+    "appWorkflowRunSource", "appWorkflowRunSource"
 )
 AppWorkflowRun.APP_WORKFLOW_RUN_TEMPORAL_RUN_ID = KeywordField(
     "appWorkflowRunTemporalRunId", "appWorkflowRunTemporalRunId"

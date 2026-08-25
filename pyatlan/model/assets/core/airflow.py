@@ -64,6 +64,12 @@ class Airflow(Catalog):
     """
     Type of the run.
     """
+    AIRFLOW_RUN_ERROR_MESSAGE: ClassVar[KeywordField] = KeywordField(
+        "airflowRunErrorMessage", "airflowRunErrorMessage"
+    )
+    """
+    Error message of the run in Airflow, populated when the run fails.
+    """
     AIRFLOW_RUN_START_TIME: ClassVar[NumericField] = NumericField(
         "airflowRunStartTime", "airflowRunStartTime"
     )
@@ -96,6 +102,7 @@ class Airflow(Catalog):
         "airflow_run_open_lineage_version",
         "airflow_run_name",
         "airflow_run_type",
+        "airflow_run_error_message",
         "airflow_run_start_time",
         "airflow_run_end_time",
         "airflow_run_open_lineage_state",
@@ -161,6 +168,20 @@ class Airflow(Catalog):
         self.attributes.airflow_run_type = airflow_run_type
 
     @property
+    def airflow_run_error_message(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_run_error_message
+        )
+
+    @airflow_run_error_message.setter
+    def airflow_run_error_message(self, airflow_run_error_message: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_run_error_message = airflow_run_error_message
+
+    @property
     def airflow_run_start_time(self) -> Optional[datetime]:
         return (
             None if self.attributes is None else self.attributes.airflow_run_start_time
@@ -222,6 +243,7 @@ class Airflow(Catalog):
         )
         airflow_run_name: Optional[str] = Field(default=None, description="")
         airflow_run_type: Optional[str] = Field(default=None, description="")
+        airflow_run_error_message: Optional[str] = Field(default=None, description="")
         airflow_run_start_time: Optional[datetime] = Field(default=None, description="")
         airflow_run_end_time: Optional[datetime] = Field(default=None, description="")
         airflow_run_open_lineage_state: Optional[OpenLineageRunState] = Field(

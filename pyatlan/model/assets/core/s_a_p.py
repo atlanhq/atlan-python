@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
 
-from .core.catalog import Catalog
+from .catalog import Catalog
 
 
 class SAP(Catalog):
@@ -55,7 +55,7 @@ class SAP(Catalog):
     """
     SAP_DATA_TYPE: ClassVar[KeywordField] = KeywordField("sapDataType", "sapDataType")
     """
-    SAP-specific data types
+    SAP-specific data types.
     """
     SAP_FIELD_COUNT: ClassVar[NumericField] = NumericField(
         "sapFieldCount", "sapFieldCount"
@@ -167,6 +167,3 @@ class SAP(Catalog):
             "so are described in the sub-types of this schema."
         ),
     )
-
-
-SAP.Attributes.update_forward_refs()

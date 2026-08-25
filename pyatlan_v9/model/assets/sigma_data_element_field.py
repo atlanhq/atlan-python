@@ -113,7 +113,7 @@ class SigmaDataElementField(Asset):
     """Whether this field is hidden (true) or not (false)."""
 
     sigma_data_element_field_formula: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Formula or expression that defines this field."""
 
     sigma_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the workbook in which this asset exists."""
@@ -397,7 +397,7 @@ class SigmaDataElementFieldAttributes(AssetAttributes):
     """Whether this field is hidden (true) or not (false)."""
 
     sigma_data_element_field_formula: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Formula or expression that defines this field."""
 
     sigma_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the workbook in which this asset exists."""

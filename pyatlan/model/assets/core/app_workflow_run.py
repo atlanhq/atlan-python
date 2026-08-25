@@ -9,7 +9,11 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AppWorkflowRunStatus
+from pyatlan.model.enums import (
+    AppWorkflowRunStatus,
+    AtlanAppWorkflowOwnership,
+    AtlanAppWorkflowSource,
+)
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -61,6 +65,12 @@ class AppWorkflowRun(Catalog):
     )
     """
     Username of the user who started the workflow run.
+    """
+    APP_WORKFLOW_RUN_STOPPED_BY: ClassVar[KeywordField] = KeywordField(
+        "appWorkflowRunStoppedBy", "appWorkflowRunStoppedBy"
+    )
+    """
+    Username of the user who stopped the workflow run.
     """
     APP_WORKFLOW_RUN_COMPLETED_AT: ClassVar[NumericField] = NumericField(
         "appWorkflowRunCompletedAt", "appWorkflowRunCompletedAt"
@@ -117,6 +127,18 @@ class AppWorkflowRun(Catalog):
     """
     Version of the parent workflow.
     """
+    APP_WORKFLOW_RUN_WORKFLOW_OWNERSHIP: ClassVar[KeywordField] = KeywordField(
+        "appWorkflowRunWorkflowOwnership", "appWorkflowRunWorkflowOwnership"
+    )
+    """
+    Ownership of the parent workflow at execution time: SYSTEM (managed by Atlan) or USER (user-authored). Denormalized from the workflow so run-history listings can filter without a join.
+    """  # noqa: E501
+    APP_WORKFLOW_RUN_SOURCE: ClassVar[KeywordField] = KeywordField(
+        "appWorkflowRunSource", "appWorkflowRunSource"
+    )
+    """
+    Product surface of the parent workflow (marketplace, enrichment_studio, context_studio), denormalized onto the run and emitted as a metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028).
+    """  # noqa: E501
     APP_WORKFLOW_RUN_TEMPORAL_RUN_ID: ClassVar[KeywordField] = KeywordField(
         "appWorkflowRunTemporalRunId", "appWorkflowRunTemporalRunId"
     )
@@ -152,6 +174,7 @@ class AppWorkflowRun(Catalog):
         "app_workflow_run_status",
         "app_workflow_run_started_at",
         "app_workflow_run_started_by",
+        "app_workflow_run_stopped_by",
         "app_workflow_run_completed_at",
         "app_workflow_run_outputs",
         "app_workflow_run_steps",
@@ -161,6 +184,8 @@ class AppWorkflowRun(Catalog):
         "app_workflow_run_app_workflow_name",
         "app_workflow_run_app_workflow_slug",
         "app_workflow_run_app_workflow_version",
+        "app_workflow_run_workflow_ownership",
+        "app_workflow_run_source",
         "app_workflow_run_temporal_run_id",
         "app_workflow_run_is_test_run",
         "app_workflow_run_dag",
@@ -223,6 +248,20 @@ class AppWorkflowRun(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.app_workflow_run_started_by = app_workflow_run_started_by
+
+    @property
+    def app_workflow_run_stopped_by(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.app_workflow_run_stopped_by
+        )
+
+    @app_workflow_run_stopped_by.setter
+    def app_workflow_run_stopped_by(self, app_workflow_run_stopped_by: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.app_workflow_run_stopped_by = app_workflow_run_stopped_by
 
     @property
     def app_workflow_run_completed_at(self) -> Optional[datetime]:
@@ -375,6 +414,40 @@ class AppWorkflowRun(Catalog):
         )
 
     @property
+    def app_workflow_run_workflow_ownership(
+        self,
+    ) -> Optional[AtlanAppWorkflowOwnership]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.app_workflow_run_workflow_ownership
+        )
+
+    @app_workflow_run_workflow_ownership.setter
+    def app_workflow_run_workflow_ownership(
+        self, app_workflow_run_workflow_ownership: Optional[AtlanAppWorkflowOwnership]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.app_workflow_run_workflow_ownership = (
+            app_workflow_run_workflow_ownership
+        )
+
+    @property
+    def app_workflow_run_source(self) -> Optional[AtlanAppWorkflowSource]:
+        return (
+            None if self.attributes is None else self.attributes.app_workflow_run_source
+        )
+
+    @app_workflow_run_source.setter
+    def app_workflow_run_source(
+        self, app_workflow_run_source: Optional[AtlanAppWorkflowSource]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.app_workflow_run_source = app_workflow_run_source
+
+    @property
     def app_workflow_run_temporal_run_id(self) -> Optional[str]:
         return (
             None
@@ -455,6 +528,7 @@ class AppWorkflowRun(Catalog):
             default=None, description=""
         )
         app_workflow_run_started_by: Optional[str] = Field(default=None, description="")
+        app_workflow_run_stopped_by: Optional[str] = Field(default=None, description="")
         app_workflow_run_completed_at: Optional[datetime] = Field(
             default=None, description=""
         )
@@ -478,6 +552,12 @@ class AppWorkflowRun(Catalog):
             default=None, description=""
         )
         app_workflow_run_app_workflow_version: Optional[str] = Field(
+            default=None, description=""
+        )
+        app_workflow_run_workflow_ownership: Optional[AtlanAppWorkflowOwnership] = (
+            Field(default=None, description="")
+        )
+        app_workflow_run_source: Optional[AtlanAppWorkflowSource] = Field(
             default=None, description=""
         )
         app_workflow_run_temporal_run_id: Optional[str] = Field(

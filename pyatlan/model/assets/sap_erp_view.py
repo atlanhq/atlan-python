@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
-from .s_a_p import SAP
+from .core.s_a_p import SAP
 
 
 class SapErpView(SAP):
@@ -39,7 +39,7 @@ class SapErpView(SAP):
         "sapErpViewDefinition", "sapErpViewDefinition"
     )
     """
-    Specifies the definition of the SAP ERP View
+    Specifies the definition of the SAP ERP View.
     """
 
     SAP_ERP_COMPONENT: ClassVar[RelationField] = RelationField("sapErpComponent")

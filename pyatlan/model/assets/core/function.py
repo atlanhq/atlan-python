@@ -128,6 +128,12 @@ class Function(SQL):
     """
     TBC
     """
+    COSMOS_MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBCollection"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "function_definition",
@@ -146,6 +152,7 @@ class Function(SQL):
         "function_installed_packages",
         "sql_processes",
         "function_schema",
+        "cosmos_mongo_d_b_collection",
     ]
 
     @property
@@ -326,6 +333,22 @@ class Function(SQL):
             self.attributes = self.Attributes()
         self.attributes.function_schema = function_schema
 
+    @property
+    def cosmos_mongo_d_b_collection(self) -> Optional[CosmosMongoDBCollection]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_collection
+        )
+
+    @cosmos_mongo_d_b_collection.setter
+    def cosmos_mongo_d_b_collection(
+        self, cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_collection = cosmos_mongo_d_b_collection
+
     class Attributes(SQL.Attributes):
         function_definition: Optional[str] = Field(default=None, description="")
         function_return_type: Optional[str] = Field(default=None, description="")
@@ -349,6 +372,9 @@ class Function(SQL):
         function_schema: Optional[Schema] = Field(
             default=None, description=""
         )  # relationship
+        cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: Function.Attributes = Field(
         default_factory=lambda: Function.Attributes(),
@@ -360,5 +386,6 @@ class Function(SQL):
     )
 
 
+from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection  # noqa: E402, F401
 from .process import Process  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401

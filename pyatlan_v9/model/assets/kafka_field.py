@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -73,6 +73,13 @@ class KafkaField(Asset):
     KAFKA_FIELD_ORDER: ClassVar[Any] = None
     KAFKA_TOPIC_QUALIFIED_NAME: ClassVar[Any] = None
     KAFKA_FIELD_SCHEMA_TYPE: ClassVar[Any] = None
+    KAFKA_PARENT_FIELD_QUALIFIED_NAME: ClassVar[Any] = None
+    KAFKA_PARENT_FIELD_NAME: ClassVar[Any] = None
+    KAFKA_FIELD_DEPTH_LEVEL: ClassVar[Any] = None
+    KAFKA_NESTED_FIELD_COUNT: ClassVar[Any] = None
+    KAFKA_NESTED_FIELD_ORDER: ClassVar[Any] = None
+    KAFKA_FIELD_HIERARCHIES: ClassVar[Any] = None
+    KAFKA_FIELD_NESTED_ORDER: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -92,6 +99,8 @@ class KafkaField(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KAFKA_TOPIC: ClassVar[Any] = None
+    KAFKA_NESTED_FIELDS: ClassVar[Any] = None
+    KAFKA_PARENT_FIELD: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -128,6 +137,27 @@ class KafkaField(Asset):
 
     kafka_field_schema_type: Union[str, None, UnsetType] = UNSET
     """Type of schema from which this field is derived, for example: key or value."""
+
+    kafka_parent_field_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the parent KafkaField in which this field is nested."""
+
+    kafka_parent_field_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the parent KafkaField in which this field is nested."""
+
+    kafka_field_depth_level: Union[int, None, UnsetType] = UNSET
+    """Level of nesting of this field (1 = direct child of topic schema, 2 = nested one level, etc.)."""
+
+    kafka_nested_field_count: Union[int, None, UnsetType] = UNSET
+    """Number of KafkaField assets directly nested within this field."""
+
+    kafka_nested_field_order: Union[str, None, UnsetType] = UNSET
+    """Order (position) in which this field appears within its parent nested field (nest level starts at 1)."""
+
+    kafka_field_hierarchies: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    """List of top-level upstream nested fields."""
+
+    kafka_field_nested_order: Union[str, None, UnsetType] = UNSET
+    """Order (position) in which this field appears within its parent nested field, as a dotted ordinal path such as '1.2.10'. Carries the same value as kafkaNestedFieldOrder, which it supersedes; sortable in schema-declaration order via its version sub-field."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -191,6 +221,12 @@ class KafkaField(Asset):
 
     kafka_topic: Union[RelatedKafkaTopic, None, UnsetType] = UNSET
     """Kafka topic in which this field is defined."""
+
+    kafka_nested_fields: Union[List[RelatedKafkaField], None, UnsetType] = UNSET
+    """KafkaField assets nested within this field."""
+
+    kafka_parent_field: Union[RelatedKafkaField, None, UnsetType] = UNSET
+    """Parent KafkaField containing this nested field."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -396,6 +432,27 @@ class KafkaFieldAttributes(AssetAttributes):
     kafka_field_schema_type: Union[str, None, UnsetType] = UNSET
     """Type of schema from which this field is derived, for example: key or value."""
 
+    kafka_parent_field_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the parent KafkaField in which this field is nested."""
+
+    kafka_parent_field_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the parent KafkaField in which this field is nested."""
+
+    kafka_field_depth_level: Union[int, None, UnsetType] = UNSET
+    """Level of nesting of this field (1 = direct child of topic schema, 2 = nested one level, etc.)."""
+
+    kafka_nested_field_count: Union[int, None, UnsetType] = UNSET
+    """Number of KafkaField assets directly nested within this field."""
+
+    kafka_nested_field_order: Union[str, None, UnsetType] = UNSET
+    """Order (position) in which this field appears within its parent nested field (nest level starts at 1)."""
+
+    kafka_field_hierarchies: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    """List of top-level upstream nested fields."""
+
+    kafka_field_nested_order: Union[str, None, UnsetType] = UNSET
+    """Order (position) in which this field appears within its parent nested field, as a dotted ordinal path such as '1.2.10'. Carries the same value as kafkaNestedFieldOrder, which it supersedes; sortable in schema-declaration order via its version sub-field."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -462,6 +519,12 @@ class KafkaFieldRelationshipAttributes(AssetRelationshipAttributes):
 
     kafka_topic: Union[RelatedKafkaTopic, None, UnsetType] = UNSET
     """Kafka topic in which this field is defined."""
+
+    kafka_nested_fields: Union[List[RelatedKafkaField], None, UnsetType] = UNSET
+    """KafkaField assets nested within this field."""
+
+    kafka_parent_field: Union[RelatedKafkaField, None, UnsetType] = UNSET
+    """Parent KafkaField containing this nested field."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -550,6 +613,8 @@ _KAFKA_FIELD_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "kafka_topic",
+    "kafka_nested_fields",
+    "kafka_parent_field",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -578,6 +643,13 @@ def _populate_kafka_field_attrs(attrs: KafkaFieldAttributes, obj: KafkaField) ->
     attrs.kafka_field_order = obj.kafka_field_order
     attrs.kafka_topic_qualified_name = obj.kafka_topic_qualified_name
     attrs.kafka_field_schema_type = obj.kafka_field_schema_type
+    attrs.kafka_parent_field_qualified_name = obj.kafka_parent_field_qualified_name
+    attrs.kafka_parent_field_name = obj.kafka_parent_field_name
+    attrs.kafka_field_depth_level = obj.kafka_field_depth_level
+    attrs.kafka_nested_field_count = obj.kafka_nested_field_count
+    attrs.kafka_nested_field_order = obj.kafka_nested_field_order
+    attrs.kafka_field_hierarchies = obj.kafka_field_hierarchies
+    attrs.kafka_field_nested_order = obj.kafka_field_nested_order
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -591,6 +663,15 @@ def _extract_kafka_field_attrs(attrs: KafkaFieldAttributes) -> dict:
     result["kafka_field_order"] = attrs.kafka_field_order
     result["kafka_topic_qualified_name"] = attrs.kafka_topic_qualified_name
     result["kafka_field_schema_type"] = attrs.kafka_field_schema_type
+    result["kafka_parent_field_qualified_name"] = (
+        attrs.kafka_parent_field_qualified_name
+    )
+    result["kafka_parent_field_name"] = attrs.kafka_parent_field_name
+    result["kafka_field_depth_level"] = attrs.kafka_field_depth_level
+    result["kafka_nested_field_count"] = attrs.kafka_nested_field_count
+    result["kafka_nested_field_order"] = attrs.kafka_nested_field_order
+    result["kafka_field_hierarchies"] = attrs.kafka_field_hierarchies
+    result["kafka_field_nested_order"] = attrs.kafka_field_nested_order
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -699,6 +780,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
 KafkaField.KAFKA_FIELD_DATA_TYPE = KeywordTextField(
@@ -719,6 +801,27 @@ KafkaField.KAFKA_TOPIC_QUALIFIED_NAME = KeywordField(
 )
 KafkaField.KAFKA_FIELD_SCHEMA_TYPE = KeywordField(
     "kafkaFieldSchemaType", "kafkaFieldSchemaType"
+)
+KafkaField.KAFKA_PARENT_FIELD_QUALIFIED_NAME = TextField(
+    "kafkaParentFieldQualifiedName", "kafkaParentFieldQualifiedName"
+)
+KafkaField.KAFKA_PARENT_FIELD_NAME = TextField(
+    "kafkaParentFieldName", "kafkaParentFieldName"
+)
+KafkaField.KAFKA_FIELD_DEPTH_LEVEL = NumericField(
+    "kafkaFieldDepthLevel", "kafkaFieldDepthLevel"
+)
+KafkaField.KAFKA_NESTED_FIELD_COUNT = NumericField(
+    "kafkaNestedFieldCount", "kafkaNestedFieldCount"
+)
+KafkaField.KAFKA_NESTED_FIELD_ORDER = TextField(
+    "kafkaNestedFieldOrder", "kafkaNestedFieldOrder"
+)
+KafkaField.KAFKA_FIELD_HIERARCHIES = KeywordField(
+    "kafkaFieldHierarchies", "kafkaFieldHierarchies"
+)
+KafkaField.KAFKA_FIELD_NESTED_ORDER = KeywordTextField(
+    "kafkaFieldNestedOrder", "kafkaFieldNestedOrder", "kafkaFieldNestedOrder.text"
 )
 KafkaField.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
@@ -743,6 +846,8 @@ KafkaField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 )
 KafkaField.MEANINGS = RelationField("meanings")
 KafkaField.KAFKA_TOPIC = RelationField("kafkaTopic")
+KafkaField.KAFKA_NESTED_FIELDS = RelationField("kafkaNestedFields")
+KafkaField.KAFKA_PARENT_FIELD = RelationField("kafkaParentField")
 KafkaField.MC_MONITORS = RelationField("mcMonitors")
 KafkaField.MC_INCIDENTS = RelationField("mcIncidents")
 KafkaField.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

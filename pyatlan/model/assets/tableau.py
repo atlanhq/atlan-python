@@ -9,6 +9,7 @@ from typing import ClassVar, List, Optional, Set
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.structs import TableauReadCountWindow
 
 from .core.b_i import BI
 
@@ -35,9 +36,16 @@ class Tableau(BI):
     """
     Array of qualified names representing the project hierarchy for this Tableau asset.
     """
+    TABLEAU_SOURCE_READ_COUNTS: ClassVar[KeywordField] = KeywordField(
+        "tableauSourceReadCounts", "tableauSourceReadCounts"
+    )
+    """
+    Read/view counts on this asset bucketed by time window, as reported by Tableau's Content Exploration API.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "tableau_project_hierarchy_qualified_names",
+        "tableau_source_read_counts",
     ]
 
     @property
@@ -58,8 +66,27 @@ class Tableau(BI):
             tableau_project_hierarchy_qualified_names
         )
 
+    @property
+    def tableau_source_read_counts(self) -> Optional[List[TableauReadCountWindow]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_source_read_counts
+        )
+
+    @tableau_source_read_counts.setter
+    def tableau_source_read_counts(
+        self, tableau_source_read_counts: Optional[List[TableauReadCountWindow]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_source_read_counts = tableau_source_read_counts
+
     class Attributes(BI.Attributes):
         tableau_project_hierarchy_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        tableau_source_read_counts: Optional[List[TableauReadCountWindow]] = Field(
             default=None, description=""
         )
 

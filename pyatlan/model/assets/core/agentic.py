@@ -4,9 +4,12 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
+
+from pyatlan.model.enums import AgenticSource
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
 
 from .catalog import Catalog
 
@@ -27,4 +30,53 @@ class Agentic(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convenience_properties: ClassVar[List[str]] = []
+    AGENTIC_VERSION: ClassVar[NumericField] = NumericField(
+        "agenticVersion", "agenticVersion"
+    )
+    """
+    Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple.
+    """
+    AGENTIC_SOURCE: ClassVar[KeywordField] = KeywordField(
+        "agenticSource", "agenticSource"
+    )
+    """
+    Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028).
+    """  # noqa: E501
+
+    _convenience_properties: ClassVar[List[str]] = [
+        "agentic_version",
+        "agentic_source",
+    ]
+
+    @property
+    def agentic_version(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.agentic_version
+
+    @agentic_version.setter
+    def agentic_version(self, agentic_version: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agentic_version = agentic_version
+
+    @property
+    def agentic_source(self) -> Optional[AgenticSource]:
+        return None if self.attributes is None else self.attributes.agentic_source
+
+    @agentic_source.setter
+    def agentic_source(self, agentic_source: Optional[AgenticSource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agentic_source = agentic_source
+
+    class Attributes(Catalog.Attributes):
+        agentic_version: Optional[int] = Field(default=None, description="")
+        agentic_source: Optional[AgenticSource] = Field(default=None, description="")
+
+    attributes: Agentic.Attributes = Field(
+        default_factory=lambda: Agentic.Attributes(),
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
+    )

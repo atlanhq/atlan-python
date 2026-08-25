@@ -59,6 +59,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereReplicationFlow
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeAIModelContext,
@@ -175,6 +176,7 @@ class IcebergNamespace(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_REPLICATION_FLOWS: ClassVar[Any] = None
     CALCULATION_VIEWS: ClassVar[Any] = None
     FUNCTIONS: ClassVar[Any] = None
     MATERIALISED_VIEWS: ClassVar[Any] = None
@@ -182,6 +184,7 @@ class IcebergNamespace(Asset):
     DATABASE: ClassVar[Any] = None
     TABLES: ClassVar[Any] = None
     VIEWS: ClassVar[Any] = None
+    SQL_DATABASES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_DYNAMIC_TABLES: ClassVar[Any] = None
     SNOWFLAKE_PIPES: ClassVar[Any] = None
@@ -448,6 +451,11 @@ class IcebergNamespace(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_replication_flows: Union[
+        List[RelatedSapDatasphereReplicationFlow], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
+
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
 
@@ -468,6 +476,9 @@ class IcebergNamespace(Asset):
 
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
+
+    sql_databases: Union[List[RelatedDatabase], None, UnsetType] = UNSET
+    """Databases to which this schema belongs."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -914,6 +925,11 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_replication_flows: Union[
+        List[RelatedSapDatasphereReplicationFlow], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
+
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
 
@@ -934,6 +950,9 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
 
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
+
+    sql_databases: Union[List[RelatedDatabase], None, UnsetType] = UNSET
+    """Databases to which this schema belongs."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -1056,6 +1075,7 @@ _ICEBERG_NAMESPACE_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_replication_flows",
     "calculation_views",
     "functions",
     "materialised_views",
@@ -1063,6 +1083,7 @@ _ICEBERG_NAMESPACE_REL_FIELDS: List[str] = [
     "database",
     "tables",
     "views",
+    "sql_databases",
     "schema_registry_subjects",
     "snowflake_dynamic_tables",
     "snowflake_pipes",
@@ -1451,6 +1472,9 @@ IcebergNamespace.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationship
 IcebergNamespace.FILES = RelationField("files")
 IcebergNamespace.LINKS = RelationField("links")
 IcebergNamespace.README = RelationField("readme")
+IcebergNamespace.SAP_DATASPHERE_REPLICATION_FLOWS = RelationField(
+    "sapDatasphereReplicationFlows"
+)
 IcebergNamespace.CALCULATION_VIEWS = RelationField("calculationViews")
 IcebergNamespace.FUNCTIONS = RelationField("functions")
 IcebergNamespace.MATERIALISED_VIEWS = RelationField("materialisedViews")
@@ -1458,6 +1482,7 @@ IcebergNamespace.PROCEDURES = RelationField("procedures")
 IcebergNamespace.DATABASE = RelationField("database")
 IcebergNamespace.TABLES = RelationField("tables")
 IcebergNamespace.VIEWS = RelationField("views")
+IcebergNamespace.SQL_DATABASES = RelationField("sqlDatabases")
 IcebergNamespace.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 IcebergNamespace.SNOWFLAKE_DYNAMIC_TABLES = RelationField("snowflakeDynamicTables")
 IcebergNamespace.SNOWFLAKE_PIPES = RelationField("snowflakePipes")
