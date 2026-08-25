@@ -63,7 +63,6 @@ from pyatlan_v9.client.token import V9TokenClient
 from pyatlan_v9.client.transport import PyatlanSyncTransport
 from pyatlan_v9.client.typedef import V9TypeDefClient
 from pyatlan_v9.client.user import V9UserClient
-from pyatlan_v9.client.workflow import V9WorkflowClient
 from pyatlan_v9.model.atlan_image import AtlanImage
 from pyatlan_v9.model.core import AtlanRequest, AtlanResponse
 from pyatlan_v9.model.enums import AtlanTypeCategory
@@ -257,10 +256,6 @@ class AtlanClient(msgspec.Struct, kw_only=True):
     @property
     def search_log(self) -> V9SearchLogClient:
         return self._get_client("search_log", V9SearchLogClient)
-
-    @property
-    def workflow(self) -> V9WorkflowClient:
-        return self._get_client("workflow", V9WorkflowClient)
 
     @property
     def credentials(self) -> V9CredentialClient:

@@ -65,7 +65,6 @@ from pyatlan_v9.client.aio.task import V9AsyncTaskClient
 from pyatlan_v9.client.aio.token import V9AsyncTokenClient
 from pyatlan_v9.client.aio.typedef import V9AsyncTypeDefClient
 from pyatlan_v9.client.aio.user import V9AsyncUserClient
-from pyatlan_v9.client.aio.workflow import V9AsyncWorkflowClient
 from pyatlan_v9.client.transport import PyatlanAsyncTransport
 from pyatlan_v9.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
 from pyatlan_v9.model.atlan_image import AtlanImage
@@ -303,10 +302,6 @@ class AsyncAtlanClient(msgspec.Struct, kw_only=True):
     @property
     def user(self) -> V9AsyncUserClient:
         return self._get_client("user", V9AsyncUserClient)
-
-    @property
-    def workflow(self) -> V9AsyncWorkflowClient:
-        return self._get_client("workflow", V9AsyncWorkflowClient)
 
     # ------------------------------------------------------------------
     # Cache properties (async caches)
