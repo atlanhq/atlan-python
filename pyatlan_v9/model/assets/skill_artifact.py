@@ -66,8 +66,10 @@ class SkillArtifact(Asset):
     A file or data object associated with a skill. Extends Artifact for common artifact attributes (version, fileType, filePath). Linked to skills via containment relationship.
     """
 
+    SKILL_ARTIFACT_CONTENT: ClassVar[Any] = None
     ARTIFACT_VERSION: ClassVar[Any] = None
     AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     FILE_TYPE: ClassVar[Any] = None
     FILE_PATH: ClassVar[Any] = None
@@ -110,11 +112,17 @@ class SkillArtifact(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    skill_artifact_content: Union[str, None, UnsetType] = UNSET
+    """Full textual body of this skill artifact file (for example, the markdown of SKILL.md or the source of a script). Stored per-artifact because a skill folder contains many files, each with distinct content."""
+
     artifact_version: Union[str, None, UnsetType] = UNSET
     """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -370,11 +378,17 @@ class SkillArtifact(Asset):
 class SkillArtifactAttributes(AssetAttributes):
     """SkillArtifact-specific attributes for nested API format."""
 
+    skill_artifact_content: Union[str, None, UnsetType] = UNSET
+    """Full textual body of this skill artifact file (for example, the markdown of SKILL.md or the source of a script). Stored per-artifact because a skill folder contains many files, each with distinct content."""
+
     artifact_version: Union[str, None, UnsetType] = UNSET
     """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -576,8 +590,10 @@ def _populate_skill_artifact_attrs(
 ) -> None:
     """Populate SkillArtifact-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.skill_artifact_content = obj.skill_artifact_content
     attrs.artifact_version = obj.artifact_version
     attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.file_type = obj.file_type
     attrs.file_path = obj.file_path
@@ -591,8 +607,10 @@ def _populate_skill_artifact_attrs(
 def _extract_skill_artifact_attrs(attrs: SkillArtifactAttributes) -> dict:
     """Extract all SkillArtifact attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
+    result["skill_artifact_content"] = attrs.skill_artifact_content
     result["artifact_version"] = attrs.artifact_version
     result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["file_type"] = attrs.file_type
     result["file_path"] = attrs.file_path
@@ -711,10 +729,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
     NumericField,
     RelationField,
+    TextField,
 )
 
+SkillArtifact.SKILL_ARTIFACT_CONTENT = TextField(
+    "skillArtifactContent", "skillArtifactContent"
+)
 SkillArtifact.ARTIFACT_VERSION = KeywordField("artifactVersion", "artifactVersion")
 SkillArtifact.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+SkillArtifact.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
 SkillArtifact.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )

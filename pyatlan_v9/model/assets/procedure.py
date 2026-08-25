@@ -41,6 +41,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .context_related import RelatedContextRepository
+from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -131,6 +132,7 @@ class Procedure(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
+    COSMOS_MONGO_DB_COLLECTION: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -327,6 +329,11 @@ class Procedure(Asset):
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
+
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    """Cosmos collection in which this procedure exists."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -845,6 +852,11 @@ class ProcedureRelationshipAttributes(AssetRelationshipAttributes):
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    """Cosmos collection in which this procedure exists."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -1005,6 +1017,7 @@ _PROCEDURE_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "context_repositories",
+    "cosmos_mongo_db_collection",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -1380,6 +1393,7 @@ Procedure.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Procedure.APPLICATION = RelationField("application")
 Procedure.APPLICATION_FIELD = RelationField("applicationField")
 Procedure.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+Procedure.COSMOS_MONGO_DB_COLLECTION = RelationField("cosmosMongoDBCollection")
 Procedure.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 Procedure.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Procedure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")

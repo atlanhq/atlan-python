@@ -72,9 +72,11 @@ class Agent(Asset):
     AGENT_SYSTEM_PROMPT: ClassVar[Any] = None
     AGENT_LLM_CONFIG: ClassVar[Any] = None
     AGENT_MCP_SERVERS: ClassVar[Any] = None
+    AGENT_SCHEDULES: ClassVar[Any] = None
     AGENT_SKILL_NAMES: ClassVar[Any] = None
     AGENT_SKILL_QUALIFIED_NAMES: ClassVar[Any] = None
     AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     AGENT_SKILLS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -128,6 +130,9 @@ class Agent(Asset):
     agent_mcp_servers: Union[str, None, UnsetType] = UNSET
     """JSON list of MCPServerConfig entries (name, url, headers, enabled)."""
 
+    agent_schedules: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized agent schedule configuration, including kickoff message, cron expression, timezone, version policy, status, and Temporal schedule identifier."""
+
     agent_skill_names: Union[List[str], None, UnsetType] = UNSET
     """Denormalized list of names of the skills bound to this agent version."""
 
@@ -136,6 +141,9 @@ class Agent(Asset):
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -385,6 +393,9 @@ class AgentAttributes(AssetAttributes):
     agent_mcp_servers: Union[str, None, UnsetType] = UNSET
     """JSON list of MCPServerConfig entries (name, url, headers, enabled)."""
 
+    agent_schedules: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized agent schedule configuration, including kickoff message, cron expression, timezone, version policy, status, and Temporal schedule identifier."""
+
     agent_skill_names: Union[List[str], None, UnsetType] = UNSET
     """Denormalized list of names of the skills bound to this agent version."""
 
@@ -393,6 +404,9 @@ class AgentAttributes(AssetAttributes):
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -575,9 +589,11 @@ def _populate_agent_attrs(attrs: AgentAttributes, obj: Agent) -> None:
     attrs.agent_system_prompt = obj.agent_system_prompt
     attrs.agent_llm_config = obj.agent_llm_config
     attrs.agent_mcp_servers = obj.agent_mcp_servers
+    attrs.agent_schedules = obj.agent_schedules
     attrs.agent_skill_names = obj.agent_skill_names
     attrs.agent_skill_qualified_names = obj.agent_skill_qualified_names
     attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -590,9 +606,11 @@ def _extract_agent_attrs(attrs: AgentAttributes) -> dict:
     result["agent_system_prompt"] = attrs.agent_system_prompt
     result["agent_llm_config"] = attrs.agent_llm_config
     result["agent_mcp_servers"] = attrs.agent_mcp_servers
+    result["agent_schedules"] = attrs.agent_schedules
     result["agent_skill_names"] = attrs.agent_skill_names
     result["agent_skill_qualified_names"] = attrs.agent_skill_qualified_names
     result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -706,11 +724,13 @@ Agent.AGENT_STATUS = KeywordField("agentStatus", "agentStatus")
 Agent.AGENT_SYSTEM_PROMPT = TextField("agentSystemPrompt", "agentSystemPrompt")
 Agent.AGENT_LLM_CONFIG = KeywordField("agentLlmConfig", "agentLlmConfig")
 Agent.AGENT_MCP_SERVERS = KeywordField("agentMcpServers", "agentMcpServers")
+Agent.AGENT_SCHEDULES = TextField("agentSchedules", "agentSchedules")
 Agent.AGENT_SKILL_NAMES = KeywordField("agentSkillNames", "agentSkillNames")
 Agent.AGENT_SKILL_QUALIFIED_NAMES = KeywordField(
     "agentSkillQualifiedNames", "agentSkillQualifiedNames"
 )
 Agent.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+Agent.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
 Agent.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Agent.AGENT_SKILLS = RelationField("agentSkills")
 Agent.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

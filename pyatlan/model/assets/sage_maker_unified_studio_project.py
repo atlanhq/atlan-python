@@ -10,6 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import SageMakerUnifiedStudioProjectStatus
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.structs import SageMakerUnifiedStudioSsoUser
 
 from .sage_maker_unified_studio import SageMakerUnifiedStudio
 
@@ -56,6 +57,12 @@ class SageMakerUnifiedStudioProject(SageMakerUnifiedStudio):
     """
     Amazon S3 location of the SageMaker Unified Studio project.
     """
+    SMUS_PROJECT_SSO_USERS: ClassVar[KeywordField] = KeywordField(
+        "smusProjectSsoUsers", "smusProjectSsoUsers"
+    )
+    """
+    SSO users associated with the SageMaker Unified Studio project, sourced from the source system. Each entry has `email`, `role` and optional `fullName` fields.
+    """  # noqa: E501
 
     SMUS_PUBLISHED_ASSETS: ClassVar[RelationField] = RelationField(
         "smusPublishedAssets"
@@ -75,6 +82,7 @@ class SageMakerUnifiedStudioProject(SageMakerUnifiedStudio):
         "smus_project_profile_name",
         "smus_project_role_arn",
         "smus_project_s3_location",
+        "smus_project_sso_users",
         "smus_published_assets",
         "smus_subscribed_assets",
     ]
@@ -132,6 +140,20 @@ class SageMakerUnifiedStudioProject(SageMakerUnifiedStudio):
         self.attributes.smus_project_s3_location = smus_project_s3_location
 
     @property
+    def smus_project_sso_users(self) -> Optional[List[SageMakerUnifiedStudioSsoUser]]:
+        return (
+            None if self.attributes is None else self.attributes.smus_project_sso_users
+        )
+
+    @smus_project_sso_users.setter
+    def smus_project_sso_users(
+        self, smus_project_sso_users: Optional[List[SageMakerUnifiedStudioSsoUser]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.smus_project_sso_users = smus_project_sso_users
+
+    @property
     def smus_published_assets(
         self,
     ) -> Optional[List[SageMakerUnifiedStudioPublishedAsset]]:
@@ -172,6 +194,9 @@ class SageMakerUnifiedStudioProject(SageMakerUnifiedStudio):
         smus_project_profile_name: Optional[str] = Field(default=None, description="")
         smus_project_role_arn: Optional[str] = Field(default=None, description="")
         smus_project_s3_location: Optional[str] = Field(default=None, description="")
+        smus_project_sso_users: Optional[List[SageMakerUnifiedStudioSsoUser]] = Field(
+            default=None, description=""
+        )
         smus_published_assets: Optional[List[SageMakerUnifiedStudioPublishedAsset]] = (
             Field(default=None, description="")
         )  # relationship
@@ -190,10 +215,10 @@ class SageMakerUnifiedStudioProject(SageMakerUnifiedStudio):
 
 
 from .sage_maker_unified_studio_published_asset import (
-    SageMakerUnifiedStudioPublishedAsset,  # noqa: E402, F401
-)
+    SageMakerUnifiedStudioPublishedAsset,
+)  # noqa: E402, F401
 from .sage_maker_unified_studio_subscribed_asset import (
-    SageMakerUnifiedStudioSubscribedAsset,  # noqa: E402, F401
-)
+    SageMakerUnifiedStudioSubscribedAsset,
+)  # noqa: E402, F401
 
 SageMakerUnifiedStudioProject.Attributes.update_forward_refs()

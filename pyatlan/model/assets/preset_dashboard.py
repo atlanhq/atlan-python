@@ -103,37 +103,37 @@ class PresetDashboard(Preset):
         )
     )
     """
-
+    
     """
     PRESET_DASHBOARD_CHANGED_BY_URL: ClassVar[KeywordField] = KeywordField(
         "presetDashboardChangedByURL", "presetDashboardChangedByURL"
     )
     """
-
+    
     """
     PRESET_DASHBOARD_IS_MANAGED_EXTERNALLY: ClassVar[BooleanField] = BooleanField(
         "presetDashboardIsManagedExternally", "presetDashboardIsManagedExternally"
     )
     """
-
+    
     """
     PRESET_DASHBOARD_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
         "presetDashboardIsPublished", "presetDashboardIsPublished"
     )
     """
-
+    
     """
     PRESET_DASHBOARD_THUMBNAIL_URL: ClassVar[KeywordField] = KeywordField(
         "presetDashboardThumbnailURL", "presetDashboardThumbnailURL"
     )
     """
-
+    
     """
     PRESET_DASHBOARD_CHART_COUNT: ClassVar[NumericField] = NumericField(
         "presetDashboardChartCount", "presetDashboardChartCount"
     )
     """
-
+    
     """
 
     PRESET_DATASETS: ClassVar[RelationField] = RelationField("presetDatasets")

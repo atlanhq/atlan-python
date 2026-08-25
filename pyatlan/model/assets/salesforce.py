@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordTextField, TextField
+from pyatlan.model.fields.atlan_fields import KeywordField, TextField
 
 from .saa_s import SaaS
 
@@ -35,9 +35,7 @@ class Salesforce(SaaS):
     """
     Fully-qualified name of the organization in Salesforce.
     """
-    API_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "apiName", "apiName.keyword", "apiName"
-    )
+    API_NAME: ClassVar[KeywordField] = KeywordField("apiName", "apiName.keyword")
     """
     Name of this asset in the Salesforce API.
     """

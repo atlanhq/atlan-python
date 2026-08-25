@@ -224,7 +224,7 @@ class Column(SQL):
     Order (position) in which this column appears in the table (starting at 1).
     """
     NESTED_COLUMN_ORDER: ClassVar[KeywordField] = KeywordField(
-        "nestedColumnOrder", "nestedColumnOrder.order"
+        "nestedColumnOrder", "nestedColumnOrder"
     )
     """
     Order (position) in which this column appears in the nested Column (nest level starts at 1).

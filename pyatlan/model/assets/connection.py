@@ -26,13 +26,6 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.utils import init_guid, validate_required_fields
 
-from .core.asset import Asset
-
-if TYPE_CHECKING:
-    from pyatlan.client.aio.client import AsyncAtlanClient
-    from pyatlan.client.atlan import AtlanClient
-
-
 #: Allowed characters for the connector-type slug embedded in
 #: ``connectionQualifiedName`` (the ``{slug}`` in
 #: ``default/{slug}/{epoch}``). Lower-case alphanumerics and hyphens
@@ -66,6 +59,13 @@ def _validate_connector_type_value(connector_type: AtlanConnectorType) -> None:
     value = connector_type.value
     if not _CONNECTOR_TYPE_VALUE_PATTERN.match(value):
         raise ErrorCode.INVALID_CONNECTION_QN.exception_with_parameters(value)
+
+
+from .core.asset import Asset
+
+if TYPE_CHECKING:
+    from pyatlan.client.aio.client import AsyncAtlanClient
+    from pyatlan.client.atlan import AtlanClient
 
 
 class Connection(Asset, type_name="Connection"):
@@ -376,7 +376,7 @@ class Connection(Asset, type_name="Connection"):
         "connectionDbtEnvironments", "connectionDbtEnvironments"
     )
     """
-
+    
     """
     CONNECTION_SSO_CREDENTIAL_GUID: ClassVar[KeywordField] = KeywordField(
         "connectionSSOCredentialGuid", "connectionSSOCredentialGuid"
@@ -406,14 +406,27 @@ class Connection(Asset, type_name="Connection"):
         "vectorEmbeddingsEnabled", "vectorEmbeddingsEnabled"
     )
     """
-
+    
     """
     VECTOR_EMBEDDINGS_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "vectorEmbeddingsUpdatedAt", "vectorEmbeddingsUpdatedAt"
     )
     """
-
+    
     """
+    CONNECTION_SOURCE_ACCOUNT_IDENTIFIER: ClassVar[KeywordField] = KeywordField(
+        "connectionSourceAccountIdentifier", "connectionSourceAccountIdentifier"
+    )
+    """
+    Identifier of the source account this connection points to, expressed in the source's own namespace (for example 'MYORG.MYACCOUNT' for Snowflake). Distinct from the credential host, which uses a different namespace and does not convert.
+    """  # noqa: E501
+    CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT: ClassVar[NumericField] = NumericField(
+        "connectionPopularityInsightsComputedAt",
+        "connectionPopularityInsightsComputedAt",
+    )
+    """
+    Time (epoch) at which popularity insights were last computed for this connection, in milliseconds. Marks the end of the popularity window; the start is this value minus popularityInsightsTimeframe days.
+    """  # noqa: E501
 
     INPUT_TO_CONNECTION_PROCESSES: ClassVar[RelationField] = RelationField(
         "inputToConnectionProcesses"
@@ -466,6 +479,8 @@ class Connection(Asset, type_name="Connection"):
         "object_storage_upload_threshold",
         "vector_embeddings_enabled",
         "vector_embeddings_updated_at",
+        "connection_source_account_identifier",
+        "connection_popularity_insights_computed_at",
         "input_to_connection_processes",
         "output_from_connection_processes",
     ]
@@ -976,6 +991,42 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.vector_embeddings_updated_at = vector_embeddings_updated_at
 
     @property
+    def connection_source_account_identifier(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.connection_source_account_identifier
+        )
+
+    @connection_source_account_identifier.setter
+    def connection_source_account_identifier(
+        self, connection_source_account_identifier: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.connection_source_account_identifier = (
+            connection_source_account_identifier
+        )
+
+    @property
+    def connection_popularity_insights_computed_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.connection_popularity_insights_computed_at
+        )
+
+    @connection_popularity_insights_computed_at.setter
+    def connection_popularity_insights_computed_at(
+        self, connection_popularity_insights_computed_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.connection_popularity_insights_computed_at = (
+            connection_popularity_insights_computed_at
+        )
+
+    @property
     def input_to_connection_processes(self) -> Optional[List[ConnectionProcess]]:
         return (
             None
@@ -1079,6 +1130,12 @@ class Connection(Asset, type_name="Connection"):
         )
         vector_embeddings_enabled: Optional[bool] = Field(default=None, description="")
         vector_embeddings_updated_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        connection_source_account_identifier: Optional[str] = Field(
+            default=None, description=""
+        )
+        connection_popularity_insights_computed_at: Optional[datetime] = Field(
             default=None, description=""
         )
         input_to_connection_processes: Optional[List[ConnectionProcess]] = Field(

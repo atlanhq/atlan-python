@@ -170,8 +170,19 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     business_attributes: Union[Dict[str, Any], UnsetType] = UNSET
     """Business metadata attributes for this entity."""
 
-    custom_attributes: Union[Dict[str, str], UnsetType] = UNSET
-    """Custom key-value pairs for this entity."""
+    custom_attributes: Union[Dict[str, Any], None, UnsetType] = UNSET
+    """Custom key-value pairs for this entity.
+
+    Values are typed ``Any``, matching ``business_attributes`` above and the
+    nested ``ReferenceableAttributes.custom_attributes``. This is a free-form
+    producer-written bag, not a modelled Atlas attribute, and connectors
+    legitimately write ints, floats and bools into it — the legacy transform
+    did too. Typing the values ``str`` made msgspec reject the entire entity
+    on decode, which is a strict-decode failure on data Atlas accepts.
+
+    ``None`` is admitted for the same reason: producers emit an explicit
+    ``"customAttributes": null`` rather than omitting the key, and without it
+    that alone fails the decode."""
 
     pending_tasks: Union[List[str], UnsetType] = UNSET
     """Identifiers of pending tasks for this entity."""

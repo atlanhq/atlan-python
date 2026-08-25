@@ -8,10 +8,11 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import FileType
+from pyatlan.model.enums import AgenticSource, FileType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
+    NumericField,
     RelationField,
     TextField,
 )
@@ -39,8 +40,20 @@ class Artifact(Agentic):
         "artifactVersion", "artifactVersion"
     )
     """
-    Version identifier for this artifact.
+    String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now.
+    """  # noqa: E501
+    AGENTIC_VERSION: ClassVar[NumericField] = NumericField(
+        "agenticVersion", "agenticVersion"
+    )
     """
+    Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple.
+    """
+    AGENTIC_SOURCE: ClassVar[KeywordField] = KeywordField(
+        "agenticSource", "agenticSource"
+    )
+    """
+    Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028).
+    """  # noqa: E501
     CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
         "catalogDatasetGuid", "catalogDatasetGuid"
     )
@@ -54,6 +67,12 @@ class Artifact(Agentic):
     FILE_PATH: ClassVar[TextField] = TextField("filePath", "filePath")
     """
     URL giving the online location where the file can be accessed.
+    """
+    RESOURCE_FILE_SIZE: ClassVar[NumericField] = NumericField(
+        "resourceFileSize", "resourceFileSize"
+    )
+    """
+    Size of the file in bytes.
     """
     LINK: ClassVar[TextField] = TextField("link", "link")
     """
@@ -81,9 +100,12 @@ class Artifact(Agentic):
 
     _convenience_properties: ClassVar[List[str]] = [
         "artifact_version",
+        "agentic_version",
+        "agentic_source",
         "catalog_dataset_guid",
         "file_type",
         "file_path",
+        "resource_file_size",
         "link",
         "is_global",
         "reference",
@@ -100,6 +122,26 @@ class Artifact(Agentic):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.artifact_version = artifact_version
+
+    @property
+    def agentic_version(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.agentic_version
+
+    @agentic_version.setter
+    def agentic_version(self, agentic_version: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agentic_version = agentic_version
+
+    @property
+    def agentic_source(self) -> Optional[AgenticSource]:
+        return None if self.attributes is None else self.attributes.agentic_source
+
+    @agentic_source.setter
+    def agentic_source(self, agentic_source: Optional[AgenticSource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agentic_source = agentic_source
 
     @property
     def catalog_dataset_guid(self) -> Optional[str]:
@@ -130,6 +172,16 @@ class Artifact(Agentic):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.file_path = file_path
+
+    @property
+    def resource_file_size(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.resource_file_size
+
+    @resource_file_size.setter
+    def resource_file_size(self, resource_file_size: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.resource_file_size = resource_file_size
 
     @property
     def link(self) -> Optional[str]:
@@ -183,9 +235,12 @@ class Artifact(Agentic):
 
     class Attributes(Agentic.Attributes):
         artifact_version: Optional[str] = Field(default=None, description="")
+        agentic_version: Optional[int] = Field(default=None, description="")
+        agentic_source: Optional[AgenticSource] = Field(default=None, description="")
         catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         file_type: Optional[FileType] = Field(default=None, description="")
         file_path: Optional[str] = Field(default=None, description="")
+        resource_file_size: Optional[int] = Field(default=None, description="")
         link: Optional[str] = Field(default=None, description="")
         is_global: Optional[bool] = Field(default=None, description="")
         reference: Optional[str] = Field(default=None, description="")

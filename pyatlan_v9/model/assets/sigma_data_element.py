@@ -116,10 +116,10 @@ class SigmaDataElement(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
     sigma_data_element_query: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Query backing this data element."""
 
     sigma_data_element_type: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Type of this data element."""
 
     sigma_data_element_field_count: Union[int, None, UnsetType] = UNSET
     """Number of fields in this data element."""
@@ -402,10 +402,10 @@ class SigmaDataElementAttributes(AssetAttributes):
     """SigmaDataElement-specific attributes for nested API format."""
 
     sigma_data_element_query: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Query backing this data element."""
 
     sigma_data_element_type: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Type of this data element."""
 
     sigma_data_element_field_count: Union[int, None, UnsetType] = UNSET
     """Number of fields in this data element."""

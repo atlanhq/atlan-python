@@ -736,7 +736,7 @@ class Asset(Referenceable):
     """Provider-defined summary of this asset as a JSON-stringified object. Display-only; the rendered shape is provider-specific."""
 
     asset_summary_filter_tokens: Union[List[str], None, UnsetType] = UNSET
-    """Flattened tokens for section-scoped filtering on assetSummary. Each token is shaped as '<section>|||<name>|||<count>'."""
+    """Flattened tokens for section-scoped filtering on assetSummary. Each token is shaped as 'section|||name|||count'."""
 
     asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="assetExternalDQScoreValue"
@@ -1884,7 +1884,7 @@ class AssetAttributes(ReferenceableAttributes):
     """Provider-defined summary of this asset as a JSON-stringified object. Display-only; the rendered shape is provider-specific."""
 
     asset_summary_filter_tokens: Union[List[str], None, UnsetType] = UNSET
-    """Flattened tokens for section-scoped filtering on assetSummary. Each token is shaped as '<section>|||<name>|||<count>'."""
+    """Flattened tokens for section-scoped filtering on assetSummary. Each token is shaped as 'section|||name|||count'."""
 
     asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="assetExternalDQScoreValue"

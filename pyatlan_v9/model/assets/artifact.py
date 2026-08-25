@@ -67,6 +67,7 @@ class Artifact(Asset):
 
     ARTIFACT_VERSION: ClassVar[Any] = None
     AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     FILE_TYPE: ClassVar[Any] = None
     FILE_PATH: ClassVar[Any] = None
@@ -113,6 +114,9 @@ class Artifact(Asset):
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -371,6 +375,9 @@ class ArtifactAttributes(AssetAttributes):
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -565,6 +572,7 @@ def _populate_artifact_attrs(attrs: ArtifactAttributes, obj: Artifact) -> None:
     _populate_asset_attrs(attrs, obj)
     attrs.artifact_version = obj.artifact_version
     attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.file_type = obj.file_type
     attrs.file_path = obj.file_path
@@ -580,6 +588,7 @@ def _extract_artifact_attrs(attrs: ArtifactAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["artifact_version"] = attrs.artifact_version
     result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["file_type"] = attrs.file_type
     result["file_path"] = attrs.file_path
@@ -698,6 +707,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 Artifact.ARTIFACT_VERSION = KeywordField("artifactVersion", "artifactVersion")
 Artifact.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+Artifact.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
 Artifact.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Artifact.FILE_TYPE = KeywordField("fileType", "fileType")
 Artifact.FILE_PATH = KeywordField("filePath", "filePath")

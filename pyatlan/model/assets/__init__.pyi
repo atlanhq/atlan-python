@@ -16,11 +16,14 @@ __all__ = [
     "Cloud",
     "FlowDatasetOperation",
     "BIProcess",
+    "DbtProcess",
+    "V1CoalesceProcess",
     "ColumnProcess",
     "Persona",
     "App",
     "Airflow",
     "ADF",
+    "SAP",
     "Agentic",
     "BI",
     "Semantic",
@@ -48,6 +51,7 @@ __all__ = [
     "FlowFieldOperation",
     "FlowControlOperation",
     "Google",
+    "DbtColumnProcess",
     "Stakeholder",
     "ApplicationField",
     "Application",
@@ -59,7 +63,9 @@ __all__ = [
     "AdfPipeline",
     "AdfLinkedservice",
     "AdfActivity",
+    "SapDatasphereReplicationFlow",
     "Context",
+    "Agent",
     "Skill",
     "Artifact",
     "DataStudio",
@@ -97,23 +103,27 @@ __all__ = [
     "DataProduct",
     "DataMeshDataset",
     "Dremio",
-    "Table",
     "Query",
+    "SnowflakeV1CortexAgentSkill",
+    "SnowflakeV1CortexAgent",
     "Schema",
-    "SnowflakePipe",
-    "View",
     "MaterialisedView",
     "Function",
     "TablePartition",
     "Column",
-    "SnowflakeStage",
     "Snowflake",
     "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "CalculationView",
     "Database",
+    "CalculationView",
     "Procedure",
+    "Table",
+    "SnowflakePipe",
+    "View",
+    "SnowflakeV1CortexAgentTool",
+    "SnowflakeStage",
     "Databricks",
+    "SnowflakeV1CortexSearchService",
     "SnowflakeTag",
     "SqlInsightFilter",
     "SqlInsightBusinessQuestion",
@@ -189,11 +199,11 @@ __all__ = [
     "DremioPhysicalDataset",
     "DremioFolder",
     "DremioSource",
+    "StarburstDatasetColumn",
+    "BigqueryRoutine",
     "SnowflakeDynamicTable",
     "StarburstDataset",
     "DatabricksMetricView",
-    "StarburstDatasetColumn",
-    "BigqueryRoutine",
     "DatabricksVolume",
     "DatabricksVolumePath",
     "GCPDataplexAspectType",
@@ -209,14 +219,20 @@ __all__ = [
     "Connection",
     "Workflow",
     "BusinessPolicyLog",
+    "Coalesce",
     "BusinessPolicy",
     "WorkflowRun",
     "Response",
     "ConnectionProcess",
     "Incident",
-    "DbtProcess",
+    "SAPProcess",
     "Purpose",
-    "SAP",
+    "CoalesceRun",
+    "CoalesceEnvironment",
+    "CoalesceColumn",
+    "CoalesceNode",
+    "Unstructured",
+    "V1Coalesce",
     "EventStore",
     "NoSQL",
     "Insight",
@@ -233,16 +249,24 @@ __all__ = [
     "Azure",
     "AWS",
     "BusinessPolicyIncident",
-    "DbtColumnProcess",
+    "SAPColumnProcess",
+    "V1CoalesceColumnProcess",
+    "UnstructuredFolder",
+    "UnstructuredObject",
+    "UnstructuredContainer",
     "SapErpTable",
     "SapErpColumn",
-    "SapErpCdsView",
     "SapErpAbapProgram",
     "SapErpTransactionCode",
     "SapErpComponent",
-    "SapErpFunctionModule",
+    "SAPBW",
     "SapErpView",
+    "SapErpFioriApp",
+    "SapErpCdsView",
+    "SapErpFunctionModule",
+    "Knowledge",
     "Preset",
+    "SSRS",
     "Mode",
     "Sigma",
     "Anaplan",
@@ -253,12 +277,17 @@ __all__ = [
     "Sisense",
     "Metabase",
     "QuickSight",
+    "DatabricksDashboard",
     "Thoughtspot",
     "MicroStrategy",
     "Cognos",
     "Superset",
     "Qlik",
     "SemanticField",
+    "V1CoalesceRun",
+    "V1CoalesceNode",
+    "V1CoalesceColumn",
+    "V1CoalesceEnvironment",
     "Kafka",
     "AzureServiceBus",
     "Cassandra",
@@ -286,6 +315,8 @@ __all__ = [
     "CubeField",
     "CustomEntity",
     "BigqueryTag",
+    "SnowflakeListing",
+    "SnowflakeShare",
     "Starburst",
     "Iceberg",
     "APISpec",
@@ -297,10 +328,30 @@ __all__ = [
     "DataStudioAsset",
     "AtlanAppDeployment",
     "AtlanAppInstalled",
+    "SAPBWADSO",
+    "SAPBWInfoSource",
+    "SAPBWADSOField",
+    "SAPBWDataSource",
+    "SAPBWDTP",
+    "SAPBWCompositeProviderField",
+    "SAPBWInfoObject",
+    "SAPBWQueryElement",
+    "SAPBWTransformation",
+    "SAPBWDataSourceField",
+    "SAPBWInfoArea",
+    "SAPBWInfoSourceField",
+    "SAPBWQuery",
+    "SAPBWCompositeProvider",
+    "KnowledgeFolder",
+    "KnowledgeFile",
     "PresetChart",
     "PresetDataset",
     "PresetDashboard",
     "PresetWorkspace",
+    "SSRSReport",
+    "SSRSField",
+    "SSRSDataSet",
+    "SSRSFolder",
     "ModeReport",
     "ModeQuery",
     "ModeChart",
@@ -308,8 +359,11 @@ __all__ = [
     "ModeCollection",
     "SigmaDatasetColumn",
     "SigmaDataset",
+    "SigmaDataModel",
+    "SigmaDataModelElement",
     "SigmaWorkbook",
     "SigmaPage",
+    "SigmaDataModelColumn",
     "SigmaDataElementField",
     "SigmaDataElement",
     "AnaplanPage",
@@ -405,6 +459,7 @@ __all__ = [
     "KafkaCluster",
     "KafkaField",
     "KafkaTopic",
+    "KafkaPartition",
     "KafkaConsumerGroup",
     "AzureServiceBusNamespace",
     "AzureServiceBusSchema",
@@ -447,10 +502,10 @@ __all__ = [
     "SageMakerFeature",
     "SageMakerFeatureGroup",
     "SageMakerModelDeployment",
-    "IcebergTable",
     "IcebergNamespace",
     "IcebergColumn",
     "IcebergCatalog",
+    "IcebergTable",
     "DatabricksExternalLocation",
     "DatabricksExternalLocationPath",
     "QlikStream",
@@ -508,6 +563,11 @@ from .cassandra_index import CassandraIndex
 from .cassandra_keyspace import CassandraKeyspace
 from .cassandra_table import CassandraTable
 from .cassandra_view import CassandraView
+from .coalesce import Coalesce
+from .coalesce_column import CoalesceColumn
+from .coalesce_environment import CoalesceEnvironment
+from .coalesce_node import CoalesceNode
+from .coalesce_run import CoalesceRun
 from .cognite import Cognite
 from .cognite3_d_model import Cognite3DModel
 from .cognite_asset import CogniteAsset
@@ -540,6 +600,7 @@ from .core.adf_dataflow import AdfDataflow
 from .core.adf_dataset import AdfDataset
 from .core.adf_linkedservice import AdfLinkedservice
 from .core.adf_pipeline import AdfPipeline
+from .core.agent import Agent
 from .core.agentic import Agentic
 from .core.airflow import Airflow
 from .core.airflow_dag import AirflowDag
@@ -592,9 +653,11 @@ from .core.databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .core.databricks_volume import DatabricksVolume
 from .core.databricks_volume_path import DatabricksVolumePath
 from .core.dbt import Dbt
+from .core.dbt_column_process import DbtColumnProcess
 from .core.dbt_metric import DbtMetric
 from .core.dbt_model import DbtModel
 from .core.dbt_model_column import DbtModelColumn
+from .core.dbt_process import DbtProcess
 from .core.dbt_seed import DbtSeed
 from .core.dbt_source import DbtSource
 from .core.dbt_test import DbtTest
@@ -685,7 +748,9 @@ from .core.query import Query
 from .core.readme import Readme
 from .core.referenceable import Referenceable
 from .core.resource import Resource
+from .core.s_a_p import SAP
 from .core.s_q_l import SQL
+from .core.sap_datasphere_replication_flow import SapDatasphereReplicationFlow
 from .core.schema import Schema
 from .core.schema_registry import SchemaRegistry
 from .core.schema_registry_subject import SchemaRegistrySubject
@@ -710,6 +775,10 @@ from .core.snowflake_semantic_view import SnowflakeSemanticView
 from .core.snowflake_stage import SnowflakeStage
 from .core.snowflake_stream import SnowflakeStream
 from .core.snowflake_tag import SnowflakeTag
+from .core.snowflake_v1_cortex_agent import SnowflakeV1CortexAgent
+from .core.snowflake_v1_cortex_agent_skill import SnowflakeV1CortexAgentSkill
+from .core.snowflake_v1_cortex_agent_tool import SnowflakeV1CortexAgentTool
+from .core.snowflake_v1_cortex_search_service import SnowflakeV1CortexSearchService
 from .core.soda import Soda
 from .core.soda_check import SodaCheck
 from .core.spark import Spark
@@ -725,6 +794,7 @@ from .core.starburst_dataset_column import StarburstDatasetColumn
 from .core.table import Table
 from .core.table_partition import TablePartition
 from .core.tag import Tag
+from .core.v1_coalesce_process import V1CoalesceProcess
 from .core.view import View
 from .cube import Cube
 from .cube_dimension import CubeDimension
@@ -734,17 +804,16 @@ from .custom import Custom
 from .custom_entity import CustomEntity
 from .data_set import DataSet
 from .data_studio_asset import DataStudioAsset
+from .databricks_dashboard import DatabricksDashboard
 from .databricks_external_location import DatabricksExternalLocation
 from .databricks_external_location_path import DatabricksExternalLocationPath
 from .databricks_notebook import DatabricksNotebook
 from .dataverse import Dataverse
 from .dataverse_attribute import DataverseAttribute
 from .dataverse_entity import DataverseEntity
-from .dbt_column_process import DbtColumnProcess
 from .dbt_dimension import DbtDimension
 from .dbt_entity import DbtEntity
 from .dbt_measure import DbtMeasure
-from .dbt_process import DbtProcess
 from .dbt_semantic_model import DbtSemanticModel
 from .dbt_tag import DbtTag
 from .domo import Domo
@@ -775,7 +844,11 @@ from .kafka import Kafka
 from .kafka_cluster import KafkaCluster
 from .kafka_consumer_group import KafkaConsumerGroup
 from .kafka_field import KafkaField
+from .kafka_partition import KafkaPartition
 from .kafka_topic import KafkaTopic
+from .knowledge import Knowledge
+from .knowledge_file import KnowledgeFile
+from .knowledge_folder import KnowledgeFolder
 from .looker import Looker
 from .looker_dashboard import LookerDashboard
 from .looker_explore import LookerExplore
@@ -845,7 +918,28 @@ from .s3 import S3
 from .s3_bucket import S3Bucket
 from .s3_object import S3Object
 from .s3_prefix import S3Prefix
-from .s_a_p import SAP
+from .s_a_p_b_w import SAPBW
+from .s_a_p_b_w_a_d_s_o import SAPBWADSO
+from .s_a_p_b_w_a_d_s_o_field import SAPBWADSOField
+from .s_a_p_b_w_composite_provider import SAPBWCompositeProvider
+from .s_a_p_b_w_composite_provider_field import SAPBWCompositeProviderField
+from .s_a_p_b_w_d_t_p import SAPBWDTP
+from .s_a_p_b_w_data_source import SAPBWDataSource
+from .s_a_p_b_w_data_source_field import SAPBWDataSourceField
+from .s_a_p_b_w_info_area import SAPBWInfoArea
+from .s_a_p_b_w_info_object import SAPBWInfoObject
+from .s_a_p_b_w_info_source import SAPBWInfoSource
+from .s_a_p_b_w_info_source_field import SAPBWInfoSourceField
+from .s_a_p_b_w_query import SAPBWQuery
+from .s_a_p_b_w_query_element import SAPBWQueryElement
+from .s_a_p_b_w_transformation import SAPBWTransformation
+from .s_a_p_column_process import SAPColumnProcess
+from .s_a_p_process import SAPProcess
+from .s_s_r_s import SSRS
+from .s_s_r_s_data_set import SSRSDataSet
+from .s_s_r_s_field import SSRSField
+from .s_s_r_s_folder import SSRSFolder
+from .s_s_r_s_report import SSRSReport
 from .saa_s import SaaS
 from .sage_maker import SageMaker
 from .sage_maker_feature import SageMakerFeature
@@ -873,6 +967,7 @@ from .sap_erp_abap_program import SapErpAbapProgram
 from .sap_erp_cds_view import SapErpCdsView
 from .sap_erp_column import SapErpColumn
 from .sap_erp_component import SapErpComponent
+from .sap_erp_fiori_app import SapErpFioriApp
 from .sap_erp_function_module import SapErpFunctionModule
 from .sap_erp_table import SapErpTable
 from .sap_erp_transaction_code import SapErpTransactionCode
@@ -881,6 +976,9 @@ from .semantic_field import SemanticField
 from .sigma import Sigma
 from .sigma_data_element import SigmaDataElement
 from .sigma_data_element_field import SigmaDataElementField
+from .sigma_data_model import SigmaDataModel
+from .sigma_data_model_column import SigmaDataModelColumn
+from .sigma_data_model_element import SigmaDataModelElement
 from .sigma_dataset import SigmaDataset
 from .sigma_dataset_column import SigmaDatasetColumn
 from .sigma_page import SigmaPage
@@ -891,6 +989,8 @@ from .sisense_datamodel import SisenseDatamodel
 from .sisense_datamodel_table import SisenseDatamodelTable
 from .sisense_folder import SisenseFolder
 from .sisense_widget import SisenseWidget
+from .snowflake_listing import SnowflakeListing
+from .snowflake_share import SnowflakeShare
 from .source_tag import SourceTag
 from .starburst import Starburst
 from .superset import Superset
@@ -920,5 +1020,15 @@ from .thoughtspot_liveboard import ThoughtspotLiveboard
 from .thoughtspot_table import ThoughtspotTable
 from .thoughtspot_view import ThoughtspotView
 from .thoughtspot_worksheet import ThoughtspotWorksheet
+from .unstructured import Unstructured
+from .unstructured_container import UnstructuredContainer
+from .unstructured_folder import UnstructuredFolder
+from .unstructured_object import UnstructuredObject
+from .v1_coalesce import V1Coalesce
+from .v1_coalesce_column import V1CoalesceColumn
+from .v1_coalesce_column_process import V1CoalesceColumnProcess
+from .v1_coalesce_environment import V1CoalesceEnvironment
+from .v1_coalesce_node import V1CoalesceNode
+from .v1_coalesce_run import V1CoalesceRun
 from .workflow import Workflow
 from .workflow_run import WorkflowRun

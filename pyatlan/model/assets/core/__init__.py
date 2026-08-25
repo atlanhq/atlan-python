@@ -19,6 +19,7 @@ from .adf_dataflow import AdfDataflow
 from .adf_dataset import AdfDataset
 from .adf_linkedservice import AdfLinkedservice
 from .adf_pipeline import AdfPipeline
+from .agent import Agent
 from .agentic import Agentic
 from .airflow import Airflow
 from .airflow_dag import AirflowDag
@@ -68,9 +69,11 @@ from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .databricks_volume import DatabricksVolume
 from .databricks_volume_path import DatabricksVolumePath
 from .dbt import Dbt
+from .dbt_column_process import DbtColumnProcess
 from .dbt_metric import DbtMetric
 from .dbt_model import DbtModel
 from .dbt_model_column import DbtModelColumn
+from .dbt_process import DbtProcess
 from .dbt_seed import DbtSeed
 from .dbt_source import DbtSource
 from .dbt_test import DbtTest
@@ -160,7 +163,9 @@ from .process import Process
 from .query import Query
 from .readme import Readme
 from .resource import Resource
+from .s_a_p import SAP
 from .s_q_l import SQL
+from .sap_datasphere_replication_flow import SapDatasphereReplicationFlow
 from .schema import Schema
 from .schema_registry import SchemaRegistry
 from .schema_registry_subject import SchemaRegistrySubject
@@ -185,6 +190,10 @@ from .snowflake_semantic_view import SnowflakeSemanticView
 from .snowflake_stage import SnowflakeStage
 from .snowflake_stream import SnowflakeStream
 from .snowflake_tag import SnowflakeTag
+from .snowflake_v1_cortex_agent import SnowflakeV1CortexAgent
+from .snowflake_v1_cortex_agent_skill import SnowflakeV1CortexAgentSkill
+from .snowflake_v1_cortex_agent_tool import SnowflakeV1CortexAgentTool
+from .snowflake_v1_cortex_search_service import SnowflakeV1CortexSearchService
 from .soda import Soda
 from .soda_check import SodaCheck
 from .spark import Spark
@@ -200,6 +209,7 @@ from .starburst_dataset_column import StarburstDatasetColumn
 from .table import Table
 from .table_partition import TablePartition
 from .tag import Tag
+from .v1_coalesce_process import V1CoalesceProcess
 from .view import View
 
 # Update asset forward references:
@@ -222,11 +232,14 @@ AtlasGlossaryTerm.Attributes.update_forward_refs(**localns)
 Cloud.Attributes.update_forward_refs(**localns)
 FlowDatasetOperation.Attributes.update_forward_refs(**localns)
 BIProcess.Attributes.update_forward_refs(**localns)
+DbtProcess.Attributes.update_forward_refs(**localns)
+V1CoalesceProcess.Attributes.update_forward_refs(**localns)
 ColumnProcess.Attributes.update_forward_refs(**localns)
 Persona.Attributes.update_forward_refs(**localns)
 App.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 ADF.Attributes.update_forward_refs(**localns)
+SAP.Attributes.update_forward_refs(**localns)
 Agentic.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
 Semantic.Attributes.update_forward_refs(**localns)
@@ -254,6 +267,7 @@ FlowReusableUnit.Attributes.update_forward_refs(**localns)
 FlowFieldOperation.Attributes.update_forward_refs(**localns)
 FlowControlOperation.Attributes.update_forward_refs(**localns)
 Google.Attributes.update_forward_refs(**localns)
+DbtColumnProcess.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 ApplicationField.Attributes.update_forward_refs(**localns)
 Application.Attributes.update_forward_refs(**localns)
@@ -264,7 +278,9 @@ AdfDataset.Attributes.update_forward_refs(**localns)
 AdfPipeline.Attributes.update_forward_refs(**localns)
 AdfLinkedservice.Attributes.update_forward_refs(**localns)
 AdfActivity.Attributes.update_forward_refs(**localns)
+SapDatasphereReplicationFlow.Attributes.update_forward_refs(**localns)
 Context.Attributes.update_forward_refs(**localns)
+Agent.Attributes.update_forward_refs(**localns)
 Skill.Attributes.update_forward_refs(**localns)
 Artifact.Attributes.update_forward_refs(**localns)
 DataStudio.Attributes.update_forward_refs(**localns)
@@ -302,23 +318,27 @@ DataDomain.Attributes.update_forward_refs(**localns)
 DataProduct.Attributes.update_forward_refs(**localns)
 DataMeshDataset.Attributes.update_forward_refs(**localns)
 Dremio.Attributes.update_forward_refs(**localns)
-Table.Attributes.update_forward_refs(**localns)
 Query.Attributes.update_forward_refs(**localns)
+SnowflakeV1CortexAgentSkill.Attributes.update_forward_refs(**localns)
+SnowflakeV1CortexAgent.Attributes.update_forward_refs(**localns)
 Schema.Attributes.update_forward_refs(**localns)
-SnowflakePipe.Attributes.update_forward_refs(**localns)
-View.Attributes.update_forward_refs(**localns)
 MaterialisedView.Attributes.update_forward_refs(**localns)
 Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
-SnowflakeStage.Attributes.update_forward_refs(**localns)
 Snowflake.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
+Table.Attributes.update_forward_refs(**localns)
+SnowflakePipe.Attributes.update_forward_refs(**localns)
+View.Attributes.update_forward_refs(**localns)
+SnowflakeV1CortexAgentTool.Attributes.update_forward_refs(**localns)
+SnowflakeStage.Attributes.update_forward_refs(**localns)
 Databricks.Attributes.update_forward_refs(**localns)
+SnowflakeV1CortexSearchService.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 SqlInsightFilter.Attributes.update_forward_refs(**localns)
 SqlInsightBusinessQuestion.Attributes.update_forward_refs(**localns)
@@ -392,11 +412,11 @@ DremioSpace.Attributes.update_forward_refs(**localns)
 DremioPhysicalDataset.Attributes.update_forward_refs(**localns)
 DremioFolder.Attributes.update_forward_refs(**localns)
 DremioSource.Attributes.update_forward_refs(**localns)
+StarburstDatasetColumn.Attributes.update_forward_refs(**localns)
+BigqueryRoutine.Attributes.update_forward_refs(**localns)
 SnowflakeDynamicTable.Attributes.update_forward_refs(**localns)
 StarburstDataset.Attributes.update_forward_refs(**localns)
 DatabricksMetricView.Attributes.update_forward_refs(**localns)
-StarburstDatasetColumn.Attributes.update_forward_refs(**localns)
-BigqueryRoutine.Attributes.update_forward_refs(**localns)
 DatabricksVolume.Attributes.update_forward_refs(**localns)
 DatabricksVolumePath.Attributes.update_forward_refs(**localns)
 GCPDataplexAspectType.Attributes.update_forward_refs(**localns)

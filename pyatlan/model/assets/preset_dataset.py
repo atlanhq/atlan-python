@@ -102,19 +102,19 @@ class PresetDataset(Preset):
         )
     )
     """
-
+    
     """
     PRESET_DATASET_ID: ClassVar[NumericField] = NumericField(
         "presetDatasetId", "presetDatasetId"
     )
     """
-
+    
     """
     PRESET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
         "presetDatasetType", "presetDatasetType"
     )
     """
-
+    
     """
 
     PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")

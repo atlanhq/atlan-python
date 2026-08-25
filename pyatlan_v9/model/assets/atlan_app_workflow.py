@@ -77,7 +77,11 @@ class AtlanAppWorkflow(Asset):
     ATLAN_APP_WORKFLOW_STATUS: ClassVar[Any] = None
     ATLAN_APP_WORKFLOW_ERROR_HANDLING: ClassVar[Any] = None
     ATLAN_APP_WORKFLOW_OWNERSHIP: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_SOURCE: ClassVar[Any] = None
     ATLAN_APP_WORKFLOW_TRIGGERS: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_AGENT_NAME: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_DEPLOYMENT_NAME: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_RUNTIME_MODE: ClassVar[Any] = None
     ATLAN_APP_QUALIFIED_NAME: ClassVar[Any] = None
     ATLAN_APP_NAME: ClassVar[Any] = None
     ATLAN_APP_METADATA: ClassVar[Any] = None
@@ -138,8 +142,20 @@ class AtlanAppWorkflow(Asset):
     atlan_app_workflow_ownership: Union[str, None, UnsetType] = UNSET
     """Ownership type of the workflow, indicating whether it is managed by Atlan or by a user."""
 
+    atlan_app_workflow_source: Union[str, None, UnsetType] = UNSET
+    """Product surface the workflow originated from (marketplace, enrichment_studio, context_studio), emitted as an AE workflow-metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028)."""
+
     atlan_app_workflow_triggers: Union[str, None, UnsetType] = UNSET
     """Triggers configured for this workflow (escaped JSON string)."""
+
+    atlan_app_workflow_agent_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SDR agent this workflow's runs are routed to (the atlan-prefixed task queue's agent). Indexed so an agent's runs can be filtered server-side by joining runs to their parent workflow (DISTR-832)."""
+
+    atlan_app_workflow_deployment_name: Union[str, None, UnsetType] = UNSET
+    """SDR deployment name this workflow's runs execute under. Denormalized from the run-time config for run-history filtering and metric labels."""
+
+    atlan_app_workflow_runtime_mode: Union[str, None, UnsetType] = UNSET
+    """Execution runtime for this workflow's runs (SDR or DIRECT). Set at workflow save and constant across the workflow's runs."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Atlan application this asset belongs to."""
@@ -426,8 +442,20 @@ class AtlanAppWorkflowAttributes(AssetAttributes):
     atlan_app_workflow_ownership: Union[str, None, UnsetType] = UNSET
     """Ownership type of the workflow, indicating whether it is managed by Atlan or by a user."""
 
+    atlan_app_workflow_source: Union[str, None, UnsetType] = UNSET
+    """Product surface the workflow originated from (marketplace, enrichment_studio, context_studio), emitted as an AE workflow-metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028)."""
+
     atlan_app_workflow_triggers: Union[str, None, UnsetType] = UNSET
     """Triggers configured for this workflow (escaped JSON string)."""
+
+    atlan_app_workflow_agent_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SDR agent this workflow's runs are routed to (the atlan-prefixed task queue's agent). Indexed so an agent's runs can be filtered server-side by joining runs to their parent workflow (DISTR-832)."""
+
+    atlan_app_workflow_deployment_name: Union[str, None, UnsetType] = UNSET
+    """SDR deployment name this workflow's runs execute under. Denormalized from the run-time config for run-history filtering and metric labels."""
+
+    atlan_app_workflow_runtime_mode: Union[str, None, UnsetType] = UNSET
+    """Execution runtime for this workflow's runs (SDR or DIRECT). Set at workflow save and constant across the workflow's runs."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Atlan application this asset belongs to."""
@@ -638,7 +666,11 @@ def _populate_atlan_app_workflow_attrs(
     attrs.atlan_app_workflow_status = obj.atlan_app_workflow_status
     attrs.atlan_app_workflow_error_handling = obj.atlan_app_workflow_error_handling
     attrs.atlan_app_workflow_ownership = obj.atlan_app_workflow_ownership
+    attrs.atlan_app_workflow_source = obj.atlan_app_workflow_source
     attrs.atlan_app_workflow_triggers = obj.atlan_app_workflow_triggers
+    attrs.atlan_app_workflow_agent_name = obj.atlan_app_workflow_agent_name
+    attrs.atlan_app_workflow_deployment_name = obj.atlan_app_workflow_deployment_name
+    attrs.atlan_app_workflow_runtime_mode = obj.atlan_app_workflow_runtime_mode
     attrs.atlan_app_qualified_name = obj.atlan_app_qualified_name
     attrs.atlan_app_name = obj.atlan_app_name
     attrs.atlan_app_metadata = obj.atlan_app_metadata
@@ -657,7 +689,13 @@ def _extract_atlan_app_workflow_attrs(attrs: AtlanAppWorkflowAttributes) -> dict
         attrs.atlan_app_workflow_error_handling
     )
     result["atlan_app_workflow_ownership"] = attrs.atlan_app_workflow_ownership
+    result["atlan_app_workflow_source"] = attrs.atlan_app_workflow_source
     result["atlan_app_workflow_triggers"] = attrs.atlan_app_workflow_triggers
+    result["atlan_app_workflow_agent_name"] = attrs.atlan_app_workflow_agent_name
+    result["atlan_app_workflow_deployment_name"] = (
+        attrs.atlan_app_workflow_deployment_name
+    )
+    result["atlan_app_workflow_runtime_mode"] = attrs.atlan_app_workflow_runtime_mode
     result["atlan_app_qualified_name"] = attrs.atlan_app_qualified_name
     result["atlan_app_name"] = attrs.atlan_app_name
     result["atlan_app_metadata"] = attrs.atlan_app_metadata
@@ -798,8 +836,20 @@ AtlanAppWorkflow.ATLAN_APP_WORKFLOW_ERROR_HANDLING = KeywordField(
 AtlanAppWorkflow.ATLAN_APP_WORKFLOW_OWNERSHIP = KeywordField(
     "atlanAppWorkflowOwnership", "atlanAppWorkflowOwnership"
 )
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_SOURCE = KeywordField(
+    "atlanAppWorkflowSource", "atlanAppWorkflowSource"
+)
 AtlanAppWorkflow.ATLAN_APP_WORKFLOW_TRIGGERS = TextField(
     "atlanAppWorkflowTriggers", "atlanAppWorkflowTriggers"
+)
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_AGENT_NAME = KeywordField(
+    "atlanAppWorkflowAgentName", "atlanAppWorkflowAgentName"
+)
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_DEPLOYMENT_NAME = KeywordField(
+    "atlanAppWorkflowDeploymentName", "atlanAppWorkflowDeploymentName"
+)
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_RUNTIME_MODE = KeywordField(
+    "atlanAppWorkflowRuntimeMode", "atlanAppWorkflowRuntimeMode"
 )
 AtlanAppWorkflow.ATLAN_APP_QUALIFIED_NAME = KeywordField(
     "atlanAppQualifiedName", "atlanAppQualifiedName"

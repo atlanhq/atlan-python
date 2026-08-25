@@ -545,6 +545,12 @@ class DataQualityRule(DataQuality):
     """
     Last result metrics value of the rule.
     """
+    DQ_RULE_LATEST_TOTAL_ROWS_EVALUATED: ClassVar[NumericField] = NumericField(
+        "dqRuleLatestTotalRowsEvaluated", "dqRuleLatestTotalRowsEvaluated"
+    )
+    """
+    Total number of rows that the rule's last run evaluated.
+    """
     DQ_RULE_LATEST_METRIC_VALUE_COMPUTED_AT: ClassVar[NumericField] = NumericField(
         "dqRuleLatestMetricValueComputedAt", "dqRuleLatestMetricValueComputedAt"
     )
@@ -657,6 +663,7 @@ class DataQualityRule(DataQuality):
         "dq_rule_latest_result_computed_at",
         "dq_rule_latest_result_fetched_at",
         "dq_rule_latest_metric_value",
+        "dq_rule_latest_total_rows_evaluated",
         "dq_rule_latest_metric_value_computed_at",
         "dq_rule_dimension",
         "dq_rule_template_name",
@@ -889,6 +896,24 @@ class DataQualityRule(DataQuality):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dq_rule_latest_metric_value = dq_rule_latest_metric_value
+
+    @property
+    def dq_rule_latest_total_rows_evaluated(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dq_rule_latest_total_rows_evaluated
+        )
+
+    @dq_rule_latest_total_rows_evaluated.setter
+    def dq_rule_latest_total_rows_evaluated(
+        self, dq_rule_latest_total_rows_evaluated: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dq_rule_latest_total_rows_evaluated = (
+            dq_rule_latest_total_rows_evaluated
+        )
 
     @property
     def dq_rule_latest_metric_value_computed_at(self) -> Optional[datetime]:
@@ -1159,6 +1184,9 @@ class DataQualityRule(DataQuality):
             default=None, description=""
         )
         dq_rule_latest_metric_value: Optional[str] = Field(default=None, description="")
+        dq_rule_latest_total_rows_evaluated: Optional[int] = Field(
+            default=None, description=""
+        )
         dq_rule_latest_metric_value_computed_at: Optional[datetime] = Field(
             default=None, description=""
         )

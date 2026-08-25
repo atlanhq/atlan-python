@@ -10,7 +10,7 @@ from nanoid import generate as generate_nanoid  # type: ignore
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import FileType
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import RelationField, TextField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .artifact import Artifact
@@ -49,12 +49,12 @@ class SkillArtifact(Artifact):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SKILL_ARTIFACT_CONTENT: ClassVar[KeywordField] = KeywordField(
+    SKILL_ARTIFACT_CONTENT: ClassVar[TextField] = TextField(
         "skillArtifactContent", "skillArtifactContent"
     )
     """
-    Content of the skill artifact (e.g. the body of a skill .md file).
-    """
+    Full textual body of this skill artifact file (for example, the markdown of SKILL.md or the source of a script). Stored per-artifact because a skill folder contains many files, each with distinct content.
+    """  # noqa: E501
 
     SKILL_SOURCE: ClassVar[RelationField] = RelationField("skillSource")
     """

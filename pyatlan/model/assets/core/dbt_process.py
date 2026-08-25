@@ -18,32 +18,38 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
-from pyatlan.model.structs import DbtJobRun
+from pyatlan.model.structs import DbtInputContext, DbtJobRun
 
-from .core.column_process import ColumnProcess
+from .process import Process
 
 
-class DbtColumnProcess(ColumnProcess):
+class DbtProcess(Process):
     """Description"""
 
-    type_name: str = Field(default="DbtColumnProcess", allow_mutation=False)
+    type_name: str = Field(default="DbtProcess", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DbtColumnProcess":
-            raise ValueError("must be DbtColumnProcess")
+        if v != "DbtProcess":
+            raise ValueError("must be DbtProcess")
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtColumnProcess._convenience_properties:
+        if name in DbtProcess._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DBT_COLUMN_PROCESS_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
-        "dbtColumnProcessJobStatus", "dbtColumnProcessJobStatus"
+    DBT_PROCESS_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtProcessJobStatus", "dbtProcessJobStatus"
     )
     """
-    Status of the dbt column process job.
+    Status of the dbt process job.
+    """
+    DBT_UPSTREAM_CONTEXTS: ClassVar[KeywordField] = KeywordField(
+        "dbtUpstreamContexts", "dbtUpstreamContexts"
+    )
+    """
+    Context for inputs to this Process.
     """
     DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
@@ -177,7 +183,7 @@ class DbtColumnProcess(ColumnProcess):
         "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
     )
     """
-
+    
     """
     AST: ClassVar[TextField] = TextField("ast", "ast")
     """
@@ -234,10 +240,6 @@ class DbtColumnProcess(ColumnProcess):
     """
     TBC
     """
-    PROCESS: ClassVar[RelationField] = RelationField("process")
-    """
-    TBC
-    """
     AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
     """
     TBC
@@ -256,7 +258,8 @@ class DbtColumnProcess(ColumnProcess):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "dbt_column_process_job_status",
+        "dbt_process_job_status",
+        "dbt_upstream_contexts",
         "dbt_alias",
         "dbt_meta",
         "dbt_unique_id",
@@ -294,7 +297,6 @@ class DbtColumnProcess(ColumnProcess):
         "spark_jobs",
         "sql_functions",
         "matillion_component",
-        "process",
         "airflow_tasks",
         "fivetran_connector",
         "power_b_i_dataflow",
@@ -302,20 +304,30 @@ class DbtColumnProcess(ColumnProcess):
     ]
 
     @property
-    def dbt_column_process_job_status(self) -> Optional[str]:
+    def dbt_process_job_status(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_column_process_job_status
+            None if self.attributes is None else self.attributes.dbt_process_job_status
         )
 
-    @dbt_column_process_job_status.setter
-    def dbt_column_process_job_status(
-        self, dbt_column_process_job_status: Optional[str]
+    @dbt_process_job_status.setter
+    def dbt_process_job_status(self, dbt_process_job_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_process_job_status = dbt_process_job_status
+
+    @property
+    def dbt_upstream_contexts(self) -> Optional[List[DbtInputContext]]:
+        return (
+            None if self.attributes is None else self.attributes.dbt_upstream_contexts
+        )
+
+    @dbt_upstream_contexts.setter
+    def dbt_upstream_contexts(
+        self, dbt_upstream_contexts: Optional[List[DbtInputContext]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_column_process_job_status = dbt_column_process_job_status
+        self.attributes.dbt_upstream_contexts = dbt_upstream_contexts
 
     @property
     def dbt_alias(self) -> Optional[str]:
@@ -722,16 +734,6 @@ class DbtColumnProcess(ColumnProcess):
         self.attributes.matillion_component = matillion_component
 
     @property
-    def process(self) -> Optional[Process]:
-        return None if self.attributes is None else self.attributes.process
-
-    @process.setter
-    def process(self, process: Optional[Process]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.process = process
-
-    @property
     def airflow_tasks(self) -> Optional[List[AirflowTask]]:
         return None if self.attributes is None else self.attributes.airflow_tasks
 
@@ -771,8 +773,9 @@ class DbtColumnProcess(ColumnProcess):
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
-    class Attributes(ColumnProcess.Attributes):
-        dbt_column_process_job_status: Optional[str] = Field(
+    class Attributes(Process.Attributes):
+        dbt_process_job_status: Optional[str] = Field(default=None, description="")
+        dbt_upstream_contexts: Optional[List[DbtInputContext]] = Field(
             default=None, description=""
         )
         dbt_alias: Optional[str] = Field(default=None, description="")
@@ -834,7 +837,6 @@ class DbtColumnProcess(ColumnProcess):
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
-        process: Optional[Process] = Field(default=None, description="")  # relationship
         airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
@@ -848,8 +850,8 @@ class DbtColumnProcess(ColumnProcess):
             default=None, description=""
         )  # relationship
 
-    attributes: DbtColumnProcess.Attributes = Field(
-        default_factory=lambda: DbtColumnProcess.Attributes(),
+    attributes: DbtProcess.Attributes = Field(
+        default_factory=lambda: DbtProcess.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -858,19 +860,16 @@ class DbtColumnProcess(ColumnProcess):
     )
 
 
-from .core.adf_activity import AdfActivity  # noqa: E402, F401
-from .core.airflow_task import AirflowTask  # noqa: E402, F401
-from .core.bigquery_routine import BigqueryRoutine  # noqa: E402, F401
-from .core.catalog import Catalog  # noqa: E402, F401
-from .core.column_process import ColumnProcess  # noqa: E402, F401
-from .core.fabric_activity import FabricActivity  # noqa: E402, F401
-from .core.fivetran_connector import FivetranConnector  # noqa: E402, F401
-from .core.flow_control_operation import FlowControlOperation  # noqa: E402, F401
-from .core.function import Function  # noqa: E402, F401
-from .core.matillion_component import MatillionComponent  # noqa: E402, F401
-from .core.power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
-from .core.procedure import Procedure  # noqa: E402, F401
-from .core.process import Process  # noqa: E402, F401
-from .core.spark_job import SparkJob  # noqa: E402, F401
-
-DbtColumnProcess.Attributes.update_forward_refs()
+from .adf_activity import AdfActivity  # noqa: E402, F401
+from .airflow_task import AirflowTask  # noqa: E402, F401
+from .bigquery_routine import BigqueryRoutine  # noqa: E402, F401
+from .catalog import Catalog  # noqa: E402, F401
+from .column_process import ColumnProcess  # noqa: E402, F401
+from .fabric_activity import FabricActivity  # noqa: E402, F401
+from .fivetran_connector import FivetranConnector  # noqa: E402, F401
+from .flow_control_operation import FlowControlOperation  # noqa: E402, F401
+from .function import Function  # noqa: E402, F401
+from .matillion_component import MatillionComponent  # noqa: E402, F401
+from .power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
+from .procedure import Procedure  # noqa: E402, F401
+from .spark_job import SparkJob  # noqa: E402, F401

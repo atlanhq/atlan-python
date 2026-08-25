@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -68,11 +68,13 @@ class SqlInsightBusinessQuestion(Asset):
     A generalized business question pattern observed from real query traffic.
     """
 
+    SQL_INSIGHT_BUSINESS_QUESTION_DATASET_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTION_TEXT: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTION_CANONICAL_SQL: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTION_QUERY_COUNT: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTION_UNIQUE_USERS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTION_LAST_SEEN_AT: ClassVar[Any] = None
+    SQL_INSIGHT_BUSINESS_QUESTION_EXAMPLE_QUERIES: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -108,6 +110,11 @@ class SqlInsightBusinessQuestion(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SQL_INSIGHT_DATASET: ClassVar[Any] = None
 
+    sql_insight_business_question_dataset_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
+    """Qualified name of the dataset this business question relates to."""
+
     sql_insight_business_question_text: Union[str, None, UnsetType] = UNSET
     """Natural language text of the business question."""
 
@@ -124,6 +131,11 @@ class SqlInsightBusinessQuestion(Asset):
 
     sql_insight_business_question_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this question was last observed, in milliseconds."""
+
+    sql_insight_business_question_example_queries: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
+    """Example SQL queries that demonstrate this business question, with usage details."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -369,6 +381,11 @@ class SqlInsightBusinessQuestion(Asset):
 class SqlInsightBusinessQuestionAttributes(AssetAttributes):
     """SqlInsightBusinessQuestion-specific attributes for nested API format."""
 
+    sql_insight_business_question_dataset_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
+    """Qualified name of the dataset this business question relates to."""
+
     sql_insight_business_question_text: Union[str, None, UnsetType] = UNSET
     """Natural language text of the business question."""
 
@@ -385,6 +402,11 @@ class SqlInsightBusinessQuestionAttributes(AssetAttributes):
 
     sql_insight_business_question_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this question was last observed, in milliseconds."""
+
+    sql_insight_business_question_example_queries: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
+    """Example SQL queries that demonstrate this business question, with usage details."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -565,6 +587,9 @@ def _populate_sql_insight_business_question_attrs(
 ) -> None:
     """Populate SqlInsightBusinessQuestion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.sql_insight_business_question_dataset_qualified_name = (
+        obj.sql_insight_business_question_dataset_qualified_name
+    )
     attrs.sql_insight_business_question_text = obj.sql_insight_business_question_text
     attrs.sql_insight_business_question_canonical_sql = (
         obj.sql_insight_business_question_canonical_sql
@@ -578,6 +603,9 @@ def _populate_sql_insight_business_question_attrs(
     attrs.sql_insight_business_question_last_seen_at = (
         obj.sql_insight_business_question_last_seen_at
     )
+    attrs.sql_insight_business_question_example_queries = (
+        obj.sql_insight_business_question_example_queries
+    )
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -586,6 +614,9 @@ def _extract_sql_insight_business_question_attrs(
 ) -> dict:
     """Extract all SqlInsightBusinessQuestion attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
+    result["sql_insight_business_question_dataset_qualified_name"] = (
+        attrs.sql_insight_business_question_dataset_qualified_name
+    )
     result["sql_insight_business_question_text"] = (
         attrs.sql_insight_business_question_text
     )
@@ -600,6 +631,9 @@ def _extract_sql_insight_business_question_attrs(
     )
     result["sql_insight_business_question_last_seen_at"] = (
         attrs.sql_insight_business_question_last_seen_at
+    )
+    result["sql_insight_business_question_example_queries"] = (
+        attrs.sql_insight_business_question_example_queries
     )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
@@ -723,6 +757,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
+SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_DATASET_QUALIFIED_NAME = (
+    KeywordField(
+        "sqlInsightBusinessQuestionDatasetQualifiedName",
+        "sqlInsightBusinessQuestionDatasetQualifiedName",
+    )
+)
 SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_TEXT = KeywordField(
     "sqlInsightBusinessQuestionText", "sqlInsightBusinessQuestionText"
 )
@@ -737,6 +777,10 @@ SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_UNIQUE_USERS = NumericF
 )
 SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_LAST_SEEN_AT = NumericField(
     "sqlInsightBusinessQuestionLastSeenAt", "sqlInsightBusinessQuestionLastSeenAt"
+)
+SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_EXAMPLE_QUERIES = KeywordField(
+    "sqlInsightBusinessQuestionExampleQueries",
+    "sqlInsightBusinessQuestionExampleQueries",
 )
 SqlInsightBusinessQuestion.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"

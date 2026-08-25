@@ -126,7 +126,7 @@ class AtlanAppInstalled(Asset):
     """Configuration settings used by the atlan application."""
 
     atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
-    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
+    """Target deployment environment where the app is installed, for example atlan (Atlan-managed infra) or a customer SDR deployment name (customer-managed infra)."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Atlan application this asset belongs to."""
@@ -387,7 +387,7 @@ class AtlanAppInstalledAttributes(AssetAttributes):
     """Configuration settings used by the atlan application."""
 
     atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
-    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
+    """Target deployment environment where the app is installed, for example atlan (Atlan-managed infra) or a customer SDR deployment name (customer-managed infra)."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Atlan application this asset belongs to."""

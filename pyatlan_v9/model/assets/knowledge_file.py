@@ -70,6 +70,7 @@ class KnowledgeFile(Asset):
     KNOWLEDGE_FOLDER_NAMES: ClassVar[Any] = None
     KNOWLEDGE_CONTENT_VERSION_ID: ClassVar[Any] = None
     AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     FILE_TYPE: ClassVar[Any] = None
     FILE_PATH: ClassVar[Any] = None
@@ -124,6 +125,9 @@ class KnowledgeFile(Asset):
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -394,6 +398,9 @@ class KnowledgeFileAttributes(AssetAttributes):
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -602,6 +609,7 @@ def _populate_knowledge_file_attrs(
     attrs.knowledge_folder_names = obj.knowledge_folder_names
     attrs.knowledge_content_version_id = obj.knowledge_content_version_id
     attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.file_type = obj.file_type
     attrs.file_path = obj.file_path
@@ -619,6 +627,7 @@ def _extract_knowledge_file_attrs(attrs: KnowledgeFileAttributes) -> dict:
     result["knowledge_folder_names"] = attrs.knowledge_folder_names
     result["knowledge_content_version_id"] = attrs.knowledge_content_version_id
     result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["file_type"] = attrs.file_type
     result["file_path"] = attrs.file_path
@@ -749,6 +758,7 @@ KnowledgeFile.KNOWLEDGE_CONTENT_VERSION_ID = KeywordField(
     "knowledgeContentVersionId", "knowledgeContentVersionId"
 )
 KnowledgeFile.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+KnowledgeFile.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
 KnowledgeFile.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )

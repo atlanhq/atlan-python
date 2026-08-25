@@ -38,13 +38,13 @@ class SigmaDataElement(Sigma):
         "sigmaDataElementQuery", "sigmaDataElementQuery"
     )
     """
-
+    Query backing this data element.
     """
     SIGMA_DATA_ELEMENT_TYPE: ClassVar[KeywordField] = KeywordField(
         "sigmaDataElementType", "sigmaDataElementType"
     )
     """
-
+    Type of this data element.
     """
     SIGMA_DATA_ELEMENT_FIELD_COUNT: ClassVar[NumericField] = NumericField(
         "sigmaDataElementFieldCount", "sigmaDataElementFieldCount"

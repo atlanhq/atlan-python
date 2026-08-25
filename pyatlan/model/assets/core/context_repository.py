@@ -62,7 +62,15 @@ class ContextRepository(Context):
     Qualified name of the connection used as the execution engine for deploying and running queries against this repository.
     """  # noqa: E501
 
+    CONTEXT_INPUT_ASSETS: ClassVar[RelationField] = RelationField("contextInputAssets")
+    """
+    TBC
+    """
     CONTEXT_ARTIFACTS: ClassVar[RelationField] = RelationField("contextArtifacts")
+    """
+    TBC
+    """
+    CONTEXT_OUTPUT_SKILL: ClassVar[RelationField] = RelationField("contextOutputSkill")
     """
     TBC
     """
@@ -71,7 +79,9 @@ class ContextRepository(Context):
         "context_repository_lifecycle_status",
         "context_repository_agent_instructions",
         "context_repository_target_connection_qualified_name",
+        "context_input_assets",
         "context_artifacts",
+        "context_output_skill",
     ]
 
     @property
@@ -129,6 +139,16 @@ class ContextRepository(Context):
         )
 
     @property
+    def context_input_assets(self) -> Optional[List[Asset]]:
+        return None if self.attributes is None else self.attributes.context_input_assets
+
+    @context_input_assets.setter
+    def context_input_assets(self, context_input_assets: Optional[List[Asset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.context_input_assets = context_input_assets
+
+    @property
     def context_artifacts(self) -> Optional[List[ContextArtifact]]:
         return None if self.attributes is None else self.attributes.context_artifacts
 
@@ -137,6 +157,16 @@ class ContextRepository(Context):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.context_artifacts = context_artifacts
+
+    @property
+    def context_output_skill(self) -> Optional[Skill]:
+        return None if self.attributes is None else self.attributes.context_output_skill
+
+    @context_output_skill.setter
+    def context_output_skill(self, context_output_skill: Optional[Skill]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.context_output_skill = context_output_skill
 
     class Attributes(Context.Attributes):
         context_repository_lifecycle_status: Optional[ContextLifecycleStatus] = Field(
@@ -148,7 +178,13 @@ class ContextRepository(Context):
         context_repository_target_connection_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        context_input_assets: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
         context_artifacts: Optional[List[ContextArtifact]] = Field(
+            default=None, description=""
+        )  # relationship
+        context_output_skill: Optional[Skill] = Field(
             default=None, description=""
         )  # relationship
 
@@ -171,4 +207,6 @@ class ContextRepository(Context):
     )
 
 
+from .asset import Asset  # noqa: E402, F401
 from .context_artifact import ContextArtifact  # noqa: E402, F401
+from .skill import Skill  # noqa: E402, F401

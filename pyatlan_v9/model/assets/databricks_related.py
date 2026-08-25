@@ -30,6 +30,7 @@ __all__ = [
     "RelatedDatabricksUnityCatalogTag",
     "RelatedDatabricksNotebook",
     "RelatedDatabricksMetricView",
+    "RelatedDatabricksDashboard",
 ]
 
 
@@ -285,3 +286,36 @@ class RelatedDatabricksMetricView(RelatedDatabricks):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DatabricksMetricView"
+
+
+class RelatedDatabricksDashboard(RelatedDatabricks):
+    """
+    Related entity reference for DatabricksDashboard assets.
+
+    Extends RelatedDatabricks with DatabricksDashboard-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "DatabricksDashboard" so it serializes correctly
+
+    databricks_dashboard_path: Union[str, None, UnsetType] = UNSET
+    """Workspace path of the dashboard asset, including its file name. The parent folder path can be derived by dropping the last path segment."""
+
+    databricks_dashboard_workspace_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the workspace containing the dashboard."""
+
+    databricks_dashboard_warehouse_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the SQL warehouse backing the dashboard."""
+
+    databricks_dashboard_etag: Union[str, None, UnsetType] = UNSET
+    """Entity tag used as a change token for the dashboard."""
+
+    databricks_dashboard_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
+    """Whether a Genie space is enabled for the dashboard."""
+
+    databricks_dashboard_lifecycle_state: Union[str, None, UnsetType] = UNSET
+    """Lifecycle state of the dashboard."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "DatabricksDashboard"

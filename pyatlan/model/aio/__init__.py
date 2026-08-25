@@ -10,10 +10,10 @@ for all operations that involve API calls or iteration.
 """
 
 from .asset import AsyncIndexSearchResults, AsyncSearchResults
+from .atlan_request import AsyncAtlanRequestResponse
 from .audit import AsyncAuditSearchResults
 from .core import AsyncAtlanRequest, AsyncAtlanResponse
 from .custom_metadata import AsyncCustomMetadataDict, AsyncCustomMetadataProxy
-from .atlan_request import AsyncAtlanRequestResponse
 from .group import AsyncGroupResponse
 from .keycloak_events import AsyncAdminEventResponse, AsyncKeycloakEventResponse
 from .lineage import AsyncLineageListResults

@@ -142,9 +142,6 @@ __all__ = [
     "RelatedBigqueryRoutine",
     "RelatedBigqueryTag",
     "BusinessPolicy",
-    "BusinessPolicyException",
-    "BusinessPolicyIncident",
-    "BusinessPolicyLog",
     "RelatedBusinessPolicy",
     "RelatedBusinessPolicyException",
     "RelatedBusinessPolicyIncident",
@@ -276,6 +273,7 @@ __all__ = [
     "Databricks",
     "DatabricksAIModelContext",
     "DatabricksAIModelVersion",
+    "DatabricksDashboard",
     "DatabricksExternalLocation",
     "DatabricksExternalLocationPath",
     "DatabricksMetricView",
@@ -285,6 +283,7 @@ __all__ = [
     "RelatedDatabricks",
     "RelatedDatabricksAIModelContext",
     "RelatedDatabricksAIModelVersion",
+    "RelatedDatabricksDashboard",
     "RelatedDatabricksExternalLocation",
     "RelatedDatabricksExternalLocationPath",
     "RelatedDatabricksMetricView",
@@ -739,6 +738,7 @@ __all__ = [
     "RelatedSAP",
     "RelatedSAPColumnProcess",
     "RelatedSAPProcess",
+    "RelatedSapDatasphereReplicationFlow",
     "RelatedSapErpAbapProgram",
     "RelatedSapErpCdsView",
     "RelatedSapErpColumn",
@@ -751,6 +751,7 @@ __all__ = [
     "SAP",
     "SAPColumnProcess",
     "SAPProcess",
+    "SapDatasphereReplicationFlow",
     "SapErpAbapProgram",
     "SapErpCdsView",
     "SapErpColumn",
@@ -811,6 +812,8 @@ __all__ = [
     "RelatedSigma",
     "RelatedSigmaDataElement",
     "RelatedSigmaDataElementField",
+    "RelatedSigmaDataModel",
+    "RelatedSigmaDataModelColumn",
     "RelatedSigmaDataset",
     "RelatedSigmaDatasetColumn",
     "RelatedSigmaPage",
@@ -818,6 +821,8 @@ __all__ = [
     "Sigma",
     "SigmaDataElement",
     "SigmaDataElementField",
+    "SigmaDataModel",
+    "SigmaDataModelColumn",
     "SigmaDataset",
     "SigmaDatasetColumn",
     "SigmaPage",
@@ -903,6 +908,16 @@ __all__ = [
     "SqlInsightBusinessQuestion",
     "SqlInsightFilter",
     "SqlInsightJoin",
+    "RelatedSSRS",
+    "RelatedSSRSDataSet",
+    "RelatedSSRSField",
+    "RelatedSSRSFolder",
+    "RelatedSSRSReport",
+    "SSRS",
+    "SSRSDataSet",
+    "SSRSField",
+    "SSRSFolder",
+    "SSRSReport",
     "RelatedStarburst",
     "RelatedStarburstDataset",
     "RelatedStarburstDatasetColumn",
@@ -1136,11 +1151,6 @@ from .bigquery_related import RelatedBigqueryRoutine as RelatedBigqueryRoutine
 from .bigquery_related import RelatedBigqueryTag as RelatedBigqueryTag
 from .bigquery_routine import BigqueryRoutine as BigqueryRoutine
 from .business_policy import BusinessPolicy as BusinessPolicy
-from .business_policy_exception import (
-    BusinessPolicyException as BusinessPolicyException,
-)
-from .business_policy_incident import BusinessPolicyIncident as BusinessPolicyIncident
-from .business_policy_log import BusinessPolicyLog as BusinessPolicyLog
 from .business_policy_related import RelatedBusinessPolicy as RelatedBusinessPolicy
 from .business_policy_related import (
     RelatedBusinessPolicyException as RelatedBusinessPolicyException,
@@ -1291,6 +1301,7 @@ from .databricks_ai_model_context import (
 from .databricks_ai_model_version import (
     DatabricksAIModelVersion as DatabricksAIModelVersion,
 )
+from .databricks_dashboard import DatabricksDashboard as DatabricksDashboard
 from .databricks_external_location import (
     DatabricksExternalLocation as DatabricksExternalLocation,
 )
@@ -1306,6 +1317,7 @@ from .databricks_related import (
 from .databricks_related import (
     RelatedDatabricksAIModelVersion as RelatedDatabricksAIModelVersion,
 )
+from .databricks_related import RelatedDatabricksDashboard as RelatedDatabricksDashboard
 from .databricks_related import (
     RelatedDatabricksExternalLocation as RelatedDatabricksExternalLocation,
 )
@@ -1864,6 +1876,9 @@ from .salesforce_related import RelatedSalesforceReport as RelatedSalesforceRepo
 from .salesforce_report import SalesforceReport as SalesforceReport
 from .sap import SAP as SAP
 from .sap_column_process import SAPColumnProcess as SAPColumnProcess
+from .sap_datasphere_replication_flow import (
+    SapDatasphereReplicationFlow as SapDatasphereReplicationFlow,
+)
 from .sap_erp_abap_program import SapErpAbapProgram as SapErpAbapProgram
 from .sap_erp_cds_view import SapErpCdsView as SapErpCdsView
 from .sap_erp_column import SapErpColumn as SapErpColumn
@@ -1876,6 +1891,9 @@ from .sap_erp_view import SapErpView as SapErpView
 from .sap_process import SAPProcess as SAPProcess
 from .sap_related import RelatedSAP as RelatedSAP
 from .sap_related import RelatedSAPColumnProcess as RelatedSAPColumnProcess
+from .sap_related import (
+    RelatedSapDatasphereReplicationFlow as RelatedSapDatasphereReplicationFlow,
+)
 from .sap_related import RelatedSapErpAbapProgram as RelatedSapErpAbapProgram
 from .sap_related import RelatedSapErpCdsView as RelatedSapErpCdsView
 from .sap_related import RelatedSapErpColumn as RelatedSapErpColumn
@@ -1948,12 +1966,16 @@ from .semantic_related import RelatedSemanticModel as RelatedSemanticModel
 from .sigma import Sigma as Sigma
 from .sigma_data_element import SigmaDataElement as SigmaDataElement
 from .sigma_data_element_field import SigmaDataElementField as SigmaDataElementField
+from .sigma_data_model import SigmaDataModel as SigmaDataModel
+from .sigma_data_model_column import SigmaDataModelColumn as SigmaDataModelColumn
 from .sigma_dataset import SigmaDataset as SigmaDataset
 from .sigma_dataset_column import SigmaDatasetColumn as SigmaDatasetColumn
 from .sigma_page import SigmaPage as SigmaPage
 from .sigma_related import RelatedSigma as RelatedSigma
 from .sigma_related import RelatedSigmaDataElement as RelatedSigmaDataElement
 from .sigma_related import RelatedSigmaDataElementField as RelatedSigmaDataElementField
+from .sigma_related import RelatedSigmaDataModel as RelatedSigmaDataModel
+from .sigma_related import RelatedSigmaDataModelColumn as RelatedSigmaDataModelColumn
 from .sigma_related import RelatedSigmaDataset as RelatedSigmaDataset
 from .sigma_related import RelatedSigmaDatasetColumn as RelatedSigmaDatasetColumn
 from .sigma_related import RelatedSigmaPage as RelatedSigmaPage
@@ -2063,6 +2085,16 @@ from .sql_related import RelatedSQL as RelatedSQL
 from .sql_related import RelatedTable as RelatedTable
 from .sql_related import RelatedTablePartition as RelatedTablePartition
 from .sql_related import RelatedView as RelatedView
+from .ssrs import SSRS as SSRS
+from .ssrs_data_set import SSRSDataSet as SSRSDataSet
+from .ssrs_field import SSRSField as SSRSField
+from .ssrs_folder import SSRSFolder as SSRSFolder
+from .ssrs_related import RelatedSSRS as RelatedSSRS
+from .ssrs_related import RelatedSSRSDataSet as RelatedSSRSDataSet
+from .ssrs_related import RelatedSSRSField as RelatedSSRSField
+from .ssrs_related import RelatedSSRSFolder as RelatedSSRSFolder
+from .ssrs_related import RelatedSSRSReport as RelatedSSRSReport
+from .ssrs_report import SSRSReport as SSRSReport
 from .starburst import Starburst as Starburst
 from .starburst_dataset import StarburstDataset as StarburstDataset
 from .starburst_dataset_column import StarburstDatasetColumn as StarburstDatasetColumn

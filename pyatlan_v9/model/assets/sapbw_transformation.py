@@ -117,7 +117,7 @@ class SAPBWTransformation(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
     sap_bw_rules: Union[List[Dict[str, str]], None, UnsetType] = UNSET
-    """Rules defined within this transformation as key-value pairs (rule_id -> rule_type, sourced from RSTRANRULE). Mirrors the SAP ERP sapErpFunctionModuleImportParams shape."""
+    """Rules defined within this transformation as key-value pairs (rule_id mapped to rule_type, sourced from RSTRANRULE). Mirrors the SAP ERP sapErpFunctionModuleImportParams shape."""
 
     sap_bw_object_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of the object in SAP BW such as active, inactive, or modified (e.g. RSDAREA.OBJSTAT, RSKSNEW.OBJSTAT)."""
@@ -396,7 +396,7 @@ class SAPBWTransformationAttributes(AssetAttributes):
     """SAPBWTransformation-specific attributes for nested API format."""
 
     sap_bw_rules: Union[List[Dict[str, str]], None, UnsetType] = UNSET
-    """Rules defined within this transformation as key-value pairs (rule_id -> rule_type, sourced from RSTRANRULE). Mirrors the SAP ERP sapErpFunctionModuleImportParams shape."""
+    """Rules defined within this transformation as key-value pairs (rule_id mapped to rule_type, sourced from RSTRANRULE). Mirrors the SAP ERP sapErpFunctionModuleImportParams shape."""
 
     sap_bw_object_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of the object in SAP BW such as active, inactive, or modified (e.g. RSDAREA.OBJSTAT, RSKSNEW.OBJSTAT)."""

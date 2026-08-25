@@ -84,6 +84,7 @@ class AirflowTask(Asset):
     AIRFLOW_RUN_OPEN_LINEAGE_VERSION: ClassVar[Any] = None
     AIRFLOW_RUN_NAME: ClassVar[Any] = None
     AIRFLOW_RUN_TYPE: ClassVar[Any] = None
+    AIRFLOW_RUN_ERROR_MESSAGE: ClassVar[Any] = None
     AIRFLOW_RUN_START_TIME: ClassVar[Any] = None
     AIRFLOW_RUN_END_TIME: ClassVar[Any] = None
     AIRFLOW_RUN_OPEN_LINEAGE_STATE: ClassVar[Any] = None
@@ -176,6 +177,9 @@ class AirflowTask(Asset):
 
     airflow_run_type: Union[str, None, UnsetType] = UNSET
     """Type of the run."""
+
+    airflow_run_error_message: Union[str, None, UnsetType] = UNSET
+    """Error message of the run in Airflow, populated when the run fails."""
 
     airflow_run_start_time: Union[int, None, UnsetType] = UNSET
     """Start time of the run."""
@@ -531,6 +535,9 @@ class AirflowTaskAttributes(AssetAttributes):
     airflow_run_type: Union[str, None, UnsetType] = UNSET
     """Type of the run."""
 
+    airflow_run_error_message: Union[str, None, UnsetType] = UNSET
+    """Error message of the run in Airflow, populated when the run fails."""
+
     airflow_run_start_time: Union[int, None, UnsetType] = UNSET
     """Start time of the run."""
 
@@ -750,6 +757,7 @@ def _populate_airflow_task_attrs(
     attrs.airflow_run_open_lineage_version = obj.airflow_run_open_lineage_version
     attrs.airflow_run_name = obj.airflow_run_name
     attrs.airflow_run_type = obj.airflow_run_type
+    attrs.airflow_run_error_message = obj.airflow_run_error_message
     attrs.airflow_run_start_time = obj.airflow_run_start_time
     attrs.airflow_run_end_time = obj.airflow_run_end_time
     attrs.airflow_run_open_lineage_state = obj.airflow_run_open_lineage_state
@@ -776,6 +784,7 @@ def _extract_airflow_task_attrs(attrs: AirflowTaskAttributes) -> dict:
     result["airflow_run_open_lineage_version"] = attrs.airflow_run_open_lineage_version
     result["airflow_run_name"] = attrs.airflow_run_name
     result["airflow_run_type"] = attrs.airflow_run_type
+    result["airflow_run_error_message"] = attrs.airflow_run_error_message
     result["airflow_run_start_time"] = attrs.airflow_run_start_time
     result["airflow_run_end_time"] = attrs.airflow_run_end_time
     result["airflow_run_open_lineage_state"] = attrs.airflow_run_open_lineage_state
@@ -927,6 +936,9 @@ AirflowTask.AIRFLOW_RUN_OPEN_LINEAGE_VERSION = KeywordField(
 )
 AirflowTask.AIRFLOW_RUN_NAME = KeywordField("airflowRunName", "airflowRunName")
 AirflowTask.AIRFLOW_RUN_TYPE = KeywordField("airflowRunType", "airflowRunType")
+AirflowTask.AIRFLOW_RUN_ERROR_MESSAGE = KeywordField(
+    "airflowRunErrorMessage", "airflowRunErrorMessage"
+)
 AirflowTask.AIRFLOW_RUN_START_TIME = NumericField(
     "airflowRunStartTime", "airflowRunStartTime"
 )

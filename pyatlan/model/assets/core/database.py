@@ -10,7 +10,12 @@ from warnings import warn
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.model.fields.atlan_fields import NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    NumericField,
+    RelationField,
+)
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .s_q_l import SQL
@@ -67,8 +72,24 @@ class Database(SQL):
     """
     Number of schemas in this database.
     """
+    SQL_IS_IMPORTED_VIA_DATA_SHARE: ClassVar[BooleanField] = BooleanField(
+        "sqlIsImportedViaDataShare", "sqlIsImportedViaDataShare"
+    )
+    """
+    Whether this database was imported via a data share (true) or not (false).
+    """
+    SQL_ORIGIN_ACCOUNT_GUID: ClassVar[KeywordField] = KeywordField(
+        "sqlOriginAccountGuid", "sqlOriginAccountGuid"
+    )
+    """
+    Source-system identifier of the account that produced this imported database.
+    """
 
     FABRIC_WORKSPACE: ClassVar[RelationField] = RelationField("fabricWorkspace")
+    """
+    TBC
+    """
+    SQL_SCHEMAS: ClassVar[RelationField] = RelationField("sqlSchemas")
     """
     TBC
     """
@@ -79,7 +100,10 @@ class Database(SQL):
 
     _convenience_properties: ClassVar[List[str]] = [
         "schema_count",
+        "sql_is_imported_via_data_share",
+        "sql_origin_account_guid",
         "fabric_workspace",
+        "sql_schemas",
         "schemas",
     ]
 
@@ -94,6 +118,34 @@ class Database(SQL):
         self.attributes.schema_count = schema_count
 
     @property
+    def sql_is_imported_via_data_share(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_is_imported_via_data_share
+        )
+
+    @sql_is_imported_via_data_share.setter
+    def sql_is_imported_via_data_share(
+        self, sql_is_imported_via_data_share: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_is_imported_via_data_share = sql_is_imported_via_data_share
+
+    @property
+    def sql_origin_account_guid(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sql_origin_account_guid
+        )
+
+    @sql_origin_account_guid.setter
+    def sql_origin_account_guid(self, sql_origin_account_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_origin_account_guid = sql_origin_account_guid
+
+    @property
     def fabric_workspace(self) -> Optional[FabricWorkspace]:
         return None if self.attributes is None else self.attributes.fabric_workspace
 
@@ -102,6 +154,16 @@ class Database(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fabric_workspace = fabric_workspace
+
+    @property
+    def sql_schemas(self) -> Optional[List[Schema]]:
+        return None if self.attributes is None else self.attributes.sql_schemas
+
+    @sql_schemas.setter
+    def sql_schemas(self, sql_schemas: Optional[List[Schema]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_schemas = sql_schemas
 
     @property
     def schemas(self) -> Optional[List[Schema]]:
@@ -115,7 +177,14 @@ class Database(SQL):
 
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(default=None, description="")
+        sql_is_imported_via_data_share: Optional[bool] = Field(
+            default=None, description=""
+        )
+        sql_origin_account_guid: Optional[str] = Field(default=None, description="")
         fabric_workspace: Optional[FabricWorkspace] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_schemas: Optional[List[Schema]] = Field(
             default=None, description=""
         )  # relationship
         schemas: Optional[List[Schema]] = Field(

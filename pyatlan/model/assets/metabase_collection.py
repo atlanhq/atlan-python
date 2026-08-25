@@ -76,25 +76,25 @@ class MetabaseCollection(Metabase):
         "metabaseSlug", "metabaseSlug", "metabaseSlug.text"
     )
     """
-
+    
     """
     METABASE_COLOR: ClassVar[KeywordField] = KeywordField(
         "metabaseColor", "metabaseColor"
     )
     """
-
+    
     """
     METABASE_NAMESPACE: ClassVar[KeywordTextField] = KeywordTextField(
         "metabaseNamespace", "metabaseNamespace", "metabaseNamespace.text"
     )
     """
-
+    
     """
     METABASE_IS_PERSONAL_COLLECTION: ClassVar[BooleanField] = BooleanField(
         "metabaseIsPersonalCollection", "metabaseIsPersonalCollection"
     )
     """
-
+    
     """
 
     METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")

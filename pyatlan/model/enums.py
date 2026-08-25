@@ -2711,6 +2711,24 @@ class AdfActivityState(str, Enum):
     INACTIVE = "INACTIVE"
 
 
+class AgentType(str, Enum):
+    SYSTEM = "SYSTEM"
+    CUSTOM = "CUSTOM"
+
+
+class AgenticLifecycleStatus(str, Enum):
+    DRAFT = "DRAFT"
+    PUBLISHED = "PUBLISHED"
+
+
+class AgenticSource(str, Enum):
+    CONTEXT_STUDIO = "context_studio"
+    ENRICHMENT_STUDIO = "enrichment_studio"
+    MARKETPLACE = "marketplace"
+    AUTOMATION_ENGINE = "automation_engine"
+    UNKNOWN = "unknown"
+
+
 class AppWorkflowRunStatus(str, Enum):
     SKIPPED = "Skipped"
     PENDING = "Pending"
@@ -2719,6 +2737,8 @@ class AppWorkflowRunStatus(str, Enum):
     FAILED = "Failed"
     ERROR = "Error"
     STOPPED = "Stopped"
+    PAUSED = "Paused"
+    TERMINATED = "Terminated"
 
 
 class AssetDQRunStatus(str, Enum):
@@ -2758,6 +2778,7 @@ class AtlanAppDeploymentOperation(str, Enum):
     INSTALL = "INSTALL"
     UPGRADE = "UPGRADE"
     DOWNGRADE = "DOWNGRADE"
+    UNINSTALL = "UNINSTALL"
 
 
 class AtlanAppDeploymentStatus(str, Enum):
@@ -2769,6 +2790,20 @@ class AtlanAppDeploymentStatus(str, Enum):
 class AtlanAppWorkflowOwnership(str, Enum):
     SYSTEM = "SYSTEM"
     USER = "USER"
+
+
+class AtlanAppWorkflowRuntimeMode(str, Enum):
+    SDR = "SDR"
+    DIRECT = "DIRECT"
+
+
+class AtlanAppWorkflowSource(str, Enum):
+    CONNECTOR = "connector"
+    ENRICHMENT_STUDIO = "enrichment_studio"
+    BACKGROUND_JOB = "background_job"
+    SYSTEM_JOB = "system_job"
+    UNKNOWN = "unknown"
+    ADHOC = "adhoc"
 
 
 class AtlanAppWorkflowStatus(str, Enum):
@@ -2975,6 +3010,11 @@ class DataQualitySourceSyncStatus(str, Enum):
     WAITING_FOR_SCHEDULE = "WAITING_FOR_SCHEDULE"
 
 
+class DatabricksDashboardLifecycleState(str, Enum):
+    ACTIVE = "ACTIVE"
+    TRASHED = "TRASHED"
+
+
 class DatabricksVolumeType(str, Enum):
     MANAGED = "MANAGED"
     EXTERNAL = "EXTERNAL"
@@ -3138,6 +3178,12 @@ class KafkaTopicCompressionType(str, Enum):
     PRODUCER = "producer"
 
 
+class KnowledgeFolderType(str, Enum):
+    UPLOAD = "UPLOAD"
+    AGENT_CREATED = "AGENT_CREATED"
+    CONNECTOR_SYNC = "CONNECTOR_SYNC"
+
+
 class MatillionJobType(str, Enum):
     ORCHESTRATION = "ORCHESTRATION"
     TRANSFORMATION = "TRANSFORMATION"
@@ -3236,6 +3282,30 @@ class SchemaRegistrySchemaType(str, Enum):
     AVRO = "AVRO"
     JSON = "JSON"
     PROTOBUF = "PROTOBUF"
+
+
+class SkillType(str, Enum):
+    SYSTEM = "SYSTEM"
+    CONTEXT_REPO = "CONTEXT_REPO"
+    CUSTOM = "CUSTOM"
+    CONNECTOR_SYNC = "CONNECTOR_SYNC"
+
+
+class SnowflakeListingDistribution(str, Enum):
+    ORGANIZATION = "ORGANIZATION"
+    EXTERNAL = "EXTERNAL"
+
+
+class SnowflakeListingState(str, Enum):
+    PUBLISHED = "PUBLISHED"
+    DRAFT = "DRAFT"
+    UNPUBLISHED = "UNPUBLISHED"
+    LIVE = "LIVE"
+
+
+class SnowflakeShareKind(str, Enum):
+    INBOUND = "INBOUND"
+    OUTBOUND = "OUTBOUND"
 
 
 class SourceCostUnitType(str, Enum):

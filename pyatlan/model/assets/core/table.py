@@ -246,19 +246,25 @@ class Table(SQL):
     Data retention time in days.
     """
 
-    COLUMNS: ClassVar[RelationField] = RelationField("columns")
-    """
-    TBC
-    """
-    FACTS: ClassVar[RelationField] = RelationField("facts")
-    """
-    TBC
-    """
     ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
     """
     TBC
     """
     PARTITIONS: ClassVar[RelationField] = RelationField("partitions")
+    """
+    TBC
+    """
+    SNOWFLAKE_TARGET_TABLE: ClassVar[RelationField] = RelationField(
+        "snowflakeTargetTable"
+    )
+    """
+    TBC
+    """
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    FACTS: ClassVar[RelationField] = RelationField("facts")
     """
     TBC
     """
@@ -299,10 +305,11 @@ class Table(SQL):
         "table_external_volume_name",
         "iceberg_table_base_location",
         "table_retention_time",
-        "columns",
-        "facts",
         "atlan_schema",
         "partitions",
+        "snowflake_target_table",
+        "columns",
+        "facts",
         "queries",
         "dimensions",
     ]
@@ -612,26 +619,6 @@ class Table(SQL):
         self.attributes.table_retention_time = table_retention_time
 
     @property
-    def columns(self) -> Optional[List[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[List[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def facts(self) -> Optional[List[Table]]:
-        return None if self.attributes is None else self.attributes.facts
-
-    @facts.setter
-    def facts(self, facts: Optional[List[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.facts = facts
-
-    @property
     def atlan_schema(self) -> Optional[Schema]:
         return None if self.attributes is None else self.attributes.atlan_schema
 
@@ -650,6 +637,40 @@ class Table(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.partitions = partitions
+
+    @property
+    def snowflake_target_table(self) -> Optional[SnowflakeV1CortexSearchService]:
+        return (
+            None if self.attributes is None else self.attributes.snowflake_target_table
+        )
+
+    @snowflake_target_table.setter
+    def snowflake_target_table(
+        self, snowflake_target_table: Optional[SnowflakeV1CortexSearchService]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_target_table = snowflake_target_table
+
+    @property
+    def columns(self) -> Optional[List[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[List[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def facts(self) -> Optional[List[Table]]:
+        return None if self.attributes is None else self.attributes.facts
+
+    @facts.setter
+    def facts(self, facts: Optional[List[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.facts = facts
 
     @property
     def queries(self) -> Optional[List[Query]]:
@@ -705,16 +726,19 @@ class Table(SQL):
         table_external_volume_name: Optional[str] = Field(default=None, description="")
         iceberg_table_base_location: Optional[str] = Field(default=None, description="")
         table_retention_time: Optional[int] = Field(default=None, description="")
-        columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        facts: Optional[List[Table]] = Field(
-            default=None, description=""
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             default=None, description=""
         )  # relationship
         partitions: Optional[List[TablePartition]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_target_table: Optional[SnowflakeV1CortexSearchService] = Field(
+            default=None, description=""
+        )  # relationship
+        columns: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
+        facts: Optional[List[Table]] = Field(
             default=None, description=""
         )  # relationship
         queries: Optional[List[Query]] = Field(
@@ -783,4 +807,7 @@ class Table(SQL):
 from .column import Column  # noqa: E402, F401
 from .query import Query  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401
+from .snowflake_v1_cortex_search_service import (
+    SnowflakeV1CortexSearchService,  # noqa: E402, F401
+)
 from .table_partition import TablePartition  # noqa: E402, F401

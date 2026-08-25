@@ -20,7 +20,6 @@ from typing import Any, ClassVar, Dict, List, Optional, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-# Hand-patched: renderer (atlanhq/models#1960) mis-rewrites this v8 helper as a self-import. Revert when fixed upstream.
 from pyatlan.model.assets.connection import _validate_connector_type_value
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan_v9.model.conversion_utils import (
@@ -104,6 +103,8 @@ class Connection(Asset):
     OBJECT_STORAGE_UPLOAD_THRESHOLD: ClassVar[Any] = None
     VECTOR_EMBEDDINGS_ENABLED: ClassVar[Any] = None
     VECTOR_EMBEDDINGS_UPDATED_AT: ClassVar[Any] = None
+    CONNECTION_SOURCE_ACCOUNT_IDENTIFIER: ClassVar[Any] = None
+    CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
@@ -255,6 +256,12 @@ class Connection(Asset):
 
     vector_embeddings_updated_at: Union[int, None, UnsetType] = UNSET
     """"""
+
+    connection_source_account_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the source account this connection points to, expressed in the source's own namespace (for example 'MYORG.MYACCOUNT' for Snowflake). Distinct from the credential host, which uses a different namespace and does not convert."""
+
+    connection_popularity_insights_computed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which popularity insights were last computed for this connection, in milliseconds. Marks the end of the popularity window; the start is this value minus popularityInsightsTimeframe days."""
 
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
@@ -744,6 +751,12 @@ class ConnectionAttributes(AssetAttributes):
     vector_embeddings_updated_at: Union[int, None, UnsetType] = UNSET
     """"""
 
+    connection_source_account_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the source account this connection points to, expressed in the source's own namespace (for example 'MYORG.MYACCOUNT' for Snowflake). Distinct from the credential host, which uses a different namespace and does not convert."""
+
+    connection_popularity_insights_computed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which popularity insights were last computed for this connection, in milliseconds. Marks the end of the popularity window; the start is this value minus popularityInsightsTimeframe days."""
+
 
 class ConnectionRelationshipAttributes(AssetRelationshipAttributes):
     """Connection-specific relationship attributes for nested API format."""
@@ -929,6 +942,12 @@ def _populate_connection_attrs(attrs: ConnectionAttributes, obj: Connection) -> 
     attrs.object_storage_upload_threshold = obj.object_storage_upload_threshold
     attrs.vector_embeddings_enabled = obj.vector_embeddings_enabled
     attrs.vector_embeddings_updated_at = obj.vector_embeddings_updated_at
+    attrs.connection_source_account_identifier = (
+        obj.connection_source_account_identifier
+    )
+    attrs.connection_popularity_insights_computed_at = (
+        obj.connection_popularity_insights_computed_at
+    )
 
 
 def _extract_connection_attrs(attrs: ConnectionAttributes) -> dict:
@@ -985,6 +1004,12 @@ def _extract_connection_attrs(attrs: ConnectionAttributes) -> dict:
     result["object_storage_upload_threshold"] = attrs.object_storage_upload_threshold
     result["vector_embeddings_enabled"] = attrs.vector_embeddings_enabled
     result["vector_embeddings_updated_at"] = attrs.vector_embeddings_updated_at
+    result["connection_source_account_identifier"] = (
+        attrs.connection_source_account_identifier
+    )
+    result["connection_popularity_insights_computed_at"] = (
+        attrs.connection_popularity_insights_computed_at
+    )
     return result
 
 
@@ -1179,6 +1204,12 @@ Connection.VECTOR_EMBEDDINGS_ENABLED = BooleanField(
 )
 Connection.VECTOR_EMBEDDINGS_UPDATED_AT = NumericField(
     "vectorEmbeddingsUpdatedAt", "vectorEmbeddingsUpdatedAt"
+)
+Connection.CONNECTION_SOURCE_ACCOUNT_IDENTIFIER = KeywordField(
+    "connectionSourceAccountIdentifier", "connectionSourceAccountIdentifier"
+)
+Connection.CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT = NumericField(
+    "connectionPopularityInsightsComputedAt", "connectionPopularityInsightsComputedAt"
 )
 Connection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Connection.APPLICATION = RelationField("application")

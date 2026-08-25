@@ -39,7 +39,7 @@ class SigmaDataElementField(Sigma):
         "sigmaDataElementFieldFormula", "sigmaDataElementFieldFormula"
     )
     """
-
+    Formula or expression that defines this field.
     """
 
     SIGMA_DATA_ELEMENT: ClassVar[RelationField] = RelationField("sigmaDataElement")
