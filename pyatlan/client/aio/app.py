@@ -253,14 +253,14 @@ class AsyncAppClient:
         if idempotent:
             current = await self._find_current_run(slug)
             if current is not None:
-                raise _already_running_error(slug, current)
+                raise _already_running_error(slug)
         try:
             raw = await self._call(AppSubmit.prepare_request(slug))
         except AtlanError as exc:
             if idempotent and _is_server_error(exc):
                 current = await self._await_active_run(slug)
                 if current is not None:
-                    raise _already_running_error(slug, current) from exc
+                    raise _already_running_error(slug) from exc
             raise
         return AppSubmit.process_response(raw)
 

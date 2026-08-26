@@ -301,7 +301,7 @@ def test_submit_idempotent_blocks_concurrent_run(client: AtlanClient):
             # The guard surfaces a clean "already running" error once the run is
             # indexed; if the search index still lags, the backend's own rejection
             # (500) is surfaced instead — either way a duplicate run is prevented.
-            assert "already has an active run" in msg or "500" in msg
+            assert "already has a run in progress" in msg or "500" in msg
         else:
             # The first run finished before the concurrent submit landed — with
             # dummy creds a run can terminate almost immediately, so there is

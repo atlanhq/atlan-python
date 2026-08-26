@@ -385,6 +385,18 @@ class AppBuilder:
         """
         if not self._update_slug:
             raise ValueError("call load(slug) before update()")
+        # Builder setters key off the configmap's field ids, which for most apps
+        # are hyphenated (e.g. "miner-start-time-epoch"), while load() populated
+        # _metadata with the workflow's stored arg keys — the underscore field
+        # names that to_inputs() also emits. When both variants of one field are
+        # present the model can't disambiguate and the loaded value can win,
+        # silently dropping the caller's change. Collapse every key to its
+        # underscore field-name form so a builder-set value (applied after load)
+        # always overrides the loaded one. Setter keys are inserted after load's,
+        # so iteration order makes the setter value win on collision.
+        self._metadata = {
+            key.replace("-", "_"): value for key, value in self._metadata.items()
+        }
         # Normalize BEFORE assembly — the typed inputs model rejects a string
         # field (e.g. control_config) that the read-back returned as an object.
         self._metadata = self._normalize_string_inputs(dict(self._metadata))

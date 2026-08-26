@@ -699,8 +699,11 @@ class ErrorCode(Enum):
     APP_WORKFLOW_ALREADY_RUNNING = (
         400,
         "ATLAN-PYTHON-400-080",
-        "App workflow '{0}' already has an active run ({1}); it cannot be submitted again while a run is in progress.",
-        "Wait for the current run to reach a terminal status, or call submit(..., idempotent=False) to submit a new run anyway.",
+        "App workflow '{0}' already has a run in progress; a new run cannot be submitted while one is active.",
+        "Wait for the current run to finish, or cancel it before submitting again "
+        "(cancel it from the Atlan UI, or with client.app.cancel_run(run_id)). "
+        "To submit a new run regardless, call submit(..., idempotent=False). "
+        "See https://docs.atlan.com/product/capabilities/build-apps/sdks/python/apps/manage-apps",
         InvalidRequestError,
     )
     AUTHENTICATION_PASSTHROUGH = (

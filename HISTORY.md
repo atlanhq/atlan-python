@@ -1,3 +1,38 @@
+## 11.0.0 (August 26, 2026)
+
+### New Features
+
+- **`load()` / `update()` for app workflows**: Every app builder now supports `load(slug)` + `update()` to publish a new version of an existing workflow, changing only the fields you set while preserving everything else — including reusing the persisted credential by guid (never re-vaulted or rotated). Because it lives on the base `AppBuilder`, every connector builder (BigQuery, Snowflake, …) inherits the same fluent update path as create.
+- **Typed Standard Lineage builder (`AtlanStandardLineage`)**: A new builder in `pyatlan.model.apps` for building lineage across multiple connections of the same connector, reading each connection's already-mined query history (no crawl, no credential). Includes re-scope helpers (`add_connections` / `remove_connections` / `set_connections` / `get_connections`) for onboarding connections over time. Generated from the app's input contract via a reusable overlay so it stays in sync as the contract evolves.
+- **Idempotent app `submit`**: `client.app.submit(slug, idempotent=True)` refuses to launch a duplicate run while one is already in progress, raising `APP_WORKFLOW_ALREADY_RUNNING` instead of starting another. Resilient to search-index lag (it reconfirms against the index if the server rejects the submit). Defaults to `False`, so existing callers are unaffected. Sync and async parity.
+- **Asset Export (Basic) "Export empty custom metadata" toggle**: `CsaUberAssetExportBasic` now surfaces `export_empty_custom_metadata("true" | "false")`. When on (the default), the export emits a column for every custom metadata attribute defined on the tenant — even when no exported asset has a value for it — restoring the legacy behaviour where defined-but-unfilled attributes still produced columns; off emits only attributes valued somewhere in the export.
+- **BigQuery miner billing strategy**: `BigqueryMiner` now carries `billing-strategy` — `central` (default, today's behaviour) or `distributed`, which bills each mined project for its own query-history jobs instead of the connection's credential project.
+
+### Breaking Changes
+
+- **Removed the legacy Argo workflow client and package builders**: `client.workflow` (`WorkflowClient` / `AsyncWorkflowClient`, along with its shared request helpers, workflow models, and workflow API constants) and the `pyatlan.model.packages.*` builders have been removed. They only existed to orchestrate the legacy Argo workflow surface, which no longer runs on native-app tenants. Use `client.app` (see [Manage apps](https://docs.atlan.com/product/capabilities/build-apps/sdks/python/apps/manage-apps)) and the per-connector builders in `pyatlan.model.apps` instead. The `Workflow` **asset** entity and the approval-workflow client (`client.inbox`) are unaffected.
+- **Typed BigQuery WIF credentials**: `BigqueryCrawler.workload_identity_federation()` now takes the four WIF-specific values — `service_account_email`, `wif_pool_provider_id`, `atlan_oauth_id`, and `atlan_oauth_secret` — as typed, required keyword-only parameters, matching the fully-typed `service_account()`. Previously these rode through untyped `**extra`, so they were undiscoverable and a misspelled key was silently accepted (producing a broken `gcp-wif` credential with no error). **Impact:** a bare `project_id`-only call now raises `TypeError`; pass the WIF values explicitly. `**extra` is retained for forward-compatibility with fields newer than this signature.
+
+### Experimental: pyatlan_v9
+
+- **Models regenerated to the latest typedefs**: `pyatlan_v9` (msgspec) is regenerated from the latest type definitions ([models#1899](https://github.com/atlanhq/models/pull/1899)), adding new asset families (AI, Snowflake Cortex) and the newest attributes. This regeneration also **restores the per-asset `validate()` / `minimize()` / `relate()` methods** on every asset (a regression guard now asserts they stay present), and normalizes import ordering across the tree.
+
+### Bug Fixes
+
+- **App-workflow `update()` preserves the full connection**: `update()` now re-sends the complete persisted connection and re-injects `connection_qualified_name` (which the server derives on create but not on update), so a run submitted after an update no longer fails downstream (for example, Publish-to-Atlas). String-typed contract fields returned as objects are normalized, and every other current input is preserved.
+- **Reused credential placement (CONNECT-843)**: When reusing an already-vaulted credential, the guid now rides on the connection entity (`attributes.defaultCredentialGuid`) with top-level `credential_guid` left empty — the UI's wire shape — instead of at the top level. A top-level guid with no credential body made the create/update endpoint flatten the shared credential record (wiping a `gcp-wif` credential's `authType`/`extra`), breaking every workflow that shared it. `load()` reads the reused guid back from the connection (falling back to top-level for older workflows).
+- **App management no longer retries HTTP 500**: App-management calls no longer retry on HTTP 500. A 500 there is not transient (for example, submitting a workflow that already has an active run), and retrying a non-idempotent POST could trigger multiple failed runs; a single `submit` is now exactly one attempt.
+- **App-workflow `update()` now applies builder changes for every connector**: `load(slug).<setter>().update()` previously only took effect for the few builders whose setter keys happen to be underscored (e.g. `BigqueryCrawler`); for the ~32 builders that key off the configmap's hyphenated field ids (`BigqueryMiner`, `SnowflakeCrawler`, the `Atlan*` connectors, …) the change was silently dropped, because `load()` reads the workflow's underscore arg keys and the loaded value won the collision. `update()` now collapses each input key to its underscore field-name form (verified: every field name equals its alias with hyphens→underscores across all 35 input models), so a builder-set value always overrides the loaded one. Runtime/structural keys (`user-id`, `connection`, `credential`) are unaffected.
+- **Clearer "already running" submit error**: When `submit(..., idempotent=True)` refuses a duplicate run, the error now explains how to proceed — wait for the current run to finish, cancel it (`client.app.cancel_run(run_id)` or from the Atlan UI), or pass `idempotent=False` to submit anyway — and links the [Manage apps](https://docs.atlan.com/product/capabilities/build-apps/sdks/python/apps/manage-apps) docs. It no longer surfaces the internal automation-engine run identifier.
+
+### QOL Improvements
+
+- **pydantic assets synced to the latest typedefs**: The `pyatlan.model.assets` (pydantic) set is regenerated against the latest type definitions, picking up new asset types and attributes, with several generator fixes (deterministic cycle-safe imports, correct core/non-core import paths, complete struct imports) and import ordering normalized.
+
+### Packages
+
+- **cryptography**: Bumped from 49.0.0 to 50.0.0 to address CVE-2026-69247 (HIGH).
+
 ## 10.0.0 (August 13, 2026)
 
 ### New Features
