@@ -89,10 +89,8 @@ _RUN_CHECK_TIMEOUT_SECONDS = 6.0
 _RUN_CHECK_INTERVAL_SECONDS = 1.5
 
 
-def _already_running_error(slug: str, run: "AppWorkflowRun"):
-    return ErrorCode.APP_WORKFLOW_ALREADY_RUNNING.exception_with_parameters(
-        slug, run.qualified_name or "in-progress run"
-    )
+def _already_running_error(slug: str):
+    return ErrorCode.APP_WORKFLOW_ALREADY_RUNNING.exception_with_parameters(slug)
 
 
 def _is_server_error(exc: AtlanError) -> bool:
@@ -353,7 +351,7 @@ class AppClient:
         if idempotent:
             current = self._find_current_run(slug)
             if current is not None:
-                raise _already_running_error(slug, current)
+                raise _already_running_error(slug)
         try:
             raw = self._call(AppSubmit.prepare_request(slug))
         except AtlanError as exc:
@@ -363,7 +361,7 @@ class AppClient:
             if idempotent and _is_server_error(exc):
                 current = self._await_active_run(slug)
                 if current is not None:
-                    raise _already_running_error(slug, current) from exc
+                    raise _already_running_error(slug) from exc
             raise
         return AppSubmit.process_response(raw)
 

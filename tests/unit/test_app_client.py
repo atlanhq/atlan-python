@@ -294,7 +294,7 @@ def test_submit_idempotent_raises_when_already_running(client, mock_api_caller):
     _wire_asset_search(mock_api_caller, active_runs=[_running_run("a-1")])
     with pytest.raises(AtlanError) as exc:
         client.submit("a-1", idempotent=True)
-    assert "already has an active run" in str(exc.value)
+    assert "already has a run in progress" in str(exc.value)
     # No submit POST was sent — we short-circuited before _call_api.
     mock_api_caller._call_api.assert_not_called()
 
@@ -306,7 +306,7 @@ def test_submit_idempotent_recovers_already_running_on_500(client, mock_api_call
     mock_api_caller._call_api.side_effect = _server_error_500()
     with pytest.raises(AtlanError) as exc:
         client.submit("a-1", idempotent=True)
-    assert "already has an active run" in str(exc.value)  # clean error, not raw 500
+    assert "already has a run in progress" in str(exc.value)  # clean error, not raw 500
     mock_api_caller._call_api.assert_called_once()  # exactly one submit attempt
 
 
@@ -318,7 +318,7 @@ def test_submit_idempotent_reraises_genuine_500(client, mock_api_caller, monkeyp
     with pytest.raises(AtlanError) as exc:
         client.submit("a-1", idempotent=True)
     assert "internal error" in str(exc.value)
-    assert "already has an active run" not in str(exc.value)
+    assert "already has a run in progress" not in str(exc.value)
 
 
 def test_submit_idempotent_false_skips_check_and_submits(client, mock_api_caller):
@@ -513,7 +513,7 @@ async def test_async_submit_idempotent_raises_when_already_running(
     client = AsyncAppClient(async_mock_api_caller)
     with pytest.raises(AtlanError) as exc:
         await client.submit("a-1", idempotent=True)
-    assert "already has an active run" in str(exc.value)
+    assert "already has a run in progress" in str(exc.value)
     async_mock_api_caller._call_api.assert_not_called()
 
 
