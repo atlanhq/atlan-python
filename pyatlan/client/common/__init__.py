@@ -139,8 +139,11 @@ from .sso import (
     SSOCreateGroupMapping,
     SSODeleteGroupMapping,
     SSOGetAllGroupMappings,
+    SSOGetAllIdentityProviders,
     SSOGetGroupMapping,
     SSOUpdateGroupMapping,
+    SSOUpdateIdentityProvider,
+    normalize_signing_certificate,
 )
 
 # Task shared logic classes
@@ -281,6 +284,9 @@ __all__ = [
     # SSO shared logic classes
     "SSOCheckExistingMappings",
     "SSOCreateGroupMapping",
+    "SSOGetAllIdentityProviders",
+    "SSOUpdateIdentityProvider",
+    "normalize_signing_certificate",
     "SSODeleteGroupMapping",
     "SSOGetAllGroupMappings",
     "SSOGetGroupMapping",

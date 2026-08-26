@@ -8,11 +8,14 @@ from typing import List
 import msgspec
 
 from pyatlan.client.common import AsyncApiCaller
+from pyatlan.client.common.sso import normalize_signing_certificate
 from pyatlan.client.constants import (
     CREATE_SSO_GROUP_MAPPING,
     DELETE_SSO_GROUP_MAPPING,
+    GET_ALL_IDPS,
     GET_ALL_SSO_GROUP_MAPPING,
     GET_SSO_GROUP_MAPPING,
+    UPDATE_IDP,
     UPDATE_SSO_GROUP_MAPPING,
 )
 from pyatlan.errors import AtlanError, ErrorCode
@@ -25,7 +28,7 @@ from pyatlan_v9.client.sso import (
     _resolve_sso_alias,
 )
 from pyatlan_v9.model.group import AtlanGroup
-from pyatlan_v9.model.sso import SSOMapper, SSOMapperConfig
+from pyatlan_v9.model.sso import SSOMapper, SSOMapperConfig, SSOProvider
 from pyatlan_v9.validate import validate_arguments
 
 
@@ -199,3 +202,95 @@ class V9AsyncSSOClient:
         )
         raw_json = await self._client._call_api(endpoint)
         return raw_json
+
+    @staticmethod
+    def _parse_sso_providers(raw_json) -> List[SSOProvider]:
+        if not raw_json:
+            return []
+        try:
+            return msgspec.convert(raw_json, List[SSOProvider], strict=False)
+        except msgspec.ValidationError as err:
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
+
+    async def get_all_identity_providers(self) -> List[SSOProvider]:
+        """
+        Retrieves all SSO identity providers configured on the tenant.
+
+        Requires an API token with the admin role or workspace-admin
+        subrole (READ_TENANT_IDP); other tokens receive a 403.
+
+        :raises AtlanError: on any error during API invocation.
+        :returns: list of the tenant's SSO identity providers.
+        """
+        raw_json = await self._client._call_api(GET_ALL_IDPS)
+        return self._parse_sso_providers(raw_json)
+
+    @validate_arguments
+    async def get_identity_provider(self, sso_alias: str) -> SSOProvider:
+        """
+        Retrieves the SSO identity provider with the given alias.
+
+        :param sso_alias: alias of the SSO provider (e.g. `azure`, `okta`).
+        :raises AtlanError: on any error during API invocation.
+        :raises NotFoundError: if no identity provider exists with the given alias.
+        :returns: the identity provider configuration.
+        """
+        for provider in await self.get_all_identity_providers():
+            if provider.alias == sso_alias:
+                return provider
+        raise ErrorCode.IDP_NOT_FOUND_BY_ALIAS.exception_with_parameters(sso_alias)
+
+    @validate_arguments
+    async def update_identity_provider(self, provider: SSOProvider) -> SSOProvider:
+        """
+        Updates an SSO identity provider's configuration.
+
+        The backend treats this as a full replacement: always retrieve the
+        current configuration first (`get_identity_provider()`), modify it,
+        and pass the complete object here. Sending a partial object may
+        silently reset fields that were omitted.
+
+        Requires an API token with the admin role or workspace-admin
+        subrole (UPDATE_TENANT_IDP); other tokens receive a 403.
+
+        :param provider: the complete identity provider configuration to store.
+        :raises AtlanError: on any error during API invocation.
+        :returns: the identity provider configuration, re-read after the update.
+        """
+        if not provider.alias:
+            raise ErrorCode.MISSING_REQUIRED_QUERY_PARAM.exception_with_parameters(
+                "the identity provider", "alias"
+            )
+        alias: str = provider.alias
+        endpoint = UPDATE_IDP.format_path({"sso_alias": alias})
+        await self._client._call_api(endpoint, request_obj=provider)
+        return await self.get_identity_provider(sso_alias=alias)
+
+    @validate_arguments
+    async def update_signing_certificate(
+        self, sso_alias: str, certificate: str
+    ) -> SSOProvider:
+        """
+        Replaces the signing certificate on the given SSO identity
+        provider, leaving the rest of the configuration untouched.
+
+        API tokens authenticate independently of SSO, so this works even
+        while SSO logins are failing (for example, after the certificate
+        expired) - as long as the token already exists.
+
+        :param sso_alias: alias of the SSO provider (e.g. `azure`, `okta`).
+        :param certificate: new X.509 certificate, as PEM or a single line
+            of base64; stored as one line with no BEGIN/END lines and no
+            line breaks.
+        :raises AtlanError: on any error during API invocation.
+        :raises NotFoundError: if no identity provider exists with the given alias.
+        :returns: the identity provider configuration, re-read after the update.
+        """
+        provider = await self.get_identity_provider(sso_alias=sso_alias)
+        provider.config = provider.config or {}
+        provider.config["signingCertificate"] = normalize_signing_certificate(
+            certificate
+        )
+        return await self.update_identity_provider(provider=provider)
