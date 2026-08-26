@@ -42,6 +42,10 @@ class CsaUberAssetExportBasicInputs(AppInput):
     """Include data products? — Whether data products (and their domains) should be exported too."""
     include_archived: bool = Field(False, alias="include-archived")
     """Include archived? — Whether to include archived assets in the export (Yes) or only active assets (No)."""
+    export_empty_custom_metadata: str = Field(
+        "true", alias="export-empty-custom-metadata"
+    )
+    """Export Empty Custom Metadata? — Emit a column for every custom metadata attribute defined on the tenant, even when no exported asset has a value for it. Turning this off emits only attributes that carry a value somewhere in the export."""
 
 
 class CsaUberAssetExportBasic(AppBuilder):
@@ -214,6 +218,13 @@ class CsaUberAssetExportBasic(AppBuilder):
     def include_archived(self, enabled: bool = True) -> "CsaUberAssetExportBasic":
         """Include archived? — Whether to include archived assets in the export (Yes) or only active assets (No)."""
         self._metadata["include-archived"] = enabled
+        return self
+
+    def export_empty_custom_metadata(
+        self, value: Literal["true", "false"]
+    ) -> "CsaUberAssetExportBasic":
+        """Export Empty Custom Metadata? — Emit a column for every custom metadata attribute defined on the tenant, even when no exported asset has a value for it. Turning this off emits only attributes that carry a value somewhere in the export."""
+        self._metadata["export-empty-custom-metadata"] = value
         return self
 
 
