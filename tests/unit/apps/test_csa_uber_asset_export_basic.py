@@ -19,6 +19,7 @@ def test_csa_uber_asset_export_basic_inputs_defaults():
     assert i.include_glossaries is False
     assert i.include_products is False
     assert i.include_archived is False
+    assert i.export_empty_custom_metadata == "true"
 
 
 def test_csa_uber_asset_export_basic_builder_payload():
