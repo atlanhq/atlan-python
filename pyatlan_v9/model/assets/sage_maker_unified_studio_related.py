@@ -134,6 +134,9 @@ class RelatedSageMakerUnifiedStudioPublishedAsset(RelatedSageMakerUnifiedStudio)
     smus_published_asset_subscriptions_count: Union[int, None, UnsetType] = UNSET
     """Number of subscriptions for the published asset."""
 
+    smus_published_asset_filters: Union[str, None, UnsetType] = UNSET
+    """Asset filters configured for the published asset in SageMaker Unified Studio, as a JSON-serialized array. Each entry represents a row-level or column-level access restriction (id, name, description, effectiveRowFilter, effectiveColumnNames)."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerUnifiedStudioPublishedAsset"
