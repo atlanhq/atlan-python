@@ -7,6 +7,13 @@ import pytest
 import pytest_asyncio
 from httpx import Headers
 from pydantic.v1 import StrictStr
+from tenacity import (
+    RetryError,
+    retry,
+    retry_if_result,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from pyatlan import __version__ as VERSION
 from pyatlan.client.aio.client import AsyncAtlanClient
@@ -276,12 +283,22 @@ async def generate_audit_entries(
         time.sleep(1)
 
     request = AuditSearchRequest.by_guid(guid=audit_glossary.guid, size=log_count)
-    response = await client.audit.search(request)
-    assert response.total_count >= log_count, (
-        f"audit search failed, expected at least {log_count} log_count but got {response.total_count}."
+
+    @retry(
+        retry=retry_if_result(lambda count: count < log_count),
+        stop=stop_after_attempt(10),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
     )
-    # Force a wait to allow search entries to be indexed
-    time.sleep(10)
+    async def _audit_entry_count() -> int:
+        return (await client.audit.search(request)).total_count
+
+    try:
+        total_count = await _audit_entry_count()
+    except RetryError as err:
+        total_count = err.last_attempt.result()
+    assert total_count >= log_count, (
+        f"audit search failed, expected at least {log_count} log_count but got {total_count}."
+    )
 
 
 async def _view_test_glossary_by_search(
