@@ -1,0 +1,42 @@
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            column: Column,
+            operator: str,
+            predicate_sql: Optional[str] = None,
+            when_to_use: Optional[str] = None,
+            common_values: Optional[Set[str]] = None,
+            name: Optional[str] = None,
+        ) -> SqlInsightFilter.Attributes:
+            validate_required_fields(["column", "operator"], [column, operator])
+            column_qualified_name = column.qualified_name
+            validate_required_fields(
+                ["column.qualified_name"], [column_qualified_name]
+            )
+            # A filter's qualifiedName is <columnQN>/filter/md5(operator), and a
+            # column's own qualifiedName is <datasetQN>/<column>. So the dataset is
+            # the column's parent, never a separate input that could disagree with it.
+            dataset_qualified_name = column_qualified_name.rsplit("/", 1)[0]  # type: ignore[union-attr]
+            return SqlInsightFilter.Attributes(
+                name=name
+                or f"{column_qualified_name.rsplit('/', 1)[-1]} {operator}",  # type: ignore[union-attr]
+                qualified_name=SqlInsightFilter.generate_qualified_name(
+                    column_qualified_name=column_qualified_name,  # type: ignore[arg-type]
+                    operator=operator,
+                ),
+                # Both are load-bearing: the Usage & Intelligence tab finds filters by
+                # the dataset ATTRIBUTE, while the column RELATIONSHIP is what renders
+                # the row on the column itself. A filter missing either is half-visible.
+                sql_insight_filter_dataset_qualified_name=dataset_qualified_name,
+                sql_insight_filter_column_qualified_name=column_qualified_name,
+                sql_insight_filter_operator=operator,
+                sql_insight_filter_predicate_s_q_l=predicate_sql,
+                sql_insight_filter_when_to_use=when_to_use,
+                sql_insight_filter_common_values=common_values,
+                # A human-declared filter has no observed usage: never claim any.
+                sql_insight_filter_query_count=0,
+                sql_insight_filter_unique_users=0,
+                sql_insight_column=column,
+            )
