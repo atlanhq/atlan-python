@@ -1,0 +1,31 @@
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            dataset: SQL,
+            question_text: str,
+            canonical_sql: Optional[str] = None,
+            name: Optional[str] = None,
+        ) -> SqlInsightBusinessQuestion.Attributes:
+            validate_required_fields(
+                ["dataset", "question_text"], [dataset, question_text]
+            )
+            dataset_qualified_name = dataset.qualified_name
+            validate_required_fields(
+                ["dataset.qualified_name"], [dataset_qualified_name]
+            )
+            return SqlInsightBusinessQuestion.Attributes(
+                name=name or question_text,
+                qualified_name=SqlInsightBusinessQuestion.generate_qualified_name(
+                    dataset_qualified_name=dataset_qualified_name,  # type: ignore[arg-type]
+                    question_text=question_text,
+                ),
+                sql_insight_business_question_dataset_qualified_name=dataset_qualified_name,
+                sql_insight_business_question_text=question_text,
+                sql_insight_business_question_canonical_s_q_l=canonical_sql,
+                # A human-declared question has no observed usage: never claim any.
+                sql_insight_business_question_query_count=0,
+                sql_insight_business_question_unique_users=0,
+                sql_insight_dataset=dataset,
+            )
