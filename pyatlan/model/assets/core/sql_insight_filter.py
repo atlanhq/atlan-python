@@ -411,8 +411,7 @@ class SqlInsightFilter(SqlInsight):
             # the column's parent, never a separate input that could disagree with it.
             dataset_qualified_name = column_qualified_name.rsplit("/", 1)[0]  # type: ignore[union-attr]
             return SqlInsightFilter.Attributes(
-                name=name
-                or f"{column_qualified_name.rsplit('/', 1)[-1]} {operator}",  # type: ignore[union-attr]
+                name=name or f"{column_qualified_name.rsplit('/', 1)[-1]} {operator}",  # type: ignore[union-attr]
                 qualified_name=SqlInsightFilter.generate_qualified_name(
                     column_qualified_name=column_qualified_name,  # type: ignore[arg-type]
                     operator=operator,
