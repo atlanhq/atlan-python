@@ -57,7 +57,6 @@ from .power_bi_related import RelatedPowerBIDataflow
 from .process_related import RelatedColumnProcess, RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import RelatedSAPColumnProcess
 from .sapbw_related import RelatedSAPBWTransformation
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
@@ -90,6 +89,7 @@ class SAPColumnProcess(Asset):
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
     IS_PASS_THROUGH: ClassVar[Any] = None
+    PROCESS_DERIVATION: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -138,6 +138,8 @@ class SAPColumnProcess(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "SAPColumnProcess"
+
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
 
@@ -182,6 +184,9 @@ class SAPColumnProcess(Asset):
 
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
 
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
@@ -342,66 +347,6 @@ class SAPColumnProcess(Asset):
         self.type_name = "SAPColumnProcess"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SAPColumnProcess instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SAPColumnProcess validation failed: {errors}")
-
-    def minimize(self) -> "SAPColumnProcess":
-        """
-        Return a minimal copy of this SAPColumnProcess with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SAPColumnProcess with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SAPColumnProcess instance with only the minimum required fields.
-        """
-        self.validate()
-        return SAPColumnProcess(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSAPColumnProcess":
-        """
-        Create a :class:`RelatedSAPColumnProcess` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSAPColumnProcess reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSAPColumnProcess(guid=self.guid)
-        return RelatedSAPColumnProcess(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -502,6 +447,9 @@ class SAPColumnProcessAttributes(AssetAttributes):
 
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
 
 
 class SAPColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
@@ -756,6 +704,7 @@ def _populate_sap_column_process_attrs(
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
     attrs.is_pass_through = obj.is_pass_through
+    attrs.process_derivation = obj.process_derivation
 
 
 def _extract_sap_column_process_attrs(attrs: SAPColumnProcessAttributes) -> dict:
@@ -778,6 +727,7 @@ def _extract_sap_column_process_attrs(attrs: SAPColumnProcessAttributes) -> dict
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     result["is_pass_through"] = attrs.is_pass_through
+    result["process_derivation"] = attrs.process_derivation
     return result
 
 
@@ -818,9 +768,6 @@ def _sap_column_process_to_nested(
         is_incomplete=sap_column_process.is_incomplete,
         provenance_type=sap_column_process.provenance_type,
         home_id=sap_column_process.home_id,
-        depth=sap_column_process.depth,
-        immediate_upstream=sap_column_process.immediate_upstream,
-        immediate_downstream=sap_column_process.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -854,6 +801,7 @@ def _sap_column_process_from_nested(nested: SAPColumnProcessNested) -> SAPColumn
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -862,9 +810,6 @@ def _sap_column_process_from_nested(nested: SAPColumnProcessNested) -> SAPColumn
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_column_process_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -921,6 +866,9 @@ SAPColumnProcess.ADDITIONAL_ETL_CONTEXT = KeywordField(
 )
 SAPColumnProcess.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 SAPColumnProcess.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
+SAPColumnProcess.PROCESS_DERIVATION = KeywordField(
+    "processDerivation", "processDerivation"
+)
 SAPColumnProcess.ADF_ACTIVITY = RelationField("adfActivity")
 SAPColumnProcess.AIRFLOW_TASKS = RelationField("airflowTasks")
 SAPColumnProcess.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
