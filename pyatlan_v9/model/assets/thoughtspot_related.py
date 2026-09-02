@@ -172,10 +172,10 @@ class RelatedThoughtspotColumn(RelatedThoughtspot):
     thoughtspot_worksheet_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the worksheet in which this column exists."""
 
-    thoughtspot_column_data_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the technical format of data stored in a column such as integer, float, string, date, boolean etc."""
 
-    thoughtspot_column_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_type: Union[str, None, UnsetType] = UNSET
     """Defines the analytical role of a column in data analysis categorizing it as a dimension, measure, or attribute."""
 
     def __post_init__(self) -> None:

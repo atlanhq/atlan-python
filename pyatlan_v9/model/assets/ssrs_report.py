@@ -66,10 +66,10 @@ class SSRSReport(Asset):
     Instance of an SSRS report in Atlan.
     """
 
-    SSRS_REPORT_SIZE: ClassVar[Any] = None
-    SSRS_REPORT_PARAMETERS: ClassVar[Any] = None
-    SSRS_REPORT_DATA_SET_COUNT: ClassVar[Any] = None
-    SSRS_REPORT_DATA_SOURCE_COUNT: ClassVar[Any] = None
+    SSRS_SIZE: ClassVar[Any] = None
+    SSRS_PARAMETERS: ClassVar[Any] = None
+    SSRS_DATA_SET_COUNT: ClassVar[Any] = None
+    SSRS_DATA_SOURCE_COUNT: ClassVar[Any] = None
     SSRS_PATH: ClassVar[Any] = None
     SSRS_USED_IN_REPORTS: ClassVar[Any] = None
     SSRS_HIDDEN: ClassVar[Any] = None
@@ -121,16 +121,18 @@ class SSRSReport(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    ssrs_report_size: Union[int, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SSRSReport"
+
+    ssrs_size: Union[int, None, UnsetType] = UNSET
     """Size of the report."""
 
-    ssrs_report_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_parameters: Union[str, None, UnsetType] = UNSET
     """Parameters for the report."""
 
-    ssrs_report_data_set_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_set_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets in this report."""
 
-    ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -304,72 +306,6 @@ class SSRSReport(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SSRSReport instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.ssrs_folder is UNSET:
-                errors.append("ssrs_folder is required for creation")
-        if errors:
-            raise ValueError(f"SSRSReport validation failed: {errors}")
-
-    def minimize(self) -> "SSRSReport":
-        """
-        Return a minimal copy of this SSRSReport with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SSRSReport with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SSRSReport instance with only the minimum required fields.
-        """
-        self.validate()
-        return SSRSReport(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSSRSReport":
-        """
-        Create a :class:`RelatedSSRSReport` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSSRSReport reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSSRSReport(guid=self.guid)
-        return RelatedSSRSReport(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -425,16 +361,16 @@ class SSRSReport(Asset):
 class SSRSReportAttributes(AssetAttributes):
     """SSRSReport-specific attributes for nested API format."""
 
-    ssrs_report_size: Union[int, None, UnsetType] = UNSET
+    ssrs_size: Union[int, None, UnsetType] = UNSET
     """Size of the report."""
 
-    ssrs_report_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_parameters: Union[str, None, UnsetType] = UNSET
     """Parameters for the report."""
 
-    ssrs_report_data_set_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_set_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets in this report."""
 
-    ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -663,10 +599,10 @@ _SSRS_REPORT_REL_FIELDS: List[str] = [
 def _populate_ssrs_report_attrs(attrs: SSRSReportAttributes, obj: SSRSReport) -> None:
     """Populate SSRSReport-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.ssrs_report_size = obj.ssrs_report_size
-    attrs.ssrs_report_parameters = obj.ssrs_report_parameters
-    attrs.ssrs_report_data_set_count = obj.ssrs_report_data_set_count
-    attrs.ssrs_report_data_source_count = obj.ssrs_report_data_source_count
+    attrs.ssrs_size = obj.ssrs_size
+    attrs.ssrs_parameters = obj.ssrs_parameters
+    attrs.ssrs_data_set_count = obj.ssrs_data_set_count
+    attrs.ssrs_data_source_count = obj.ssrs_data_source_count
     attrs.ssrs_path = obj.ssrs_path
     attrs.ssrs_used_in_reports = obj.ssrs_used_in_reports
     attrs.ssrs_hidden = obj.ssrs_hidden
@@ -686,10 +622,10 @@ def _populate_ssrs_report_attrs(attrs: SSRSReportAttributes, obj: SSRSReport) ->
 def _extract_ssrs_report_attrs(attrs: SSRSReportAttributes) -> dict:
     """Extract all SSRSReport attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["ssrs_report_size"] = attrs.ssrs_report_size
-    result["ssrs_report_parameters"] = attrs.ssrs_report_parameters
-    result["ssrs_report_data_set_count"] = attrs.ssrs_report_data_set_count
-    result["ssrs_report_data_source_count"] = attrs.ssrs_report_data_source_count
+    result["ssrs_size"] = attrs.ssrs_size
+    result["ssrs_parameters"] = attrs.ssrs_parameters
+    result["ssrs_data_set_count"] = attrs.ssrs_data_set_count
+    result["ssrs_data_source_count"] = attrs.ssrs_data_source_count
     result["ssrs_path"] = attrs.ssrs_path
     result["ssrs_used_in_reports"] = attrs.ssrs_used_in_reports
     result["ssrs_hidden"] = attrs.ssrs_hidden
@@ -742,9 +678,6 @@ def _ssrs_report_to_nested(ssrs_report: SSRSReport) -> SSRSReportNested:
         is_incomplete=ssrs_report.is_incomplete,
         provenance_type=ssrs_report.provenance_type,
         home_id=ssrs_report.home_id,
-        depth=ssrs_report.depth,
-        immediate_upstream=ssrs_report.immediate_upstream,
-        immediate_downstream=ssrs_report.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -776,6 +709,7 @@ def _ssrs_report_from_nested(nested: SSRSReportNested) -> SSRSReport:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -784,9 +718,6 @@ def _ssrs_report_from_nested(nested: SSRSReportNested) -> SSRSReport:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_ssrs_report_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -814,15 +745,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SSRSReport.SSRS_REPORT_SIZE = NumericField("ssrsReportSize", "ssrsReportSize")
-SSRSReport.SSRS_REPORT_PARAMETERS = KeywordField(
-    "ssrsReportParameters", "ssrsReportParameters"
-)
-SSRSReport.SSRS_REPORT_DATA_SET_COUNT = NumericField(
-    "ssrsReportDataSetCount", "ssrsReportDataSetCount"
-)
-SSRSReport.SSRS_REPORT_DATA_SOURCE_COUNT = NumericField(
-    "ssrsReportDataSourceCount", "ssrsReportDataSourceCount"
+SSRSReport.SSRS_SIZE = NumericField("ssrsSize", "ssrsSize")
+SSRSReport.SSRS_PARAMETERS = KeywordField("ssrsParameters", "ssrsParameters")
+SSRSReport.SSRS_DATA_SET_COUNT = NumericField("ssrsDataSetCount", "ssrsDataSetCount")
+SSRSReport.SSRS_DATA_SOURCE_COUNT = NumericField(
+    "ssrsDataSourceCount", "ssrsDataSourceCount"
 )
 SSRSReport.SSRS_PATH = KeywordField("ssrsPath", "ssrsPath")
 SSRSReport.SSRS_USED_IN_REPORTS = BooleanField("ssrsUsedInReports", "ssrsUsedInReports")

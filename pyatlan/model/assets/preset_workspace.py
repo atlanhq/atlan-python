@@ -69,19 +69,19 @@ class PresetWorkspace(Preset):
         "presetWorkspacePublicDashboardsAllowed",
     )
     """
-    
+
     """
     PRESET_WORKSPACE_CLUSTER_ID: ClassVar[NumericField] = NumericField(
         "presetWorkspaceClusterId", "presetWorkspaceClusterId"
     )
     """
-    
+
     """
     PRESET_WORKSPACE_DEPLOYMENT_ID: ClassVar[NumericField] = NumericField(
         "presetWorkspaceDeploymentId", "presetWorkspaceDeploymentId"
     )
     """
-    
+
     """
     PRESET_WORKSPACE_HOSTNAME: ClassVar[KeywordTextField] = KeywordTextField(
         "presetWorkspaceHostname",
@@ -89,37 +89,37 @@ class PresetWorkspace(Preset):
         "presetWorkspaceHostname.text",
     )
     """
-    
+
     """
     PRESET_WORKSPACE_IS_IN_MAINTENANCE_MODE: ClassVar[BooleanField] = BooleanField(
         "presetWorkspaceIsInMaintenanceMode", "presetWorkspaceIsInMaintenanceMode"
     )
     """
-    
+
     """
     PRESET_WORKSPACE_REGION: ClassVar[KeywordTextField] = KeywordTextField(
         "presetWorkspaceRegion", "presetWorkspaceRegion", "presetWorkspaceRegion.text"
     )
     """
-    
+
     """
     PRESET_WORKSPACE_STATUS: ClassVar[KeywordField] = KeywordField(
         "presetWorkspaceStatus", "presetWorkspaceStatus"
     )
     """
-    
+
     """
     PRESET_WORKSPACE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
         "presetWorkspaceDashboardCount", "presetWorkspaceDashboardCount"
     )
     """
-    
+
     """
     PRESET_WORKSPACE_DATASET_COUNT: ClassVar[NumericField] = NumericField(
         "presetWorkspaceDatasetCount", "presetWorkspaceDatasetCount"
     )
     """
-    
+
     """
 
     PRESET_DASHBOARDS: ClassVar[RelationField] = RelationField("presetDashboards")
