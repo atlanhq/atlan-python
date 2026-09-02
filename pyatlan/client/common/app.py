@@ -13,10 +13,9 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, Optional, Tuple
 
-from pyatlan.errors import AtlanError
-
 from pyatlan.client.constants import (
     ADD_APP_SCHEDULE,
+    API,
     CANCEL_APP_RUN,
     CREATE_APP_WORKFLOW,
     DELETE_APP_WORKFLOW,
@@ -29,7 +28,7 @@ from pyatlan.client.constants import (
     SUBMIT_APP_WORKFLOW,
     UPDATE_APP_WORKFLOW,
 )
-from pyatlan.client.constants import API
+from pyatlan.errors import AtlanError
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,

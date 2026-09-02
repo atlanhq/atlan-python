@@ -106,16 +106,16 @@ class RelatedSSRSReport(RelatedSSRS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SSRSReport" so it serializes correctly
 
-    ssrs_report_size: Union[int, None, UnsetType] = UNSET
+    ssrs_size: Union[int, None, UnsetType] = UNSET
     """Size of the report."""
 
-    ssrs_report_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_parameters: Union[str, None, UnsetType] = UNSET
     """Parameters for the report."""
 
-    ssrs_report_data_set_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_set_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets in this report."""
 
-    ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
 
     def __post_init__(self) -> None:
@@ -133,46 +133,46 @@ class RelatedSSRSDataSet(RelatedSSRS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SSRSDataSet" so it serializes correctly
 
-    ssrs_data_set_sql_query: Union[str, None, UnsetType] = UNSET
+    ssrs_sql_query: Union[str, None, UnsetType] = UNSET
     """SQL query for the data set."""
 
-    ssrs_data_set_is_shared_data_set: Union[bool, None, UnsetType] = UNSET
+    ssrs_is_shared_data_set: Union[bool, None, UnsetType] = UNSET
     """Whether the data set is shared."""
 
-    ssrs_data_set_query_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_query_parameters: Union[str, None, UnsetType] = UNSET
     """Query parameters for the data set."""
 
-    ssrs_data_set_data_source_connection_string: Union[str, None, UnsetType] = UNSET
+    ssrs_data_source_connection_string: Union[str, None, UnsetType] = UNSET
     """Data source connection string for the data set."""
 
-    ssrs_data_set_data_source_reference: Union[str, None, UnsetType] = UNSET
+    ssrs_data_source_reference: Union[str, None, UnsetType] = UNSET
     """Data source reference for the data set."""
 
-    ssrs_data_set_extension: Union[str, None, UnsetType] = UNSET
+    ssrs_extension: Union[str, None, UnsetType] = UNSET
     """Extension for the data set."""
 
-    ssrs_data_set_reference_table_names: Union[List[str], None, UnsetType] = UNSET
+    ssrs_reference_table_names: Union[List[str], None, UnsetType] = UNSET
     """Reference table names for the data set."""
 
-    ssrs_data_set_cube_name: Union[str, None, UnsetType] = UNSET
+    ssrs_cube_name: Union[str, None, UnsetType] = UNSET
     """Cube name for the data set."""
 
-    ssrs_data_set_stored_procedure_name: Union[str, None, UnsetType] = UNSET
+    ssrs_stored_procedure_name: Union[str, None, UnsetType] = UNSET
     """Stored procedure name for the data set."""
 
-    ssrs_data_set_processed_sql: Union[str, None, UnsetType] = UNSET
+    ssrs_processed_sql: Union[str, None, UnsetType] = UNSET
     """Processed SQL for the data set."""
 
-    ssrs_data_set_log_messages: Union[str, None, UnsetType] = UNSET
+    ssrs_log_messages: Union[str, None, UnsetType] = UNSET
     """Log messages for the data set."""
 
-    ssrs_data_set_error_code: Union[str, None, UnsetType] = UNSET
+    ssrs_error_code: Union[str, None, UnsetType] = UNSET
     """Error code for the data set."""
 
-    ssrs_data_set_connected: Union[bool, None, UnsetType] = UNSET
+    ssrs_connected: Union[bool, None, UnsetType] = UNSET
     """Whether the data set is connected."""
 
-    ssrs_data_set_field_count: Union[int, None, UnsetType] = UNSET
+    ssrs_field_count: Union[int, None, UnsetType] = UNSET
     """Number of fields in this dataset."""
 
     def __post_init__(self) -> None:
@@ -190,40 +190,40 @@ class RelatedSSRSField(RelatedSSRS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SSRSField" so it serializes correctly
 
-    ssrs_field_datatype: Union[str, None, UnsetType] = UNSET
+    ssrs_datatype: Union[str, None, UnsetType] = UNSET
     """Data type of the field."""
 
-    ssrs_field_function: Union[str, None, UnsetType] = UNSET
+    ssrs_function: Union[str, None, UnsetType] = UNSET
     """Function applied to the field."""
 
-    ssrs_field_calculated_field: Union[bool, None, UnsetType] = UNSET
+    ssrs_calculated_field: Union[bool, None, UnsetType] = UNSET
     """Whether the field is calculated."""
 
-    ssrs_field_database_field: Union[bool, None, UnsetType] = UNSET
+    ssrs_database_field: Union[bool, None, UnsetType] = UNSET
     """Whether the field is a database field."""
 
-    ssrs_field_referenced_column_names: Union[List[str], None, UnsetType] = UNSET
+    ssrs_referenced_column_names: Union[List[str], None, UnsetType] = UNSET
     """Referenced column names for the field."""
 
-    ssrs_field_sql_transform_expression: Union[str, None, UnsetType] = UNSET
+    ssrs_sql_transform_expression: Union[str, None, UnsetType] = UNSET
     """SQL transform expression for the field."""
 
-    ssrs_field_ordinal_position: Union[int, None, UnsetType] = UNSET
+    ssrs_ordinal_position: Union[int, None, UnsetType] = UNSET
     """Ordinal position of the field."""
 
-    ssrs_field_log_messages: Union[str, None, UnsetType] = UNSET
+    ssrs_log_messages: Union[str, None, UnsetType] = UNSET
     """Log messages for the field."""
 
-    ssrs_field_error_code: Union[str, None, UnsetType] = UNSET
+    ssrs_error_code: Union[str, None, UnsetType] = UNSET
     """Error code for the field."""
 
-    ssrs_field_report_source: Union[str, None, UnsetType] = UNSET
+    ssrs_report_source: Union[str, None, UnsetType] = UNSET
     """Report source for the field."""
 
-    ssrs_field_data_group: Union[str, None, UnsetType] = UNSET
+    ssrs_data_group: Union[str, None, UnsetType] = UNSET
     """Data group for the field."""
 
-    ssrs_field_connected: Union[bool, None, UnsetType] = UNSET
+    ssrs_connected: Union[bool, None, UnsetType] = UNSET
     """Whether the field is connected."""
 
     def __post_init__(self) -> None:
