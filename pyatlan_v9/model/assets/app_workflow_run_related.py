@@ -81,6 +81,9 @@ class RelatedAppWorkflowRun(RelatedCatalog):
     app_workflow_run_source: Union[str, None, UnsetType] = UNSET
     """Product surface of the parent workflow (marketplace, enrichment_studio, context_studio), denormalized onto the run and emitted as a metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028)."""
 
+    app_workflow_run_deployment_name: Union[str, None, UnsetType] = UNSET
+    """SDR deployment this run executed under, denormalized from the parent workflow so a deployment's run history can be filtered directly. Without it, filtering requires two queries — resolve the deployment's workflow slugs, then match runs by parent slug — because Elasticsearch cannot join across entity types. Null for runs on Atlan-managed infrastructure (DISTR-832)."""
+
     app_workflow_run_temporal_run_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the temporal run associated with this workflow execution."""
 

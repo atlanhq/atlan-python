@@ -90,13 +90,13 @@ class PresetChart(Preset):
         "presetChartDescriptionMarkdown", "presetChartDescriptionMarkdown"
     )
     """
-    
+
     """
     PRESET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField(
         "presetChartFormData", "presetChartFormData"
     )
     """
-    
+
     """
 
     PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")

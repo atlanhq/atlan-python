@@ -53,7 +53,7 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .ssrs_related import RelatedSSRSDataSet, RelatedSSRSField
+from .ssrs_related import RelatedSSRSDataSet
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -66,18 +66,18 @@ class SSRSField(Asset):
     Instance of a field within an SSRS data set in Atlan.
     """
 
-    SSRS_FIELD_DATATYPE: ClassVar[Any] = None
-    SSRS_FIELD_FUNCTION: ClassVar[Any] = None
-    SSRS_FIELD_CALCULATED_FIELD: ClassVar[Any] = None
-    SSRS_FIELD_DATABASE_FIELD: ClassVar[Any] = None
-    SSRS_FIELD_REFERENCED_COLUMN_NAMES: ClassVar[Any] = None
-    SSRS_FIELD_SQL_TRANSFORM_EXPRESSION: ClassVar[Any] = None
-    SSRS_FIELD_ORDINAL_POSITION: ClassVar[Any] = None
-    SSRS_FIELD_LOG_MESSAGES: ClassVar[Any] = None
-    SSRS_FIELD_ERROR_CODE: ClassVar[Any] = None
-    SSRS_FIELD_REPORT_SOURCE: ClassVar[Any] = None
-    SSRS_FIELD_DATA_GROUP: ClassVar[Any] = None
-    SSRS_FIELD_CONNECTED: ClassVar[Any] = None
+    SSRS_DATATYPE: ClassVar[Any] = None
+    SSRS_FUNCTION: ClassVar[Any] = None
+    SSRS_CALCULATED_FIELD: ClassVar[Any] = None
+    SSRS_DATABASE_FIELD: ClassVar[Any] = None
+    SSRS_REFERENCED_COLUMN_NAMES: ClassVar[Any] = None
+    SSRS_SQL_TRANSFORM_EXPRESSION: ClassVar[Any] = None
+    SSRS_ORDINAL_POSITION: ClassVar[Any] = None
+    SSRS_LOG_MESSAGES: ClassVar[Any] = None
+    SSRS_ERROR_CODE: ClassVar[Any] = None
+    SSRS_REPORT_SOURCE: ClassVar[Any] = None
+    SSRS_DATA_GROUP: ClassVar[Any] = None
+    SSRS_CONNECTED: ClassVar[Any] = None
     SSRS_PATH: ClassVar[Any] = None
     SSRS_USED_IN_REPORTS: ClassVar[Any] = None
     SSRS_HIDDEN: ClassVar[Any] = None
@@ -126,40 +126,42 @@ class SSRSField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    ssrs_field_datatype: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SSRSField"
+
+    ssrs_datatype: Union[str, None, UnsetType] = UNSET
     """Data type of the field."""
 
-    ssrs_field_function: Union[str, None, UnsetType] = UNSET
+    ssrs_function: Union[str, None, UnsetType] = UNSET
     """Function applied to the field."""
 
-    ssrs_field_calculated_field: Union[bool, None, UnsetType] = UNSET
+    ssrs_calculated_field: Union[bool, None, UnsetType] = UNSET
     """Whether the field is calculated."""
 
-    ssrs_field_database_field: Union[bool, None, UnsetType] = UNSET
+    ssrs_database_field: Union[bool, None, UnsetType] = UNSET
     """Whether the field is a database field."""
 
-    ssrs_field_referenced_column_names: Union[List[str], None, UnsetType] = UNSET
+    ssrs_referenced_column_names: Union[List[str], None, UnsetType] = UNSET
     """Referenced column names for the field."""
 
-    ssrs_field_sql_transform_expression: Union[str, None, UnsetType] = UNSET
+    ssrs_sql_transform_expression: Union[str, None, UnsetType] = UNSET
     """SQL transform expression for the field."""
 
-    ssrs_field_ordinal_position: Union[int, None, UnsetType] = UNSET
+    ssrs_ordinal_position: Union[int, None, UnsetType] = UNSET
     """Ordinal position of the field."""
 
-    ssrs_field_log_messages: Union[str, None, UnsetType] = UNSET
+    ssrs_log_messages: Union[str, None, UnsetType] = UNSET
     """Log messages for the field."""
 
-    ssrs_field_error_code: Union[str, None, UnsetType] = UNSET
+    ssrs_error_code: Union[str, None, UnsetType] = UNSET
     """Error code for the field."""
 
-    ssrs_field_report_source: Union[str, None, UnsetType] = UNSET
+    ssrs_report_source: Union[str, None, UnsetType] = UNSET
     """Report source for the field."""
 
-    ssrs_field_data_group: Union[str, None, UnsetType] = UNSET
+    ssrs_data_group: Union[str, None, UnsetType] = UNSET
     """Data group for the field."""
 
-    ssrs_field_connected: Union[bool, None, UnsetType] = UNSET
+    ssrs_connected: Union[bool, None, UnsetType] = UNSET
     """Whether the field is connected."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -324,80 +326,6 @@ class SSRSField(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SSRSField instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.ssrs_data_set is UNSET:
-                errors.append("ssrs_data_set is required for creation")
-            if self.ssrs_data_set_name is UNSET:
-                errors.append("ssrs_data_set_name is required for creation")
-            if self.ssrs_data_set_qualified_name is UNSET:
-                errors.append("ssrs_data_set_qualified_name is required for creation")
-            if self.ssrs_report_name is UNSET:
-                errors.append("ssrs_report_name is required for creation")
-            if self.ssrs_report_qualified_name is UNSET:
-                errors.append("ssrs_report_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SSRSField validation failed: {errors}")
-
-    def minimize(self) -> "SSRSField":
-        """
-        Return a minimal copy of this SSRSField with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SSRSField with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SSRSField instance with only the minimum required fields.
-        """
-        self.validate()
-        return SSRSField(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSSRSField":
-        """
-        Create a :class:`RelatedSSRSField` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSSRSField reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSSRSField(guid=self.guid)
-        return RelatedSSRSField(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -453,40 +381,40 @@ class SSRSField(Asset):
 class SSRSFieldAttributes(AssetAttributes):
     """SSRSField-specific attributes for nested API format."""
 
-    ssrs_field_datatype: Union[str, None, UnsetType] = UNSET
+    ssrs_datatype: Union[str, None, UnsetType] = UNSET
     """Data type of the field."""
 
-    ssrs_field_function: Union[str, None, UnsetType] = UNSET
+    ssrs_function: Union[str, None, UnsetType] = UNSET
     """Function applied to the field."""
 
-    ssrs_field_calculated_field: Union[bool, None, UnsetType] = UNSET
+    ssrs_calculated_field: Union[bool, None, UnsetType] = UNSET
     """Whether the field is calculated."""
 
-    ssrs_field_database_field: Union[bool, None, UnsetType] = UNSET
+    ssrs_database_field: Union[bool, None, UnsetType] = UNSET
     """Whether the field is a database field."""
 
-    ssrs_field_referenced_column_names: Union[List[str], None, UnsetType] = UNSET
+    ssrs_referenced_column_names: Union[List[str], None, UnsetType] = UNSET
     """Referenced column names for the field."""
 
-    ssrs_field_sql_transform_expression: Union[str, None, UnsetType] = UNSET
+    ssrs_sql_transform_expression: Union[str, None, UnsetType] = UNSET
     """SQL transform expression for the field."""
 
-    ssrs_field_ordinal_position: Union[int, None, UnsetType] = UNSET
+    ssrs_ordinal_position: Union[int, None, UnsetType] = UNSET
     """Ordinal position of the field."""
 
-    ssrs_field_log_messages: Union[str, None, UnsetType] = UNSET
+    ssrs_log_messages: Union[str, None, UnsetType] = UNSET
     """Log messages for the field."""
 
-    ssrs_field_error_code: Union[str, None, UnsetType] = UNSET
+    ssrs_error_code: Union[str, None, UnsetType] = UNSET
     """Error code for the field."""
 
-    ssrs_field_report_source: Union[str, None, UnsetType] = UNSET
+    ssrs_report_source: Union[str, None, UnsetType] = UNSET
     """Report source for the field."""
 
-    ssrs_field_data_group: Union[str, None, UnsetType] = UNSET
+    ssrs_data_group: Union[str, None, UnsetType] = UNSET
     """Data group for the field."""
 
-    ssrs_field_connected: Union[bool, None, UnsetType] = UNSET
+    ssrs_connected: Union[bool, None, UnsetType] = UNSET
     """Whether the field is connected."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -703,18 +631,18 @@ _SSRS_FIELD_REL_FIELDS: List[str] = [
 def _populate_ssrs_field_attrs(attrs: SSRSFieldAttributes, obj: SSRSField) -> None:
     """Populate SSRSField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.ssrs_field_datatype = obj.ssrs_field_datatype
-    attrs.ssrs_field_function = obj.ssrs_field_function
-    attrs.ssrs_field_calculated_field = obj.ssrs_field_calculated_field
-    attrs.ssrs_field_database_field = obj.ssrs_field_database_field
-    attrs.ssrs_field_referenced_column_names = obj.ssrs_field_referenced_column_names
-    attrs.ssrs_field_sql_transform_expression = obj.ssrs_field_sql_transform_expression
-    attrs.ssrs_field_ordinal_position = obj.ssrs_field_ordinal_position
-    attrs.ssrs_field_log_messages = obj.ssrs_field_log_messages
-    attrs.ssrs_field_error_code = obj.ssrs_field_error_code
-    attrs.ssrs_field_report_source = obj.ssrs_field_report_source
-    attrs.ssrs_field_data_group = obj.ssrs_field_data_group
-    attrs.ssrs_field_connected = obj.ssrs_field_connected
+    attrs.ssrs_datatype = obj.ssrs_datatype
+    attrs.ssrs_function = obj.ssrs_function
+    attrs.ssrs_calculated_field = obj.ssrs_calculated_field
+    attrs.ssrs_database_field = obj.ssrs_database_field
+    attrs.ssrs_referenced_column_names = obj.ssrs_referenced_column_names
+    attrs.ssrs_sql_transform_expression = obj.ssrs_sql_transform_expression
+    attrs.ssrs_ordinal_position = obj.ssrs_ordinal_position
+    attrs.ssrs_log_messages = obj.ssrs_log_messages
+    attrs.ssrs_error_code = obj.ssrs_error_code
+    attrs.ssrs_report_source = obj.ssrs_report_source
+    attrs.ssrs_data_group = obj.ssrs_data_group
+    attrs.ssrs_connected = obj.ssrs_connected
     attrs.ssrs_path = obj.ssrs_path
     attrs.ssrs_used_in_reports = obj.ssrs_used_in_reports
     attrs.ssrs_hidden = obj.ssrs_hidden
@@ -734,22 +662,18 @@ def _populate_ssrs_field_attrs(attrs: SSRSFieldAttributes, obj: SSRSField) -> No
 def _extract_ssrs_field_attrs(attrs: SSRSFieldAttributes) -> dict:
     """Extract all SSRSField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["ssrs_field_datatype"] = attrs.ssrs_field_datatype
-    result["ssrs_field_function"] = attrs.ssrs_field_function
-    result["ssrs_field_calculated_field"] = attrs.ssrs_field_calculated_field
-    result["ssrs_field_database_field"] = attrs.ssrs_field_database_field
-    result["ssrs_field_referenced_column_names"] = (
-        attrs.ssrs_field_referenced_column_names
-    )
-    result["ssrs_field_sql_transform_expression"] = (
-        attrs.ssrs_field_sql_transform_expression
-    )
-    result["ssrs_field_ordinal_position"] = attrs.ssrs_field_ordinal_position
-    result["ssrs_field_log_messages"] = attrs.ssrs_field_log_messages
-    result["ssrs_field_error_code"] = attrs.ssrs_field_error_code
-    result["ssrs_field_report_source"] = attrs.ssrs_field_report_source
-    result["ssrs_field_data_group"] = attrs.ssrs_field_data_group
-    result["ssrs_field_connected"] = attrs.ssrs_field_connected
+    result["ssrs_datatype"] = attrs.ssrs_datatype
+    result["ssrs_function"] = attrs.ssrs_function
+    result["ssrs_calculated_field"] = attrs.ssrs_calculated_field
+    result["ssrs_database_field"] = attrs.ssrs_database_field
+    result["ssrs_referenced_column_names"] = attrs.ssrs_referenced_column_names
+    result["ssrs_sql_transform_expression"] = attrs.ssrs_sql_transform_expression
+    result["ssrs_ordinal_position"] = attrs.ssrs_ordinal_position
+    result["ssrs_log_messages"] = attrs.ssrs_log_messages
+    result["ssrs_error_code"] = attrs.ssrs_error_code
+    result["ssrs_report_source"] = attrs.ssrs_report_source
+    result["ssrs_data_group"] = attrs.ssrs_data_group
+    result["ssrs_connected"] = attrs.ssrs_connected
     result["ssrs_path"] = attrs.ssrs_path
     result["ssrs_used_in_reports"] = attrs.ssrs_used_in_reports
     result["ssrs_hidden"] = attrs.ssrs_hidden
@@ -802,9 +726,6 @@ def _ssrs_field_to_nested(ssrs_field: SSRSField) -> SSRSFieldNested:
         is_incomplete=ssrs_field.is_incomplete,
         provenance_type=ssrs_field.provenance_type,
         home_id=ssrs_field.home_id,
-        depth=ssrs_field.depth,
-        immediate_upstream=ssrs_field.immediate_upstream,
-        immediate_downstream=ssrs_field.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -836,6 +757,7 @@ def _ssrs_field_from_nested(nested: SSRSFieldNested) -> SSRSField:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -844,9 +766,6 @@ def _ssrs_field_from_nested(nested: SSRSFieldNested) -> SSRSField:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_ssrs_field_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -874,38 +793,26 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SSRSField.SSRS_FIELD_DATATYPE = KeywordField("ssrsFieldDatatype", "ssrsFieldDatatype")
-SSRSField.SSRS_FIELD_FUNCTION = KeywordField("ssrsFieldFunction", "ssrsFieldFunction")
-SSRSField.SSRS_FIELD_CALCULATED_FIELD = BooleanField(
-    "ssrsFieldCalculatedField", "ssrsFieldCalculatedField"
+SSRSField.SSRS_DATATYPE = KeywordField("ssrsDatatype", "ssrsDatatype")
+SSRSField.SSRS_FUNCTION = KeywordField("ssrsFunction", "ssrsFunction")
+SSRSField.SSRS_CALCULATED_FIELD = BooleanField(
+    "ssrsCalculatedField", "ssrsCalculatedField"
 )
-SSRSField.SSRS_FIELD_DATABASE_FIELD = BooleanField(
-    "ssrsFieldDatabaseField", "ssrsFieldDatabaseField"
+SSRSField.SSRS_DATABASE_FIELD = BooleanField("ssrsDatabaseField", "ssrsDatabaseField")
+SSRSField.SSRS_REFERENCED_COLUMN_NAMES = KeywordField(
+    "ssrsReferencedColumnNames", "ssrsReferencedColumnNames"
 )
-SSRSField.SSRS_FIELD_REFERENCED_COLUMN_NAMES = KeywordField(
-    "ssrsFieldReferencedColumnNames", "ssrsFieldReferencedColumnNames"
+SSRSField.SSRS_SQL_TRANSFORM_EXPRESSION = KeywordField(
+    "ssrsSqlTransformExpression", "ssrsSqlTransformExpression"
 )
-SSRSField.SSRS_FIELD_SQL_TRANSFORM_EXPRESSION = KeywordField(
-    "ssrsFieldSqlTransformExpression", "ssrsFieldSqlTransformExpression"
+SSRSField.SSRS_ORDINAL_POSITION = NumericField(
+    "ssrsOrdinalPosition", "ssrsOrdinalPosition"
 )
-SSRSField.SSRS_FIELD_ORDINAL_POSITION = NumericField(
-    "ssrsFieldOrdinalPosition", "ssrsFieldOrdinalPosition"
-)
-SSRSField.SSRS_FIELD_LOG_MESSAGES = KeywordField(
-    "ssrsFieldLogMessages", "ssrsFieldLogMessages"
-)
-SSRSField.SSRS_FIELD_ERROR_CODE = KeywordField(
-    "ssrsFieldErrorCode", "ssrsFieldErrorCode"
-)
-SSRSField.SSRS_FIELD_REPORT_SOURCE = KeywordField(
-    "ssrsFieldReportSource", "ssrsFieldReportSource"
-)
-SSRSField.SSRS_FIELD_DATA_GROUP = KeywordField(
-    "ssrsFieldDataGroup", "ssrsFieldDataGroup"
-)
-SSRSField.SSRS_FIELD_CONNECTED = BooleanField(
-    "ssrsFieldConnected", "ssrsFieldConnected"
-)
+SSRSField.SSRS_LOG_MESSAGES = KeywordField("ssrsLogMessages", "ssrsLogMessages")
+SSRSField.SSRS_ERROR_CODE = KeywordField("ssrsErrorCode", "ssrsErrorCode")
+SSRSField.SSRS_REPORT_SOURCE = KeywordField("ssrsReportSource", "ssrsReportSource")
+SSRSField.SSRS_DATA_GROUP = KeywordField("ssrsDataGroup", "ssrsDataGroup")
+SSRSField.SSRS_CONNECTED = BooleanField("ssrsConnected", "ssrsConnected")
 SSRSField.SSRS_PATH = KeywordField("ssrsPath", "ssrsPath")
 SSRSField.SSRS_USED_IN_REPORTS = BooleanField("ssrsUsedInReports", "ssrsUsedInReports")
 SSRSField.SSRS_HIDDEN = BooleanField("ssrsHidden", "ssrsHidden")
