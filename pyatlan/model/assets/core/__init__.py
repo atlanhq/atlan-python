@@ -140,6 +140,7 @@ from .mongo_d_b_database import MongoDBDatabase
 from .monte_carlo import MonteCarlo
 from .namespace import Namespace
 from .no_s_q_l import NoSQL
+from .notification import Notification
 from .partial import Partial
 from .partial_field import PartialField
 from .partial_object import PartialObject
@@ -211,6 +212,7 @@ from .table_partition import TablePartition
 from .tag import Tag
 from .v1_coalesce_process import V1CoalesceProcess
 from .view import View
+from .workflow_notification import WorkflowNotification
 
 # Update asset forward references:
 localns = locals()
@@ -222,6 +224,7 @@ Asset.Attributes.update_forward_refs(**localns)
 Process.Attributes.update_forward_refs(**localns)
 AtlasGlossaryCategory.Attributes.update_forward_refs(**localns)
 AccessControl.Attributes.update_forward_refs(**localns)
+Notification.Attributes.update_forward_refs(**localns)
 AuthPolicy.Attributes.update_forward_refs(**localns)
 StakeholderTitle.Attributes.update_forward_refs(**localns)
 Catalog.Attributes.update_forward_refs(**localns)
@@ -236,6 +239,7 @@ DbtProcess.Attributes.update_forward_refs(**localns)
 V1CoalesceProcess.Attributes.update_forward_refs(**localns)
 ColumnProcess.Attributes.update_forward_refs(**localns)
 Persona.Attributes.update_forward_refs(**localns)
+WorkflowNotification.Attributes.update_forward_refs(**localns)
 App.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 ADF.Attributes.update_forward_refs(**localns)
@@ -329,8 +333,8 @@ Column.Attributes.update_forward_refs(**localns)
 Snowflake.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-Database.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
+Database.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 Table.Attributes.update_forward_refs(**localns)
 SnowflakePipe.Attributes.update_forward_refs(**localns)

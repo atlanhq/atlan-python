@@ -6,6 +6,7 @@ __all__ = [
     "Process",
     "AtlasGlossaryCategory",
     "AccessControl",
+    "Notification",
     "AuthPolicy",
     "StakeholderTitle",
     "Catalog",
@@ -20,6 +21,7 @@ __all__ = [
     "V1CoalesceProcess",
     "ColumnProcess",
     "Persona",
+    "WorkflowNotification",
     "App",
     "Airflow",
     "ADF",
@@ -114,8 +116,8 @@ __all__ = [
     "Snowflake",
     "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "Database",
     "CalculationView",
+    "Database",
     "Procedure",
     "Table",
     "SnowflakePipe",
@@ -234,7 +236,6 @@ __all__ = [
     "Unstructured",
     "V1Coalesce",
     "EventStore",
-    "NoSQL",
     "Insight",
     "AssetGrouping",
     "ObjectStore",
@@ -724,6 +725,7 @@ from .core.mongo_d_b_database import MongoDBDatabase
 from .core.monte_carlo import MonteCarlo
 from .core.namespace import Namespace
 from .core.no_s_q_l import NoSQL
+from .core.notification import Notification
 from .core.partial import Partial
 from .core.partial_field import PartialField
 from .core.partial_object import PartialObject
@@ -796,6 +798,7 @@ from .core.table_partition import TablePartition
 from .core.tag import Tag
 from .core.v1_coalesce_process import V1CoalesceProcess
 from .core.view import View
+from .core.workflow_notification import WorkflowNotification
 from .cube import Cube
 from .cube_dimension import CubeDimension
 from .cube_field import CubeField

@@ -107,6 +107,12 @@ class AtlanAppWorkflow(AtlanApp):
     """
     TBC
     """
+    WORKFLOW_NOTIFICATION_NOTIFICATIONS: ClassVar[RelationField] = RelationField(
+        "workflowNotificationNotifications"
+    )
+    """
+    TBC
+    """
     ATLAN_APP_WORKFLOW_RUNS: ClassVar[RelationField] = RelationField(
         "atlanAppWorkflowRuns"
     )
@@ -127,6 +133,7 @@ class AtlanAppWorkflow(AtlanApp):
         "atlan_app_workflow_deployment_name",
         "atlan_app_workflow_runtime_mode",
         "atlan_app",
+        "workflow_notification_notifications",
         "atlan_app_workflow_runs",
     ]
 
@@ -311,6 +318,26 @@ class AtlanAppWorkflow(AtlanApp):
         self.attributes.atlan_app = atlan_app
 
     @property
+    def workflow_notification_notifications(
+        self,
+    ) -> Optional[List[WorkflowNotification]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workflow_notification_notifications
+        )
+
+    @workflow_notification_notifications.setter
+    def workflow_notification_notifications(
+        self, workflow_notification_notifications: Optional[List[WorkflowNotification]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workflow_notification_notifications = (
+            workflow_notification_notifications
+        )
+
+    @property
     def atlan_app_workflow_runs(self) -> Optional[List[AppWorkflowRun]]:
         return (
             None if self.attributes is None else self.attributes.atlan_app_workflow_runs
@@ -353,6 +380,9 @@ class AtlanAppWorkflow(AtlanApp):
         atlan_app: Optional[AtlanApp] = Field(
             default=None, description=""
         )  # relationship
+        workflow_notification_notifications: Optional[List[WorkflowNotification]] = (
+            Field(default=None, description="")
+        )  # relationship
         atlan_app_workflow_runs: Optional[List[AppWorkflowRun]] = Field(
             default=None, description=""
         )  # relationship
@@ -369,3 +399,4 @@ class AtlanAppWorkflow(AtlanApp):
 
 from .app_workflow_run import AppWorkflowRun  # noqa: E402, F401
 from .atlan_app import AtlanApp  # noqa: E402, F401
+from .workflow_notification import WorkflowNotification  # noqa: E402, F401
