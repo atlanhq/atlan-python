@@ -587,6 +587,8 @@ __all__ = [
     "RelatedNamespace",
     "Notebook",
     "RelatedNotebook",
+    "Notification",
+    "RelatedNotification",
     "Partial",
     "PartialField",
     "PartialObject",
@@ -992,6 +994,8 @@ __all__ = [
     "RelatedWorkflow",
     "RelatedWorkflowRun",
     "Workflow",
+    "RelatedWorkflowNotification",
+    "WorkflowNotification",
 ]
 
 from .access_control import AccessControl as AccessControl
@@ -1675,6 +1679,8 @@ from .namespace_related import RelatedNamespace as RelatedNamespace
 from .no_sql import NoSQL as NoSQL
 from .notebook import Notebook as Notebook
 from .notebook_related import RelatedNotebook as RelatedNotebook
+from .notification import Notification as Notification
+from .notification_related import RelatedNotification as RelatedNotification
 from .object_store import ObjectStore as ObjectStore
 from .partial import Partial as Partial
 from .partial_field import PartialField as PartialField
@@ -2185,5 +2191,9 @@ from .unstructured_related import RelatedUnstructuredFolder as RelatedUnstructur
 from .unstructured_related import RelatedUnstructuredObject as RelatedUnstructuredObject
 from .view import View as View
 from .workflow import Workflow as Workflow
+from .workflow_notification import WorkflowNotification as WorkflowNotification
+from .workflow_notification_related import (
+    RelatedWorkflowNotification as RelatedWorkflowNotification,
+)
 from .workflow_related import RelatedWorkflow as RelatedWorkflow
 from .workflow_related import RelatedWorkflowRun as RelatedWorkflowRun

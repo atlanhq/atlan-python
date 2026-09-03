@@ -3207,6 +3207,19 @@ class MongoDBCollectionValidationLevel(str, Enum):
     MODERATE = "MODERATE"
 
 
+class NotificationState(str, Enum):
+    GENERATED = "GENERATED"
+    DELIVERED = "DELIVERED"
+    ACTIONED = "ACTIONED"
+    RESOLVED = "RESOLVED"
+    CLOSED = "CLOSED"
+
+
+class NotificationSurface(str, Enum):
+    SLACK = "SLACK"
+    TEAMS = "TEAMS"
+
+
 class OpenLineageRunState(str, Enum):
     START = "START"
     RUNNING = "RUNNING"
@@ -3220,6 +3233,11 @@ class PowerbiEndorsement(str, Enum):
     PROMOTED = "Promoted"
     CERTIFIED = "Certified"
     MASTER_DATA = "Master Data"
+
+
+class ProcessLineageDerivation(str, Enum):
+    STATIC = "STATIC"
+    RUNTIME = "RUNTIME"
 
 
 class QueryUsernameStrategy(str, Enum):
@@ -3333,6 +3351,15 @@ class TableType(str, Enum):
     TEMPORARY = "TEMPORARY"
     ICEBERG = "ICEBERG"
     KUDU = "KUDU"
+
+
+class WorkflowNotificationAction(str, Enum):
+    EDIT_CREDENTIALS = "EDIT_CREDENTIALS"
+    RECHECK_NOW = "RECHECK_NOW"
+    PAUSE_RUNS = "PAUSE_RUNS"
+    REMOVE_SCHEDULE = "REMOVE_SCHEDULE"
+    RAISE_TICKET = "RAISE_TICKET"
+    DISMISS = "DISMISS"
 
 
 class WorkflowRunStatus(str, Enum):

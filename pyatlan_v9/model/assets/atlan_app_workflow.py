@@ -59,6 +59,7 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .workflow_notification_related import RelatedWorkflowNotification
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -123,6 +124,7 @@ class AtlanAppWorkflow(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+    WORKFLOW_NOTIFICATION_NOTIFICATIONS: ClassVar[Any] = None
 
     atlan_app_workflow_version: Union[str, None, UnsetType] = UNSET
     """Version of the workflow."""
@@ -289,6 +291,11 @@ class AtlanAppWorkflow(Asset):
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
+
+    workflow_notification_notifications: Union[
+        List[RelatedWorkflowNotification], None, UnsetType
+    ] = UNSET
+    """Notifications raised about this workflow."""
 
     def __post_init__(self) -> None:
         self.type_name = "AtlanAppWorkflow"
@@ -594,6 +601,11 @@ class AtlanAppWorkflowRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+    workflow_notification_notifications: Union[
+        List[RelatedWorkflowNotification], None, UnsetType
+    ] = UNSET
+    """Notifications raised about this workflow."""
+
 
 class AtlanAppWorkflowNested(AssetNested):
     """AtlanAppWorkflow in nested API format for high-performance serialization."""
@@ -652,6 +664,7 @@ _ATLAN_APP_WORKFLOW_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
+    "workflow_notification_notifications",
 ]
 
 
@@ -902,3 +915,6 @@ AtlanAppWorkflow.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubject
 AtlanAppWorkflow.SODA_CHECKS = RelationField("sodaChecks")
 AtlanAppWorkflow.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 AtlanAppWorkflow.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+AtlanAppWorkflow.WORKFLOW_NOTIFICATION_NOTIFICATIONS = RelationField(
+    "workflowNotificationNotifications"
+)
