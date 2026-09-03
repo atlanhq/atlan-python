@@ -17,6 +17,7 @@ from pyatlan.model.enums import (
     DataQualityRuleThresholdUnit,
     AppWorkflowRunStatus,
     AssetSmusMetadataFormStatus,
+    NotificationSurface,
 )
 from pyatlan.model.utils import to_camel_case
 from pyatlan.utils import select_optional_set_fields, validate_required_fields
@@ -956,6 +957,23 @@ class GoogleLabel(AtlanObject):
     google_label_value: str = Field(description="")
 
 
+class NotificationExternalReference(AtlanObject):
+    """Description"""
+
+    notification_external_reference_surface: Optional[NotificationSurface] = Field(
+        default=None, description=""
+    )
+    notification_external_reference_ref_url: Optional[str] = Field(
+        default=None, description=""
+    )
+    notification_external_reference_delivered_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    notification_external_reference_extra_attributes: Optional[Dict[str, str]] = Field(
+        default=None, description=""
+    )
+
+
 class SourceTagAttribute(AtlanObject):
     """Description"""
 
@@ -1067,5 +1085,7 @@ SqlInsightJoinColumnPair.update_forward_refs()
 DataQualityRuleThresholdObject.update_forward_refs()
 
 GoogleLabel.update_forward_refs()
+
+NotificationExternalReference.update_forward_refs()
 
 SourceTagAttribute.update_forward_refs()

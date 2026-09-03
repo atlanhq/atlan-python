@@ -673,6 +673,7 @@ __PYATLAN_V9_ASSETS__ = {
         "RelatedNamespace",
     ],
     "_init_notebook": ["Notebook", "RelatedNotebook"],
+    "_init_notification": ["Notification", "RelatedNotification"],
     "_init_partial": [
         "Partial",
         "PartialField",
@@ -1132,6 +1133,10 @@ __PYATLAN_V9_ASSETS__ = {
         "UnstructuredObject",
     ],
     "_init_workflow": ["RelatedWorkflow", "RelatedWorkflowRun", "Workflow"],
+    "_init_workflow_notification": [
+        "RelatedWorkflowNotification",
+        "WorkflowNotification",
+    ],
 }
 
 __getattr__, __dir__, __all__ = lazy.attach(
