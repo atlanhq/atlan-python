@@ -178,7 +178,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """
     CATEGORY_TYPE: ClassVar[KeywordField] = KeywordField("categoryType", "categoryType")
     """
-    
+
     """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")

@@ -33,13 +33,13 @@ class Thoughtspot(BI):
         "thoughtspotChartType", "thoughtspotChartType"
     )
     """
-    
+
     """
     THOUGHTSPOT_QUESTION_TEXT: ClassVar[TextField] = TextField(
         "thoughtspotQuestionText", "thoughtspotQuestionText"
     )
     """
-    
+
     """
     THOUGHTSPOT_JOIN_COUNT: ClassVar[NumericField] = NumericField(
         "thoughtspotJoinCount", "thoughtspotJoinCount"
