@@ -154,22 +154,37 @@ jobs:
           PYATLAN_VERSION="${{ env.PYATLAN_VERSION }}"
           COMMIT_HASH="${{ env.COMMIT_HASH }}"
 
+          # Harbor is being retired. ghcr.io/atlanhq/pyatlan mirrors the Harbor
+          # tag ladder name-for-name, because that is the reference the registry
+          # gateway resolves: it maps public/<name> -> atlanhq/<name>, so
+          # registry.atlan.com/public/pyatlan only keeps working once
+          # ghcr.io/atlanhq/pyatlan carries the same tags.
+          #
+          # Deliberately a mirror of the Harbor ladder rather than a rename of
+          # pyatlan-chainguard-base: that name is already published and
+          # consumed, and this must not move it.
           if [ "$BUILD_TYPE" = "dev" ]; then
             # Dev: 8.0.0-3.11-commithash
             IMAGE_TAG="${PYATLAN_VERSION}-${PYTHON_VERSION}-${COMMIT_HASH}"
             HARBOR_TAGS="registry.atlan.com/public/pyatlan:${IMAGE_TAG}\nregistry.atlan.com/public/pyatlan:sha-${COMMIT_HASH}"
+            GHCR_TAGS="ghcr.io/atlanhq/pyatlan:${IMAGE_TAG}\nghcr.io/atlanhq/pyatlan:sha-${COMMIT_HASH}"
           else
             # Release: 8.0.0-3.11
             IMAGE_TAG="${PYATLAN_VERSION}-${PYTHON_VERSION}"
             HARBOR_TAGS="registry.atlan.com/public/pyatlan:${IMAGE_TAG}\nregistry.atlan.com/public/pyatlan:main-latest\nregistry.atlan.com/public/pyatlan:main-${PYATLAN_VERSION}\nregistry.atlan.com/public/pyatlan:sha-${COMMIT_HASH}"
+            GHCR_TAGS="ghcr.io/atlanhq/pyatlan:${IMAGE_TAG}\nghcr.io/atlanhq/pyatlan:main-latest\nghcr.io/atlanhq/pyatlan:main-${PYATLAN_VERSION}\nghcr.io/atlanhq/pyatlan:sha-${COMMIT_HASH}"
           fi
 
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
           echo "HARBOR_TAGS<<EOF" >> $GITHUB_ENV
           echo -e "$HARBOR_TAGS" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+          echo "GHCR_TAGS<<EOF" >> $GITHUB_ENV
+          echo -e "$GHCR_TAGS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
           echo "Generated image tag: ghcr.io/atlanhq/pyatlan-chainguard-base:$IMAGE_TAG"
+          echo "Mirroring the Harbor ladder to: ghcr.io/atlanhq/pyatlan"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
@@ -180,6 +195,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/atlanhq/pyatlan-chainguard-base:${{ env.IMAGE_TAG }}
+            ${{ env.GHCR_TAGS }}
             ${{ env.HARBOR_TAGS }}
           build-args: |
             PYTHON_VERSION=${{ env.PYTHON_VERSION }}
@@ -209,8 +225,9 @@ jobs:
             echo "- **Image Tag Suffix:** ${{ env.COMMIT_HASH }}" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Available Tag:" >> $GITHUB_STEP_SUMMARY
+          echo "### Available Tags:" >> $GITHUB_STEP_SUMMARY
           echo "- \`ghcr.io/atlanhq/pyatlan-chainguard-base:${{ env.IMAGE_TAG }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/atlanhq/pyatlan:${{ env.IMAGE_TAG }}\` (mirrors the Harbor ladder)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Usage in your Dockerfile:" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`dockerfile" >> $GITHUB_STEP_SUMMARY
