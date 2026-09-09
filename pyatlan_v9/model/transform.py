@@ -19,6 +19,7 @@ from typing import Any, TypeVar
 import msgspec
 
 from pyatlan_v9.model.assets.asset import Asset
+from pyatlan_v9.model.string_coercion import coerce_string_slots
 
 _T = TypeVar("_T")
 
@@ -248,7 +249,7 @@ def _flatten_entity_dict(data: dict[str, Any]) -> dict[str, Any]:
     return flattened
 
 
-def from_atlas_format(data: dict[str, Any]) -> Asset:
+def from_atlas_format(data: dict[str, Any], *, lenient_strings: bool = False) -> Asset:
     """Convert Atlas API format to a flattened msgspec Struct.
 
     Takes an entity from the Atlas API and converts it to the SDK's
@@ -256,6 +257,14 @@ def from_atlas_format(data: dict[str, Any]) -> Asset:
 
     Args:
         data: A dictionary in Atlas API format.
+        lenient_strings: Coerce values bound for ``str``-typed slots the way
+            Atlas's own ``string`` type does, instead of rejecting the record.
+            Off by default, so decoding an Atlas API response is unchanged.
+            Turn it on when decoding a payload that has **not** been through
+            Atlas's normalisation - connector output, fixtures, a local
+            validator - where an ``int`` in a ``Dict[str, str]`` is a producer
+            quirk Atlas would have stringified, not a contract breach.
+            See :mod:`pyatlan_v9.model.string_coercion`.
 
     Returns:
         The appropriate Asset subclass instance with flattened attributes.
@@ -265,10 +274,18 @@ def from_atlas_format(data: dict[str, Any]) -> Asset:
 
     flattened = _flatten_entity_dict(data)
 
+    if lenient_strings:
+        coerce_string_slots(flattened, cls)
+
     return msgspec.convert(flattened, cls, strict=False)
 
 
-def from_atlas_json(json_bytes: bytes, type_name: str | None = None) -> Asset:  # noqa: ARG001
+def from_atlas_json(
+    json_bytes: bytes,
+    type_name: str | None = None,  # noqa: ARG001
+    *,
+    lenient_strings: bool = False,
+) -> Asset:
     """Convert Atlas API JSON bytes directly to a flattened msgspec Struct.
 
     This is the fastest path - parses JSON and converts in minimal steps.
@@ -276,6 +293,7 @@ def from_atlas_json(json_bytes: bytes, type_name: str | None = None) -> Asset:  
     Args:
         json_bytes: Raw JSON bytes from the API response.
         type_name: Optional type name hint (if known ahead of time).
+        lenient_strings: Passed through to :func:`from_atlas_format`.
 
     Returns:
         The appropriate Asset subclass instance with flattened attributes.
@@ -287,7 +305,7 @@ def from_atlas_json(json_bytes: bytes, type_name: str | None = None) -> Asset:  
     if "entity" in data:
         data = data["entity"]
 
-    return from_atlas_format(data)
+    return from_atlas_format(data, lenient_strings=lenient_strings)
 
 
 def to_bulk_payload(entities: list[Asset]) -> dict[str, Any]:
