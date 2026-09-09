@@ -1,3 +1,9 @@
+## 11.0.1 (September 9, 2026)
+
+### Packages
+
+- **pyatlan container image also published to GHCR**: The pyatlan image now mirrors its full Harbor tag ladder to `ghcr.io/atlanhq/pyatlan`, so it can be pulled from GitHub Container Registry as well as Harbor. CI/distribution only — the Python SDK is unchanged from 11.0.0.
+
 ## 11.0.0 (August 26, 2026)
 
 ### New Features
