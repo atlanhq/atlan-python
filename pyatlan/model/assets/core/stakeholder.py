@@ -33,13 +33,13 @@ class Stakeholder(Persona):
         "stakeholderDomainQualifiedName", "stakeholderDomainQualifiedName"
     )
     """
-    
+
     """
     STAKEHOLDER_TITLE_GUID: ClassVar[KeywordField] = KeywordField(
         "stakeholderTitleGuid", "stakeholderTitleGuid"
     )
     """
-    
+
     """
 
     STAKEHOLDER_TITLE: ClassVar[RelationField] = RelationField("stakeholderTitle")

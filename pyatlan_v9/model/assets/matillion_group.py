@@ -43,7 +43,8 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .matillion_related import RelatedMatillionGroup, RelatedMatillionProject
+from .knowledge_related import RelatedKnowledgeFile
+from .matillion_related import RelatedMatillionProject
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -85,6 +86,7 @@ class MatillionGroup(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MATILLION_PROJECTS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -101,6 +103,8 @@ class MatillionGroup(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MatillionGroup"
 
     matillion_project_count: Union[int, None, UnsetType] = UNSET
     """Number of projects within the group."""
@@ -168,6 +172,9 @@ class MatillionGroup(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     matillion_projects: Union[List[RelatedMatillionProject], None, UnsetType] = UNSET
     """Matillion projects that exist within this group."""
 
@@ -222,66 +229,6 @@ class MatillionGroup(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MatillionGroup"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this MatillionGroup instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"MatillionGroup validation failed: {errors}")
-
-    def minimize(self) -> "MatillionGroup":
-        """
-        Return a minimal copy of this MatillionGroup with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new MatillionGroup with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new MatillionGroup instance with only the minimum required fields.
-        """
-        self.validate()
-        return MatillionGroup(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMatillionGroup":
-        """
-        Create a :class:`RelatedMatillionGroup` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedMatillionGroup reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedMatillionGroup(guid=self.guid)
-        return RelatedMatillionGroup(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -408,6 +355,9 @@ class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     matillion_projects: Union[List[RelatedMatillionProject], None, UnsetType] = UNSET
     """Matillion projects that exist within this group."""
 
@@ -499,6 +449,7 @@ _MATILLION_GROUP_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "matillion_projects",
     "mc_monitors",
     "mc_incidents",
@@ -572,9 +523,6 @@ def _matillion_group_to_nested(matillion_group: MatillionGroup) -> MatillionGrou
         is_incomplete=matillion_group.is_incomplete,
         provenance_type=matillion_group.provenance_type,
         home_id=matillion_group.home_id,
-        depth=matillion_group.depth,
-        immediate_upstream=matillion_group.immediate_upstream,
-        immediate_downstream=matillion_group.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -608,6 +556,7 @@ def _matillion_group_from_nested(nested: MatillionGroupNested) -> MatillionGroup
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -616,9 +565,6 @@ def _matillion_group_from_nested(nested: MatillionGroupNested) -> MatillionGroup
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_matillion_group_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -677,6 +623,7 @@ MatillionGroup.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MatillionGroup.MEANINGS = RelationField("meanings")
+MatillionGroup.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MatillionGroup.MATILLION_PROJECTS = RelationField("matillionProjects")
 MatillionGroup.MC_MONITORS = RelationField("mcMonitors")
 MatillionGroup.MC_INCIDENTS = RelationField("mcIncidents")

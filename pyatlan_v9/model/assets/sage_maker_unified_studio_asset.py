@@ -43,16 +43,14 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sage_maker_unified_studio_related import (
-    RelatedSageMakerUnifiedStudioAsset,
-    RelatedSageMakerUnifiedStudioAssetSchema,
-)
+from .sage_maker_unified_studio_related import RelatedSageMakerUnifiedStudioAssetSchema
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -97,6 +95,7 @@ class SageMakerUnifiedStudioAsset(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -113,6 +112,8 @@ class SageMakerUnifiedStudioAsset(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SageMakerUnifiedStudioAsset"
 
     smus_asset_summary: Union[str, None, UnsetType] = UNSET
     """Summary text for the asset in SageMaker Unified Studio."""
@@ -207,6 +208,9 @@ class SageMakerUnifiedStudioAsset(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -263,68 +267,6 @@ class SageMakerUnifiedStudioAsset(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SageMakerUnifiedStudioAsset"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SageMakerUnifiedStudioAsset instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SageMakerUnifiedStudioAsset validation failed: {errors}")
-
-    def minimize(self) -> "SageMakerUnifiedStudioAsset":
-        """
-        Return a minimal copy of this SageMakerUnifiedStudioAsset with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SageMakerUnifiedStudioAsset with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SageMakerUnifiedStudioAsset instance with only the minimum required fields.
-        """
-        self.validate()
-        return SageMakerUnifiedStudioAsset(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    def relate(self) -> "RelatedSageMakerUnifiedStudioAsset":
-        """
-        Create a :class:`RelatedSageMakerUnifiedStudioAsset` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSageMakerUnifiedStudioAsset reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSageMakerUnifiedStudioAsset(guid=self.guid)
-        return RelatedSageMakerUnifiedStudioAsset(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -480,6 +422,9 @@ class SageMakerUnifiedStudioAssetRelationshipAttributes(AssetRelationshipAttribu
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -573,6 +518,7 @@ _SAGE_MAKER_UNIFIED_STUDIO_ASSET_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -670,9 +616,6 @@ def _sage_maker_unified_studio_asset_to_nested(
         is_incomplete=sage_maker_unified_studio_asset.is_incomplete,
         provenance_type=sage_maker_unified_studio_asset.provenance_type,
         home_id=sage_maker_unified_studio_asset.home_id,
-        depth=sage_maker_unified_studio_asset.depth,
-        immediate_upstream=sage_maker_unified_studio_asset.immediate_upstream,
-        immediate_downstream=sage_maker_unified_studio_asset.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -708,6 +651,7 @@ def _sage_maker_unified_studio_asset_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -716,9 +660,6 @@ def _sage_maker_unified_studio_asset_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sage_maker_unified_studio_asset_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -818,6 +759,9 @@ SageMakerUnifiedStudioAsset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = Relatio
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SageMakerUnifiedStudioAsset.MEANINGS = RelationField("meanings")
+SageMakerUnifiedStudioAsset.KNOWLEDGE_LINKED_FILES = RelationField(
+    "knowledgeLinkedFiles"
+)
 SageMakerUnifiedStudioAsset.MC_MONITORS = RelationField("mcMonitors")
 SageMakerUnifiedStudioAsset.MC_INCIDENTS = RelationField("mcIncidents")
 SageMakerUnifiedStudioAsset.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

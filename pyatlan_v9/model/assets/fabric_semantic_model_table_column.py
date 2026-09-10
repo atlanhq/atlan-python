@@ -42,12 +42,10 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .fabric_related import (
-    RelatedFabricSemanticModelTable,
-    RelatedFabricSemanticModelTableColumn,
-)
+from .fabric_related import RelatedFabricSemanticModelTable
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -93,6 +91,7 @@ class FabricSemanticModelTableColumn(Asset):
     FABRIC_SEMANTIC_MODEL_TABLE: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -108,6 +107,8 @@ class FabricSemanticModelTableColumn(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "FabricSemanticModelTableColumn"
 
     fabric_semantic_model_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric semantic model table that contains this asset."""
@@ -189,6 +190,9 @@ class FabricSemanticModelTableColumn(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -248,84 +252,6 @@ class FabricSemanticModelTableColumn(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this FabricSemanticModelTableColumn instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.fabric_semantic_model_table is UNSET:
-                errors.append("fabric_semantic_model_table is required for creation")
-            if self.fabric_semantic_model_table_name is UNSET:
-                errors.append(
-                    "fabric_semantic_model_table_name is required for creation"
-                )
-            if self.fabric_semantic_model_table_qualified_name is UNSET:
-                errors.append(
-                    "fabric_semantic_model_table_qualified_name is required for creation"
-                )
-        if errors:
-            raise ValueError(
-                f"FabricSemanticModelTableColumn validation failed: {errors}"
-            )
-
-    def minimize(self) -> "FabricSemanticModelTableColumn":
-        """
-        Return a minimal copy of this FabricSemanticModelTableColumn with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new FabricSemanticModelTableColumn with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new FabricSemanticModelTableColumn instance with only the minimum required fields.
-        """
-        self.validate()
-        return FabricSemanticModelTableColumn(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    def relate(self) -> "RelatedFabricSemanticModelTableColumn":
-        """
-        Create a :class:`RelatedFabricSemanticModelTableColumn` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedFabricSemanticModelTableColumn reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedFabricSemanticModelTableColumn(guid=self.guid)
-        return RelatedFabricSemanticModelTableColumn(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -468,6 +394,9 @@ class FabricSemanticModelTableColumnRelationshipAttributes(AssetRelationshipAttr
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -557,6 +486,7 @@ _FABRIC_SEMANTIC_MODEL_TABLE_COLUMN_REL_FIELDS: List[str] = [
     "fabric_semantic_model_table",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -645,9 +575,6 @@ def _fabric_semantic_model_table_column_to_nested(
         is_incomplete=fabric_semantic_model_table_column.is_incomplete,
         provenance_type=fabric_semantic_model_table_column.provenance_type,
         home_id=fabric_semantic_model_table_column.home_id,
-        depth=fabric_semantic_model_table_column.depth,
-        immediate_upstream=fabric_semantic_model_table_column.immediate_upstream,
-        immediate_downstream=fabric_semantic_model_table_column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -683,6 +610,7 @@ def _fabric_semantic_model_table_column_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -691,9 +619,6 @@ def _fabric_semantic_model_table_column_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_fabric_semantic_model_table_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -792,6 +717,9 @@ FabricSemanticModelTableColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = (
     RelationField("gcpDataplexAspectTypeMetadataEntities")
 )
 FabricSemanticModelTableColumn.MEANINGS = RelationField("meanings")
+FabricSemanticModelTableColumn.KNOWLEDGE_LINKED_FILES = RelationField(
+    "knowledgeLinkedFiles"
+)
 FabricSemanticModelTableColumn.MC_MONITORS = RelationField("mcMonitors")
 FabricSemanticModelTableColumn.MC_INCIDENTS = RelationField("mcIncidents")
 FabricSemanticModelTableColumn.PARTIAL_CHILD_FIELDS = RelationField(
