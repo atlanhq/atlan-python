@@ -706,6 +706,13 @@ class ErrorCode(Enum):
         "See https://docs.atlan.com/product/capabilities/build-apps/sdks/python/apps/manage-apps",
         InvalidRequestError,
     )
+    CONNECTION_READ_FOR_APP_FAILED = (
+        400,
+        "ATLAN-PYTHON-400-081",
+        "Could not read connection '{0}', so the run was not started.",
+        "Verify the qualifiedName and that this credential can read the connection.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

@@ -13,6 +13,7 @@ from unittest.mock import Mock
 import pytest
 
 import pyatlan.model.apps as apps
+from pyatlan.errors import InvalidRequestError
 from pyatlan.model.apps import AppBuilder, BigqueryCrawler, SnowflakeMiner
 
 # Every concrete builder (the hand-written flagship + all generated ones).
@@ -234,27 +235,49 @@ def test_miner_references_existing_connection_by_qn_only():
 
 
 def test_connector_name_derived_from_qn(client):
-    # Even when the builder's connector fallback differs, the QN wins.
+    # Even when the read-back omits connectorName, the QN supplies it.
+    client.asset.get_by_qualified_name.return_value = _connection(
+        "default/snowflake/123", name="conn"
+    )
     SnowflakeMiner(client).connection(qualified_name="default/snowflake/123").create()
     out = client.app.create.call_args.kwargs["inputs"].to_inputs()
     assert out["connection"]["attributes"]["connectorName"] == "snowflake"
 
 
-def test_miner_auto_resolves_connection_credential(client):
-    # Referencing an existing connection by QN (no credential) → the builder looks
-    # up the connection and reuses its defaultCredentialGuid on create().
-    client.asset.search.return_value = iter(
-        [Mock(default_credential_guid="conn-cred-guid")]
+def _connection(qn, **attrs):
+    """A real Connection asset, so _load_existing_connection can serialize it the
+    way it serializes a live read-back."""
+    from pyatlan.model.assets import Connection
+
+    conn = Connection()
+    conn.qualified_name = qn
+    for key, value in attrs.items():
+        setattr(conn, key, value)
+    return conn
+
+
+def test_miner_sends_the_full_existing_connection(client):
+    # Referencing an existing connection by QN (no credential): the builder reads
+    # the whole connection back and sends it — name, credential, everything — the
+    # way the UI and a rerun do, so a full-replace downstream drops nothing.
+    client.asset.get_by_qualified_name.return_value = _connection(
+        "default/snowflake/123",
+        name="sales-snowflake",
+        default_credential_guid="conn-cred-guid",
+        category="warehouse",
     )
     SnowflakeMiner(client).connection(qualified_name="default/snowflake/123").create()
-    assert client.asset.search.called  # connection was looked up
+    assert client.asset.get_by_qualified_name.called  # the connection was read back
     out = client.app.create.call_args.kwargs["inputs"].to_inputs()
-    # CONNECT-843: the reused guid rides on the connection entity (the UI's wire
-    # shape), never as a bare top-level credential_guid. A top-level guid with no
-    # credential body makes the create endpoint rewrite that credential's shared
-    # config record. Do not "fix" this back to out["credential_guid"].
     attrs = out["connection"]["attributes"]
-    assert attrs["defaultCredentialGuid"] == "conn-cred-guid"  # its credential reused
+    # AICHAT-1798: the connection's own name (and every other attribute) ride on the
+    # payload, so popularity/publish cannot rename it to the qualifiedName's numeric
+    # tail, and a full-replace cannot blank category/rowLimit/etc.
+    assert attrs["name"] == "sales-snowflake"
+    assert attrs["category"] == "warehouse"
+    # CONNECT-843: the connection's own credential rides on the entity (the UI's
+    # wire shape), never as a bare top-level credential_guid.
+    assert attrs["defaultCredentialGuid"] == "conn-cred-guid"
     assert out["credential_guid"] == ""  # and not duplicated at the top level
 
 
@@ -267,9 +290,12 @@ def test_miner_auto_resolves_connection_credential(client):
 # create endpoint rewrite that credential's shared config record down to
 # {"credentialSource": "direct"}, breaking every workflow sharing the guid.
 # --------------------------------------------------------------------------- #
-def _resolve_to(client, guid):
-    """Make the connection lookup in _create() resolve to ``guid``."""
-    client.asset.search.return_value = iter([Mock(default_credential_guid=guid)])
+def _resolve_to(client, guid, name="looked-up-conn"):
+    """Make the connection read-back in _create() return a full connection carrying
+    ``guid`` and ``name``."""
+    client.asset.get_by_qualified_name.return_value = _connection(
+        "default/x/123", name=name, default_credential_guid=guid
+    )
 
 
 @pytest.mark.parametrize(
@@ -284,13 +310,49 @@ def test_auto_resolved_guid_rides_on_connection_not_top_level(client, cls, conne
     cls(client).connection(qualified_name=f"default/{connector}/123").create()
     out = client.app.create.call_args.kwargs["inputs"].to_inputs()
     attrs = out["connection"]["attributes"]
-    # exactly the UI's reuse shape: identity + the connection's own credential
+    # exactly the UI's reuse shape: identity + the connection's own credential + name
     assert attrs["defaultCredentialGuid"] == "resolved-guid"
     assert attrs["qualifiedName"] == f"default/{connector}/123"
     assert attrs["connectorName"] == connector
+    assert attrs["name"] == "looked-up-conn"  # AICHAT-1798: name preserved
     # the guid is NOT echoed at the top level, and no credential body is invented
     assert out["credential_guid"] == ""
     assert "credential" not in out
+
+
+def test_explicit_connection_name_wins_over_looked_up_name(client):
+    # A caller-supplied name is never clobbered by the connection's stored name.
+    _resolve_to(client, "g", name="stored-in-atlas")
+    SnowflakeMiner(client).connection(
+        qualified_name="default/snowflake/123", name="chosen-by-caller"
+    ).create()
+    out = client.app.create.call_args.kwargs["inputs"].to_inputs()
+    assert out["connection"]["attributes"]["name"] == "chosen-by-caller"
+
+
+def test_read_back_failure_raises_rather_than_risking_a_rename(client):
+    # If the connection can't be read and no name was given, sending a QN-only stub
+    # would rename it to the qualifiedName tail — so fail loudly instead of running.
+    client.asset.get_by_qualified_name.side_effect = Exception("not found")
+    with pytest.raises(InvalidRequestError, match="ATLAN-PYTHON-400-081"):
+        SnowflakeMiner(client).connection(
+            qualified_name="default/snowflake/123"
+        ).create()
+    client.app.create.assert_not_called()  # nothing was submitted
+
+
+def test_read_back_failure_with_explicit_name_falls_back(client):
+    # An explicit name is already safe from the rename, so a read failure is
+    # recoverable: the run still goes out, carrying the caller's name.
+    client.asset.get_by_qualified_name.side_effect = Exception("not found")
+    SnowflakeMiner(client).connection(
+        qualified_name="default/snowflake/123", name="chosen"
+    ).create()
+    attrs = client.app.create.call_args.kwargs["inputs"].to_inputs()["connection"][
+        "attributes"
+    ]
+    assert attrs["name"] == "chosen"
+    assert attrs["qualifiedName"] == "default/snowflake/123"
 
 
 def test_explicit_guid_on_existing_connection_rides_on_connection():
@@ -353,7 +415,7 @@ def test_staged_credential_on_existing_connection_keeps_vaulting_shape(client):
     assert out["credential"]["authType"] == "gcp-wif"
     assert out["credential_guid"] == ""
     assert "defaultCredentialGuid" not in out["connection"]["attributes"]
-    client.asset.search.assert_not_called()  # a staged cred needs no lookup
+    client.asset.get_by_qualified_name.assert_not_called()  # staged cred: no read-back
 
 
 def test_agent_mode_on_existing_connection_ignores_credential_guid():
