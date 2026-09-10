@@ -256,10 +256,10 @@ def _connection(qn, **attrs):
     return conn
 
 
-def test_miner_sends_the_full_existing_connection(client):
+def test_miner_sends_the_existing_connection_config(client):
     # Referencing an existing connection by QN (no credential): the builder reads
-    # the whole connection back and sends it — name, credential, everything — the
-    # way the UI and a rerun do, so a full-replace downstream drops nothing.
+    # the connection's stored config back and sends it — name, credential, config —
+    # the way the UI does, so the run cannot rename it to the qualifiedName tail.
     client.asset.get_by_qualified_name.return_value = _connection(
         "default/snowflake/123",
         name="sales-snowflake",

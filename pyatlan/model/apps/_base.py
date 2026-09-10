@@ -30,6 +30,38 @@ from pyatlan.model.credential import Credential
 # not be echoed back on update (stripped server-side on create).
 _RUNTIME_KEYS = frozenset({"user-id", "user_id", "workflow_id", "correlation_id"})
 
+# The connection attributes an app run puts on its connection object — the stored
+# config the UI forwards on a miner run (identity, credential/policy strategy,
+# admins, query settings). Deliberately NOT the computed analytics/popularity
+# fields (popularityScore, viewScore, sourceRead*, assetMc*, …) that a full
+# entity read carries: echoing those from an extract step is noise at best and
+# can clobber real popularity at worst. Fetched by name so only these come back.
+_CONNECTION_WIRE_ATTRS = (
+    "name",
+    "connectorName",
+    "defaultCredentialGuid",
+    "category",
+    "adminUsers",
+    "adminGroups",
+    "adminRoles",
+    "allowQuery",
+    "allowQueryPreview",
+    "queryTimeout",
+    "rowLimit",
+    "credentialStrategy",
+    "previewCredentialStrategy",
+    "policyStrategy",
+    "policyStrategyForSamplePreview",
+    "objectStorageUploadThreshold",
+    "hasPopularityInsights",
+    "connectionDbtEnvironments",
+    "connectionIsDQEnabled",
+    "isPartial",
+    "isSampleDataPreviewEnabled",
+    "vectorEmbeddingsEnabled",
+    "sourceLogo",
+)
+
 
 class AppInput(BaseModel):
     """A typed, configmap-derived ``inputs`` payload for an app workflow."""
@@ -115,11 +147,11 @@ class AppBuilder:
         self._admin_roles: List[str] = []
         self._metadata: Dict[str, Any] = {}
         self._update_slug: Optional[str] = None
-        # A full connection object to send verbatim (typeName + attributes): either
-        # captured by load() (update path) or read back by _create() when a fresh
-        # run references an existing connection by QN. Sending the whole connection
-        # keeps a full-replace downstream from dropping attributes (AICHAT-1798).
-        # Cleared by an explicit connection() call, which then wins.
+        # A connection object to send verbatim (typeName + attributes): the full
+        # persisted connection captured by load() (update path), or the connection's
+        # stored config read back by _create() when a fresh run references an
+        # existing connection by QN — so its name reaches the payload and the run
+        # cannot rename it (AICHAT-1798). Cleared by an explicit connection() call.
         self._loaded_connection: Optional[Any] = None
 
     # ── Step 1 · Credential ────────────────────────────────────────────────
@@ -463,17 +495,17 @@ class AppBuilder:
         return CredentialResponse(**raw).id or ""
 
     def _load_existing_connection(self, qualified_name: str) -> Dict[str, Any]:
-        """Read an existing connection in full and return it as the ``{typeName,
-        attributes}`` wire object, so a caller referencing a connection by QN (e.g.
-        miners) sends the whole connection the way the UI and a rerun do — not a
-        stub built from the QN alone.
+        """Read an existing connection's stored config and return it as the
+        ``{typeName, attributes}`` wire object, so a caller referencing a connection
+        by QN (e.g. miners) sends the connection the way the UI does — not a stub
+        built from the QN alone.
 
-        This is what keeps the connection intact. Popularity/publish full-replaces
-        the connection from this payload, so a stub missing ``name`` makes the
+        This is what keeps the connection's name intact: popularity/publish derives
+        the connection name from this payload, so a stub missing ``name`` makes the
         exporter fall back to the qualifiedName's numeric tail and rename the
-        connection to that number (AICHAT-1798); the same gap can blank other
-        attributes (e.g. category/rowLimit). A full read-back carries every
-        attribute, so the replace is a no-op.
+        connection to that number (AICHAT-1798). Only the config attributes the UI
+        forwards are fetched (``_CONNECTION_WIRE_ATTRS``) — never the computed
+        analytics/popularity fields, which must not be echoed from an extract step.
 
         Raises whatever the read raised (e.g. ``NotFoundError``) rather than
         returning a stub: a run that cannot read the connection must not rename it.
@@ -487,8 +519,9 @@ class AppBuilder:
         connection = self._client.asset.get_by_qualified_name(
             qualified_name=qualified_name,
             asset_type=Connection,
-            min_ext_info=False,
+            min_ext_info=True,
             ignore_relationships=True,
+            attributes=list(_CONNECTION_WIRE_ATTRS),
         )
         # Serialize via .json() (not .dict()): pydantic's encoders turn set-typed
         # attributes into lists and enums/datetimes into their wire form, so the
