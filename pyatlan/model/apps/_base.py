@@ -533,6 +533,10 @@ class AppBuilder:
             ).get("attributes")
             or {}
         )
+        # Keep only the config attributes the UI forwards — defensive in case the
+        # read returns more than was asked for — so no computed analytics/popularity
+        # field can ride along on a full-replace.
+        attrs = {k: v for k, v in attrs.items() if k in _CONNECTION_WIRE_ATTRS}
         # Identity the run was given always wins over the read-back.
         attrs["qualifiedName"] = qualified_name
         parts = qualified_name.split("/")

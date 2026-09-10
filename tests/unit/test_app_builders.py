@@ -256,29 +256,57 @@ def _connection(qn, **attrs):
     return conn
 
 
+_NOISE_ATTRS = (
+    "popularityScore",
+    "viewScore",
+    "sourceReadTopUserList",
+    "assetMcIncidentNames",
+    "starredBy",
+)
+
+
 def test_miner_sends_the_existing_connection_config(client):
     # Referencing an existing connection by QN (no credential): the builder reads
     # the connection's stored config back and sends it — name, credential, config —
     # the way the UI does, so the run cannot rename it to the qualifiedName tail.
-    client.asset.get_by_qualified_name.return_value = _connection(
+    # The read-back here also carries computed analytics (popularityScore/...), to
+    # prove those are dropped, not forwarded.
+    read_back = _connection(
         "default/snowflake/123",
         name="sales-snowflake",
         default_credential_guid="conn-cred-guid",
         category="warehouse",
+        row_limit=10000,
+        admin_users=["u1"],
+        popularity_score=1.5,
+        view_score=2.0,
     )
+    client.asset.get_by_qualified_name.return_value = read_back
     SnowflakeMiner(client).connection(qualified_name="default/snowflake/123").create()
-    assert client.asset.get_by_qualified_name.called  # the connection was read back
+
+    # the read-back asks for ONLY the UI's config attributes — never the computed
+    # analytics/popularity fields — so they cannot ride along on a full-replace.
+    from pyatlan.model.apps._base import _CONNECTION_WIRE_ATTRS
+
+    requested = client.asset.get_by_qualified_name.call_args.kwargs["attributes"]
+    assert requested == list(_CONNECTION_WIRE_ATTRS)
+    assert all(noise not in requested for noise in _NOISE_ATTRS)
+
     out = client.app.create.call_args.kwargs["inputs"].to_inputs()
     attrs = out["connection"]["attributes"]
-    # AICHAT-1798: the connection's own name (and every other attribute) ride on the
-    # payload, so popularity/publish cannot rename it to the qualifiedName's numeric
-    # tail, and a full-replace cannot blank category/rowLimit/etc.
+    # AICHAT-1798: the connection's name + config ride on the payload, so
+    # popularity/publish cannot rename it to the qualifiedName's numeric tail.
     assert attrs["name"] == "sales-snowflake"
     assert attrs["category"] == "warehouse"
+    assert attrs["rowLimit"] == 10000
+    assert attrs["adminUsers"] == ["u1"]
+    assert attrs["connectorName"] == "snowflake"
     # CONNECT-843: the connection's own credential rides on the entity (the UI's
     # wire shape), never as a bare top-level credential_guid.
     assert attrs["defaultCredentialGuid"] == "conn-cred-guid"
     assert out["credential_guid"] == ""  # and not duplicated at the top level
+    # and NONE of the computed analytics/popularity fields leak through.
+    assert all(noise not in attrs for noise in _NOISE_ATTRS)
 
 
 # --------------------------------------------------------------------------- #
