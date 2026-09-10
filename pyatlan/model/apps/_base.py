@@ -23,11 +23,44 @@ from typing import Any, ClassVar, Dict, List, Mapping, Optional, Type, Union
 
 from pydantic.v1 import BaseModel, Extra
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import Credential
 
 # Handshake/runtime ids the server injects into a workflow's inputs; they must
 # not be echoed back on update (stripped server-side on create).
 _RUNTIME_KEYS = frozenset({"user-id", "user_id", "workflow_id", "correlation_id"})
+
+# The connection attributes an app run puts on its connection object — the stored
+# config the UI forwards on a miner run (identity, credential/policy strategy,
+# admins, query settings). Deliberately NOT the computed analytics/popularity
+# fields (popularityScore, viewScore, sourceRead*, assetMc*, …) that a full
+# entity read carries: echoing those from an extract step is noise at best and
+# can clobber real popularity at worst. Fetched by name so only these come back.
+_CONNECTION_WIRE_ATTRS = (
+    "name",
+    "connectorName",
+    "defaultCredentialGuid",
+    "category",
+    "adminUsers",
+    "adminGroups",
+    "adminRoles",
+    "allowQuery",
+    "allowQueryPreview",
+    "queryTimeout",
+    "rowLimit",
+    "credentialStrategy",
+    "previewCredentialStrategy",
+    "policyStrategy",
+    "policyStrategyForSamplePreview",
+    "objectStorageUploadThreshold",
+    "hasPopularityInsights",
+    "connectionDbtEnvironments",
+    "connectionIsDQEnabled",
+    "isPartial",
+    "isSampleDataPreviewEnabled",
+    "vectorEmbeddingsEnabled",
+    "sourceLogo",
+)
 
 
 class AppInput(BaseModel):
@@ -114,9 +147,11 @@ class AppBuilder:
         self._admin_roles: List[str] = []
         self._metadata: Dict[str, Any] = {}
         self._update_slug: Optional[str] = None
-        # Full persisted connection captured by load(); re-sent verbatim by
-        # update() so the full-replace drops no connection attributes. Cleared by
-        # an explicit connection() call, which then wins.
+        # A connection object to send verbatim (typeName + attributes): the full
+        # persisted connection captured by load() (update path), or the connection's
+        # stored config read back by _create() when a fresh run references an
+        # existing connection by QN — so its name reaches the payload and the run
+        # cannot rename it (AICHAT-1798). Cleared by an explicit connection() call.
         self._loaded_connection: Optional[Any] = None
 
     # ── Step 1 · Credential ────────────────────────────────────────────────
@@ -459,43 +494,98 @@ class AppBuilder:
         )
         return CredentialResponse(**raw).id or ""
 
-    def _resolve_connection_credential(self, qualified_name: str) -> Optional[str]:
-        """Look up an existing connection's ``defaultCredentialGuid`` so a caller
-        referencing a connection by QN (e.g. miners) reuses that connection's
-        credential without having to know its guid. Best-effort: returns None if
-        the connection can't be read."""
-        try:
-            from pyatlan.model.assets import Connection
-            from pyatlan.model.fluent_search import FluentSearch
+    def _load_existing_connection(self, qualified_name: str) -> Dict[str, Any]:
+        """Read an existing connection's stored config and return it as the
+        ``{typeName, attributes}`` wire object, so a caller referencing a connection
+        by QN (e.g. miners) sends the connection the way the UI does — not a stub
+        built from the QN alone.
 
-            request = (
-                FluentSearch()
-                .where(Connection.TYPE_NAME.eq("Connection"))
-                .where(Connection.QUALIFIED_NAME.eq(qualified_name))
-                .include_on_results(Connection.DEFAULT_CREDENTIAL_GUID)
-                .page_size(1)
-            ).to_request()
-            for asset in self._client.asset.search(request):
-                return asset.default_credential_guid
-        except Exception:  # noqa: BLE001
-            return None
-        return None
+        This is what keeps the connection's name intact: popularity/publish derives
+        the connection name from this payload, so a stub missing ``name`` makes the
+        exporter fall back to the qualifiedName's numeric tail and rename the
+        connection to that number (AICHAT-1798). Only the config attributes the UI
+        forwards are fetched (``_CONNECTION_WIRE_ATTRS``) — never the computed
+        analytics/popularity fields, which must not be echoed from an extract step.
+
+        Raises whatever the read raised (e.g. ``NotFoundError``) rather than
+        returning a stub: a run that cannot read the connection must not rename it.
+        The caller decides whether an explicit name makes a failure recoverable.
+
+        The connection's own ``defaultCredentialGuid`` rides on the read-back, so
+        the credential is reused with no extra lookup. Explicit ``connection(name=,
+        admin_*=)`` / ``credential_guid()`` still win — they are layered back on."""
+        from pyatlan.model.assets import Connection
+
+        connection = self._client.asset.get_by_qualified_name(
+            qualified_name=qualified_name,
+            asset_type=Connection,
+            min_ext_info=True,
+            ignore_relationships=True,
+            attributes=list(_CONNECTION_WIRE_ATTRS),
+        )
+        # Serialize via .json() (not .dict()): pydantic's encoders turn set-typed
+        # attributes into lists and enums/datetimes into their wire form, so the
+        # connection is JSON-safe the same way the stored DAG (load path) is.
+        # .dict() would leave raw sets that fail to serialize.
+        attrs = (
+            json.loads(
+                connection.json(by_alias=True, exclude_none=True, exclude_unset=True)
+            ).get("attributes")
+            or {}
+        )
+        # Keep only the config attributes the UI forwards — defensive in case the
+        # read returns more than was asked for — so no computed analytics/popularity
+        # field can ride along on a full-replace.
+        attrs = {k: v for k, v in attrs.items() if k in _CONNECTION_WIRE_ATTRS}
+        # Identity the run was given always wins over the read-back.
+        attrs["qualifiedName"] = qualified_name
+        parts = qualified_name.split("/")
+        if len(parts) >= 3 and parts[0] == "default":
+            attrs.setdefault("connectorName", parts[1])
+        # Explicit builder values override the stored connection.
+        if self._connection_name is not None:
+            attrs["name"] = self._connection_name
+        if self._admin_users:
+            attrs["adminUsers"] = self._admin_users
+        if self._admin_groups:
+            attrs["adminGroups"] = self._admin_groups
+        if self._admin_roles:
+            attrs["adminRoles"] = self._admin_roles
+        if self._credential_guid:
+            attrs["defaultCredentialGuid"] = self._credential_guid
+        return {"typeName": "Connection", "attributes": attrs}
 
     def _create(self, *, name: Optional[str], run: bool, schedule: Optional[Any]):
         epoch = int(time.time())
         qn = (
             self._connection_qualified_name or f"default/{self._CONNECTOR_NAME}/{epoch}"
         )
-        # Referencing an existing connection without a credential (e.g. miners):
-        # reuse that connection's own credential (its defaultCredentialGuid), looked
-        # up by QN — so the caller only needs to supply the connection.
+        # Referencing an existing connection by QN (e.g. miners): send the whole
+        # connection the UI/rerun way — a full read-back — so a full-replace
+        # downstream drops no attributes and cannot rename it (AICHAT-1798). The
+        # read-back carries the connection's own defaultCredentialGuid, so the
+        # credential is reused too. Falls back to a QN-only stub if the read fails.
+        # Skipped when a raw credential is being vaulted onto the connection (that
+        # path builds its own) or when load()/an explicit connection already set one.
         if (
             self._extraction_method != "agent"
             and not self._raw_creds
-            and self._credential_guid is None
+            and self._loaded_connection is None
             and self._connection_qualified_name
         ):
-            self._credential_guid = self._resolve_connection_credential(qn)
+            try:
+                self._loaded_connection = self._load_existing_connection(qn)
+            except Exception as exc:  # noqa: BLE001
+                # Reading the connection is how its name reaches the run. If it
+                # can't be read and no name was given, a QN-only stub would let
+                # popularity/publish rename the connection to the qualifiedName's
+                # numeric tail (AICHAT-1798) — fail loudly instead of silently
+                # renaming. An explicit connection(name=...) is already safe, so
+                # fall back to the stub there.
+                if self._connection_name is None:
+                    raise ErrorCode.CONNECTION_READ_FOR_APP_FAILED.exception_with_parameters(
+                        qn
+                    ) from exc
         # Named credential fields (e.g. dbt's api_credential_guid) aren't vaulted
         # from the payload — vault them now and place the issued guid in the field.
         resolved_guids: Dict[str, str] = {}
