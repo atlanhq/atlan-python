@@ -1,3 +1,9 @@
+## 11.1.0 (September 10, 2026)
+
+### Bug Fixes
+
+- **Miner runs no longer rename the connection they mine (AICHAT-1798)**: A miner created by referencing an existing connection *only* by `qualified_name` (e.g. `BigqueryMiner(client).connection(qualified_name=...).run()`) sent a connection object with no `name`. The downstream popularity/publish step derives the connection name from that payload and, finding it empty, fell back to the qualifiedName's numeric tail — renaming the connection to that number. A fresh miner run now reads the connection's stored config back (identity, credential, admins, query settings — the same shape the UI sends, without internal analytics/popularity fields) and sends it with the name intact, so the connection cannot be renamed. If the connection cannot be read and no explicit `connection(name=...)` was given, the run now raises `CONNECTION_READ_FOR_APP_FAILED` rather than silently renaming it. Crawler `create`, `load()` / `update()`, and rerun (`submit`) are unaffected.
+
 ## 11.0.1 (September 9, 2026)
 
 ### Packages
