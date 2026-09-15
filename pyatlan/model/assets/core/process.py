@@ -113,7 +113,7 @@ class Process(Asset, type_name="Process"):
         "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
     )
     """
-    
+
     """
     AST: ClassVar[TextField] = TextField("ast", "ast")
     """

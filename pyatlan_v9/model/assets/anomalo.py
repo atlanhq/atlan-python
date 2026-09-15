@@ -26,7 +26,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
-from .anomalo_related import RelatedAnomalo, RelatedAnomaloCheck
+from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
     _ASSET_REL_FIELDS,
@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -83,6 +84,7 @@ class Anomalo(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -98,6 +100,8 @@ class Anomalo(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Anomalo"
 
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
@@ -162,6 +166,9 @@ class Anomalo(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -213,66 +220,6 @@ class Anomalo(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Anomalo"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Anomalo instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Anomalo validation failed: {errors}")
-
-    def minimize(self) -> "Anomalo":
-        """
-        Return a minimal copy of this Anomalo with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Anomalo with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Anomalo instance with only the minimum required fields.
-        """
-        self.validate()
-        return Anomalo(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAnomalo":
-        """
-        Create a :class:`RelatedAnomalo` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedAnomalo reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedAnomalo(guid=self.guid)
-        return RelatedAnomalo(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -396,6 +343,9 @@ class AnomaloRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -482,6 +432,7 @@ _ANOMALO_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -548,9 +499,6 @@ def _anomalo_to_nested(anomalo: Anomalo) -> AnomaloNested:
         is_incomplete=anomalo.is_incomplete,
         provenance_type=anomalo.provenance_type,
         home_id=anomalo.home_id,
-        depth=anomalo.depth,
-        immediate_upstream=anomalo.immediate_upstream,
-        immediate_downstream=anomalo.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -580,6 +528,7 @@ def _anomalo_from_nested(nested: AnomaloNested) -> Anomalo:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -588,9 +537,6 @@ def _anomalo_from_nested(nested: AnomaloNested) -> Anomalo:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_anomalo_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -640,6 +586,7 @@ Anomalo.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Anomalo.MEANINGS = RelationField("meanings")
+Anomalo.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Anomalo.MC_MONITORS = RelationField("mcMonitors")
 Anomalo.MC_INCIDENTS = RelationField("mcIncidents")
 Anomalo.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

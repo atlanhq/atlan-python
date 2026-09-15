@@ -44,9 +44,9 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .micro_strategy_related import (
     RelatedMicroStrategyColumn,
-    RelatedMicroStrategyFact,
     RelatedMicroStrategyMetric,
     RelatedMicroStrategyProject,
 )
@@ -100,6 +100,7 @@ class MicroStrategyFact(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MICRO_STRATEGY_PROJECT: ClassVar[Any] = None
     MICRO_STRATEGY_METRICS: ClassVar[Any] = None
     MICRO_STRATEGY_COLUMNS: ClassVar[Any] = None
@@ -118,6 +119,8 @@ class MicroStrategyFact(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MicroStrategyFact"
 
     micro_strategy_fact_expressions: Union[List[str], None, UnsetType] = UNSET
     """List of expressions for this fact."""
@@ -212,6 +215,9 @@ class MicroStrategyFact(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     micro_strategy_project: Union[RelatedMicroStrategyProject, None, UnsetType] = UNSET
     """Project in which this fact exists."""
 
@@ -282,78 +288,6 @@ class MicroStrategyFact(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this MicroStrategyFact instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.micro_strategy_project is UNSET:
-                errors.append("micro_strategy_project is required for creation")
-            if self.micro_strategy_project_name is UNSET:
-                errors.append("micro_strategy_project_name is required for creation")
-            if self.micro_strategy_project_qualified_name is UNSET:
-                errors.append(
-                    "micro_strategy_project_qualified_name is required for creation"
-                )
-        if errors:
-            raise ValueError(f"MicroStrategyFact validation failed: {errors}")
-
-    def minimize(self) -> "MicroStrategyFact":
-        """
-        Return a minimal copy of this MicroStrategyFact with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new MicroStrategyFact with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new MicroStrategyFact instance with only the minimum required fields.
-        """
-        self.validate()
-        return MicroStrategyFact(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMicroStrategyFact":
-        """
-        Create a :class:`RelatedMicroStrategyFact` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedMicroStrategyFact reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedMicroStrategyFact(guid=self.guid)
-        return RelatedMicroStrategyFact(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -509,6 +443,9 @@ class MicroStrategyFactRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     micro_strategy_project: Union[RelatedMicroStrategyProject, None, UnsetType] = UNSET
     """Project in which this fact exists."""
 
@@ -610,6 +547,7 @@ _MICRO_STRATEGY_FACT_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "micro_strategy_project",
     "micro_strategy_metrics",
     "micro_strategy_columns",
@@ -715,9 +653,6 @@ def _micro_strategy_fact_to_nested(
         is_incomplete=micro_strategy_fact.is_incomplete,
         provenance_type=micro_strategy_fact.provenance_type,
         home_id=micro_strategy_fact.home_id,
-        depth=micro_strategy_fact.depth,
-        immediate_upstream=micro_strategy_fact.immediate_upstream,
-        immediate_downstream=micro_strategy_fact.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -753,6 +688,7 @@ def _micro_strategy_fact_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -761,9 +697,6 @@ def _micro_strategy_fact_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_micro_strategy_fact_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -863,6 +796,7 @@ MicroStrategyFact.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MicroStrategyFact.MEANINGS = RelationField("meanings")
+MicroStrategyFact.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MicroStrategyFact.MICRO_STRATEGY_PROJECT = RelationField("microStrategyProject")
 MicroStrategyFact.MICRO_STRATEGY_METRICS = RelationField("microStrategyMetrics")
 MicroStrategyFact.MICRO_STRATEGY_COLUMNS = RelationField("microStrategyColumns")

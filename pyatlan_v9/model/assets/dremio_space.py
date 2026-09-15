@@ -48,13 +48,10 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
-from .dremio_related import (
-    RelatedDremioFolder,
-    RelatedDremioSpace,
-    RelatedDremioVirtualDataset,
-)
+from .dremio_related import RelatedDremioFolder, RelatedDremioVirtualDataset
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -148,6 +145,7 @@ class DremioSpace(Asset):
     DREMIO_VIRTUAL_DATASETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -167,6 +165,8 @@ class DremioSpace(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DremioSpace"
 
     dremio_id: Union[str, None, UnsetType] = UNSET
     """Source ID of this asset in Dremio."""
@@ -381,6 +381,9 @@ class DremioSpace(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -452,66 +455,6 @@ class DremioSpace(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DremioSpace"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DremioSpace instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DremioSpace validation failed: {errors}")
-
-    def minimize(self) -> "DremioSpace":
-        """
-        Return a minimal copy of this DremioSpace with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DremioSpace with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DremioSpace instance with only the minimum required fields.
-        """
-        self.validate()
-        return DremioSpace(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDremioSpace":
-        """
-        Create a :class:`RelatedDremioSpace` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDremioSpace reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDremioSpace(guid=self.guid)
-        return RelatedDremioSpace(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -785,6 +728,9 @@ class DremioSpaceRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -899,6 +845,7 @@ _DREMIO_SPACE_REL_FIELDS: List[str] = [
     "dremio_virtual_datasets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1067,9 +1014,6 @@ def _dremio_space_to_nested(dremio_space: DremioSpace) -> DremioSpaceNested:
         is_incomplete=dremio_space.is_incomplete,
         provenance_type=dremio_space.provenance_type,
         home_id=dremio_space.home_id,
-        depth=dremio_space.depth,
-        immediate_upstream=dremio_space.immediate_upstream,
-        immediate_downstream=dremio_space.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1101,6 +1045,7 @@ def _dremio_space_from_nested(nested: DremioSpaceNested) -> DremioSpace:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1109,9 +1054,6 @@ def _dremio_space_from_nested(nested: DremioSpaceNested) -> DremioSpace:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dremio_space_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1266,6 +1208,7 @@ DremioSpace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DremioSpace.MEANINGS = RelationField("meanings")
+DremioSpace.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DremioSpace.MC_MONITORS = RelationField("mcMonitors")
 DremioSpace.MC_INCIDENTS = RelationField("mcIncidents")
 DremioSpace.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -46,9 +46,10 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import RelatedFabricActivity
 from .fivetran_related import RelatedFivetranConnector
-from .flow_related import RelatedFlowControlOperation, RelatedFlowFieldOperation
+from .flow_related import RelatedFlowControlOperation
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .power_bi_related import RelatedPowerBIDataflow
@@ -92,6 +93,7 @@ class FlowFieldOperation(Asset):
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
     IS_PASS_THROUGH: ClassVar[Any] = None
+    PROCESS_DERIVATION: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -110,6 +112,7 @@ class FlowFieldOperation(Asset):
     FLOW_ORCHESTRATED_BY: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MATILLION_COMPONENT: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -128,6 +131,8 @@ class FlowFieldOperation(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "FlowFieldOperation"
 
     flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
@@ -192,6 +197,9 @@ class FlowFieldOperation(Asset):
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
+
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
 
@@ -249,6 +257,9 @@ class FlowFieldOperation(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -312,66 +323,6 @@ class FlowFieldOperation(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "FlowFieldOperation"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this FlowFieldOperation instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"FlowFieldOperation validation failed: {errors}")
-
-    def minimize(self) -> "FlowFieldOperation":
-        """
-        Return a minimal copy of this FlowFieldOperation with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new FlowFieldOperation with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new FlowFieldOperation instance with only the minimum required fields.
-        """
-        self.validate()
-        return FlowFieldOperation(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFlowFieldOperation":
-        """
-        Create a :class:`RelatedFlowFieldOperation` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedFlowFieldOperation reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedFlowFieldOperation(guid=self.guid)
-        return RelatedFlowFieldOperation(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -493,6 +444,9 @@ class FlowFieldOperationAttributes(AssetAttributes):
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
+
 
 class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     """FlowFieldOperation-specific relationship attributes for nested API format."""
@@ -554,6 +508,9 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -655,6 +612,7 @@ _FLOW_FIELD_OPERATION_REL_FIELDS: List[str] = [
     "flow_orchestrated_by",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "matillion_component",
     "mc_monitors",
     "mc_incidents",
@@ -704,6 +662,7 @@ def _populate_flow_field_operation_attrs(
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
     attrs.is_pass_through = obj.is_pass_through
+    attrs.process_derivation = obj.process_derivation
 
 
 def _extract_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes) -> dict:
@@ -734,6 +693,7 @@ def _extract_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes) -> 
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     result["is_pass_through"] = attrs.is_pass_through
+    result["process_derivation"] = attrs.process_derivation
     return result
 
 
@@ -774,9 +734,6 @@ def _flow_field_operation_to_nested(
         is_incomplete=flow_field_operation.is_incomplete,
         provenance_type=flow_field_operation.provenance_type,
         home_id=flow_field_operation.home_id,
-        depth=flow_field_operation.depth,
-        immediate_upstream=flow_field_operation.immediate_upstream,
-        immediate_downstream=flow_field_operation.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -812,6 +769,7 @@ def _flow_field_operation_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -820,9 +778,6 @@ def _flow_field_operation_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_flow_field_operation_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -896,6 +851,9 @@ FlowFieldOperation.ADDITIONAL_ETL_CONTEXT = KeywordField(
 )
 FlowFieldOperation.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 FlowFieldOperation.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
+FlowFieldOperation.PROCESS_DERIVATION = KeywordField(
+    "processDerivation", "processDerivation"
+)
 FlowFieldOperation.ADF_ACTIVITY = RelationField("adfActivity")
 FlowFieldOperation.AIRFLOW_TASKS = RelationField("airflowTasks")
 FlowFieldOperation.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -918,6 +876,7 @@ FlowFieldOperation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 FlowFieldOperation.MEANINGS = RelationField("meanings")
+FlowFieldOperation.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 FlowFieldOperation.MATILLION_COMPONENT = RelationField("matillionComponent")
 FlowFieldOperation.MC_MONITORS = RelationField("mcMonitors")
 FlowFieldOperation.MC_INCIDENTS = RelationField("mcIncidents")

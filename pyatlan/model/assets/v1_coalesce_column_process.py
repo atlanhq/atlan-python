@@ -80,7 +80,7 @@ class V1CoalesceColumnProcess(V1Coalesce):
         "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
     )
     """
-    
+
     """
     AST: ClassVar[TextField] = TextField("ast", "ast")
     """
