@@ -27,7 +27,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .adls_related import RelatedADLSAccount, RelatedADLSContainer, RelatedADLSObject
+from .adls_related import RelatedADLSAccount, RelatedADLSObject
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -46,6 +46,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -100,6 +101,7 @@ class ADLSContainer(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -115,6 +117,8 @@ class ADLSContainer(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "ADLSContainer"
 
     adls_container_url: Union[str, None, UnsetType] = UNSET
     """URL of this container."""
@@ -223,6 +227,9 @@ class ADLSContainer(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -280,76 +287,6 @@ class ADLSContainer(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this ADLSContainer instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.adls_account is UNSET:
-                errors.append("adls_account is required for creation")
-            if self.adls_account_name is UNSET:
-                errors.append("adls_account_name is required for creation")
-            if self.adls_account_qualified_name is UNSET:
-                errors.append("adls_account_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"ADLSContainer validation failed: {errors}")
-
-    def minimize(self) -> "ADLSContainer":
-        """
-        Return a minimal copy of this ADLSContainer with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new ADLSContainer with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new ADLSContainer instance with only the minimum required fields.
-        """
-        self.validate()
-        return ADLSContainer(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedADLSContainer":
-        """
-        Create a :class:`RelatedADLSContainer` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedADLSContainer reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedADLSContainer(guid=self.guid)
-        return RelatedADLSContainer(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -563,6 +500,9 @@ class ADLSContainerRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -653,6 +593,7 @@ _ADLS_CONTAINER_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -749,9 +690,6 @@ def _adls_container_to_nested(adls_container: ADLSContainer) -> ADLSContainerNes
         is_incomplete=adls_container.is_incomplete,
         provenance_type=adls_container.provenance_type,
         home_id=adls_container.home_id,
-        depth=adls_container.depth,
-        immediate_upstream=adls_container.immediate_upstream,
-        immediate_downstream=adls_container.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -785,6 +723,7 @@ def _adls_container_from_nested(nested: ADLSContainerNested) -> ADLSContainer:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -793,9 +732,6 @@ def _adls_container_from_nested(nested: ADLSContainerNested) -> ADLSContainer:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_adls_container_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -886,6 +822,7 @@ ADLSContainer.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 ADLSContainer.MEANINGS = RelationField("meanings")
+ADLSContainer.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 ADLSContainer.MC_MONITORS = RelationField("mcMonitors")
 ADLSContainer.MC_INCIDENTS = RelationField("mcIncidents")
 ADLSContainer.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

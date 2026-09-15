@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -50,7 +51,6 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .sap_related import (
-    RelatedSapErpAbapProgram,
     RelatedSapErpComponent,
     RelatedSapErpFunctionModule,
     RelatedSapErpTransactionCode,
@@ -96,6 +96,7 @@ class SapErpAbapProgram(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -114,6 +115,8 @@ class SapErpAbapProgram(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SapErpAbapProgram"
 
     sap_erp_abap_program_type: Union[str, None, UnsetType] = UNSET
     """Specifies the type of ABAP program in SAP ERP (e.g., Report, Module Pool, Function Group)."""
@@ -199,6 +202,9 @@ class SapErpAbapProgram(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -263,66 +269,6 @@ class SapErpAbapProgram(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpAbapProgram"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SapErpAbapProgram instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SapErpAbapProgram validation failed: {errors}")
-
-    def minimize(self) -> "SapErpAbapProgram":
-        """
-        Return a minimal copy of this SapErpAbapProgram with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SapErpAbapProgram with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SapErpAbapProgram instance with only the minimum required fields.
-        """
-        self.validate()
-        return SapErpAbapProgram(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpAbapProgram":
-        """
-        Create a :class:`RelatedSapErpAbapProgram` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSapErpAbapProgram reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSapErpAbapProgram(guid=self.guid)
-        return RelatedSapErpAbapProgram(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -469,6 +415,9 @@ class SapErpAbapProgramRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -570,6 +519,7 @@ _SAP_ERP_ABAP_PROGRAM_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -659,9 +609,6 @@ def _sap_erp_abap_program_to_nested(
         is_incomplete=sap_erp_abap_program.is_incomplete,
         provenance_type=sap_erp_abap_program.provenance_type,
         home_id=sap_erp_abap_program.home_id,
-        depth=sap_erp_abap_program.depth,
-        immediate_upstream=sap_erp_abap_program.immediate_upstream,
-        immediate_downstream=sap_erp_abap_program.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -697,6 +644,7 @@ def _sap_erp_abap_program_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -705,9 +653,6 @@ def _sap_erp_abap_program_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_abap_program_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -778,6 +723,7 @@ SapErpAbapProgram.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SapErpAbapProgram.MEANINGS = RelationField("meanings")
+SapErpAbapProgram.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SapErpAbapProgram.MC_MONITORS = RelationField("mcMonitors")
 SapErpAbapProgram.MC_INCIDENTS = RelationField("mcIncidents")
 SapErpAbapProgram.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

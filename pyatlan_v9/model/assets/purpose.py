@@ -34,7 +34,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .access_control_related import RelatedAuthPolicy, RelatedPurpose
+from .access_control_related import RelatedAuthPolicy
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -52,6 +52,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -95,6 +96,7 @@ class Purpose(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -104,6 +106,8 @@ class Purpose(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Purpose"
 
     purpose_classifications: Union[List[str], None, UnsetType] = UNSET
     """TBC"""
@@ -187,6 +191,9 @@ class Purpose(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -220,66 +227,6 @@ class Purpose(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Purpose"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Purpose instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Purpose validation failed: {errors}")
-
-    def minimize(self) -> "Purpose":
-        """
-        Return a minimal copy of this Purpose with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Purpose with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Purpose instance with only the minimum required fields.
-        """
-        self.validate()
-        return Purpose(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedPurpose":
-        """
-        Create a :class:`RelatedPurpose` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedPurpose reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedPurpose(guid=self.guid)
-        return RelatedPurpose(qualified_name=self.qualified_name)
 
     @property
     def purpose_atlan_tags(self) -> Union[list[AtlanTagName], None]:
@@ -603,6 +550,9 @@ class PurposeRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -668,6 +618,7 @@ _PURPOSE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -748,9 +699,6 @@ def _purpose_to_nested(purpose: Purpose) -> PurposeNested:
         is_incomplete=purpose.is_incomplete,
         provenance_type=purpose.provenance_type,
         home_id=purpose.home_id,
-        depth=purpose.depth,
-        immediate_upstream=purpose.immediate_upstream,
-        immediate_downstream=purpose.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -780,6 +728,7 @@ def _purpose_from_nested(nested: PurposeNested) -> Purpose:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -788,9 +737,6 @@ def _purpose_from_nested(nested: PurposeNested) -> Purpose:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_purpose_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -855,6 +801,7 @@ Purpose.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Purpose.MEANINGS = RelationField("meanings")
+Purpose.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Purpose.MC_MONITORS = RelationField("mcMonitors")
 Purpose.MC_INCIDENTS = RelationField("mcIncidents")
 Purpose.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

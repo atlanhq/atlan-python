@@ -52,6 +52,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -66,7 +67,7 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
-from .sql_related import RelatedColumn, RelatedMaterialisedView, RelatedSchema
+from .sql_related import RelatedColumn, RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -148,6 +149,7 @@ class MaterialisedView(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -169,6 +171,8 @@ class MaterialisedView(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MaterialisedView"
 
     refresh_mode: Union[str, None, UnsetType] = UNSET
     """Refresh mode for this materialized view."""
@@ -387,6 +391,9 @@ class MaterialisedView(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -472,80 +479,6 @@ class MaterialisedView(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this MaterialisedView instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.atlan_schema is UNSET:
-                errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"MaterialisedView validation failed: {errors}")
-
-    def minimize(self) -> "MaterialisedView":
-        """
-        Return a minimal copy of this MaterialisedView with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new MaterialisedView with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new MaterialisedView instance with only the minimum required fields.
-        """
-        self.validate()
-        return MaterialisedView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMaterialisedView":
-        """
-        Create a :class:`RelatedMaterialisedView` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedMaterialisedView reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedMaterialisedView(guid=self.guid)
-        return RelatedMaterialisedView(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -923,6 +856,9 @@ class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1043,6 +979,7 @@ _MATERIALISED_VIEW_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1223,9 +1160,6 @@ def _materialised_view_to_nested(
         is_incomplete=materialised_view.is_incomplete,
         provenance_type=materialised_view.provenance_type,
         home_id=materialised_view.home_id,
-        depth=materialised_view.depth,
-        immediate_upstream=materialised_view.immediate_upstream,
-        immediate_downstream=materialised_view.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1259,6 +1193,7 @@ def _materialised_view_from_nested(nested: MaterialisedViewNested) -> Materialis
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1267,9 +1202,6 @@ def _materialised_view_from_nested(nested: MaterialisedViewNested) -> Materialis
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_materialised_view_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1428,6 +1360,7 @@ MaterialisedView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MaterialisedView.MEANINGS = RelationField("meanings")
+MaterialisedView.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MaterialisedView.MC_MONITORS = RelationField("mcMonitors")
 MaterialisedView.MC_INCIDENTS = RelationField("mcIncidents")
 MaterialisedView.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
