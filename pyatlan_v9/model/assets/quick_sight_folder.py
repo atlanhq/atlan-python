@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -71,7 +72,7 @@ class QuickSightFolder(Asset):
     Instance of a QuickSight folder in Atlan.
     """
 
-    QUICK_SIGHT_FOLDER_TYPE: ClassVar[Any] = None
+    QUICK_SIGHT_TYPE: ClassVar[Any] = None
     QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
@@ -94,6 +95,7 @@ class QuickSightFolder(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -113,7 +115,7 @@ class QuickSightFolder(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_folder_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_type: Union[str, None, UnsetType] = UNSET
     """Type of this folder, for example: SHARED or RESTRICTED."""
 
     quick_sight_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
@@ -187,6 +189,9 @@ class QuickSightFolder(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -410,7 +415,7 @@ class QuickSightFolder(Asset):
 class QuickSightFolderAttributes(AssetAttributes):
     """QuickSightFolder-specific attributes for nested API format."""
 
-    quick_sight_folder_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_type: Union[str, None, UnsetType] = UNSET
     """Type of this folder, for example: SHARED or RESTRICTED."""
 
     quick_sight_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
@@ -488,6 +493,9 @@ class QuickSightFolderRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -590,6 +598,7 @@ _QUICK_SIGHT_FOLDER_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -616,7 +625,7 @@ def _populate_quick_sight_folder_attrs(
 ) -> None:
     """Populate QuickSightFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_folder_type = obj.quick_sight_folder_type
+    attrs.quick_sight_type = obj.quick_sight_type
     attrs.quick_sight_folder_hierarchy = obj.quick_sight_folder_hierarchy
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
@@ -627,7 +636,7 @@ def _populate_quick_sight_folder_attrs(
 def _extract_quick_sight_folder_attrs(attrs: QuickSightFolderAttributes) -> dict:
     """Extract all QuickSightFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_folder_type"] = attrs.quick_sight_folder_type
+    result["quick_sight_type"] = attrs.quick_sight_type
     result["quick_sight_folder_hierarchy"] = attrs.quick_sight_folder_hierarchy
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
@@ -709,6 +718,7 @@ def _quick_sight_folder_from_nested(nested: QuickSightFolderNested) -> QuickSigh
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -750,9 +760,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightFolder.QUICK_SIGHT_FOLDER_TYPE = KeywordField(
-    "quickSightFolderType", "quickSightFolderType"
-)
+QuickSightFolder.QUICK_SIGHT_TYPE = KeywordField("quickSightType", "quickSightType")
 QuickSightFolder.QUICK_SIGHT_FOLDER_HIERARCHY = KeywordField(
     "quickSightFolderHierarchy", "quickSightFolderHierarchy"
 )
@@ -789,6 +797,7 @@ QuickSightFolder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 QuickSightFolder.MEANINGS = RelationField("meanings")
+QuickSightFolder.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 QuickSightFolder.MC_MONITORS = RelationField("mcMonitors")
 QuickSightFolder.MC_INCIDENTS = RelationField("mcIncidents")
 QuickSightFolder.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

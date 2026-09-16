@@ -43,7 +43,8 @@ class RelatedMonteCarlo(RelatedDataQuality):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MonteCarlo"
+        if self.type_name is UNSET:
+            self.type_name = "MonteCarlo"
 
 
 class RelatedMCMonitor(RelatedMonteCarlo):
@@ -121,7 +122,8 @@ class RelatedMCMonitor(RelatedMonteCarlo):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MCMonitor"
+        if self.type_name is UNSET:
+            self.type_name = "MCMonitor"
 
 
 class RelatedMCIncident(RelatedMonteCarlo):
@@ -157,4 +159,5 @@ class RelatedMCIncident(RelatedMonteCarlo):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MCIncident"
+        if self.type_name is UNSET:
+            self.type_name = "MCIncident"

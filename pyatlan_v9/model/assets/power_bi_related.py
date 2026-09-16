@@ -79,7 +79,8 @@ class RelatedPowerBI(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBI"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBI"
 
 
 class RelatedPowerBIApp(RelatedPowerBI):
@@ -109,7 +110,8 @@ class RelatedPowerBIApp(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIApp"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIApp"
 
 
 class RelatedPowerBIDataset(RelatedPowerBI):
@@ -130,7 +132,8 @@ class RelatedPowerBIDataset(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIDataset"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIDataset"
 
 
 class RelatedPowerBIDatasource(RelatedPowerBI):
@@ -148,7 +151,8 @@ class RelatedPowerBIDatasource(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIDatasource"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIDatasource"
 
 
 class RelatedPowerBIMeasure(RelatedPowerBI):
@@ -179,7 +183,8 @@ class RelatedPowerBIMeasure(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIMeasure"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIMeasure"
 
 
 class RelatedPowerBIPage(RelatedPowerBI):
@@ -200,7 +205,8 @@ class RelatedPowerBIPage(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIPage"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIPage"
 
 
 class RelatedPowerBIReport(RelatedPowerBI):
@@ -227,7 +233,8 @@ class RelatedPowerBIReport(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIReport"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIReport"
 
 
 class RelatedPowerBITable(RelatedPowerBI):
@@ -266,7 +273,8 @@ class RelatedPowerBITable(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBITable"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBITable"
 
 
 class RelatedPowerBITile(RelatedPowerBI):
@@ -287,7 +295,8 @@ class RelatedPowerBITile(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBITile"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBITile"
 
 
 class RelatedPowerBIColumn(RelatedPowerBI):
@@ -328,7 +337,8 @@ class RelatedPowerBIColumn(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIColumn"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIColumn"
 
 
 class RelatedPowerBIDashboard(RelatedPowerBI):
@@ -352,7 +362,8 @@ class RelatedPowerBIDashboard(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIDashboard"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIDashboard"
 
 
 class RelatedPowerBIWorkspace(RelatedPowerBI):
@@ -382,7 +393,8 @@ class RelatedPowerBIWorkspace(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIWorkspace"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIWorkspace"
 
 
 class RelatedPowerBIDataflow(RelatedPowerBI):
@@ -418,7 +430,8 @@ class RelatedPowerBIDataflow(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIDataflow"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIDataflow"
 
 
 class RelatedPowerBIDataflowEntityColumn(RelatedPowerBI):
@@ -453,4 +466,5 @@ class RelatedPowerBIDataflowEntityColumn(RelatedPowerBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PowerBIDataflowEntityColumn"
+        if self.type_name is UNSET:
+            self.type_name = "PowerBIDataflowEntityColumn"

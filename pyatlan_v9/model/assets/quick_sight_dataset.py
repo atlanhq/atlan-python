@@ -45,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -71,8 +72,8 @@ class QuickSightDataset(Asset):
     Instance of a QuickSight dataset in Atlan. These are an internal data model built to be used by analysis. In a dataset, data can be pulled from different sources, joined, filtered, and columns translated to more business-friendly names when preparing the data for visualizing in the analysis layer.
     """
 
-    QUICK_SIGHT_DATASET_IMPORT_MODE: ClassVar[Any] = None
-    QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[Any] = None
+    QUICK_SIGHT_IMPORT_MODE: ClassVar[Any] = None
+    QUICK_SIGHT_COLUMN_COUNT: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
@@ -94,6 +95,7 @@ class QuickSightDataset(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -112,10 +114,10 @@ class QuickSightDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = UNSET
+    quick_sight_import_mode: Union[str, None, UnsetType] = UNSET
     """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
 
-    quick_sight_dataset_column_count: Union[int, None, UnsetType] = UNSET
+    quick_sight_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this dataset."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -186,6 +188,9 @@ class QuickSightDataset(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -428,10 +433,10 @@ class QuickSightDataset(Asset):
 class QuickSightDatasetAttributes(AssetAttributes):
     """QuickSightDataset-specific attributes for nested API format."""
 
-    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = UNSET
+    quick_sight_import_mode: Union[str, None, UnsetType] = UNSET
     """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
 
-    quick_sight_dataset_column_count: Union[int, None, UnsetType] = UNSET
+    quick_sight_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this dataset."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -506,6 +511,9 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -605,6 +613,7 @@ _QUICK_SIGHT_DATASET_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -630,8 +639,8 @@ def _populate_quick_sight_dataset_attrs(
 ) -> None:
     """Populate QuickSightDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_dataset_import_mode = obj.quick_sight_dataset_import_mode
-    attrs.quick_sight_dataset_column_count = obj.quick_sight_dataset_column_count
+    attrs.quick_sight_import_mode = obj.quick_sight_import_mode
+    attrs.quick_sight_column_count = obj.quick_sight_column_count
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
@@ -641,8 +650,8 @@ def _populate_quick_sight_dataset_attrs(
 def _extract_quick_sight_dataset_attrs(attrs: QuickSightDatasetAttributes) -> dict:
     """Extract all QuickSightDataset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_dataset_import_mode"] = attrs.quick_sight_dataset_import_mode
-    result["quick_sight_dataset_column_count"] = attrs.quick_sight_dataset_column_count
+    result["quick_sight_import_mode"] = attrs.quick_sight_import_mode
+    result["quick_sight_column_count"] = attrs.quick_sight_column_count
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
@@ -725,6 +734,7 @@ def _quick_sight_dataset_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -767,11 +777,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightDataset.QUICK_SIGHT_DATASET_IMPORT_MODE = KeywordField(
-    "quickSightDatasetImportMode", "quickSightDatasetImportMode"
+QuickSightDataset.QUICK_SIGHT_IMPORT_MODE = KeywordField(
+    "quickSightImportMode", "quickSightImportMode"
 )
-QuickSightDataset.QUICK_SIGHT_DATASET_COLUMN_COUNT = NumericField(
-    "quickSightDatasetColumnCount", "quickSightDatasetColumnCount"
+QuickSightDataset.QUICK_SIGHT_COLUMN_COUNT = NumericField(
+    "quickSightColumnCount", "quickSightColumnCount"
 )
 QuickSightDataset.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
 QuickSightDataset.QUICK_SIGHT_SHEET_ID = KeywordField(
@@ -806,6 +816,7 @@ QuickSightDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 QuickSightDataset.MEANINGS = RelationField("meanings")
+QuickSightDataset.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 QuickSightDataset.MC_MONITORS = RelationField("mcMonitors")
 QuickSightDataset.MC_INCIDENTS = RelationField("mcIncidents")
 QuickSightDataset.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

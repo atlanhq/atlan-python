@@ -46,7 +46,8 @@ class RelatedBigqueryTag(RelatedTag):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "BigqueryTag"
+        if self.type_name is UNSET:
+            self.type_name = "BigqueryTag"
 
 
 class RelatedBigqueryRoutine(RelatedProcedure):
@@ -76,4 +77,5 @@ class RelatedBigqueryRoutine(RelatedProcedure):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "BigqueryRoutine"
+        if self.type_name is UNSET:
+            self.type_name = "BigqueryRoutine"

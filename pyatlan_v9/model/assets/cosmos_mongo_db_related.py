@@ -39,7 +39,8 @@ class RelatedCosmosMongoDB(RelatedNoSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CosmosMongoDB"
+        if self.type_name is UNSET:
+            self.type_name = "CosmosMongoDB"
 
 
 class RelatedCosmosMongoDBAccount(RelatedCosmosMongoDB):
@@ -140,7 +141,8 @@ class RelatedCosmosMongoDBAccount(RelatedCosmosMongoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CosmosMongoDBAccount"
+        if self.type_name is UNSET:
+            self.type_name = "CosmosMongoDBAccount"
 
 
 class RelatedCosmosMongoDBDatabase(RelatedCosmosMongoDB):
@@ -160,7 +162,8 @@ class RelatedCosmosMongoDBDatabase(RelatedCosmosMongoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CosmosMongoDBDatabase"
+        if self.type_name is UNSET:
+            self.type_name = "CosmosMongoDBDatabase"
 
 
 class RelatedCosmosMongoDBCollection(RelatedCosmosMongoDB):
@@ -180,4 +183,5 @@ class RelatedCosmosMongoDBCollection(RelatedCosmosMongoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CosmosMongoDBCollection"
+        if self.type_name is UNSET:
+            self.type_name = "CosmosMongoDBCollection"

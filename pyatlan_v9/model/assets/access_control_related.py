@@ -72,7 +72,8 @@ class RelatedAccessControl(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AccessControl"
+        if self.type_name is UNSET:
+            self.type_name = "AccessControl"
 
 
 class RelatedPersona(RelatedAccessControl):
@@ -96,7 +97,8 @@ class RelatedPersona(RelatedAccessControl):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Persona"
+        if self.type_name is UNSET:
+            self.type_name = "Persona"
 
 
 class RelatedPurpose(RelatedAccessControl):
@@ -114,7 +116,8 @@ class RelatedPurpose(RelatedAccessControl):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Purpose"
+        if self.type_name is UNSET:
+            self.type_name = "Purpose"
 
 
 class RelatedAuthPolicy(RelatedAsset):
@@ -183,7 +186,8 @@ class RelatedAuthPolicy(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AuthPolicy"
+        if self.type_name is UNSET:
+            self.type_name = "AuthPolicy"
 
 
 class RelatedAuthService(RelatedAsset):
@@ -216,4 +220,5 @@ class RelatedAuthService(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AuthService"
+        if self.type_name is UNSET:
+            self.type_name = "AuthService"

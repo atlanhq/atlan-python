@@ -51,7 +51,8 @@ class RelatedSpark(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Spark"
+        if self.type_name is UNSET:
+            self.type_name = "Spark"
 
 
 class RelatedSparkJob(RelatedSpark):
@@ -72,4 +73,5 @@ class RelatedSparkJob(RelatedSpark):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SparkJob"
+        if self.type_name is UNSET:
+            self.type_name = "SparkJob"

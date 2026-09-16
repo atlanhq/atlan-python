@@ -11,6 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from msgspec import UNSET
 
 from .catalog_related import RelatedCatalog
 from .referenceable_related import RelatedReferenceable
@@ -32,4 +33,5 @@ class RelatedNotebook(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Notebook"
+        if self.type_name is UNSET:
+            self.type_name = "Notebook"
