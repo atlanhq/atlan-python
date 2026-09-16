@@ -36,7 +36,8 @@ class RelatedAnomalo(RelatedDataQuality):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Anomalo"
+        if self.type_name is UNSET:
+            self.type_name = "Anomalo"
 
 
 class RelatedAnomaloCheck(RelatedAnomalo):
@@ -84,4 +85,5 @@ class RelatedAnomaloCheck(RelatedAnomalo):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnomaloCheck"
+        if self.type_name is UNSET:
+            self.type_name = "AnomaloCheck"

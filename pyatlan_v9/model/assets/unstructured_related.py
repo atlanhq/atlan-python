@@ -50,7 +50,8 @@ class RelatedUnstructured(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Unstructured"
+        if self.type_name is UNSET:
+            self.type_name = "Unstructured"
 
 
 class RelatedUnstructuredContainer(RelatedUnstructured):
@@ -71,7 +72,8 @@ class RelatedUnstructuredContainer(RelatedUnstructured):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "UnstructuredContainer"
+        if self.type_name is UNSET:
+            self.type_name = "UnstructuredContainer"
 
 
 class RelatedUnstructuredFolder(RelatedUnstructured):
@@ -92,7 +94,8 @@ class RelatedUnstructuredFolder(RelatedUnstructured):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "UnstructuredFolder"
+        if self.type_name is UNSET:
+            self.type_name = "UnstructuredFolder"
 
 
 class RelatedUnstructuredObject(RelatedUnstructured):
@@ -122,4 +125,5 @@ class RelatedUnstructuredObject(RelatedUnstructured):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "UnstructuredObject"
+        if self.type_name is UNSET:
+            self.type_name = "UnstructuredObject"

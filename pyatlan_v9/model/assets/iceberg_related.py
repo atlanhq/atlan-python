@@ -45,7 +45,8 @@ class RelatedIceberg(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Iceberg"
+        if self.type_name is UNSET:
+            self.type_name = "Iceberg"
 
 
 class RelatedIcebergCatalog(RelatedIceberg):
@@ -75,7 +76,8 @@ class RelatedIcebergCatalog(RelatedIceberg):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "IcebergCatalog"
+        if self.type_name is UNSET:
+            self.type_name = "IcebergCatalog"
 
 
 class RelatedIcebergNamespace(RelatedIceberg):
@@ -90,7 +92,8 @@ class RelatedIcebergNamespace(RelatedIceberg):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "IcebergNamespace"
+        if self.type_name is UNSET:
+            self.type_name = "IcebergNamespace"
 
 
 class RelatedIcebergTable(RelatedIceberg):
@@ -120,7 +123,8 @@ class RelatedIcebergTable(RelatedIceberg):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "IcebergTable"
+        if self.type_name is UNSET:
+            self.type_name = "IcebergTable"
 
 
 class RelatedIcebergColumn(RelatedIceberg):
@@ -135,4 +139,5 @@ class RelatedIcebergColumn(RelatedIceberg):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "IcebergColumn"
+        if self.type_name is UNSET:
+            self.type_name = "IcebergColumn"

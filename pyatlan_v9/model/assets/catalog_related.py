@@ -45,7 +45,8 @@ class RelatedCatalog(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Catalog"
+        if self.type_name is UNSET:
+            self.type_name = "Catalog"
 
 
 class RelatedBI(RelatedCatalog):
@@ -60,7 +61,8 @@ class RelatedBI(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "BI"
+        if self.type_name is UNSET:
+            self.type_name = "BI"
 
 
 class RelatedEventStore(RelatedCatalog):
@@ -75,7 +77,8 @@ class RelatedEventStore(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "EventStore"
+        if self.type_name is UNSET:
+            self.type_name = "EventStore"
 
 
 class RelatedInsight(RelatedCatalog):
@@ -90,7 +93,8 @@ class RelatedInsight(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Insight"
+        if self.type_name is UNSET:
+            self.type_name = "Insight"
 
 
 class RelatedNoSQL(RelatedCatalog):
@@ -110,7 +114,8 @@ class RelatedNoSQL(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "NoSQL"
+        if self.type_name is UNSET:
+            self.type_name = "NoSQL"
 
 
 class RelatedObjectStore(RelatedCatalog):
@@ -125,7 +130,8 @@ class RelatedObjectStore(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ObjectStore"
+        if self.type_name is UNSET:
+            self.type_name = "ObjectStore"
 
 
 class RelatedSaaS(RelatedCatalog):
@@ -140,4 +146,5 @@ class RelatedSaaS(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SaaS"
+        if self.type_name is UNSET:
+            self.type_name = "SaaS"

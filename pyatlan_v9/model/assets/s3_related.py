@@ -51,7 +51,8 @@ class RelatedS3(RelatedObjectStore):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "S3"
+        if self.type_name is UNSET:
+            self.type_name = "S3"
 
 
 class RelatedS3Bucket(RelatedS3):
@@ -72,7 +73,8 @@ class RelatedS3Bucket(RelatedS3):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "S3Bucket"
+        if self.type_name is UNSET:
+            self.type_name = "S3Bucket"
 
 
 class RelatedS3Object(RelatedS3):
@@ -123,7 +125,8 @@ class RelatedS3Object(RelatedS3):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "S3Object"
+        if self.type_name is UNSET:
+            self.type_name = "S3Object"
 
 
 class RelatedS3Prefix(RelatedS3):
@@ -150,4 +153,5 @@ class RelatedS3Prefix(RelatedS3):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "S3Prefix"
+        if self.type_name is UNSET:
+            self.type_name = "S3Prefix"
