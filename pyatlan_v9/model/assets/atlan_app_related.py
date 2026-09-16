@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType

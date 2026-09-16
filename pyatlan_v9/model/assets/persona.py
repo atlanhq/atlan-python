@@ -14,9 +14,8 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Set, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.model.enums import (

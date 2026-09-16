@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Optional, Set, Union
+from typing import Any, ClassVar, Dict, List, Optional, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType

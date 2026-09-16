@@ -14,10 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 from uuid import uuid4
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.errors import AtlanError, ErrorCode
@@ -257,7 +256,6 @@ class Collection(Asset):
 
     @classmethod
     def _generate_qualified_name(cls, client: "AtlanClient") -> str:
-        from pyatlan.errors import AtlanError
 
         try:
             username = client.user.get_current().username

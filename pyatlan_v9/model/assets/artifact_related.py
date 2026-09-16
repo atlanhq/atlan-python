@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .agentic_related import RelatedAgentic

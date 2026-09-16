@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -484,7 +484,6 @@ class ADLSObject(Asset):
                 adls_container_qualified_name,
             ],
         )
-        from pyatlan.model.utils import construct_object_key
 
         fields = connection_qualified_name.split("/")
         if len(fields) != 3:

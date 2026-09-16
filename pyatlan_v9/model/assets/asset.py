@@ -1205,8 +1205,6 @@ class Asset(Referenceable):
 
     def get_announcment(self):
         """Return an Announcement object for this asset, or None if no announcement is set."""
-        from pyatlan_v9.model.core import Announcement
-        from pyatlan_v9.model.enums import AnnouncementType
 
         ann_type = self.announcement_type
         ann_title = self.announcement_title

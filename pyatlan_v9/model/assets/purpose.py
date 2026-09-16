@@ -14,9 +14,8 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Set, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.model.enums import (
@@ -32,7 +31,6 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.core import AtlanTagName
 from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.structs import SourceTagAttachment
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 

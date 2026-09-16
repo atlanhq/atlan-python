@@ -15,13 +15,11 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.utils import validate_required_fields
-from pyatlan_v9.model.assets import Collection
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -270,7 +268,6 @@ class Folder(Asset):
         collection_qualified_name: str | None = None,
         parent_folder_qualified_name: str | None = None,
     ) -> "Folder":
-        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(["name"], [name])
         if not (parent_folder_qualified_name or collection_qualified_name):
