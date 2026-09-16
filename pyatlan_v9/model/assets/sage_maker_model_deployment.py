@@ -45,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -67,10 +68,10 @@ class SageMakerModelDeployment(Asset):
     Instance of a SageMaker Endpoint in Atlan. Represents deployed models that can serve real-time inference requests.
     """
 
-    SAGE_MAKER_MODEL_DEPLOYMENT_STATUS: ClassVar[Any] = None
-    SAGE_MAKER_MODEL_DEPLOYMENT_ENDPOINT_CONFIG_NAME: ClassVar[Any] = None
-    SAGE_MAKER_MODEL_DEPLOYMENT_MODEL_NAME: ClassVar[Any] = None
-    SAGE_MAKER_MODEL_DEPLOYMENT_MODEL_QUALIFIED_NAME: ClassVar[Any] = None
+    SAGE_MAKER_STATUS: ClassVar[Any] = None
+    SAGE_MAKER_ENDPOINT_CONFIG_NAME: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_NAME: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_QUALIFIED_NAME: ClassVar[Any] = None
     SAGE_MAKER_S3_URI: ClassVar[Any] = None
     ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
@@ -107,6 +108,7 @@ class SageMakerModelDeployment(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -124,20 +126,16 @@ class SageMakerModelDeployment(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sage_maker_model_deployment_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_status: Union[str, None, UnsetType] = UNSET
     """Current status of the endpoint (e.g., InService, OutOfService, Creating, Failed)."""
 
-    sage_maker_model_deployment_endpoint_config_name: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    sage_maker_endpoint_config_name: Union[str, None, UnsetType] = UNSET
     """Name of the endpoint configuration used by this deployment."""
 
-    sage_maker_model_deployment_model_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent Model."""
 
-    sage_maker_model_deployment_model_qualified_name: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    sage_maker_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent Model."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -267,6 +265,9 @@ class SageMakerModelDeployment(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -462,20 +463,16 @@ class SageMakerModelDeployment(Asset):
 class SageMakerModelDeploymentAttributes(AssetAttributes):
     """SageMakerModelDeployment-specific attributes for nested API format."""
 
-    sage_maker_model_deployment_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_status: Union[str, None, UnsetType] = UNSET
     """Current status of the endpoint (e.g., InService, OutOfService, Creating, Failed)."""
 
-    sage_maker_model_deployment_endpoint_config_name: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    sage_maker_endpoint_config_name: Union[str, None, UnsetType] = UNSET
     """Name of the endpoint configuration used by this deployment."""
 
-    sage_maker_model_deployment_model_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent Model."""
 
-    sage_maker_model_deployment_model_qualified_name: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    sage_maker_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent Model."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -610,6 +607,9 @@ class SageMakerModelDeploymentRelationshipAttributes(AssetRelationshipAttributes
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -701,6 +701,7 @@ _SAGE_MAKER_MODEL_DEPLOYMENT_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -725,16 +726,10 @@ def _populate_sage_maker_model_deployment_attrs(
 ) -> None:
     """Populate SageMakerModelDeployment-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sage_maker_model_deployment_status = obj.sage_maker_model_deployment_status
-    attrs.sage_maker_model_deployment_endpoint_config_name = (
-        obj.sage_maker_model_deployment_endpoint_config_name
-    )
-    attrs.sage_maker_model_deployment_model_name = (
-        obj.sage_maker_model_deployment_model_name
-    )
-    attrs.sage_maker_model_deployment_model_qualified_name = (
-        obj.sage_maker_model_deployment_model_qualified_name
-    )
+    attrs.sage_maker_status = obj.sage_maker_status
+    attrs.sage_maker_endpoint_config_name = obj.sage_maker_endpoint_config_name
+    attrs.sage_maker_model_name = obj.sage_maker_model_name
+    attrs.sage_maker_model_qualified_name = obj.sage_maker_model_qualified_name
     attrs.sage_maker_s3_uri = obj.sage_maker_s3_uri
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
@@ -765,18 +760,10 @@ def _extract_sage_maker_model_deployment_attrs(
 ) -> dict:
     """Extract all SageMakerModelDeployment attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sage_maker_model_deployment_status"] = (
-        attrs.sage_maker_model_deployment_status
-    )
-    result["sage_maker_model_deployment_endpoint_config_name"] = (
-        attrs.sage_maker_model_deployment_endpoint_config_name
-    )
-    result["sage_maker_model_deployment_model_name"] = (
-        attrs.sage_maker_model_deployment_model_name
-    )
-    result["sage_maker_model_deployment_model_qualified_name"] = (
-        attrs.sage_maker_model_deployment_model_qualified_name
-    )
+    result["sage_maker_status"] = attrs.sage_maker_status
+    result["sage_maker_endpoint_config_name"] = attrs.sage_maker_endpoint_config_name
+    result["sage_maker_model_name"] = attrs.sage_maker_model_name
+    result["sage_maker_model_qualified_name"] = attrs.sage_maker_model_qualified_name
     result["sage_maker_s3_uri"] = attrs.sage_maker_s3_uri
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
@@ -880,6 +867,7 @@ def _sage_maker_model_deployment_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -923,23 +911,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SageMakerModelDeployment.SAGE_MAKER_MODEL_DEPLOYMENT_STATUS = KeywordField(
-    "sageMakerModelDeploymentStatus", "sageMakerModelDeploymentStatus"
+SageMakerModelDeployment.SAGE_MAKER_STATUS = KeywordField(
+    "sageMakerStatus", "sageMakerStatus"
 )
-SageMakerModelDeployment.SAGE_MAKER_MODEL_DEPLOYMENT_ENDPOINT_CONFIG_NAME = (
-    KeywordField(
-        "sageMakerModelDeploymentEndpointConfigName",
-        "sageMakerModelDeploymentEndpointConfigName",
-    )
+SageMakerModelDeployment.SAGE_MAKER_ENDPOINT_CONFIG_NAME = KeywordField(
+    "sageMakerEndpointConfigName", "sageMakerEndpointConfigName"
 )
-SageMakerModelDeployment.SAGE_MAKER_MODEL_DEPLOYMENT_MODEL_NAME = KeywordField(
-    "sageMakerModelDeploymentModelName", "sageMakerModelDeploymentModelName"
+SageMakerModelDeployment.SAGE_MAKER_MODEL_NAME = KeywordField(
+    "sageMakerModelName", "sageMakerModelName"
 )
-SageMakerModelDeployment.SAGE_MAKER_MODEL_DEPLOYMENT_MODEL_QUALIFIED_NAME = (
-    KeywordField(
-        "sageMakerModelDeploymentModelQualifiedName",
-        "sageMakerModelDeploymentModelQualifiedName",
-    )
+SageMakerModelDeployment.SAGE_MAKER_MODEL_QUALIFIED_NAME = KeywordField(
+    "sageMakerModelQualifiedName", "sageMakerModelQualifiedName"
 )
 SageMakerModelDeployment.SAGE_MAKER_S3_URI = KeywordField(
     "sageMakerS3Uri", "sageMakerS3Uri"
@@ -1018,6 +1000,7 @@ SageMakerModelDeployment.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationFi
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SageMakerModelDeployment.MEANINGS = RelationField("meanings")
+SageMakerModelDeployment.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SageMakerModelDeployment.MC_MONITORS = RelationField("mcMonitors")
 SageMakerModelDeployment.MC_INCIDENTS = RelationField("mcIncidents")
 SageMakerModelDeployment.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

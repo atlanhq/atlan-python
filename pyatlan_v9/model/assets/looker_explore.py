@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .looker_related import (
     RelatedLookerExplore,
     RelatedLookerField,
@@ -95,6 +96,7 @@ class LookerExplore(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MODEL: ClassVar[Any] = None
     PROJECT: ClassVar[Any] = None
     FIELDS: ClassVar[Any] = None
@@ -191,6 +193,9 @@ class LookerExplore(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     model: Union[RelatedLookerModel, None, UnsetType] = UNSET
     """Model in which this explore exists."""
@@ -299,6 +304,8 @@ class LookerExplore(Asset):
                 errors.append("model_name is required for creation")
             if self.project_name is UNSET:
                 errors.append("project_name is required for creation")
+            if self.project is UNSET:
+                errors.append("project is required for creation")
         if errors:
             raise ValueError(f"LookerExplore validation failed: {errors}")
 
@@ -468,6 +475,9 @@ class LookerExploreRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     model: Union[RelatedLookerModel, None, UnsetType] = UNSET
     """Model in which this explore exists."""
 
@@ -565,6 +575,7 @@ _LOOKER_EXPLORE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "model",
     "project",
     "fields",
@@ -682,6 +693,7 @@ def _looker_explore_from_nested(nested: LookerExploreNested) -> LookerExplore:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -749,6 +761,7 @@ LookerExplore.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 LookerExplore.MEANINGS = RelationField("meanings")
+LookerExplore.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 LookerExplore.MODEL = RelationField("model")
 LookerExplore.PROJECT = RelationField("project")
 LookerExplore.FIELDS = RelationField("fields")

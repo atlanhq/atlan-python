@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -66,7 +67,7 @@ class QlikSpace(Asset):
     Instance of a Qlik space in Atlan.
     """
 
-    QLIK_SPACE_TYPE: ClassVar[Any] = None
+    QLIK_TYPE: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -93,6 +94,7 @@ class QlikSpace(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -111,7 +113,7 @@ class QlikSpace(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    qlik_space_type: Union[str, None, UnsetType] = UNSET
+    qlik_type: Union[str, None, UnsetType] = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -197,6 +199,9 @@ class QlikSpace(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -371,7 +376,7 @@ class QlikSpace(Asset):
 class QlikSpaceAttributes(AssetAttributes):
     """QlikSpace-specific attributes for nested API format."""
 
-    qlik_space_type: Union[str, None, UnsetType] = UNSET
+    qlik_type: Union[str, None, UnsetType] = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -461,6 +466,9 @@ class QlikSpaceRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -554,6 +562,7 @@ _QLIK_SPACE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -577,7 +586,7 @@ _QLIK_SPACE_REL_FIELDS: List[str] = [
 def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> None:
     """Populate QlikSpace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.qlik_space_type = obj.qlik_space_type
+    attrs.qlik_type = obj.qlik_type
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -592,7 +601,7 @@ def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> No
 def _extract_qlik_space_attrs(attrs: QlikSpaceAttributes) -> dict:
     """Extract all QlikSpace attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["qlik_space_type"] = attrs.qlik_space_type
+    result["qlik_type"] = attrs.qlik_type
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -672,6 +681,7 @@ def _qlik_space_from_nested(nested: QlikSpaceNested) -> QlikSpace:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -710,7 +720,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QlikSpace.QLIK_SPACE_TYPE = KeywordField("qlikSpaceType", "qlikSpaceType")
+QlikSpace.QLIK_TYPE = KeywordField("qlikType", "qlikType")
 QlikSpace.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikSpace.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikSpace.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")
@@ -745,6 +755,7 @@ QlikSpace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 QlikSpace.MEANINGS = RelationField("meanings")
+QlikSpace.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 QlikSpace.MC_MONITORS = RelationField("mcMonitors")
 QlikSpace.MC_INCIDENTS = RelationField("mcIncidents")
 QlikSpace.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

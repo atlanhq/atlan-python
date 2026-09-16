@@ -52,6 +52,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -88,7 +89,7 @@ class Table(Asset):
     COLUMN_COUNT: ClassVar[Any] = None
     ROW_COUNT: ClassVar[Any] = None
     SIZE_BYTES: ClassVar[Any] = None
-    TABLE_OBJECT_COUNT: ClassVar[Any] = None
+    SQL_OBJECT_COUNT: ClassVar[Any] = None
     ALIAS: ClassVar[Any] = None
     IS_TEMPORARY: ClassVar[Any] = None
     IS_QUERY_PREVIEW: ClassVar[Any] = None
@@ -102,16 +103,16 @@ class Table(Asset):
     TABLE_DEFINITION: ClassVar[Any] = None
     PARTITION_LIST: ClassVar[Any] = None
     IS_SHARDED: ClassVar[Any] = None
-    TABLE_TYPE: ClassVar[Any] = None
+    SQL_TYPE: ClassVar[Any] = None
     ICEBERG_CATALOG_NAME: ClassVar[Any] = None
     ICEBERG_TABLE_TYPE: ClassVar[Any] = None
     ICEBERG_CATALOG_SOURCE: ClassVar[Any] = None
     ICEBERG_CATALOG_TABLE_NAME: ClassVar[Any] = None
-    TABLE_IMPALA_PARAMETERS: ClassVar[Any] = None
+    SQL_IMPALA_PARAMETERS: ClassVar[Any] = None
     ICEBERG_CATALOG_TABLE_NAMESPACE: ClassVar[Any] = None
-    TABLE_EXTERNAL_VOLUME_NAME: ClassVar[Any] = None
+    SQL_EXTERNAL_VOLUME_NAME: ClassVar[Any] = None
     ICEBERG_TABLE_BASE_LOCATION: ClassVar[Any] = None
-    TABLE_RETENTION_TIME: ClassVar[Any] = None
+    SQL_RETENTION_TIME: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -169,6 +170,7 @@ class Table(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -204,7 +206,7 @@ class Table(Asset):
     size_bytes: Union[int, None, UnsetType] = UNSET
     """Size of this table, in bytes."""
 
-    table_object_count: Union[int, None, UnsetType] = UNSET
+    sql_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects in this table."""
 
     alias: Union[str, None, UnsetType] = UNSET
@@ -246,7 +248,7 @@ class Table(Asset):
     is_sharded: Union[bool, None, UnsetType] = UNSET
     """Whether this table is a sharded table (true) or not (false)."""
 
-    table_type: Union[str, None, UnsetType] = UNSET
+    sql_type: Union[str, None, UnsetType] = UNSET
     """Type of the table."""
 
     iceberg_catalog_name: Union[str, None, UnsetType] = UNSET
@@ -261,19 +263,19 @@ class Table(Asset):
     iceberg_catalog_table_name: Union[str, None, UnsetType] = UNSET
     """Catalog table name (actual table name on the catalog side)."""
 
-    table_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
+    sql_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Extra attributes for Impala"""
 
     iceberg_catalog_table_namespace: Union[str, None, UnsetType] = UNSET
     """Catalog table namespace (actual database name on the catalog side)."""
 
-    table_external_volume_name: Union[str, None, UnsetType] = UNSET
+    sql_external_volume_name: Union[str, None, UnsetType] = UNSET
     """External volume name for the table."""
 
     iceberg_table_base_location: Union[str, None, UnsetType] = UNSET
     """Iceberg table base location inside the external volume."""
 
-    table_retention_time: Union[int, None, UnsetType] = UNSET
+    sql_retention_time: Union[int, None, UnsetType] = UNSET
     """Data retention time in days."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -456,6 +458,9 @@ class Table(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -768,7 +773,7 @@ class TableAttributes(AssetAttributes):
     size_bytes: Union[int, None, UnsetType] = UNSET
     """Size of this table, in bytes."""
 
-    table_object_count: Union[int, None, UnsetType] = UNSET
+    sql_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects in this table."""
 
     alias: Union[str, None, UnsetType] = UNSET
@@ -810,7 +815,7 @@ class TableAttributes(AssetAttributes):
     is_sharded: Union[bool, None, UnsetType] = UNSET
     """Whether this table is a sharded table (true) or not (false)."""
 
-    table_type: Union[str, None, UnsetType] = UNSET
+    sql_type: Union[str, None, UnsetType] = UNSET
     """Type of the table."""
 
     iceberg_catalog_name: Union[str, None, UnsetType] = UNSET
@@ -825,19 +830,19 @@ class TableAttributes(AssetAttributes):
     iceberg_catalog_table_name: Union[str, None, UnsetType] = UNSET
     """Catalog table name (actual table name on the catalog side)."""
 
-    table_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
+    sql_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Extra attributes for Impala"""
 
     iceberg_catalog_table_namespace: Union[str, None, UnsetType] = UNSET
     """Catalog table namespace (actual database name on the catalog side)."""
 
-    table_external_volume_name: Union[str, None, UnsetType] = UNSET
+    sql_external_volume_name: Union[str, None, UnsetType] = UNSET
     """External volume name for the table."""
 
     iceberg_table_base_location: Union[str, None, UnsetType] = UNSET
     """Iceberg table base location inside the external volume."""
 
-    table_retention_time: Union[int, None, UnsetType] = UNSET
+    sql_retention_time: Union[int, None, UnsetType] = UNSET
     """Data retention time in days."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -1025,6 +1030,9 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1155,6 +1163,7 @@ _TABLE_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1189,7 +1198,7 @@ def _populate_table_attrs(attrs: TableAttributes, obj: Table) -> None:
     attrs.column_count = obj.column_count
     attrs.row_count = obj.row_count
     attrs.size_bytes = obj.size_bytes
-    attrs.table_object_count = obj.table_object_count
+    attrs.sql_object_count = obj.sql_object_count
     attrs.alias = obj.alias
     attrs.is_temporary = obj.is_temporary
     attrs.is_query_preview = obj.is_query_preview
@@ -1203,16 +1212,16 @@ def _populate_table_attrs(attrs: TableAttributes, obj: Table) -> None:
     attrs.table_definition = obj.table_definition
     attrs.partition_list = obj.partition_list
     attrs.is_sharded = obj.is_sharded
-    attrs.table_type = obj.table_type
+    attrs.sql_type = obj.sql_type
     attrs.iceberg_catalog_name = obj.iceberg_catalog_name
     attrs.iceberg_table_type = obj.iceberg_table_type
     attrs.iceberg_catalog_source = obj.iceberg_catalog_source
     attrs.iceberg_catalog_table_name = obj.iceberg_catalog_table_name
-    attrs.table_impala_parameters = obj.table_impala_parameters
+    attrs.sql_impala_parameters = obj.sql_impala_parameters
     attrs.iceberg_catalog_table_namespace = obj.iceberg_catalog_table_namespace
-    attrs.table_external_volume_name = obj.table_external_volume_name
+    attrs.sql_external_volume_name = obj.sql_external_volume_name
     attrs.iceberg_table_base_location = obj.iceberg_table_base_location
-    attrs.table_retention_time = obj.table_retention_time
+    attrs.sql_retention_time = obj.sql_retention_time
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1259,7 +1268,7 @@ def _extract_table_attrs(attrs: TableAttributes) -> dict:
     result["column_count"] = attrs.column_count
     result["row_count"] = attrs.row_count
     result["size_bytes"] = attrs.size_bytes
-    result["table_object_count"] = attrs.table_object_count
+    result["sql_object_count"] = attrs.sql_object_count
     result["alias"] = attrs.alias
     result["is_temporary"] = attrs.is_temporary
     result["is_query_preview"] = attrs.is_query_preview
@@ -1273,16 +1282,16 @@ def _extract_table_attrs(attrs: TableAttributes) -> dict:
     result["table_definition"] = attrs.table_definition
     result["partition_list"] = attrs.partition_list
     result["is_sharded"] = attrs.is_sharded
-    result["table_type"] = attrs.table_type
+    result["sql_type"] = attrs.sql_type
     result["iceberg_catalog_name"] = attrs.iceberg_catalog_name
     result["iceberg_table_type"] = attrs.iceberg_table_type
     result["iceberg_catalog_source"] = attrs.iceberg_catalog_source
     result["iceberg_catalog_table_name"] = attrs.iceberg_catalog_table_name
-    result["table_impala_parameters"] = attrs.table_impala_parameters
+    result["sql_impala_parameters"] = attrs.sql_impala_parameters
     result["iceberg_catalog_table_namespace"] = attrs.iceberg_catalog_table_namespace
-    result["table_external_volume_name"] = attrs.table_external_volume_name
+    result["sql_external_volume_name"] = attrs.sql_external_volume_name
     result["iceberg_table_base_location"] = attrs.iceberg_table_base_location
-    result["table_retention_time"] = attrs.table_retention_time
+    result["sql_retention_time"] = attrs.sql_retention_time
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1395,6 +1404,7 @@ def _table_from_nested(nested: TableNested) -> Table:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1437,7 +1447,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 Table.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 Table.ROW_COUNT = NumericField("rowCount", "rowCount")
 Table.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
-Table.TABLE_OBJECT_COUNT = NumericField("tableObjectCount", "tableObjectCount")
+Table.SQL_OBJECT_COUNT = NumericField("sqlObjectCount", "sqlObjectCount")
 Table.ALIAS = KeywordField("alias", "alias")
 Table.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 Table.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
@@ -1455,7 +1465,7 @@ Table.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
 Table.TABLE_DEFINITION = KeywordField("tableDefinition", "tableDefinition")
 Table.PARTITION_LIST = KeywordField("partitionList", "partitionList")
 Table.IS_SHARDED = BooleanField("isSharded", "isSharded")
-Table.TABLE_TYPE = KeywordField("tableType", "tableType")
+Table.SQL_TYPE = KeywordField("sqlType", "sqlType")
 Table.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
 Table.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
 Table.ICEBERG_CATALOG_SOURCE = KeywordField(
@@ -1464,19 +1474,17 @@ Table.ICEBERG_CATALOG_SOURCE = KeywordField(
 Table.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
     "icebergCatalogTableName", "icebergCatalogTableName"
 )
-Table.TABLE_IMPALA_PARAMETERS = KeywordField(
-    "tableImpalaParameters", "tableImpalaParameters"
-)
+Table.SQL_IMPALA_PARAMETERS = KeywordField("sqlImpalaParameters", "sqlImpalaParameters")
 Table.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
     "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
 )
-Table.TABLE_EXTERNAL_VOLUME_NAME = KeywordField(
-    "tableExternalVolumeName", "tableExternalVolumeName"
+Table.SQL_EXTERNAL_VOLUME_NAME = KeywordField(
+    "sqlExternalVolumeName", "sqlExternalVolumeName"
 )
 Table.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
     "icebergTableBaseLocation", "icebergTableBaseLocation"
 )
-Table.TABLE_RETENTION_TIME = NumericField("tableRetentionTime", "tableRetentionTime")
+Table.SQL_RETENTION_TIME = NumericField("sqlRetentionTime", "sqlRetentionTime")
 Table.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Table.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Table.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
@@ -1575,6 +1583,7 @@ Table.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Table.MEANINGS = RelationField("meanings")
+Table.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Table.MC_MONITORS = RelationField("mcMonitors")
 Table.MC_INCIDENTS = RelationField("mcIncidents")
 Table.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

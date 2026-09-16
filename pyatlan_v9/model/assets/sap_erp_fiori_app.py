@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -66,13 +67,13 @@ class SapErpFioriApp(Asset):
     Instance of a SAP ERP Fiori App in Atlan.
     """
 
-    SAP_ERP_FIORI_APP_TYPE: ClassVar[Any] = None
-    SAP_ERP_FIORI_APP_ARCHE_TYPE: ClassVar[Any] = None
-    SAP_ERP_FIORI_APP_IS_CUSTOM: ClassVar[Any] = None
-    SAP_ERP_FIORI_APP_BSP_APPLICATION: ClassVar[Any] = None
-    SAP_ERP_FIORI_APP_ODATA_SERVICE_NAME: ClassVar[Any] = None
-    SAP_ERP_FIORI_APP_ODATA_SERVICE_URI: ClassVar[Any] = None
-    SAP_ERP_FIORI_APP_ODATA_VERSION: ClassVar[Any] = None
+    SAP_TYPE: ClassVar[Any] = None
+    SAP_ARCHE_TYPE: ClassVar[Any] = None
+    SAP_IS_CUSTOM: ClassVar[Any] = None
+    SAP_BSP_APPLICATION: ClassVar[Any] = None
+    SAP_ODATA_SERVICE_NAME: ClassVar[Any] = None
+    SAP_ODATA_SERVICE_URI: ClassVar[Any] = None
+    SAP_ODATA_VERSION: ClassVar[Any] = None
     SAP_TECHNICAL_NAME: ClassVar[Any] = None
     SAP_LOGICAL_NAME: ClassVar[Any] = None
     SAP_PACKAGE_NAME: ClassVar[Any] = None
@@ -98,6 +99,7 @@ class SapErpFioriApp(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -115,25 +117,25 @@ class SapErpFioriApp(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sap_erp_fiori_app_type: Union[str, None, UnsetType] = UNSET
+    sap_type: Union[str, None, UnsetType] = UNSET
     """Application type of the Fiori App from sap.app.type in the manifest, such as application, transactional, or factsheet."""
 
-    sap_erp_fiori_app_arche_type: Union[str, None, UnsetType] = UNSET
+    sap_arche_type: Union[str, None, UnsetType] = UNSET
     """Fiori archetype from sap.fiori.archeType in the manifest, such as transactional."""
 
-    sap_erp_fiori_app_is_custom: Union[bool, None, UnsetType] = UNSET
+    sap_is_custom: Union[bool, None, UnsetType] = UNSET
     """When true, the Fiori App has no sap.fiori.registrationIds in its manifest and is treated as a customer (Z-app) build."""
 
-    sap_erp_fiori_app_bsp_application: Union[str, None, UnsetType] = UNSET
+    sap_bsp_application: Union[str, None, UnsetType] = UNSET
     """BSP container name for the Fiori App as registered in O2APPL (e.g. ATP_ABOPVARS1)."""
 
-    sap_erp_fiori_app_odata_service_name: Union[str, None, UnsetType] = UNSET
+    sap_odata_service_name: Union[str, None, UnsetType] = UNSET
     """Resolved OData service name extracted from the manifest mainService URI (e.g. UI_ABOPVARIANT_CONFIGURE or C_SUPPLIEREVALUATION_CDS)."""
 
-    sap_erp_fiori_app_odata_service_uri: Union[str, None, UnsetType] = UNSET
+    sap_odata_service_uri: Union[str, None, UnsetType] = UNSET
     """Full OData service URI from sap.app.dataSources.mainService.uri in the manifest."""
 
-    sap_erp_fiori_app_odata_version: Union[str, None, UnsetType] = UNSET
+    sap_odata_version: Union[str, None, UnsetType] = UNSET
     """OData protocol version of the Fiori App's main data source, such as 2.0 or 4.0."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -216,6 +218,9 @@ class SapErpFioriApp(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -399,25 +404,25 @@ class SapErpFioriApp(Asset):
 class SapErpFioriAppAttributes(AssetAttributes):
     """SapErpFioriApp-specific attributes for nested API format."""
 
-    sap_erp_fiori_app_type: Union[str, None, UnsetType] = UNSET
+    sap_type: Union[str, None, UnsetType] = UNSET
     """Application type of the Fiori App from sap.app.type in the manifest, such as application, transactional, or factsheet."""
 
-    sap_erp_fiori_app_arche_type: Union[str, None, UnsetType] = UNSET
+    sap_arche_type: Union[str, None, UnsetType] = UNSET
     """Fiori archetype from sap.fiori.archeType in the manifest, such as transactional."""
 
-    sap_erp_fiori_app_is_custom: Union[bool, None, UnsetType] = UNSET
+    sap_is_custom: Union[bool, None, UnsetType] = UNSET
     """When true, the Fiori App has no sap.fiori.registrationIds in its manifest and is treated as a customer (Z-app) build."""
 
-    sap_erp_fiori_app_bsp_application: Union[str, None, UnsetType] = UNSET
+    sap_bsp_application: Union[str, None, UnsetType] = UNSET
     """BSP container name for the Fiori App as registered in O2APPL (e.g. ATP_ABOPVARS1)."""
 
-    sap_erp_fiori_app_odata_service_name: Union[str, None, UnsetType] = UNSET
+    sap_odata_service_name: Union[str, None, UnsetType] = UNSET
     """Resolved OData service name extracted from the manifest mainService URI (e.g. UI_ABOPVARIANT_CONFIGURE or C_SUPPLIEREVALUATION_CDS)."""
 
-    sap_erp_fiori_app_odata_service_uri: Union[str, None, UnsetType] = UNSET
+    sap_odata_service_uri: Union[str, None, UnsetType] = UNSET
     """Full OData service URI from sap.app.dataSources.mainService.uri in the manifest."""
 
-    sap_erp_fiori_app_odata_version: Union[str, None, UnsetType] = UNSET
+    sap_odata_version: Union[str, None, UnsetType] = UNSET
     """OData protocol version of the Fiori App's main data source, such as 2.0 or 4.0."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -504,6 +509,9 @@ class SapErpFioriAppRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -596,6 +604,7 @@ _SAP_ERP_FIORI_APP_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -620,15 +629,13 @@ def _populate_sap_erp_fiori_app_attrs(
 ) -> None:
     """Populate SapErpFioriApp-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_erp_fiori_app_type = obj.sap_erp_fiori_app_type
-    attrs.sap_erp_fiori_app_arche_type = obj.sap_erp_fiori_app_arche_type
-    attrs.sap_erp_fiori_app_is_custom = obj.sap_erp_fiori_app_is_custom
-    attrs.sap_erp_fiori_app_bsp_application = obj.sap_erp_fiori_app_bsp_application
-    attrs.sap_erp_fiori_app_odata_service_name = (
-        obj.sap_erp_fiori_app_odata_service_name
-    )
-    attrs.sap_erp_fiori_app_odata_service_uri = obj.sap_erp_fiori_app_odata_service_uri
-    attrs.sap_erp_fiori_app_odata_version = obj.sap_erp_fiori_app_odata_version
+    attrs.sap_type = obj.sap_type
+    attrs.sap_arche_type = obj.sap_arche_type
+    attrs.sap_is_custom = obj.sap_is_custom
+    attrs.sap_bsp_application = obj.sap_bsp_application
+    attrs.sap_odata_service_name = obj.sap_odata_service_name
+    attrs.sap_odata_service_uri = obj.sap_odata_service_uri
+    attrs.sap_odata_version = obj.sap_odata_version
     attrs.sap_technical_name = obj.sap_technical_name
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
@@ -642,19 +649,13 @@ def _populate_sap_erp_fiori_app_attrs(
 def _extract_sap_erp_fiori_app_attrs(attrs: SapErpFioriAppAttributes) -> dict:
     """Extract all SapErpFioriApp attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_erp_fiori_app_type"] = attrs.sap_erp_fiori_app_type
-    result["sap_erp_fiori_app_arche_type"] = attrs.sap_erp_fiori_app_arche_type
-    result["sap_erp_fiori_app_is_custom"] = attrs.sap_erp_fiori_app_is_custom
-    result["sap_erp_fiori_app_bsp_application"] = (
-        attrs.sap_erp_fiori_app_bsp_application
-    )
-    result["sap_erp_fiori_app_odata_service_name"] = (
-        attrs.sap_erp_fiori_app_odata_service_name
-    )
-    result["sap_erp_fiori_app_odata_service_uri"] = (
-        attrs.sap_erp_fiori_app_odata_service_uri
-    )
-    result["sap_erp_fiori_app_odata_version"] = attrs.sap_erp_fiori_app_odata_version
+    result["sap_type"] = attrs.sap_type
+    result["sap_arche_type"] = attrs.sap_arche_type
+    result["sap_is_custom"] = attrs.sap_is_custom
+    result["sap_bsp_application"] = attrs.sap_bsp_application
+    result["sap_odata_service_name"] = attrs.sap_odata_service_name
+    result["sap_odata_service_uri"] = attrs.sap_odata_service_uri
+    result["sap_odata_version"] = attrs.sap_odata_version
     result["sap_technical_name"] = attrs.sap_technical_name
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
@@ -739,6 +740,7 @@ def _sap_erp_fiori_app_from_nested(nested: SapErpFioriAppNested) -> SapErpFioriA
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -779,27 +781,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpFioriApp.SAP_ERP_FIORI_APP_TYPE = KeywordField(
-    "sapErpFioriAppType", "sapErpFioriAppType"
+SapErpFioriApp.SAP_TYPE = KeywordField("sapType", "sapType")
+SapErpFioriApp.SAP_ARCHE_TYPE = KeywordField("sapArcheType", "sapArcheType")
+SapErpFioriApp.SAP_IS_CUSTOM = BooleanField("sapIsCustom", "sapIsCustom")
+SapErpFioriApp.SAP_BSP_APPLICATION = KeywordField(
+    "sapBspApplication", "sapBspApplication"
 )
-SapErpFioriApp.SAP_ERP_FIORI_APP_ARCHE_TYPE = KeywordField(
-    "sapErpFioriAppArcheType", "sapErpFioriAppArcheType"
+SapErpFioriApp.SAP_ODATA_SERVICE_NAME = KeywordField(
+    "sapOdataServiceName", "sapOdataServiceName"
 )
-SapErpFioriApp.SAP_ERP_FIORI_APP_IS_CUSTOM = BooleanField(
-    "sapErpFioriAppIsCustom", "sapErpFioriAppIsCustom"
+SapErpFioriApp.SAP_ODATA_SERVICE_URI = KeywordField(
+    "sapOdataServiceUri", "sapOdataServiceUri"
 )
-SapErpFioriApp.SAP_ERP_FIORI_APP_BSP_APPLICATION = KeywordField(
-    "sapErpFioriAppBspApplication", "sapErpFioriAppBspApplication"
-)
-SapErpFioriApp.SAP_ERP_FIORI_APP_ODATA_SERVICE_NAME = KeywordField(
-    "sapErpFioriAppOdataServiceName", "sapErpFioriAppOdataServiceName"
-)
-SapErpFioriApp.SAP_ERP_FIORI_APP_ODATA_SERVICE_URI = KeywordField(
-    "sapErpFioriAppOdataServiceUri", "sapErpFioriAppOdataServiceUri"
-)
-SapErpFioriApp.SAP_ERP_FIORI_APP_ODATA_VERSION = KeywordField(
-    "sapErpFioriAppOdataVersion", "sapErpFioriAppOdataVersion"
-)
+SapErpFioriApp.SAP_ODATA_VERSION = KeywordField("sapOdataVersion", "sapOdataVersion")
 SapErpFioriApp.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
 SapErpFioriApp.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapErpFioriApp.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
@@ -833,6 +827,7 @@ SapErpFioriApp.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SapErpFioriApp.MEANINGS = RelationField("meanings")
+SapErpFioriApp.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SapErpFioriApp.MC_MONITORS = RelationField("mcMonitors")
 SapErpFioriApp.MC_INCIDENTS = RelationField("mcIncidents")
 SapErpFioriApp.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

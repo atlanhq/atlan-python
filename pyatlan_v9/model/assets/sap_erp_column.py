@@ -51,6 +51,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -83,21 +84,21 @@ class SapErpColumn(Asset):
     Instance of a SAP Column in Atlan.
     """
 
-    SAP_ERP_COLUMN_DATA_ELEMENT: ClassVar[Any] = None
-    SAP_ERP_COLUMN_LOGICAL_DATA_TYPE: ClassVar[Any] = None
-    SAP_ERP_COLUMN_LENGTH: ClassVar[Any] = None
-    SAP_ERP_COLUMN_DECIMALS: ClassVar[Any] = None
-    SAP_ERP_COLUMN_IS_PRIMARY: ClassVar[Any] = None
-    SAP_ERP_COLUMN_IS_FOREIGN: ClassVar[Any] = None
-    SAP_ERP_COLUMN_IS_MANDATORY: ClassVar[Any] = None
+    SAP_DATA_ELEMENT: ClassVar[Any] = None
+    SAP_LOGICAL_DATA_TYPE: ClassVar[Any] = None
+    SAP_LENGTH: ClassVar[Any] = None
+    SAP_DECIMALS: ClassVar[Any] = None
+    SAP_IS_PRIMARY: ClassVar[Any] = None
+    SAP_IS_FOREIGN: ClassVar[Any] = None
+    SAP_IS_MANDATORY: ClassVar[Any] = None
     SAP_ERP_TABLE_NAME: ClassVar[Any] = None
     SAP_ERP_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
     SAP_ERP_VIEW_NAME: ClassVar[Any] = None
     SAP_ERP_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
     SAP_ERP_CDS_VIEW_NAME: ClassVar[Any] = None
     SAP_ERP_CDS_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
-    SAP_ERP_COLUMN_CHECK_TABLE_NAME: ClassVar[Any] = None
-    SAP_ERP_COLUMN_CHECK_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
+    SAP_CHECK_TABLE_NAME: ClassVar[Any] = None
+    SAP_CHECK_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
     SAP_TECHNICAL_NAME: ClassVar[Any] = None
     SAP_LOGICAL_NAME: ClassVar[Any] = None
     SAP_PACKAGE_NAME: ClassVar[Any] = None
@@ -162,6 +163,7 @@ class SapErpColumn(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -185,25 +187,25 @@ class SapErpColumn(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    sap_erp_column_data_element: Union[str, None, UnsetType] = UNSET
+    sap_data_element: Union[str, None, UnsetType] = UNSET
     """Represents the SAP ERP data element, providing semantic information about the column."""
 
-    sap_erp_column_logical_data_type: Union[str, None, UnsetType] = UNSET
+    sap_logical_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the logical data type of values in this SAP ERP column."""
 
-    sap_erp_column_length: Union[str, None, UnsetType] = UNSET
+    sap_length: Union[str, None, UnsetType] = UNSET
     """Indicates the maximum length of the values that the SAP ERP column can store."""
 
-    sap_erp_column_decimals: Union[str, None, UnsetType] = UNSET
+    sap_decimals: Union[str, None, UnsetType] = UNSET
     """Defines the number of decimal places allowed for numeric values in the SAP ERP column."""
 
-    sap_erp_column_is_primary: Union[bool, None, UnsetType] = UNSET
+    sap_is_primary: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the primary key for the SAP ERP table or view."""
 
-    sap_erp_column_is_foreign: Union[bool, None, UnsetType] = UNSET
+    sap_is_foreign: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the foreign key for the SAP ERP table or view."""
 
-    sap_erp_column_is_mandatory: Union[bool, None, UnsetType] = UNSET
+    sap_is_mandatory: Union[bool, None, UnsetType] = UNSET
     """When true, the values in this column can be null."""
 
     sap_erp_table_name: Union[str, None, UnsetType] = UNSET
@@ -224,10 +226,10 @@ class SapErpColumn(Asset):
     sap_erp_cds_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP CDS view in which this column asset exists."""
 
-    sap_erp_column_check_table_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_name: Union[str, None, UnsetType] = UNSET
     """Defines the SAP ERP table name used as a foreign key reference to validate permissible values for this column."""
 
-    sap_erp_column_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP Table used as a foreign key reference to validate permissible values for this column."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -431,6 +433,9 @@ class SapErpColumn(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -644,25 +649,25 @@ class SapErpColumn(Asset):
 class SapErpColumnAttributes(AssetAttributes):
     """SapErpColumn-specific attributes for nested API format."""
 
-    sap_erp_column_data_element: Union[str, None, UnsetType] = UNSET
+    sap_data_element: Union[str, None, UnsetType] = UNSET
     """Represents the SAP ERP data element, providing semantic information about the column."""
 
-    sap_erp_column_logical_data_type: Union[str, None, UnsetType] = UNSET
+    sap_logical_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the logical data type of values in this SAP ERP column."""
 
-    sap_erp_column_length: Union[str, None, UnsetType] = UNSET
+    sap_length: Union[str, None, UnsetType] = UNSET
     """Indicates the maximum length of the values that the SAP ERP column can store."""
 
-    sap_erp_column_decimals: Union[str, None, UnsetType] = UNSET
+    sap_decimals: Union[str, None, UnsetType] = UNSET
     """Defines the number of decimal places allowed for numeric values in the SAP ERP column."""
 
-    sap_erp_column_is_primary: Union[bool, None, UnsetType] = UNSET
+    sap_is_primary: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the primary key for the SAP ERP table or view."""
 
-    sap_erp_column_is_foreign: Union[bool, None, UnsetType] = UNSET
+    sap_is_foreign: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the foreign key for the SAP ERP table or view."""
 
-    sap_erp_column_is_mandatory: Union[bool, None, UnsetType] = UNSET
+    sap_is_mandatory: Union[bool, None, UnsetType] = UNSET
     """When true, the values in this column can be null."""
 
     sap_erp_table_name: Union[str, None, UnsetType] = UNSET
@@ -683,10 +688,10 @@ class SapErpColumnAttributes(AssetAttributes):
     sap_erp_cds_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP CDS view in which this column asset exists."""
 
-    sap_erp_column_check_table_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_name: Union[str, None, UnsetType] = UNSET
     """Defines the SAP ERP table name used as a foreign key reference to validate permissible values for this column."""
 
-    sap_erp_column_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP Table used as a foreign key reference to validate permissible values for this column."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -895,6 +900,9 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1018,6 +1026,7 @@ _SAP_ERP_COLUMN_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1048,23 +1057,21 @@ def _populate_sap_erp_column_attrs(
 ) -> None:
     """Populate SapErpColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_erp_column_data_element = obj.sap_erp_column_data_element
-    attrs.sap_erp_column_logical_data_type = obj.sap_erp_column_logical_data_type
-    attrs.sap_erp_column_length = obj.sap_erp_column_length
-    attrs.sap_erp_column_decimals = obj.sap_erp_column_decimals
-    attrs.sap_erp_column_is_primary = obj.sap_erp_column_is_primary
-    attrs.sap_erp_column_is_foreign = obj.sap_erp_column_is_foreign
-    attrs.sap_erp_column_is_mandatory = obj.sap_erp_column_is_mandatory
+    attrs.sap_data_element = obj.sap_data_element
+    attrs.sap_logical_data_type = obj.sap_logical_data_type
+    attrs.sap_length = obj.sap_length
+    attrs.sap_decimals = obj.sap_decimals
+    attrs.sap_is_primary = obj.sap_is_primary
+    attrs.sap_is_foreign = obj.sap_is_foreign
+    attrs.sap_is_mandatory = obj.sap_is_mandatory
     attrs.sap_erp_table_name = obj.sap_erp_table_name
     attrs.sap_erp_table_qualified_name = obj.sap_erp_table_qualified_name
     attrs.sap_erp_view_name = obj.sap_erp_view_name
     attrs.sap_erp_view_qualified_name = obj.sap_erp_view_qualified_name
     attrs.sap_erp_cds_view_name = obj.sap_erp_cds_view_name
     attrs.sap_erp_cds_view_qualified_name = obj.sap_erp_cds_view_qualified_name
-    attrs.sap_erp_column_check_table_name = obj.sap_erp_column_check_table_name
-    attrs.sap_erp_column_check_table_qualified_name = (
-        obj.sap_erp_column_check_table_qualified_name
-    )
+    attrs.sap_check_table_name = obj.sap_check_table_name
+    attrs.sap_check_table_qualified_name = obj.sap_check_table_qualified_name
     attrs.sap_technical_name = obj.sap_technical_name
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
@@ -1115,23 +1122,21 @@ def _populate_sap_erp_column_attrs(
 def _extract_sap_erp_column_attrs(attrs: SapErpColumnAttributes) -> dict:
     """Extract all SapErpColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_erp_column_data_element"] = attrs.sap_erp_column_data_element
-    result["sap_erp_column_logical_data_type"] = attrs.sap_erp_column_logical_data_type
-    result["sap_erp_column_length"] = attrs.sap_erp_column_length
-    result["sap_erp_column_decimals"] = attrs.sap_erp_column_decimals
-    result["sap_erp_column_is_primary"] = attrs.sap_erp_column_is_primary
-    result["sap_erp_column_is_foreign"] = attrs.sap_erp_column_is_foreign
-    result["sap_erp_column_is_mandatory"] = attrs.sap_erp_column_is_mandatory
+    result["sap_data_element"] = attrs.sap_data_element
+    result["sap_logical_data_type"] = attrs.sap_logical_data_type
+    result["sap_length"] = attrs.sap_length
+    result["sap_decimals"] = attrs.sap_decimals
+    result["sap_is_primary"] = attrs.sap_is_primary
+    result["sap_is_foreign"] = attrs.sap_is_foreign
+    result["sap_is_mandatory"] = attrs.sap_is_mandatory
     result["sap_erp_table_name"] = attrs.sap_erp_table_name
     result["sap_erp_table_qualified_name"] = attrs.sap_erp_table_qualified_name
     result["sap_erp_view_name"] = attrs.sap_erp_view_name
     result["sap_erp_view_qualified_name"] = attrs.sap_erp_view_qualified_name
     result["sap_erp_cds_view_name"] = attrs.sap_erp_cds_view_name
     result["sap_erp_cds_view_qualified_name"] = attrs.sap_erp_cds_view_qualified_name
-    result["sap_erp_column_check_table_name"] = attrs.sap_erp_column_check_table_name
-    result["sap_erp_column_check_table_qualified_name"] = (
-        attrs.sap_erp_column_check_table_qualified_name
-    )
+    result["sap_check_table_name"] = attrs.sap_check_table_name
+    result["sap_check_table_qualified_name"] = attrs.sap_check_table_qualified_name
     result["sap_technical_name"] = attrs.sap_technical_name
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
@@ -1255,6 +1260,7 @@ def _sap_erp_column_from_nested(nested: SapErpColumnNested) -> SapErpColumn:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1296,27 +1302,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpColumn.SAP_ERP_COLUMN_DATA_ELEMENT = KeywordField(
-    "sapErpColumnDataElement", "sapErpColumnDataElement"
+SapErpColumn.SAP_DATA_ELEMENT = KeywordField("sapDataElement", "sapDataElement")
+SapErpColumn.SAP_LOGICAL_DATA_TYPE = KeywordField(
+    "sapLogicalDataType", "sapLogicalDataType"
 )
-SapErpColumn.SAP_ERP_COLUMN_LOGICAL_DATA_TYPE = KeywordField(
-    "sapErpColumnLogicalDataType", "sapErpColumnLogicalDataType"
-)
-SapErpColumn.SAP_ERP_COLUMN_LENGTH = KeywordField(
-    "sapErpColumnLength", "sapErpColumnLength"
-)
-SapErpColumn.SAP_ERP_COLUMN_DECIMALS = KeywordField(
-    "sapErpColumnDecimals", "sapErpColumnDecimals"
-)
-SapErpColumn.SAP_ERP_COLUMN_IS_PRIMARY = BooleanField(
-    "sapErpColumnIsPrimary", "sapErpColumnIsPrimary"
-)
-SapErpColumn.SAP_ERP_COLUMN_IS_FOREIGN = BooleanField(
-    "sapErpColumnIsForeign", "sapErpColumnIsForeign"
-)
-SapErpColumn.SAP_ERP_COLUMN_IS_MANDATORY = BooleanField(
-    "sapErpColumnIsMandatory", "sapErpColumnIsMandatory"
-)
+SapErpColumn.SAP_LENGTH = KeywordField("sapLength", "sapLength")
+SapErpColumn.SAP_DECIMALS = KeywordField("sapDecimals", "sapDecimals")
+SapErpColumn.SAP_IS_PRIMARY = BooleanField("sapIsPrimary", "sapIsPrimary")
+SapErpColumn.SAP_IS_FOREIGN = BooleanField("sapIsForeign", "sapIsForeign")
+SapErpColumn.SAP_IS_MANDATORY = BooleanField("sapIsMandatory", "sapIsMandatory")
 SapErpColumn.SAP_ERP_TABLE_NAME = KeywordField("sapErpTableName", "sapErpTableName")
 SapErpColumn.SAP_ERP_TABLE_QUALIFIED_NAME = KeywordTextField(
     "sapErpTableQualifiedName",
@@ -1335,11 +1329,11 @@ SapErpColumn.SAP_ERP_CDS_VIEW_QUALIFIED_NAME = KeywordTextField(
     "sapErpCdsViewQualifiedName",
     "sapErpCdsViewQualifiedName.text",
 )
-SapErpColumn.SAP_ERP_COLUMN_CHECK_TABLE_NAME = KeywordField(
-    "sapErpColumnCheckTableName", "sapErpColumnCheckTableName"
+SapErpColumn.SAP_CHECK_TABLE_NAME = KeywordField(
+    "sapCheckTableName", "sapCheckTableName"
 )
-SapErpColumn.SAP_ERP_COLUMN_CHECK_TABLE_QUALIFIED_NAME = KeywordField(
-    "sapErpColumnCheckTableQualifiedName", "sapErpColumnCheckTableQualifiedName"
+SapErpColumn.SAP_CHECK_TABLE_QUALIFIED_NAME = KeywordField(
+    "sapCheckTableQualifiedName", "sapCheckTableQualifiedName"
 )
 SapErpColumn.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
 SapErpColumn.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
@@ -1458,6 +1452,7 @@ SapErpColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SapErpColumn.MEANINGS = RelationField("meanings")
+SapErpColumn.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SapErpColumn.MC_MONITORS = RelationField("mcMonitors")
 SapErpColumn.MC_INCIDENTS = RelationField("mcIncidents")
 SapErpColumn.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

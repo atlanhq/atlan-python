@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -107,6 +108,7 @@ class MCMonitor(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     MC_MONITOR_ASSETS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -255,6 +257,9 @@ class MCMonitor(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """Incidents that exist within this monitor."""
@@ -562,6 +567,9 @@ class MCMonitorRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """Incidents that exist within this monitor."""
 
@@ -651,6 +659,7 @@ _MC_MONITOR_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_incidents",
     "mc_monitor_assets",
     "mc_monitors",
@@ -808,6 +817,7 @@ def _mc_monitor_from_nested(nested: MCMonitorNested) -> MCMonitor:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -927,6 +937,7 @@ MCMonitor.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MCMonitor.MEANINGS = RelationField("meanings")
+MCMonitor.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MCMonitor.MC_INCIDENTS = RelationField("mcIncidents")
 MCMonitor.MC_MONITOR_ASSETS = RelationField("mcMonitorAssets")
 MCMonitor.MC_MONITORS = RelationField("mcMonitors")

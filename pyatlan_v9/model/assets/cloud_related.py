@@ -132,7 +132,7 @@ class RelatedGoogle(RelatedCloud):
     google_project_id: Union[str, None, UnsetType] = UNSET
     """ID of the project in which the asset exists."""
 
-    google_project_number: Union[int, None, UnsetType] = UNSET
+    cloud_project_number: Union[int, None, UnsetType] = UNSET
     """Number of the project in which the asset exists."""
 
     google_location: Union[str, None, UnsetType] = UNSET

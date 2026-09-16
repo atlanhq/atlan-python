@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .looker_related import (
     RelatedLookerDashboard,
     RelatedLookerField,
@@ -98,6 +99,7 @@ class LookerDashboard(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     FOLDER: ClassVar[Any] = None
     LOOKS: ClassVar[Any] = None
     TILES: ClassVar[Any] = None
@@ -201,6 +203,9 @@ class LookerDashboard(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     folder: Union[RelatedLookerFolder, None, UnsetType] = UNSET
     """Folder in which the dashboard exists."""
@@ -485,6 +490,9 @@ class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     folder: Union[RelatedLookerFolder, None, UnsetType] = UNSET
     """Folder in which the dashboard exists."""
 
@@ -585,6 +593,7 @@ _LOOKER_DASHBOARD_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "folder",
     "looks",
     "tiles",
@@ -711,6 +720,7 @@ def _looker_dashboard_from_nested(nested: LookerDashboardNested) -> LookerDashbo
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -792,6 +802,7 @@ LookerDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 LookerDashboard.MEANINGS = RelationField("meanings")
+LookerDashboard.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 LookerDashboard.FOLDER = RelationField("folder")
 LookerDashboard.LOOKS = RelationField("looks")
 LookerDashboard.TILES = RelationField("tiles")

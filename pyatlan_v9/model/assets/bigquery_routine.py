@@ -52,6 +52,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -79,11 +80,11 @@ class BigqueryRoutine(Asset):
     Instance of a bigquery routine in atlan. Can be a stored procedure, udf, or tvf.
     """
 
-    BIGQUERY_ROUTINE_TYPE: ClassVar[Any] = None
-    BIGQUERY_ROUTINE_ARGUMENTS: ClassVar[Any] = None
-    BIGQUERY_ROUTINE_RETURN_TYPE: ClassVar[Any] = None
-    BIGQUERY_ROUTINE_SECURITY_TYPE: ClassVar[Any] = None
-    BIGQUERY_ROUTINE_DDL: ClassVar[Any] = None
+    BIGQUERY_TYPE: ClassVar[Any] = None
+    BIGQUERY_ARGUMENTS: ClassVar[Any] = None
+    BIGQUERY_RETURN_TYPE: ClassVar[Any] = None
+    BIGQUERY_SECURITY_TYPE: ClassVar[Any] = None
+    BIGQUERY_DDL: ClassVar[Any] = None
     DEFINITION: ClassVar[Any] = None
     SQL_LANGUAGE: ClassVar[Any] = None
     SQL_RUNTIME_VERSION: ClassVar[Any] = None
@@ -154,6 +155,7 @@ class BigqueryRoutine(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -176,19 +178,19 @@ class BigqueryRoutine(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    bigquery_routine_type: Union[str, None, UnsetType] = UNSET
+    bigquery_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_routine_arguments: Union[List[str], None, UnsetType] = UNSET
+    bigquery_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_routine_return_type: Union[str, None, UnsetType] = UNSET
+    bigquery_return_type: Union[str, None, UnsetType] = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_routine_security_type: Union[str, None, UnsetType] = UNSET
+    bigquery_security_type: Union[str, None, UnsetType] = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_routine_ddl: Union[str, None, UnsetType] = UNSET
+    bigquery_ddl: Union[str, None, UnsetType] = UNSET
     """The ddl statement used to create the bigquery routine."""
 
     definition: Union[str, None, UnsetType] = UNSET
@@ -413,6 +415,9 @@ class BigqueryRoutine(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -611,19 +616,19 @@ class BigqueryRoutine(Asset):
 class BigqueryRoutineAttributes(AssetAttributes):
     """BigqueryRoutine-specific attributes for nested API format."""
 
-    bigquery_routine_type: Union[str, None, UnsetType] = UNSET
+    bigquery_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_routine_arguments: Union[List[str], None, UnsetType] = UNSET
+    bigquery_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_routine_return_type: Union[str, None, UnsetType] = UNSET
+    bigquery_return_type: Union[str, None, UnsetType] = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_routine_security_type: Union[str, None, UnsetType] = UNSET
+    bigquery_security_type: Union[str, None, UnsetType] = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_routine_ddl: Union[str, None, UnsetType] = UNSET
+    bigquery_ddl: Union[str, None, UnsetType] = UNSET
     """The ddl statement used to create the bigquery routine."""
 
     definition: Union[str, None, UnsetType] = UNSET
@@ -852,6 +857,9 @@ class BigqueryRoutineRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -973,6 +981,7 @@ _BIGQUERY_ROUTINE_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1002,11 +1011,11 @@ def _populate_bigquery_routine_attrs(
 ) -> None:
     """Populate BigqueryRoutine-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.bigquery_routine_type = obj.bigquery_routine_type
-    attrs.bigquery_routine_arguments = obj.bigquery_routine_arguments
-    attrs.bigquery_routine_return_type = obj.bigquery_routine_return_type
-    attrs.bigquery_routine_security_type = obj.bigquery_routine_security_type
-    attrs.bigquery_routine_ddl = obj.bigquery_routine_ddl
+    attrs.bigquery_type = obj.bigquery_type
+    attrs.bigquery_arguments = obj.bigquery_arguments
+    attrs.bigquery_return_type = obj.bigquery_return_type
+    attrs.bigquery_security_type = obj.bigquery_security_type
+    attrs.bigquery_ddl = obj.bigquery_ddl
     attrs.definition = obj.definition
     attrs.sql_language = obj.sql_language
     attrs.sql_runtime_version = obj.sql_runtime_version
@@ -1062,11 +1071,11 @@ def _populate_bigquery_routine_attrs(
 def _extract_bigquery_routine_attrs(attrs: BigqueryRoutineAttributes) -> dict:
     """Extract all BigqueryRoutine attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["bigquery_routine_type"] = attrs.bigquery_routine_type
-    result["bigquery_routine_arguments"] = attrs.bigquery_routine_arguments
-    result["bigquery_routine_return_type"] = attrs.bigquery_routine_return_type
-    result["bigquery_routine_security_type"] = attrs.bigquery_routine_security_type
-    result["bigquery_routine_ddl"] = attrs.bigquery_routine_ddl
+    result["bigquery_type"] = attrs.bigquery_type
+    result["bigquery_arguments"] = attrs.bigquery_arguments
+    result["bigquery_return_type"] = attrs.bigquery_return_type
+    result["bigquery_security_type"] = attrs.bigquery_security_type
+    result["bigquery_ddl"] = attrs.bigquery_ddl
     result["definition"] = attrs.definition
     result["sql_language"] = attrs.sql_language
     result["sql_runtime_version"] = attrs.sql_runtime_version
@@ -1199,6 +1208,7 @@ def _bigquery_routine_from_nested(nested: BigqueryRoutineNested) -> BigqueryRout
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1240,21 +1250,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-BigqueryRoutine.BIGQUERY_ROUTINE_TYPE = KeywordField(
-    "bigqueryRoutineType", "bigqueryRoutineType"
+BigqueryRoutine.BIGQUERY_TYPE = KeywordField("bigqueryType", "bigqueryType")
+BigqueryRoutine.BIGQUERY_ARGUMENTS = KeywordField(
+    "bigqueryArguments", "bigqueryArguments"
 )
-BigqueryRoutine.BIGQUERY_ROUTINE_ARGUMENTS = KeywordField(
-    "bigqueryRoutineArguments", "bigqueryRoutineArguments"
+BigqueryRoutine.BIGQUERY_RETURN_TYPE = KeywordField(
+    "bigqueryReturnType", "bigqueryReturnType"
 )
-BigqueryRoutine.BIGQUERY_ROUTINE_RETURN_TYPE = KeywordField(
-    "bigqueryRoutineReturnType", "bigqueryRoutineReturnType"
+BigqueryRoutine.BIGQUERY_SECURITY_TYPE = KeywordField(
+    "bigquerySecurityType", "bigquerySecurityType"
 )
-BigqueryRoutine.BIGQUERY_ROUTINE_SECURITY_TYPE = KeywordField(
-    "bigqueryRoutineSecurityType", "bigqueryRoutineSecurityType"
-)
-BigqueryRoutine.BIGQUERY_ROUTINE_DDL = KeywordField(
-    "bigqueryRoutineDdl", "bigqueryRoutineDdl"
-)
+BigqueryRoutine.BIGQUERY_DDL = KeywordField("bigqueryDdl", "bigqueryDdl")
 BigqueryRoutine.DEFINITION = KeywordField("definition", "definition")
 BigqueryRoutine.SQL_LANGUAGE = KeywordTextField(
     "sqlLanguage", "sqlLanguage", "sqlLanguage.text"
@@ -1394,6 +1400,7 @@ BigqueryRoutine.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 BigqueryRoutine.MEANINGS = RelationField("meanings")
+BigqueryRoutine.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 BigqueryRoutine.MC_MONITORS = RelationField("mcMonitors")
 BigqueryRoutine.MC_INCIDENTS = RelationField("mcIncidents")
 BigqueryRoutine.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

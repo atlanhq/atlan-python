@@ -55,6 +55,7 @@ from .data_mesh_related import (
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -88,7 +89,7 @@ class DataProduct(Asset):
     DATA_PRODUCT_ASSETS_DSL: ClassVar[Any] = None
     DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER: ClassVar[Any] = None
     DATA_PRODUCT_SCORE_VALUE: ClassVar[Any] = None
-    DATA_PRODUCT_SCORE_UPDATED_AT: ClassVar[Any] = None
+    DATA_MESH_SCORE_UPDATED_AT: ClassVar[Any] = None
     DAAP_VISIBILITY_USERS: ClassVar[Any] = None
     DAAP_VISIBILITY_GROUPS: ClassVar[Any] = None
     DAAP_OUTPUT_PORT_GUIDS: ClassVar[Any] = None
@@ -118,6 +119,7 @@ class DataProduct(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -170,7 +172,7 @@ class DataProduct(Asset):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
@@ -265,6 +267,9 @@ class DataProduct(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -561,7 +566,7 @@ class DataProductAttributes(AssetAttributes):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
@@ -661,6 +666,9 @@ class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -754,6 +762,7 @@ _DATA_PRODUCT_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -789,7 +798,7 @@ def _populate_data_product_attrs(
     attrs.data_product_assets_dsl = obj.data_product_assets_dsl
     attrs.data_product_assets_playbook_filter = obj.data_product_assets_playbook_filter
     attrs.data_product_score_value = obj.data_product_score_value
-    attrs.data_product_score_updated_at = obj.data_product_score_updated_at
+    attrs.data_mesh_score_updated_at = obj.data_mesh_score_updated_at
     attrs.daap_visibility_users = obj.daap_visibility_users
     attrs.daap_visibility_groups = obj.daap_visibility_groups
     attrs.daap_output_port_guids = obj.daap_output_port_guids
@@ -816,7 +825,7 @@ def _extract_data_product_attrs(attrs: DataProductAttributes) -> dict:
         attrs.data_product_assets_playbook_filter
     )
     result["data_product_score_value"] = attrs.data_product_score_value
-    result["data_product_score_updated_at"] = attrs.data_product_score_updated_at
+    result["data_mesh_score_updated_at"] = attrs.data_mesh_score_updated_at
     result["daap_visibility_users"] = attrs.daap_visibility_users
     result["daap_visibility_groups"] = attrs.daap_visibility_groups
     result["daap_output_port_guids"] = attrs.daap_output_port_guids
@@ -895,6 +904,7 @@ def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -956,8 +966,8 @@ DataProduct.DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = KeywordField(
 DataProduct.DATA_PRODUCT_SCORE_VALUE = NumericField(
     "dataProductScoreValue", "dataProductScoreValue"
 )
-DataProduct.DATA_PRODUCT_SCORE_UPDATED_AT = NumericField(
-    "dataProductScoreUpdatedAt", "dataProductScoreUpdatedAt"
+DataProduct.DATA_MESH_SCORE_UPDATED_AT = NumericField(
+    "dataMeshScoreUpdatedAt", "dataMeshScoreUpdatedAt"
 )
 DataProduct.DAAP_VISIBILITY_USERS = KeywordField(
     "daapVisibilityUsers", "daapVisibilityUsers"
@@ -1010,6 +1020,7 @@ DataProduct.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DataProduct.MEANINGS = RelationField("meanings")
+DataProduct.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DataProduct.MC_MONITORS = RelationField("mcMonitors")
 DataProduct.MC_INCIDENTS = RelationField("mcIncidents")
 DataProduct.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

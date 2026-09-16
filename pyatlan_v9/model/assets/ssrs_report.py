@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -66,10 +67,10 @@ class SSRSReport(Asset):
     Instance of an SSRS report in Atlan.
     """
 
-    SSRS_REPORT_SIZE: ClassVar[Any] = None
-    SSRS_REPORT_PARAMETERS: ClassVar[Any] = None
-    SSRS_REPORT_DATA_SET_COUNT: ClassVar[Any] = None
-    SSRS_REPORT_DATA_SOURCE_COUNT: ClassVar[Any] = None
+    SSRS_SIZE: ClassVar[Any] = None
+    SSRS_PARAMETERS: ClassVar[Any] = None
+    SSRS_DATA_SET_COUNT: ClassVar[Any] = None
+    SSRS_DATA_SOURCE_COUNT: ClassVar[Any] = None
     SSRS_PATH: ClassVar[Any] = None
     SSRS_USED_IN_REPORTS: ClassVar[Any] = None
     SSRS_HIDDEN: ClassVar[Any] = None
@@ -101,6 +102,7 @@ class SSRSReport(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -121,16 +123,16 @@ class SSRSReport(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    ssrs_report_size: Union[int, None, UnsetType] = UNSET
+    ssrs_size: Union[int, None, UnsetType] = UNSET
     """Size of the report."""
 
-    ssrs_report_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_parameters: Union[str, None, UnsetType] = UNSET
     """Parameters for the report."""
 
-    ssrs_report_data_set_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_set_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets in this report."""
 
-    ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -231,6 +233,9 @@ class SSRSReport(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -425,16 +430,16 @@ class SSRSReport(Asset):
 class SSRSReportAttributes(AssetAttributes):
     """SSRSReport-specific attributes for nested API format."""
 
-    ssrs_report_size: Union[int, None, UnsetType] = UNSET
+    ssrs_size: Union[int, None, UnsetType] = UNSET
     """Size of the report."""
 
-    ssrs_report_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_parameters: Union[str, None, UnsetType] = UNSET
     """Parameters for the report."""
 
-    ssrs_report_data_set_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_set_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets in this report."""
 
-    ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
+    ssrs_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -540,6 +545,9 @@ class SSRSReportRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -638,6 +646,7 @@ _SSRS_REPORT_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -663,10 +672,10 @@ _SSRS_REPORT_REL_FIELDS: List[str] = [
 def _populate_ssrs_report_attrs(attrs: SSRSReportAttributes, obj: SSRSReport) -> None:
     """Populate SSRSReport-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.ssrs_report_size = obj.ssrs_report_size
-    attrs.ssrs_report_parameters = obj.ssrs_report_parameters
-    attrs.ssrs_report_data_set_count = obj.ssrs_report_data_set_count
-    attrs.ssrs_report_data_source_count = obj.ssrs_report_data_source_count
+    attrs.ssrs_size = obj.ssrs_size
+    attrs.ssrs_parameters = obj.ssrs_parameters
+    attrs.ssrs_data_set_count = obj.ssrs_data_set_count
+    attrs.ssrs_data_source_count = obj.ssrs_data_source_count
     attrs.ssrs_path = obj.ssrs_path
     attrs.ssrs_used_in_reports = obj.ssrs_used_in_reports
     attrs.ssrs_hidden = obj.ssrs_hidden
@@ -686,10 +695,10 @@ def _populate_ssrs_report_attrs(attrs: SSRSReportAttributes, obj: SSRSReport) ->
 def _extract_ssrs_report_attrs(attrs: SSRSReportAttributes) -> dict:
     """Extract all SSRSReport attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["ssrs_report_size"] = attrs.ssrs_report_size
-    result["ssrs_report_parameters"] = attrs.ssrs_report_parameters
-    result["ssrs_report_data_set_count"] = attrs.ssrs_report_data_set_count
-    result["ssrs_report_data_source_count"] = attrs.ssrs_report_data_source_count
+    result["ssrs_size"] = attrs.ssrs_size
+    result["ssrs_parameters"] = attrs.ssrs_parameters
+    result["ssrs_data_set_count"] = attrs.ssrs_data_set_count
+    result["ssrs_data_source_count"] = attrs.ssrs_data_source_count
     result["ssrs_path"] = attrs.ssrs_path
     result["ssrs_used_in_reports"] = attrs.ssrs_used_in_reports
     result["ssrs_hidden"] = attrs.ssrs_hidden
@@ -776,6 +785,7 @@ def _ssrs_report_from_nested(nested: SSRSReportNested) -> SSRSReport:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -814,15 +824,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SSRSReport.SSRS_REPORT_SIZE = NumericField("ssrsReportSize", "ssrsReportSize")
-SSRSReport.SSRS_REPORT_PARAMETERS = KeywordField(
-    "ssrsReportParameters", "ssrsReportParameters"
-)
-SSRSReport.SSRS_REPORT_DATA_SET_COUNT = NumericField(
-    "ssrsReportDataSetCount", "ssrsReportDataSetCount"
-)
-SSRSReport.SSRS_REPORT_DATA_SOURCE_COUNT = NumericField(
-    "ssrsReportDataSourceCount", "ssrsReportDataSourceCount"
+SSRSReport.SSRS_SIZE = NumericField("ssrsSize", "ssrsSize")
+SSRSReport.SSRS_PARAMETERS = KeywordField("ssrsParameters", "ssrsParameters")
+SSRSReport.SSRS_DATA_SET_COUNT = NumericField("ssrsDataSetCount", "ssrsDataSetCount")
+SSRSReport.SSRS_DATA_SOURCE_COUNT = NumericField(
+    "ssrsDataSourceCount", "ssrsDataSourceCount"
 )
 SSRSReport.SSRS_PATH = KeywordField("ssrsPath", "ssrsPath")
 SSRSReport.SSRS_USED_IN_REPORTS = BooleanField("ssrsUsedInReports", "ssrsUsedInReports")
@@ -869,6 +875,7 @@ SSRSReport.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SSRSReport.MEANINGS = RelationField("meanings")
+SSRSReport.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SSRSReport.MC_MONITORS = RelationField("mcMonitors")
 SSRSReport.MC_INCIDENTS = RelationField("mcIncidents")
 SSRSReport.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

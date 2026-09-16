@@ -14,6 +14,7 @@ from .databricks_ai_model_version import DatabricksAIModelVersion
 from .databricks_dashboard import DatabricksDashboard
 from .databricks_external_location import DatabricksExternalLocation
 from .databricks_external_location_path import DatabricksExternalLocationPath
+from .databricks_genie_agent import DatabricksGenieAgent
 from .databricks_metric_view import DatabricksMetricView
 from .databricks_notebook import DatabricksNotebook
 from .databricks_related import (
@@ -23,6 +24,7 @@ from .databricks_related import (
     RelatedDatabricksDashboard,
     RelatedDatabricksExternalLocation,
     RelatedDatabricksExternalLocationPath,
+    RelatedDatabricksGenieAgent,
     RelatedDatabricksMetricView,
     RelatedDatabricksNotebook,
     RelatedDatabricksUnityCatalogTag,
@@ -39,6 +41,7 @@ __all__ = [
     "DatabricksDashboard",
     "DatabricksExternalLocation",
     "DatabricksExternalLocationPath",
+    "DatabricksGenieAgent",
     "DatabricksMetricView",
     "DatabricksNotebook",
     "DatabricksVolume",
@@ -49,6 +52,7 @@ __all__ = [
     "RelatedDatabricksDashboard",
     "RelatedDatabricksExternalLocation",
     "RelatedDatabricksExternalLocationPath",
+    "RelatedDatabricksGenieAgent",
     "RelatedDatabricksMetricView",
     "RelatedDatabricksNotebook",
     "RelatedDatabricksUnityCatalogTag",

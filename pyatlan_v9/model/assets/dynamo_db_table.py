@@ -56,6 +56,7 @@ from .dynamo_db_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -89,8 +90,8 @@ class DynamoDBTable(Asset):
     Represents a DynamoDB table asset in Atlan.
     """
 
-    DYNAMO_DB_TABLE_GSI_COUNT: ClassVar[Any] = None
-    DYNAMO_DB_TABLE_LSI_COUNT: ClassVar[Any] = None
+    DYNAMO_DBGSI_COUNT: ClassVar[Any] = None
+    DYNAMO_DBLSI_COUNT: ClassVar[Any] = None
     DYNAMO_DB_STATUS: ClassVar[Any] = None
     DYNAMO_DB_PARTITION_KEY: ClassVar[Any] = None
     DYNAMO_DB_SORT_KEY: ClassVar[Any] = None
@@ -184,6 +185,7 @@ class DynamoDBTable(Asset):
     DYNAMO_DB_COLUMNS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -210,13 +212,13 @@ class DynamoDBTable(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    dynamo_db_table_gsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBTableGSICount"
+    dynamo_dbgsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBGSICount"
     )
     """Represents the number of global secondary indexes on the table."""
 
-    dynamo_db_table_lsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBTableLSICount"
+    dynamo_dblsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBLSICount"
     )
     """Represents the number of local secondary indexes on the table."""
 
@@ -527,6 +529,9 @@ class DynamoDBTable(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -732,13 +737,13 @@ class DynamoDBTable(Asset):
 class DynamoDBTableAttributes(AssetAttributes):
     """DynamoDBTable-specific attributes for nested API format."""
 
-    dynamo_db_table_gsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBTableGSICount"
+    dynamo_dbgsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBGSICount"
     )
     """Represents the number of global secondary indexes on the table."""
 
-    dynamo_db_table_lsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBTableLSICount"
+    dynamo_dblsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBLSICount"
     )
     """Represents the number of local secondary indexes on the table."""
 
@@ -1053,6 +1058,9 @@ class DynamoDBTableRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1188,6 +1196,7 @@ _DYNAMO_DB_TABLE_REL_FIELDS: List[str] = [
     "dynamo_db_columns",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1221,8 +1230,8 @@ def _populate_dynamo_db_table_attrs(
 ) -> None:
     """Populate DynamoDBTable-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.dynamo_db_table_gsi_count = obj.dynamo_db_table_gsi_count
-    attrs.dynamo_db_table_lsi_count = obj.dynamo_db_table_lsi_count
+    attrs.dynamo_dbgsi_count = obj.dynamo_dbgsi_count
+    attrs.dynamo_dblsi_count = obj.dynamo_dblsi_count
     attrs.dynamo_db_status = obj.dynamo_db_status
     attrs.dynamo_db_partition_key = obj.dynamo_db_partition_key
     attrs.dynamo_db_sort_key = obj.dynamo_db_sort_key
@@ -1299,8 +1308,8 @@ def _populate_dynamo_db_table_attrs(
 def _extract_dynamo_db_table_attrs(attrs: DynamoDBTableAttributes) -> dict:
     """Extract all DynamoDBTable attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dynamo_db_table_gsi_count"] = attrs.dynamo_db_table_gsi_count
-    result["dynamo_db_table_lsi_count"] = attrs.dynamo_db_table_lsi_count
+    result["dynamo_dbgsi_count"] = attrs.dynamo_dbgsi_count
+    result["dynamo_dblsi_count"] = attrs.dynamo_dblsi_count
     result["dynamo_db_status"] = attrs.dynamo_db_status
     result["dynamo_db_partition_key"] = attrs.dynamo_db_partition_key
     result["dynamo_db_sort_key"] = attrs.dynamo_db_sort_key
@@ -1452,6 +1461,7 @@ def _dynamo_db_table_from_nested(nested: DynamoDBTableNested) -> DynamoDBTable:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1493,12 +1503,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DynamoDBTable.DYNAMO_DB_TABLE_GSI_COUNT = NumericField(
-    "dynamoDBTableGSICount", "dynamoDBTableGSICount"
-)
-DynamoDBTable.DYNAMO_DB_TABLE_LSI_COUNT = NumericField(
-    "dynamoDBTableLSICount", "dynamoDBTableLSICount"
-)
+DynamoDBTable.DYNAMO_DBGSI_COUNT = NumericField("dynamoDBGSICount", "dynamoDBGSICount")
+DynamoDBTable.DYNAMO_DBLSI_COUNT = NumericField("dynamoDBLSICount", "dynamoDBLSICount")
 DynamoDBTable.DYNAMO_DB_STATUS = KeywordField("dynamoDBStatus", "dynamoDBStatus")
 DynamoDBTable.DYNAMO_DB_PARTITION_KEY = KeywordField(
     "dynamoDBPartitionKey", "dynamoDBPartitionKey"
@@ -1681,6 +1687,7 @@ DynamoDBTable.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DynamoDBTable.MEANINGS = RelationField("meanings")
+DynamoDBTable.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DynamoDBTable.MC_MONITORS = RelationField("mcMonitors")
 DynamoDBTable.MC_INCIDENTS = RelationField("mcIncidents")
 DynamoDBTable.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

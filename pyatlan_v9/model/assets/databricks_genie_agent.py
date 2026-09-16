@@ -4,12 +4,12 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-DremioPhysicalDataset asset model with flattened inheritance.
+DatabricksGenieAgent asset model with flattened inheritance.
 
 This module provides:
-- DremioPhysicalDataset: Flat asset class (easy to use)
-- DremioPhysicalDatasetAttributes: Nested attributes struct (extends AssetAttributes)
-- DremioPhysicalDatasetNested: Nested API format struct
+- DatabricksGenieAgent: Flat asset class (easy to use)
+- DatabricksGenieAgentAttributes: Nested attributes struct (extends AssetAttributes)
+- DatabricksGenieAgentNested: Nested API format struct
 """
 
 from __future__ import annotations
@@ -43,16 +43,12 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .databricks_related import RelatedDatabricksGenieAgent
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
     RelatedDbtSource,
     RelatedDbtTest,
-)
-from .dremio_related import (
-    RelatedDremioFolder,
-    RelatedDremioPhysicalDataset,
-    RelatedDremioSource,
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -64,19 +60,13 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .skill_related import RelatedSkill
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
-)
-from .sql_related import (
-    RelatedColumn,
-    RelatedQuery,
-    RelatedSchema,
-    RelatedTable,
-    RelatedTablePartition,
 )
 
 # =============================================================================
@@ -85,19 +75,15 @@ from .sql_related import (
 
 
 @register_asset
-class DremioPhysicalDataset(Asset):
+class DatabricksGenieAgent(Asset):
     """
-    Instance of a Dremio Physical Dataset (Table) in Atlan. Represents actual data files or database tables that can be queried directly and serve as the foundation for virtual datasets.
+    Instance of a Databricks Genie space in Atlan. A Genie space is a curated natural-language interface over a set of Databricks tables, published here as an agent asset for governance and discovery.
     """
 
-    DREMIO_ID: ClassVar[Any] = None
-    DREMIO_SPACE_QUALIFIED_NAME: ClassVar[Any] = None
-    DREMIO_SPACE_NAME: ClassVar[Any] = None
-    DREMIO_SOURCE_QUALIFIED_NAME: ClassVar[Any] = None
-    DREMIO_SOURCE_NAME: ClassVar[Any] = None
-    DREMIO_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
-    DREMIO_FOLDER_HIERARCHY: ClassVar[Any] = None
-    DREMIO_LABELS: ClassVar[Any] = None
+    DATABRICKS_WORKSPACE_ID: ClassVar[Any] = None
+    DATABRICKS_WAREHOUSE_ID: ClassVar[Any] = None
+    DATABRICKS_PARENT_PATH: ClassVar[Any] = None
+    DATABRICKS_ETAG: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -132,38 +118,24 @@ class DremioPhysicalDataset(Asset):
     SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
-    COLUMN_COUNT: ClassVar[Any] = None
-    ROW_COUNT: ClassVar[Any] = None
-    SIZE_BYTES: ClassVar[Any] = None
-    TABLE_OBJECT_COUNT: ClassVar[Any] = None
-    ALIAS: ClassVar[Any] = None
-    IS_TEMPORARY: ClassVar[Any] = None
-    IS_QUERY_PREVIEW: ClassVar[Any] = None
-    QUERY_PREVIEW_CONFIG: ClassVar[Any] = None
-    EXTERNAL_LOCATION: ClassVar[Any] = None
-    EXTERNAL_LOCATION_REGION: ClassVar[Any] = None
-    EXTERNAL_LOCATION_FORMAT: ClassVar[Any] = None
-    IS_PARTITIONED: ClassVar[Any] = None
-    PARTITION_STRATEGY: ClassVar[Any] = None
-    PARTITION_COUNT: ClassVar[Any] = None
-    TABLE_DEFINITION: ClassVar[Any] = None
-    PARTITION_LIST: ClassVar[Any] = None
-    IS_SHARDED: ClassVar[Any] = None
-    TABLE_TYPE: ClassVar[Any] = None
-    ICEBERG_CATALOG_NAME: ClassVar[Any] = None
-    ICEBERG_TABLE_TYPE: ClassVar[Any] = None
-    ICEBERG_CATALOG_SOURCE: ClassVar[Any] = None
-    ICEBERG_CATALOG_TABLE_NAME: ClassVar[Any] = None
-    TABLE_IMPALA_PARAMETERS: ClassVar[Any] = None
-    ICEBERG_CATALOG_TABLE_NAMESPACE: ClassVar[Any] = None
-    TABLE_EXTERNAL_VOLUME_NAME: ClassVar[Any] = None
-    ICEBERG_TABLE_BASE_LOCATION: ClassVar[Any] = None
-    TABLE_RETENTION_TIME: ClassVar[Any] = None
+    AGENT_SLUG: ClassVar[Any] = None
+    AGENT_TYPE: ClassVar[Any] = None
+    AGENT_STATUS: ClassVar[Any] = None
+    AGENT_SYSTEM_PROMPT: ClassVar[Any] = None
+    AGENT_LLM_CONFIG: ClassVar[Any] = None
+    AGENT_MCP_SERVERS: ClassVar[Any] = None
+    AGENT_SCHEDULES: ClassVar[Any] = None
+    AGENT_SKILL_NAMES: ClassVar[Any] = None
+    AGENT_SKILL_QUALIFIED_NAMES: ClassVar[Any] = None
+    AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
+    AGENT_SKILLS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_SOURCE_REPOSITORY: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -180,8 +152,6 @@ class DremioPhysicalDataset(Asset):
     DBT_SOURCES: ClassVar[Any] = None
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
-    DREMIO_SOURCE: ClassVar[Any] = None
-    DREMIO_FOLDER: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
@@ -196,12 +166,6 @@ class DremioPhysicalDataset(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
-    COLUMNS: ClassVar[Any] = None
-    QUERIES: ClassVar[Any] = None
-    ATLAN_SCHEMA: ClassVar[Any] = None
-    DIMENSIONS: ClassVar[Any] = None
-    FACTS: ClassVar[Any] = None
-    PARTITIONS: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
@@ -211,29 +175,17 @@ class DremioPhysicalDataset(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    dremio_id: Union[str, None, UnsetType] = UNSET
-    """Source ID of this asset in Dremio."""
+    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the workspace containing the Genie space."""
 
-    dremio_space_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique qualified name of the Dremio Space containing this asset."""
+    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the SQL warehouse backing the Genie space."""
 
-    dremio_space_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the Dremio Space containing this asset."""
+    databricks_parent_path: Union[str, None, UnsetType] = UNSET
+    """Workspace folder path containing the Genie space. It is descriptive only and creates no containment or hierarchy edge."""
 
-    dremio_source_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique qualified name of the Dremio Source containing this asset."""
-
-    dremio_source_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the Dremio Source containing this asset."""
-
-    dremio_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique qualified name of the immediate parent folder containing this asset."""
-
-    dremio_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
-    """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
-
-    dremio_labels: Union[List[str], None, UnsetType] = UNSET
-    """Dremio Labels associated with this asset."""
+    databricks_etag: Union[str, None, UnsetType] = UNSET
+    """Entity tag used as a change token for the Genie space. It is populated only by an enabled serialized-detail read, so it is null when that read is disabled, denied, or omitted by the source."""
 
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
@@ -339,86 +291,41 @@ class DremioPhysicalDataset(Asset):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-    column_count: Union[int, None, UnsetType] = UNSET
-    """Number of columns in this table."""
+    agent_slug: Union[str, None, UnsetType] = UNSET
+    """URL-safe unique identifier for this agent (for example, my-data-agent)."""
 
-    row_count: Union[int, None, UnsetType] = UNSET
-    """Number of rows in this table."""
+    agent_type: Union[str, None, UnsetType] = UNSET
+    """Origin type of this agent — system-provided or custom user-created."""
 
-    size_bytes: Union[int, None, UnsetType] = UNSET
-    """Size of this table, in bytes."""
+    agent_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of this agent version (draft or published)."""
 
-    table_object_count: Union[int, None, UnsetType] = UNSET
-    """Number of objects in this table."""
+    agent_system_prompt: Union[str, None, UnsetType] = UNSET
+    """System prompt for this agent version."""
 
-    alias: Union[str, None, UnsetType] = UNSET
-    """Alias for this table."""
+    agent_llm_config: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized LLMConfig (model, temperature, maxTokens, maxTurns, baseUrl)."""
 
-    is_temporary: Union[bool, None, UnsetType] = UNSET
-    """Whether this table is temporary (true) or not (false)."""
+    agent_mcp_servers: Union[str, None, UnsetType] = UNSET
+    """JSON list of MCPServerConfig entries (name, url, headers, enabled)."""
 
-    is_query_preview: Union[bool, None, UnsetType] = UNSET
-    """Whether preview queries are allowed for this table (true) or not (false)."""
+    agent_schedules: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized agent schedule configuration, including kickoff message, cron expression, timezone, version policy, status, and Temporal schedule identifier."""
 
-    query_preview_config: Union[Dict[str, str], None, UnsetType] = UNSET
-    """Configuration for preview queries."""
+    agent_skill_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of names of the skills bound to this agent version."""
 
-    external_location: Union[str, None, UnsetType] = UNSET
-    """External location of this table, for example: an S3 object location."""
+    agent_skill_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of qualifiedNames of the skills bound to this agent version."""
 
-    external_location_region: Union[str, None, UnsetType] = UNSET
-    """Region of the external location of this table, for example: S3 region."""
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
-    external_location_format: Union[str, None, UnsetType] = UNSET
-    """Format of the external location of this table, for example: JSON, CSV, PARQUET, etc."""
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
-    is_partitioned: Union[bool, None, UnsetType] = UNSET
-    """Whether this table is partitioned (true) or not (false)."""
-
-    partition_strategy: Union[str, None, UnsetType] = UNSET
-    """Partition strategy for this table."""
-
-    partition_count: Union[int, None, UnsetType] = UNSET
-    """Number of partitions in this table."""
-
-    table_definition: Union[str, None, UnsetType] = UNSET
-    """Definition of the table."""
-
-    partition_list: Union[str, None, UnsetType] = UNSET
-    """List of partitions in this table."""
-
-    is_sharded: Union[bool, None, UnsetType] = UNSET
-    """Whether this table is a sharded table (true) or not (false)."""
-
-    table_type: Union[str, None, UnsetType] = UNSET
-    """Type of the table."""
-
-    iceberg_catalog_name: Union[str, None, UnsetType] = UNSET
-    """Iceberg table catalog name (can be any user defined name)"""
-
-    iceberg_table_type: Union[str, None, UnsetType] = UNSET
-    """Iceberg table type (managed vs unmanaged)"""
-
-    iceberg_catalog_source: Union[str, None, UnsetType] = UNSET
-    """Iceberg table catalog type (glue, polaris, snowflake)"""
-
-    iceberg_catalog_table_name: Union[str, None, UnsetType] = UNSET
-    """Catalog table name (actual table name on the catalog side)."""
-
-    table_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
-    """Extra attributes for Impala"""
-
-    iceberg_catalog_table_namespace: Union[str, None, UnsetType] = UNSET
-    """Catalog table namespace (actual database name on the catalog side)."""
-
-    table_external_volume_name: Union[str, None, UnsetType] = UNSET
-    """External volume name for the table."""
-
-    iceberg_table_base_location: Union[str, None, UnsetType] = UNSET
-    """Iceberg table base location inside the external volume."""
-
-    table_retention_time: Union[int, None, UnsetType] = UNSET
-    """Data retention time in days."""
+    agent_skills: Union[List[RelatedSkill], None, UnsetType] = UNSET
+    """Skills bound to this agent."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -434,6 +341,9 @@ class DremioPhysicalDataset(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_source_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
+    """Context repository that produced this agent."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -489,12 +399,6 @@ class DremioPhysicalDataset(Asset):
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    dremio_source: Union[RelatedDremioSource, None, UnsetType] = UNSET
-    """Dremio Source that contains the physical datasets (tables)."""
-
-    dremio_folder: Union[RelatedDremioFolder, None, UnsetType] = UNSET
-    """Dremio Folder that contains the physical datasets (tables)."""
-
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
     ] = UNSET
@@ -540,24 +444,6 @@ class DremioPhysicalDataset(Asset):
 
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
-
-    columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
-    """Columns that exist within this table."""
-
-    queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
-    """Queries that access this table."""
-
-    atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
-    """Schema in which this table exists."""
-
-    dimensions: Union[List[RelatedTable], None, UnsetType] = UNSET
-    """"""
-
-    facts: Union[List[RelatedTable], None, UnsetType] = UNSET
-    """"""
-
-    partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
-    """Partitions that exist within this table."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -594,17 +480,19 @@ class DremioPhysicalDataset(Asset):
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
-        self.type_name = "DremioPhysicalDataset"
+        self.type_name = "DatabricksGenieAgent"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/genie-spaces/[^/]+$"
+    )
 
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this DremioPhysicalDataset instance.
+        Dry-run validation of this DatabricksGenieAgent instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -631,46 +519,37 @@ class DremioPhysicalDataset(Asset):
                 f"qualified_name '{self.qualified_name}' does not match expected "
                 f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
             )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.dremio_source is UNSET:
-                errors.append("dremio_source is required for creation")
-            if self.dremio_source_name is UNSET:
-                errors.append("dremio_source_name is required for creation")
-            if self.dremio_source_qualified_name is UNSET:
-                errors.append("dremio_source_qualified_name is required for creation")
         if errors:
-            raise ValueError(f"DremioPhysicalDataset validation failed: {errors}")
+            raise ValueError(f"DatabricksGenieAgent validation failed: {errors}")
 
-    def minimize(self) -> "DremioPhysicalDataset":
+    def minimize(self) -> "DatabricksGenieAgent":
         """
-        Return a minimal copy of this DremioPhysicalDataset with only updater-required fields.
+        Return a minimal copy of this DatabricksGenieAgent with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DremioPhysicalDataset with only the fields needed for an update
+        returns a new DatabricksGenieAgent with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new DremioPhysicalDataset instance with only the minimum required fields.
+            A new DatabricksGenieAgent instance with only the minimum required fields.
         """
         self.validate()
-        return DremioPhysicalDataset(qualified_name=self.qualified_name, name=self.name)
+        return DatabricksGenieAgent(qualified_name=self.qualified_name, name=self.name)
 
-    def relate(self) -> "RelatedDremioPhysicalDataset":
+    def relate(self) -> "RelatedDatabricksGenieAgent":
         """
-        Create a :class:`RelatedDremioPhysicalDataset` reference from this instance.
+        Create a :class:`RelatedDatabricksGenieAgent` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedDremioPhysicalDataset reference to this asset.
+            A RelatedDatabricksGenieAgent reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedDremioPhysicalDataset(guid=self.guid)
-        return RelatedDremioPhysicalDataset(qualified_name=self.qualified_name)
+            return RelatedDatabricksGenieAgent(guid=self.guid)
+        return RelatedDatabricksGenieAgent(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -698,12 +577,12 @@ class DremioPhysicalDataset(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _dremio_physical_dataset_to_nested_bytes(self, serde)
+        return _databricks_genie_agent_to_nested_bytes(self, serde)
 
     @staticmethod
     def from_json(
         json_data: str | bytes, serde: Serde | None = None
-    ) -> DremioPhysicalDataset:
+    ) -> DatabricksGenieAgent:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -712,13 +591,13 @@ class DremioPhysicalDataset(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            DremioPhysicalDataset instance
+            DatabricksGenieAgent instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _dremio_physical_dataset_from_nested_bytes(json_data, serde)
+        return _databricks_genie_agent_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -726,32 +605,20 @@ class DremioPhysicalDataset(Asset):
 # =============================================================================
 
 
-class DremioPhysicalDatasetAttributes(AssetAttributes):
-    """DremioPhysicalDataset-specific attributes for nested API format."""
+class DatabricksGenieAgentAttributes(AssetAttributes):
+    """DatabricksGenieAgent-specific attributes for nested API format."""
 
-    dremio_id: Union[str, None, UnsetType] = UNSET
-    """Source ID of this asset in Dremio."""
+    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the workspace containing the Genie space."""
 
-    dremio_space_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique qualified name of the Dremio Space containing this asset."""
+    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the SQL warehouse backing the Genie space."""
 
-    dremio_space_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the Dremio Space containing this asset."""
+    databricks_parent_path: Union[str, None, UnsetType] = UNSET
+    """Workspace folder path containing the Genie space. It is descriptive only and creates no containment or hierarchy edge."""
 
-    dremio_source_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique qualified name of the Dremio Source containing this asset."""
-
-    dremio_source_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the Dremio Source containing this asset."""
-
-    dremio_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique qualified name of the immediate parent folder containing this asset."""
-
-    dremio_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
-    """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
-
-    dremio_labels: Union[List[str], None, UnsetType] = UNSET
-    """Dremio Labels associated with this asset."""
+    databricks_etag: Union[str, None, UnsetType] = UNSET
+    """Entity tag used as a change token for the Genie space. It is populated only by an enabled serialized-detail read, so it is null when that read is disabled, denied, or omitted by the source."""
 
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
@@ -857,90 +724,45 @@ class DremioPhysicalDatasetAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-    column_count: Union[int, None, UnsetType] = UNSET
-    """Number of columns in this table."""
+    agent_slug: Union[str, None, UnsetType] = UNSET
+    """URL-safe unique identifier for this agent (for example, my-data-agent)."""
 
-    row_count: Union[int, None, UnsetType] = UNSET
-    """Number of rows in this table."""
+    agent_type: Union[str, None, UnsetType] = UNSET
+    """Origin type of this agent — system-provided or custom user-created."""
 
-    size_bytes: Union[int, None, UnsetType] = UNSET
-    """Size of this table, in bytes."""
+    agent_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of this agent version (draft or published)."""
 
-    table_object_count: Union[int, None, UnsetType] = UNSET
-    """Number of objects in this table."""
+    agent_system_prompt: Union[str, None, UnsetType] = UNSET
+    """System prompt for this agent version."""
 
-    alias: Union[str, None, UnsetType] = UNSET
-    """Alias for this table."""
+    agent_llm_config: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized LLMConfig (model, temperature, maxTokens, maxTurns, baseUrl)."""
 
-    is_temporary: Union[bool, None, UnsetType] = UNSET
-    """Whether this table is temporary (true) or not (false)."""
+    agent_mcp_servers: Union[str, None, UnsetType] = UNSET
+    """JSON list of MCPServerConfig entries (name, url, headers, enabled)."""
 
-    is_query_preview: Union[bool, None, UnsetType] = UNSET
-    """Whether preview queries are allowed for this table (true) or not (false)."""
+    agent_schedules: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized agent schedule configuration, including kickoff message, cron expression, timezone, version policy, status, and Temporal schedule identifier."""
 
-    query_preview_config: Union[Dict[str, str], None, UnsetType] = UNSET
-    """Configuration for preview queries."""
+    agent_skill_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of names of the skills bound to this agent version."""
 
-    external_location: Union[str, None, UnsetType] = UNSET
-    """External location of this table, for example: an S3 object location."""
+    agent_skill_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of qualifiedNames of the skills bound to this agent version."""
 
-    external_location_region: Union[str, None, UnsetType] = UNSET
-    """Region of the external location of this table, for example: S3 region."""
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
-    external_location_format: Union[str, None, UnsetType] = UNSET
-    """Format of the external location of this table, for example: JSON, CSV, PARQUET, etc."""
-
-    is_partitioned: Union[bool, None, UnsetType] = UNSET
-    """Whether this table is partitioned (true) or not (false)."""
-
-    partition_strategy: Union[str, None, UnsetType] = UNSET
-    """Partition strategy for this table."""
-
-    partition_count: Union[int, None, UnsetType] = UNSET
-    """Number of partitions in this table."""
-
-    table_definition: Union[str, None, UnsetType] = UNSET
-    """Definition of the table."""
-
-    partition_list: Union[str, None, UnsetType] = UNSET
-    """List of partitions in this table."""
-
-    is_sharded: Union[bool, None, UnsetType] = UNSET
-    """Whether this table is a sharded table (true) or not (false)."""
-
-    table_type: Union[str, None, UnsetType] = UNSET
-    """Type of the table."""
-
-    iceberg_catalog_name: Union[str, None, UnsetType] = UNSET
-    """Iceberg table catalog name (can be any user defined name)"""
-
-    iceberg_table_type: Union[str, None, UnsetType] = UNSET
-    """Iceberg table type (managed vs unmanaged)"""
-
-    iceberg_catalog_source: Union[str, None, UnsetType] = UNSET
-    """Iceberg table catalog type (glue, polaris, snowflake)"""
-
-    iceberg_catalog_table_name: Union[str, None, UnsetType] = UNSET
-    """Catalog table name (actual table name on the catalog side)."""
-
-    table_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
-    """Extra attributes for Impala"""
-
-    iceberg_catalog_table_namespace: Union[str, None, UnsetType] = UNSET
-    """Catalog table namespace (actual database name on the catalog side)."""
-
-    table_external_volume_name: Union[str, None, UnsetType] = UNSET
-    """External volume name for the table."""
-
-    iceberg_table_base_location: Union[str, None, UnsetType] = UNSET
-    """Iceberg table base location inside the external volume."""
-
-    table_retention_time: Union[int, None, UnsetType] = UNSET
-    """Data retention time in days."""
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
 
-class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
-    """DremioPhysicalDataset-specific relationship attributes for nested API format."""
+class DatabricksGenieAgentRelationshipAttributes(AssetRelationshipAttributes):
+    """DatabricksGenieAgent-specific relationship attributes for nested API format."""
+
+    agent_skills: Union[List[RelatedSkill], None, UnsetType] = UNSET
+    """Skills bound to this agent."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -956,6 +778,9 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_source_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
+    """Context repository that produced this agent."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -1011,12 +836,6 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    dremio_source: Union[RelatedDremioSource, None, UnsetType] = UNSET
-    """Dremio Source that contains the physical datasets (tables)."""
-
-    dremio_folder: Union[RelatedDremioFolder, None, UnsetType] = UNSET
-    """Dremio Folder that contains the physical datasets (tables)."""
-
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
     ] = UNSET
@@ -1063,24 +882,6 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
-    """Columns that exist within this table."""
-
-    queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
-    """Queries that access this table."""
-
-    atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
-    """Schema in which this table exists."""
-
-    dimensions: Union[List[RelatedTable], None, UnsetType] = UNSET
-    """"""
-
-    facts: Union[List[RelatedTable], None, UnsetType] = UNSET
-    """"""
-
-    partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
-    """Partitions that exist within this table."""
-
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -1116,18 +917,18 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """Business question insights for this SQL asset."""
 
 
-class DremioPhysicalDatasetNested(AssetNested):
-    """DremioPhysicalDataset in nested API format for high-performance serialization."""
+class DatabricksGenieAgentNested(AssetNested):
+    """DatabricksGenieAgent in nested API format for high-performance serialization."""
 
-    attributes: Union[DremioPhysicalDatasetAttributes, UnsetType] = UNSET
+    attributes: Union[DatabricksGenieAgentAttributes, UnsetType] = UNSET
     relationship_attributes: Union[
-        DremioPhysicalDatasetRelationshipAttributes, UnsetType
+        DatabricksGenieAgentRelationshipAttributes, UnsetType
     ] = UNSET
     append_relationship_attributes: Union[
-        DremioPhysicalDatasetRelationshipAttributes, UnsetType
+        DatabricksGenieAgentRelationshipAttributes, UnsetType
     ] = UNSET
     remove_relationship_attributes: Union[
-        DremioPhysicalDatasetRelationshipAttributes, UnsetType
+        DatabricksGenieAgentRelationshipAttributes, UnsetType
     ] = UNSET
 
 
@@ -1135,13 +936,15 @@ class DremioPhysicalDatasetNested(AssetNested):
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_DREMIO_PHYSICAL_DATASET_REL_FIELDS: List[str] = [
+_DATABRICKS_GENIE_AGENT_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
+    "agent_skills",
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
     "anomalo_checks",
     "application",
     "application_field",
+    "context_source_repository",
     "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -1158,8 +961,6 @@ _DREMIO_PHYSICAL_DATASET_REL_FIELDS: List[str] = [
     "dbt_sources",
     "sql_dbt_sources",
     "dbt_seed_assets",
-    "dremio_source",
-    "dremio_folder",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "knowledge_linked_files",
@@ -1174,12 +975,6 @@ _DREMIO_PHYSICAL_DATASET_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
-    "columns",
-    "queries",
-    "atlan_schema",
-    "dimensions",
-    "facts",
-    "partitions",
     "schema_registry_subjects",
     "snowflake_semantic_logical_tables",
     "soda_checks",
@@ -1191,19 +986,15 @@ _DREMIO_PHYSICAL_DATASET_REL_FIELDS: List[str] = [
 ]
 
 
-def _populate_dremio_physical_dataset_attrs(
-    attrs: DremioPhysicalDatasetAttributes, obj: DremioPhysicalDataset
+def _populate_databricks_genie_agent_attrs(
+    attrs: DatabricksGenieAgentAttributes, obj: DatabricksGenieAgent
 ) -> None:
-    """Populate DremioPhysicalDataset-specific attributes on the attrs struct."""
+    """Populate DatabricksGenieAgent-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.dremio_id = obj.dremio_id
-    attrs.dremio_space_qualified_name = obj.dremio_space_qualified_name
-    attrs.dremio_space_name = obj.dremio_space_name
-    attrs.dremio_source_qualified_name = obj.dremio_source_qualified_name
-    attrs.dremio_source_name = obj.dremio_source_name
-    attrs.dremio_parent_folder_qualified_name = obj.dremio_parent_folder_qualified_name
-    attrs.dremio_folder_hierarchy = obj.dremio_folder_hierarchy
-    attrs.dremio_labels = obj.dremio_labels
+    attrs.databricks_workspace_id = obj.databricks_workspace_id
+    attrs.databricks_warehouse_id = obj.databricks_warehouse_id
+    attrs.databricks_parent_path = obj.databricks_parent_path
+    attrs.databricks_etag = obj.databricks_etag
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1242,50 +1033,28 @@ def _populate_dremio_physical_dataset_attrs(
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-    attrs.column_count = obj.column_count
-    attrs.row_count = obj.row_count
-    attrs.size_bytes = obj.size_bytes
-    attrs.table_object_count = obj.table_object_count
-    attrs.alias = obj.alias
-    attrs.is_temporary = obj.is_temporary
-    attrs.is_query_preview = obj.is_query_preview
-    attrs.query_preview_config = obj.query_preview_config
-    attrs.external_location = obj.external_location
-    attrs.external_location_region = obj.external_location_region
-    attrs.external_location_format = obj.external_location_format
-    attrs.is_partitioned = obj.is_partitioned
-    attrs.partition_strategy = obj.partition_strategy
-    attrs.partition_count = obj.partition_count
-    attrs.table_definition = obj.table_definition
-    attrs.partition_list = obj.partition_list
-    attrs.is_sharded = obj.is_sharded
-    attrs.table_type = obj.table_type
-    attrs.iceberg_catalog_name = obj.iceberg_catalog_name
-    attrs.iceberg_table_type = obj.iceberg_table_type
-    attrs.iceberg_catalog_source = obj.iceberg_catalog_source
-    attrs.iceberg_catalog_table_name = obj.iceberg_catalog_table_name
-    attrs.table_impala_parameters = obj.table_impala_parameters
-    attrs.iceberg_catalog_table_namespace = obj.iceberg_catalog_table_namespace
-    attrs.table_external_volume_name = obj.table_external_volume_name
-    attrs.iceberg_table_base_location = obj.iceberg_table_base_location
-    attrs.table_retention_time = obj.table_retention_time
+    attrs.agent_slug = obj.agent_slug
+    attrs.agent_type = obj.agent_type
+    attrs.agent_status = obj.agent_status
+    attrs.agent_system_prompt = obj.agent_system_prompt
+    attrs.agent_llm_config = obj.agent_llm_config
+    attrs.agent_mcp_servers = obj.agent_mcp_servers
+    attrs.agent_schedules = obj.agent_schedules
+    attrs.agent_skill_names = obj.agent_skill_names
+    attrs.agent_skill_qualified_names = obj.agent_skill_qualified_names
+    attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
 
 
-def _extract_dremio_physical_dataset_attrs(
-    attrs: DremioPhysicalDatasetAttributes,
+def _extract_databricks_genie_agent_attrs(
+    attrs: DatabricksGenieAgentAttributes,
 ) -> dict:
-    """Extract all DremioPhysicalDataset attributes from the attrs struct into a flat dict."""
+    """Extract all DatabricksGenieAgent attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dremio_id"] = attrs.dremio_id
-    result["dremio_space_qualified_name"] = attrs.dremio_space_qualified_name
-    result["dremio_space_name"] = attrs.dremio_space_name
-    result["dremio_source_qualified_name"] = attrs.dremio_source_qualified_name
-    result["dremio_source_name"] = attrs.dremio_source_name
-    result["dremio_parent_folder_qualified_name"] = (
-        attrs.dremio_parent_folder_qualified_name
-    )
-    result["dremio_folder_hierarchy"] = attrs.dremio_folder_hierarchy
-    result["dremio_labels"] = attrs.dremio_labels
+    result["databricks_workspace_id"] = attrs.databricks_workspace_id
+    result["databricks_warehouse_id"] = attrs.databricks_warehouse_id
+    result["databricks_parent_path"] = attrs.databricks_parent_path
+    result["databricks_etag"] = attrs.databricks_etag
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1330,33 +1099,17 @@ def _extract_dremio_physical_dataset_attrs(
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
-    result["column_count"] = attrs.column_count
-    result["row_count"] = attrs.row_count
-    result["size_bytes"] = attrs.size_bytes
-    result["table_object_count"] = attrs.table_object_count
-    result["alias"] = attrs.alias
-    result["is_temporary"] = attrs.is_temporary
-    result["is_query_preview"] = attrs.is_query_preview
-    result["query_preview_config"] = attrs.query_preview_config
-    result["external_location"] = attrs.external_location
-    result["external_location_region"] = attrs.external_location_region
-    result["external_location_format"] = attrs.external_location_format
-    result["is_partitioned"] = attrs.is_partitioned
-    result["partition_strategy"] = attrs.partition_strategy
-    result["partition_count"] = attrs.partition_count
-    result["table_definition"] = attrs.table_definition
-    result["partition_list"] = attrs.partition_list
-    result["is_sharded"] = attrs.is_sharded
-    result["table_type"] = attrs.table_type
-    result["iceberg_catalog_name"] = attrs.iceberg_catalog_name
-    result["iceberg_table_type"] = attrs.iceberg_table_type
-    result["iceberg_catalog_source"] = attrs.iceberg_catalog_source
-    result["iceberg_catalog_table_name"] = attrs.iceberg_catalog_table_name
-    result["table_impala_parameters"] = attrs.table_impala_parameters
-    result["iceberg_catalog_table_namespace"] = attrs.iceberg_catalog_table_namespace
-    result["table_external_volume_name"] = attrs.table_external_volume_name
-    result["iceberg_table_base_location"] = attrs.iceberg_table_base_location
-    result["table_retention_time"] = attrs.table_retention_time
+    result["agent_slug"] = attrs.agent_slug
+    result["agent_type"] = attrs.agent_type
+    result["agent_status"] = attrs.agent_status
+    result["agent_system_prompt"] = attrs.agent_system_prompt
+    result["agent_llm_config"] = attrs.agent_llm_config
+    result["agent_mcp_servers"] = attrs.agent_mcp_servers
+    result["agent_schedules"] = attrs.agent_schedules
+    result["agent_skill_names"] = attrs.agent_skill_names
+    result["agent_skill_qualified_names"] = attrs.agent_skill_qualified_names
+    result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     return result
 
 
@@ -1365,41 +1118,41 @@ def _extract_dremio_physical_dataset_attrs(
 # =============================================================================
 
 
-def _dremio_physical_dataset_to_nested(
-    dremio_physical_dataset: DremioPhysicalDataset,
-) -> DremioPhysicalDatasetNested:
-    """Convert flat DremioPhysicalDataset to nested format."""
-    attrs = DremioPhysicalDatasetAttributes()
-    _populate_dremio_physical_dataset_attrs(attrs, dremio_physical_dataset)
+def _databricks_genie_agent_to_nested(
+    databricks_genie_agent: DatabricksGenieAgent,
+) -> DatabricksGenieAgentNested:
+    """Convert flat DatabricksGenieAgent to nested format."""
+    attrs = DatabricksGenieAgentAttributes()
+    _populate_databricks_genie_agent_attrs(attrs, databricks_genie_agent)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        dremio_physical_dataset,
-        _DREMIO_PHYSICAL_DATASET_REL_FIELDS,
-        DremioPhysicalDatasetRelationshipAttributes,
+        databricks_genie_agent,
+        _DATABRICKS_GENIE_AGENT_REL_FIELDS,
+        DatabricksGenieAgentRelationshipAttributes,
     )
-    return DremioPhysicalDatasetNested(
-        guid=dremio_physical_dataset.guid,
-        type_name=dremio_physical_dataset.type_name,
-        status=dremio_physical_dataset.status,
-        version=dremio_physical_dataset.version,
-        create_time=dremio_physical_dataset.create_time,
-        update_time=dremio_physical_dataset.update_time,
-        created_by=dremio_physical_dataset.created_by,
-        updated_by=dremio_physical_dataset.updated_by,
-        classifications=dremio_physical_dataset.classifications,
-        classification_names=dremio_physical_dataset.classification_names,
-        meanings=dremio_physical_dataset.meanings,
-        labels=dremio_physical_dataset.labels,
-        business_attributes=dremio_physical_dataset.business_attributes,
-        custom_attributes=dremio_physical_dataset.custom_attributes,
-        pending_tasks=dremio_physical_dataset.pending_tasks,
-        proxy=dremio_physical_dataset.proxy,
-        is_incomplete=dremio_physical_dataset.is_incomplete,
-        provenance_type=dremio_physical_dataset.provenance_type,
-        home_id=dremio_physical_dataset.home_id,
-        depth=dremio_physical_dataset.depth,
-        immediate_upstream=dremio_physical_dataset.immediate_upstream,
-        immediate_downstream=dremio_physical_dataset.immediate_downstream,
+    return DatabricksGenieAgentNested(
+        guid=databricks_genie_agent.guid,
+        type_name=databricks_genie_agent.type_name,
+        status=databricks_genie_agent.status,
+        version=databricks_genie_agent.version,
+        create_time=databricks_genie_agent.create_time,
+        update_time=databricks_genie_agent.update_time,
+        created_by=databricks_genie_agent.created_by,
+        updated_by=databricks_genie_agent.updated_by,
+        classifications=databricks_genie_agent.classifications,
+        classification_names=databricks_genie_agent.classification_names,
+        meanings=databricks_genie_agent.meanings,
+        labels=databricks_genie_agent.labels,
+        business_attributes=databricks_genie_agent.business_attributes,
+        custom_attributes=databricks_genie_agent.custom_attributes,
+        pending_tasks=databricks_genie_agent.pending_tasks,
+        proxy=databricks_genie_agent.proxy,
+        is_incomplete=databricks_genie_agent.is_incomplete,
+        provenance_type=databricks_genie_agent.provenance_type,
+        home_id=databricks_genie_agent.home_id,
+        depth=databricks_genie_agent.depth,
+        immediate_upstream=databricks_genie_agent.immediate_upstream,
+        immediate_downstream=databricks_genie_agent.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1407,24 +1160,24 @@ def _dremio_physical_dataset_to_nested(
     )
 
 
-def _dremio_physical_dataset_from_nested(
-    nested: DremioPhysicalDatasetNested,
-) -> DremioPhysicalDataset:
-    """Convert nested format to flat DremioPhysicalDataset."""
+def _databricks_genie_agent_from_nested(
+    nested: DatabricksGenieAgentNested,
+) -> DatabricksGenieAgent:
+    """Convert nested format to flat DatabricksGenieAgent."""
     attrs = (
         nested.attributes
         if nested.attributes is not UNSET
-        else DremioPhysicalDatasetAttributes()
+        else DatabricksGenieAgentAttributes()
     )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _DREMIO_PHYSICAL_DATASET_REL_FIELDS,
-        DremioPhysicalDatasetRelationshipAttributes,
+        _DATABRICKS_GENIE_AGENT_REL_FIELDS,
+        DatabricksGenieAgentRelationshipAttributes,
     )
-    return DremioPhysicalDataset(
+    return DatabricksGenieAgent(
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
@@ -1447,25 +1200,25 @@ def _dremio_physical_dataset_from_nested(
         depth=nested.depth,
         immediate_upstream=nested.immediate_upstream,
         immediate_downstream=nested.immediate_downstream,
-        **_extract_dremio_physical_dataset_attrs(attrs),
+        **_extract_databricks_genie_agent_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
     )
 
 
-def _dremio_physical_dataset_to_nested_bytes(
-    dremio_physical_dataset: DremioPhysicalDataset, serde: Serde
+def _databricks_genie_agent_to_nested_bytes(
+    databricks_genie_agent: DatabricksGenieAgent, serde: Serde
 ) -> bytes:
-    """Convert flat DremioPhysicalDataset to nested JSON bytes."""
-    return serde.encode(_dremio_physical_dataset_to_nested(dremio_physical_dataset))
+    """Convert flat DatabricksGenieAgent to nested JSON bytes."""
+    return serde.encode(_databricks_genie_agent_to_nested(databricks_genie_agent))
 
 
-def _dremio_physical_dataset_from_nested_bytes(
+def _databricks_genie_agent_from_nested_bytes(
     data: bytes, serde: Serde
-) -> DremioPhysicalDataset:
-    """Convert nested JSON bytes to flat DremioPhysicalDataset."""
-    nested = serde.decode(data, DremioPhysicalDatasetNested)
-    return _dremio_physical_dataset_from_nested(nested)
+) -> DatabricksGenieAgent:
+    """Convert nested JSON bytes to flat DatabricksGenieAgent."""
+    nested = serde.decode(data, DatabricksGenieAgentNested)
+    return _databricks_genie_agent_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
@@ -1477,250 +1230,187 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
-DremioPhysicalDataset.DREMIO_ID = KeywordField("dremioId", "dremioId")
-DremioPhysicalDataset.DREMIO_SPACE_QUALIFIED_NAME = KeywordField(
-    "dremioSpaceQualifiedName", "dremioSpaceQualifiedName"
+DatabricksGenieAgent.DATABRICKS_WORKSPACE_ID = KeywordField(
+    "databricksWorkspaceId", "databricksWorkspaceId"
 )
-DremioPhysicalDataset.DREMIO_SPACE_NAME = KeywordField(
-    "dremioSpaceName", "dremioSpaceName"
+DatabricksGenieAgent.DATABRICKS_WAREHOUSE_ID = KeywordField(
+    "databricksWarehouseId", "databricksWarehouseId"
 )
-DremioPhysicalDataset.DREMIO_SOURCE_QUALIFIED_NAME = KeywordField(
-    "dremioSourceQualifiedName", "dremioSourceQualifiedName"
+DatabricksGenieAgent.DATABRICKS_PARENT_PATH = KeywordField(
+    "databricksParentPath", "databricksParentPath"
 )
-DremioPhysicalDataset.DREMIO_SOURCE_NAME = KeywordField(
-    "dremioSourceName", "dremioSourceName"
-)
-DremioPhysicalDataset.DREMIO_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
-    "dremioParentFolderQualifiedName", "dremioParentFolderQualifiedName"
-)
-DremioPhysicalDataset.DREMIO_FOLDER_HIERARCHY = KeywordField(
-    "dremioFolderHierarchy", "dremioFolderHierarchy"
-)
-DremioPhysicalDataset.DREMIO_LABELS = KeywordField("dremioLabels", "dremioLabels")
-DremioPhysicalDataset.QUERY_COUNT = NumericField("queryCount", "queryCount")
-DremioPhysicalDataset.QUERY_USER_COUNT = NumericField(
-    "queryUserCount", "queryUserCount"
-)
-DremioPhysicalDataset.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DremioPhysicalDataset.QUERY_COUNT_UPDATED_AT = NumericField(
+DatabricksGenieAgent.DATABRICKS_ETAG = KeywordField("databricksEtag", "databricksEtag")
+DatabricksGenieAgent.QUERY_COUNT = NumericField("queryCount", "queryCount")
+DatabricksGenieAgent.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
+DatabricksGenieAgent.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
+DatabricksGenieAgent.QUERY_COUNT_UPDATED_AT = NumericField(
     "queryCountUpdatedAt", "queryCountUpdatedAt"
 )
-DremioPhysicalDataset.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DremioPhysicalDataset.DATABASE_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.DATABASE_NAME = KeywordField("databaseName", "databaseName")
+DatabricksGenieAgent.DATABASE_QUALIFIED_NAME = KeywordField(
     "databaseQualifiedName", "databaseQualifiedName"
 )
-DremioPhysicalDataset.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DremioPhysicalDataset.SCHEMA_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
+DatabricksGenieAgent.SCHEMA_QUALIFIED_NAME = KeywordField(
     "schemaQualifiedName", "schemaQualifiedName"
 )
-DremioPhysicalDataset.TABLE_NAME = KeywordField("tableName", "tableName")
-DremioPhysicalDataset.TABLE_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.TABLE_NAME = KeywordField("tableName", "tableName")
+DatabricksGenieAgent.TABLE_QUALIFIED_NAME = KeywordField(
     "tableQualifiedName", "tableQualifiedName"
 )
-DremioPhysicalDataset.VIEW_NAME = KeywordField("viewName", "viewName")
-DremioPhysicalDataset.VIEW_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.VIEW_NAME = KeywordField("viewName", "viewName")
+DatabricksGenieAgent.VIEW_QUALIFIED_NAME = KeywordField(
     "viewQualifiedName", "viewQualifiedName"
 )
-DremioPhysicalDataset.CALCULATION_VIEW_NAME = KeywordField(
+DatabricksGenieAgent.CALCULATION_VIEW_NAME = KeywordField(
     "calculationViewName", "calculationViewName"
 )
-DremioPhysicalDataset.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
     "calculationViewQualifiedName", "calculationViewQualifiedName"
 )
-DremioPhysicalDataset.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-DremioPhysicalDataset.LAST_PROFILED_AT = NumericField(
-    "lastProfiledAt", "lastProfiledAt"
-)
-DremioPhysicalDataset.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
+DatabricksGenieAgent.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
+DatabricksGenieAgent.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
-DremioPhysicalDataset.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DremioPhysicalDataset.SQL_HAS_AI_INSIGHTS = BooleanField(
+DatabricksGenieAgent.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+DatabricksGenieAgent.SQL_HAS_AI_INSIGHTS = BooleanField(
     "sqlHasAiInsights", "sqlHasAiInsights"
 )
-DremioPhysicalDataset.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+DatabricksGenieAgent.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
     "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
 )
-DremioPhysicalDataset.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+DatabricksGenieAgent.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
     "sqlAiInsightsPopularBusinessQuestionCount",
     "sqlAiInsightsPopularBusinessQuestionCount",
 )
-DremioPhysicalDataset.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+DatabricksGenieAgent.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
     "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
 )
-DremioPhysicalDataset.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+DatabricksGenieAgent.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
     "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
 )
-DremioPhysicalDataset.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+DatabricksGenieAgent.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
     "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
 )
-DremioPhysicalDataset.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
     "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
 )
-DremioPhysicalDataset.SQL_COALESCE_NODE_STATUS = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_NODE_STATUS = KeywordField(
     "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
 )
-DremioPhysicalDataset.SQL_COALESCE_LAST_RUN_AT = NumericField(
+DatabricksGenieAgent.SQL_COALESCE_LAST_RUN_AT = NumericField(
     "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
 )
-DremioPhysicalDataset.SQL_COALESCE_NODE_TYPE = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_NODE_TYPE = KeywordField(
     "sqlCoalesceNodeType", "sqlCoalesceNodeType"
 )
-DremioPhysicalDataset.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
     "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
 )
-DremioPhysicalDataset.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+DatabricksGenieAgent.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
     "sqlCoalesceEnvironmentName",
     "sqlCoalesceEnvironmentName",
     "sqlCoalesceEnvironmentName.text",
 )
-DremioPhysicalDataset.SQL_COALESCE_PROJECT_ID = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_PROJECT_ID = KeywordField(
     "sqlCoalesceProjectId", "sqlCoalesceProjectId"
 )
-DremioPhysicalDataset.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+DatabricksGenieAgent.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
     "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
 )
-DremioPhysicalDataset.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+DatabricksGenieAgent.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
     "sqlShareQualifiedNames", "sqlShareQualifiedNames"
 )
-DremioPhysicalDataset.CATALOG_DATASET_GUID = KeywordField(
+DatabricksGenieAgent.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
-DremioPhysicalDataset.COLUMN_COUNT = NumericField("columnCount", "columnCount")
-DremioPhysicalDataset.ROW_COUNT = NumericField("rowCount", "rowCount")
-DremioPhysicalDataset.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
-DremioPhysicalDataset.TABLE_OBJECT_COUNT = NumericField(
-    "tableObjectCount", "tableObjectCount"
+DatabricksGenieAgent.AGENT_SLUG = KeywordField("agentSlug", "agentSlug")
+DatabricksGenieAgent.AGENT_TYPE = KeywordField("agentType", "agentType")
+DatabricksGenieAgent.AGENT_STATUS = KeywordField("agentStatus", "agentStatus")
+DatabricksGenieAgent.AGENT_SYSTEM_PROMPT = TextField(
+    "agentSystemPrompt", "agentSystemPrompt"
 )
-DremioPhysicalDataset.ALIAS = KeywordField("alias", "alias")
-DremioPhysicalDataset.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
-DremioPhysicalDataset.IS_QUERY_PREVIEW = BooleanField(
-    "isQueryPreview", "isQueryPreview"
+DatabricksGenieAgent.AGENT_LLM_CONFIG = KeywordField("agentLlmConfig", "agentLlmConfig")
+DatabricksGenieAgent.AGENT_MCP_SERVERS = KeywordField(
+    "agentMcpServers", "agentMcpServers"
 )
-DremioPhysicalDataset.QUERY_PREVIEW_CONFIG = KeywordField(
-    "queryPreviewConfig", "queryPreviewConfig"
+DatabricksGenieAgent.AGENT_SCHEDULES = TextField("agentSchedules", "agentSchedules")
+DatabricksGenieAgent.AGENT_SKILL_NAMES = KeywordField(
+    "agentSkillNames", "agentSkillNames"
 )
-DremioPhysicalDataset.EXTERNAL_LOCATION = KeywordField(
-    "externalLocation", "externalLocation"
+DatabricksGenieAgent.AGENT_SKILL_QUALIFIED_NAMES = KeywordField(
+    "agentSkillQualifiedNames", "agentSkillQualifiedNames"
 )
-DremioPhysicalDataset.EXTERNAL_LOCATION_REGION = KeywordField(
-    "externalLocationRegion", "externalLocationRegion"
+DatabricksGenieAgent.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+DatabricksGenieAgent.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
+DatabricksGenieAgent.AGENT_SKILLS = RelationField("agentSkills")
+DatabricksGenieAgent.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+DatabricksGenieAgent.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+DatabricksGenieAgent.ANOMALO_CHECKS = RelationField("anomaloChecks")
+DatabricksGenieAgent.APPLICATION = RelationField("application")
+DatabricksGenieAgent.APPLICATION_FIELD = RelationField("applicationField")
+DatabricksGenieAgent.CONTEXT_SOURCE_REPOSITORY = RelationField(
+    "contextSourceRepository"
 )
-DremioPhysicalDataset.EXTERNAL_LOCATION_FORMAT = KeywordField(
-    "externalLocationFormat", "externalLocationFormat"
-)
-DremioPhysicalDataset.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
-DremioPhysicalDataset.PARTITION_STRATEGY = KeywordField(
-    "partitionStrategy", "partitionStrategy"
-)
-DremioPhysicalDataset.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
-DremioPhysicalDataset.TABLE_DEFINITION = KeywordField(
-    "tableDefinition", "tableDefinition"
-)
-DremioPhysicalDataset.PARTITION_LIST = KeywordField("partitionList", "partitionList")
-DremioPhysicalDataset.IS_SHARDED = BooleanField("isSharded", "isSharded")
-DremioPhysicalDataset.TABLE_TYPE = KeywordField("tableType", "tableType")
-DremioPhysicalDataset.ICEBERG_CATALOG_NAME = KeywordField(
-    "icebergCatalogName", "icebergCatalogName"
-)
-DremioPhysicalDataset.ICEBERG_TABLE_TYPE = KeywordField(
-    "icebergTableType", "icebergTableType"
-)
-DremioPhysicalDataset.ICEBERG_CATALOG_SOURCE = KeywordField(
-    "icebergCatalogSource", "icebergCatalogSource"
-)
-DremioPhysicalDataset.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
-    "icebergCatalogTableName", "icebergCatalogTableName"
-)
-DremioPhysicalDataset.TABLE_IMPALA_PARAMETERS = KeywordField(
-    "tableImpalaParameters", "tableImpalaParameters"
-)
-DremioPhysicalDataset.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
-    "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
-)
-DremioPhysicalDataset.TABLE_EXTERNAL_VOLUME_NAME = KeywordField(
-    "tableExternalVolumeName", "tableExternalVolumeName"
-)
-DremioPhysicalDataset.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
-    "icebergTableBaseLocation", "icebergTableBaseLocation"
-)
-DremioPhysicalDataset.TABLE_RETENTION_TIME = NumericField(
-    "tableRetentionTime", "tableRetentionTime"
-)
-DremioPhysicalDataset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-DremioPhysicalDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
-DremioPhysicalDataset.ANOMALO_CHECKS = RelationField("anomaloChecks")
-DremioPhysicalDataset.APPLICATION = RelationField("application")
-DremioPhysicalDataset.APPLICATION_FIELD = RelationField("applicationField")
-DremioPhysicalDataset.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
-DremioPhysicalDataset.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DremioPhysicalDataset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+DatabricksGenieAgent.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+DatabricksGenieAgent.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DatabricksGenieAgent.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
 )
-DremioPhysicalDataset.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
-DremioPhysicalDataset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DremioPhysicalDataset.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+DatabricksGenieAgent.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+DatabricksGenieAgent.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+DatabricksGenieAgent.MODEL_IMPLEMENTED_ENTITIES = RelationField(
     "modelImplementedEntities"
 )
-DremioPhysicalDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+DatabricksGenieAgent.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
     "modelImplementedAttributes"
 )
-DremioPhysicalDataset.METRICS = RelationField("metrics")
-DremioPhysicalDataset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DremioPhysicalDataset.DQ_REFERENCE_DATASET_RULES = RelationField(
+DatabricksGenieAgent.METRICS = RelationField("metrics")
+DatabricksGenieAgent.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+DatabricksGenieAgent.DQ_REFERENCE_DATASET_RULES = RelationField(
     "dqReferenceDatasetRules"
 )
-DremioPhysicalDataset.DBT_MODELS = RelationField("dbtModels")
-DremioPhysicalDataset.SQL_DBT_MODELS = RelationField("sqlDbtModels")
-DremioPhysicalDataset.DBT_TESTS = RelationField("dbtTests")
-DremioPhysicalDataset.DBT_SOURCES = RelationField("dbtSources")
-DremioPhysicalDataset.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
-DremioPhysicalDataset.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-DremioPhysicalDataset.DREMIO_SOURCE = RelationField("dremioSource")
-DremioPhysicalDataset.DREMIO_FOLDER = RelationField("dremioFolder")
-DremioPhysicalDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+DatabricksGenieAgent.DBT_MODELS = RelationField("dbtModels")
+DatabricksGenieAgent.SQL_DBT_MODELS = RelationField("sqlDbtModels")
+DatabricksGenieAgent.DBT_TESTS = RelationField("dbtTests")
+DatabricksGenieAgent.DBT_SOURCES = RelationField("dbtSources")
+DatabricksGenieAgent.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
+DatabricksGenieAgent.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+DatabricksGenieAgent.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
-DremioPhysicalDataset.MEANINGS = RelationField("meanings")
-DremioPhysicalDataset.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
-DremioPhysicalDataset.MC_MONITORS = RelationField("mcMonitors")
-DremioPhysicalDataset.MC_INCIDENTS = RelationField("mcIncidents")
-DremioPhysicalDataset.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-DremioPhysicalDataset.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-DremioPhysicalDataset.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-DremioPhysicalDataset.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-DremioPhysicalDataset.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DremioPhysicalDataset.USER_DEF_RELATIONSHIP_FROM = RelationField(
+DatabricksGenieAgent.MEANINGS = RelationField("meanings")
+DatabricksGenieAgent.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+DatabricksGenieAgent.MC_MONITORS = RelationField("mcMonitors")
+DatabricksGenieAgent.MC_INCIDENTS = RelationField("mcIncidents")
+DatabricksGenieAgent.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+DatabricksGenieAgent.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+DatabricksGenieAgent.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+DatabricksGenieAgent.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+DatabricksGenieAgent.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+DatabricksGenieAgent.USER_DEF_RELATIONSHIP_FROM = RelationField(
     "userDefRelationshipFrom"
 )
-DremioPhysicalDataset.FILES = RelationField("files")
-DremioPhysicalDataset.LINKS = RelationField("links")
-DremioPhysicalDataset.README = RelationField("readme")
-DremioPhysicalDataset.COLUMNS = RelationField("columns")
-DremioPhysicalDataset.QUERIES = RelationField("queries")
-DremioPhysicalDataset.ATLAN_SCHEMA = RelationField("atlanSchema")
-DremioPhysicalDataset.DIMENSIONS = RelationField("dimensions")
-DremioPhysicalDataset.FACTS = RelationField("facts")
-DremioPhysicalDataset.PARTITIONS = RelationField("partitions")
-DremioPhysicalDataset.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DremioPhysicalDataset.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+DatabricksGenieAgent.FILES = RelationField("files")
+DatabricksGenieAgent.LINKS = RelationField("links")
+DatabricksGenieAgent.README = RelationField("readme")
+DatabricksGenieAgent.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+DatabricksGenieAgent.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
     "snowflakeSemanticLogicalTables"
 )
-DremioPhysicalDataset.SODA_CHECKS = RelationField("sodaChecks")
-DremioPhysicalDataset.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-DremioPhysicalDataset.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-DremioPhysicalDataset.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
+DatabricksGenieAgent.SODA_CHECKS = RelationField("sodaChecks")
+DatabricksGenieAgent.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+DatabricksGenieAgent.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+DatabricksGenieAgent.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
     "sqlInsightOutgoingJoins"
 )
-DremioPhysicalDataset.SQL_INSIGHT_INCOMING_JOINS = RelationField(
+DatabricksGenieAgent.SQL_INSIGHT_INCOMING_JOINS = RelationField(
     "sqlInsightIncomingJoins"
 )
-DremioPhysicalDataset.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+DatabricksGenieAgent.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
     "sqlInsightBusinessQuestions"
 )

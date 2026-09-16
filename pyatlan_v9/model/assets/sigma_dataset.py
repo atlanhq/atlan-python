@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -65,7 +66,7 @@ class SigmaDataset(Asset):
     Instance of a Sigma dataset in Atlan.
     """
 
-    SIGMA_DATASET_COLUMN_COUNT: ClassVar[Any] = None
+    SIGMA_COLUMN_COUNT: ClassVar[Any] = None
     SIGMA_WORKBOOK_QUALIFIED_NAME: ClassVar[Any] = None
     SIGMA_WORKBOOK_NAME: ClassVar[Any] = None
     SIGMA_PAGE_QUALIFIED_NAME: ClassVar[Any] = None
@@ -90,6 +91,7 @@ class SigmaDataset(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -107,7 +109,7 @@ class SigmaDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sigma_dataset_column_count: Union[int, None, UnsetType] = UNSET
+    sigma_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this dataset."""
 
     sigma_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -187,6 +189,9 @@ class SigmaDataset(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -360,7 +365,7 @@ class SigmaDataset(Asset):
 class SigmaDatasetAttributes(AssetAttributes):
     """SigmaDataset-specific attributes for nested API format."""
 
-    sigma_dataset_column_count: Union[int, None, UnsetType] = UNSET
+    sigma_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this dataset."""
 
     sigma_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -444,6 +449,9 @@ class SigmaDatasetRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -538,6 +546,7 @@ _SIGMA_DATASET_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -562,7 +571,7 @@ def _populate_sigma_dataset_attrs(
 ) -> None:
     """Populate SigmaDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sigma_dataset_column_count = obj.sigma_dataset_column_count
+    attrs.sigma_column_count = obj.sigma_column_count
     attrs.sigma_workbook_qualified_name = obj.sigma_workbook_qualified_name
     attrs.sigma_workbook_name = obj.sigma_workbook_name
     attrs.sigma_page_qualified_name = obj.sigma_page_qualified_name
@@ -575,7 +584,7 @@ def _populate_sigma_dataset_attrs(
 def _extract_sigma_dataset_attrs(attrs: SigmaDatasetAttributes) -> dict:
     """Extract all SigmaDataset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sigma_dataset_column_count"] = attrs.sigma_dataset_column_count
+    result["sigma_column_count"] = attrs.sigma_column_count
     result["sigma_workbook_qualified_name"] = attrs.sigma_workbook_qualified_name
     result["sigma_workbook_name"] = attrs.sigma_workbook_name
     result["sigma_page_qualified_name"] = attrs.sigma_page_qualified_name
@@ -657,6 +666,7 @@ def _sigma_dataset_from_nested(nested: SigmaDatasetNested) -> SigmaDataset:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -695,9 +705,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SigmaDataset.SIGMA_DATASET_COLUMN_COUNT = NumericField(
-    "sigmaDatasetColumnCount", "sigmaDatasetColumnCount"
-)
+SigmaDataset.SIGMA_COLUMN_COUNT = NumericField("sigmaColumnCount", "sigmaColumnCount")
 SigmaDataset.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField(
     "sigmaWorkbookQualifiedName",
     "sigmaWorkbookQualifiedName",
@@ -742,6 +750,7 @@ SigmaDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SigmaDataset.MEANINGS = RelationField("meanings")
+SigmaDataset.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SigmaDataset.MC_MONITORS = RelationField("mcMonitors")
 SigmaDataset.MC_INCIDENTS = RelationField("mcIncidents")
 SigmaDataset.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

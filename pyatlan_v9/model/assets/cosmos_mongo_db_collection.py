@@ -55,6 +55,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBDatabase
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -193,6 +194,7 @@ class CosmosMongoDBCollection(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MONGO_DB_DATABASE: ClassVar[Any] = None
     MONGO_DB_COLUMNS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -569,6 +571,9 @@ class CosmosMongoDBCollection(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mongo_db_database: Union[RelatedMongoDBDatabase, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBDatabase"
@@ -1162,6 +1167,9 @@ class CosmosMongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes)
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mongo_db_database: Union[RelatedMongoDBDatabase, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBDatabase"
     )
@@ -1305,6 +1313,7 @@ _COSMOS_MONGO_DB_COLLECTION_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mongo_db_database",
     "mongo_db_columns",
     "mc_monitors",
@@ -1618,6 +1627,7 @@ def _cosmos_mongo_db_collection_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1910,6 +1920,7 @@ CosmosMongoDBCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationFie
     "gcpDataplexAspectTypeMetadataEntities"
 )
 CosmosMongoDBCollection.MEANINGS = RelationField("meanings")
+CosmosMongoDBCollection.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 CosmosMongoDBCollection.MONGO_DB_DATABASE = RelationField("mongoDBDatabase")
 CosmosMongoDBCollection.MONGO_DB_COLUMNS = RelationField("mongoDBColumns")
 CosmosMongoDBCollection.MC_MONITORS = RelationField("mcMonitors")

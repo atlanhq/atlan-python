@@ -45,6 +45,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .kafka_related import RelatedKafkaCluster, RelatedKafkaTopic
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -93,6 +94,7 @@ class KafkaCluster(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KAFKA_TOPICS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -195,6 +197,9 @@ class KafkaCluster(Asset):
 
     kafka_topics: Union[List[RelatedKafkaTopic], None, UnsetType] = UNSET
     """Topics contained within this Kafka cluster."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -461,6 +466,9 @@ class KafkaClusterRelationshipAttributes(AssetRelationshipAttributes):
     kafka_topics: Union[List[RelatedKafkaTopic], None, UnsetType] = UNSET
     """Topics contained within this Kafka cluster."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -550,6 +558,7 @@ _KAFKA_CLUSTER_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "kafka_topics",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -668,6 +677,7 @@ def _kafka_cluster_from_nested(nested: KafkaClusterNested) -> KafkaCluster:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -751,6 +761,7 @@ KafkaCluster.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 )
 KafkaCluster.MEANINGS = RelationField("meanings")
 KafkaCluster.KAFKA_TOPICS = RelationField("kafkaTopics")
+KafkaCluster.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 KafkaCluster.MC_MONITORS = RelationField("mcMonitors")
 KafkaCluster.MC_INCIDENTS = RelationField("mcIncidents")
 KafkaCluster.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

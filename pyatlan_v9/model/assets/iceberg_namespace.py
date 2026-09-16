@@ -53,6 +53,7 @@ from .dbt_related import (
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .iceberg_related import RelatedIcebergNamespace
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -165,6 +166,7 @@ class IcebergNamespace(Asset):
     MEANINGS: ClassVar[Any] = None
     ICEBERG_SUB_NAMESPACES: ClassVar[Any] = None
     ICEBERG_PARENT_NAMESPACE: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -415,6 +417,9 @@ class IcebergNamespace(Asset):
 
     iceberg_parent_namespace: Union[RelatedIcebergNamespace, None, UnsetType] = UNSET
     """Parent Iceberg Namespace containing the sub-namespaces."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -890,6 +895,9 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     iceberg_parent_namespace: Union[RelatedIcebergNamespace, None, UnsetType] = UNSET
     """Parent Iceberg Namespace containing the sub-namespaces."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1064,6 +1072,7 @@ _ICEBERG_NAMESPACE_REL_FIELDS: List[str] = [
     "meanings",
     "iceberg_sub_namespaces",
     "iceberg_parent_namespace",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1286,6 +1295,7 @@ def _iceberg_namespace_from_nested(nested: IcebergNamespaceNested) -> IcebergNam
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1461,6 +1471,7 @@ IcebergNamespace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 IcebergNamespace.MEANINGS = RelationField("meanings")
 IcebergNamespace.ICEBERG_SUB_NAMESPACES = RelationField("icebergSubNamespaces")
 IcebergNamespace.ICEBERG_PARENT_NAMESPACE = RelationField("icebergParentNamespace")
+IcebergNamespace.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 IcebergNamespace.MC_MONITORS = RelationField("mcMonitors")
 IcebergNamespace.MC_INCIDENTS = RelationField("mcIncidents")
 IcebergNamespace.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

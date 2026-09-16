@@ -54,6 +54,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -75,8 +76,8 @@ class CognosFolder(Asset):
     Instance of a Cognos folder in Atlan.
     """
 
-    COGNOS_FOLDER_SUB_FOLDER_COUNT: ClassVar[Any] = None
-    COGNOS_FOLDER_CHILD_OBJECTS_COUNT: ClassVar[Any] = None
+    COGNOS_SUB_FOLDER_COUNT: ClassVar[Any] = None
+    COGNOS_CHILD_OBJECTS_COUNT: ClassVar[Any] = None
     COGNOS_ID: ClassVar[Any] = None
     COGNOS_PATH: ClassVar[Any] = None
     COGNOS_PARENT_NAME: ClassVar[Any] = None
@@ -113,6 +114,7 @@ class CognosFolder(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -129,10 +131,10 @@ class CognosFolder(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    cognos_folder_sub_folder_count: Union[int, None, UnsetType] = UNSET
+    cognos_sub_folder_count: Union[int, None, UnsetType] = UNSET
     """Number of sub-folders in the folder."""
 
-    cognos_folder_child_objects_count: Union[int, None, UnsetType] = UNSET
+    cognos_child_objects_count: Union[int, None, UnsetType] = UNSET
     """Number of children in the folder (excluding subfolders)."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -248,6 +250,9 @@ class CognosFolder(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -426,10 +431,10 @@ class CognosFolder(Asset):
 class CognosFolderAttributes(AssetAttributes):
     """CognosFolder-specific attributes for nested API format."""
 
-    cognos_folder_sub_folder_count: Union[int, None, UnsetType] = UNSET
+    cognos_sub_folder_count: Union[int, None, UnsetType] = UNSET
     """Number of sub-folders in the folder."""
 
-    cognos_folder_child_objects_count: Union[int, None, UnsetType] = UNSET
+    cognos_child_objects_count: Union[int, None, UnsetType] = UNSET
     """Number of children in the folder (excluding subfolders)."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -550,6 +555,9 @@ class CognosFolderRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -647,6 +655,7 @@ _COGNOS_FOLDER_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -670,8 +679,8 @@ def _populate_cognos_folder_attrs(
 ) -> None:
     """Populate CognosFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.cognos_folder_sub_folder_count = obj.cognos_folder_sub_folder_count
-    attrs.cognos_folder_child_objects_count = obj.cognos_folder_child_objects_count
+    attrs.cognos_sub_folder_count = obj.cognos_sub_folder_count
+    attrs.cognos_child_objects_count = obj.cognos_child_objects_count
     attrs.cognos_id = obj.cognos_id
     attrs.cognos_path = obj.cognos_path
     attrs.cognos_parent_name = obj.cognos_parent_name
@@ -687,10 +696,8 @@ def _populate_cognos_folder_attrs(
 def _extract_cognos_folder_attrs(attrs: CognosFolderAttributes) -> dict:
     """Extract all CognosFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cognos_folder_sub_folder_count"] = attrs.cognos_folder_sub_folder_count
-    result["cognos_folder_child_objects_count"] = (
-        attrs.cognos_folder_child_objects_count
-    )
+    result["cognos_sub_folder_count"] = attrs.cognos_sub_folder_count
+    result["cognos_child_objects_count"] = attrs.cognos_child_objects_count
     result["cognos_id"] = attrs.cognos_id
     result["cognos_path"] = attrs.cognos_path
     result["cognos_parent_name"] = attrs.cognos_parent_name
@@ -773,6 +780,7 @@ def _cognos_folder_from_nested(nested: CognosFolderNested) -> CognosFolder:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -812,11 +820,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CognosFolder.COGNOS_FOLDER_SUB_FOLDER_COUNT = NumericField(
-    "cognosFolderSubFolderCount", "cognosFolderSubFolderCount"
+CognosFolder.COGNOS_SUB_FOLDER_COUNT = NumericField(
+    "cognosSubFolderCount", "cognosSubFolderCount"
 )
-CognosFolder.COGNOS_FOLDER_CHILD_OBJECTS_COUNT = NumericField(
-    "cognosFolderChildObjectsCount", "cognosFolderChildObjectsCount"
+CognosFolder.COGNOS_CHILD_OBJECTS_COUNT = NumericField(
+    "cognosChildObjectsCount", "cognosChildObjectsCount"
 )
 CognosFolder.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosFolder.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")
@@ -866,6 +874,7 @@ CognosFolder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 CognosFolder.MEANINGS = RelationField("meanings")
+CognosFolder.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 CognosFolder.MC_MONITORS = RelationField("mcMonitors")
 CognosFolder.MC_INCIDENTS = RelationField("mcIncidents")
 CognosFolder.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

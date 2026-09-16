@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -71,9 +72,9 @@ class SisenseWidget(Asset):
     Instance of a Sisense widget in Atlan.
     """
 
-    SISENSE_WIDGET_COLUMN_COUNT: ClassVar[Any] = None
-    SISENSE_WIDGET_SUB_TYPE: ClassVar[Any] = None
-    SISENSE_WIDGET_SIZE: ClassVar[Any] = None
+    SISENSE_COLUMN_COUNT: ClassVar[Any] = None
+    SISENSE_SUB_TYPE: ClassVar[Any] = None
+    SISENSE_SIZE: ClassVar[Any] = None
     SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[Any] = None
     SISENSE_WIDGET_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
@@ -94,6 +95,7 @@ class SisenseWidget(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -113,13 +115,13 @@ class SisenseWidget(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sisense_widget_column_count: Union[int, None, UnsetType] = UNSET
+    sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns used in this widget."""
 
-    sisense_widget_sub_type: Union[str, None, UnsetType] = UNSET
+    sisense_sub_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this widget."""
 
-    sisense_widget_size: Union[str, None, UnsetType] = UNSET
+    sisense_size: Union[str, None, UnsetType] = UNSET
     """Size of this widget."""
 
     sisense_widget_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -187,6 +189,9 @@ class SisenseWidget(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -380,13 +385,13 @@ class SisenseWidget(Asset):
 class SisenseWidgetAttributes(AssetAttributes):
     """SisenseWidget-specific attributes for nested API format."""
 
-    sisense_widget_column_count: Union[int, None, UnsetType] = UNSET
+    sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns used in this widget."""
 
-    sisense_widget_sub_type: Union[str, None, UnsetType] = UNSET
+    sisense_sub_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this widget."""
 
-    sisense_widget_size: Union[str, None, UnsetType] = UNSET
+    sisense_size: Union[str, None, UnsetType] = UNSET
     """Size of this widget."""
 
     sisense_widget_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -458,6 +463,9 @@ class SisenseWidgetRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -558,6 +566,7 @@ _SISENSE_WIDGET_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -584,9 +593,9 @@ def _populate_sisense_widget_attrs(
 ) -> None:
     """Populate SisenseWidget-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sisense_widget_column_count = obj.sisense_widget_column_count
-    attrs.sisense_widget_sub_type = obj.sisense_widget_sub_type
-    attrs.sisense_widget_size = obj.sisense_widget_size
+    attrs.sisense_column_count = obj.sisense_column_count
+    attrs.sisense_sub_type = obj.sisense_sub_type
+    attrs.sisense_size = obj.sisense_size
     attrs.sisense_widget_dashboard_qualified_name = (
         obj.sisense_widget_dashboard_qualified_name
     )
@@ -599,9 +608,9 @@ def _populate_sisense_widget_attrs(
 def _extract_sisense_widget_attrs(attrs: SisenseWidgetAttributes) -> dict:
     """Extract all SisenseWidget attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sisense_widget_column_count"] = attrs.sisense_widget_column_count
-    result["sisense_widget_sub_type"] = attrs.sisense_widget_sub_type
-    result["sisense_widget_size"] = attrs.sisense_widget_size
+    result["sisense_column_count"] = attrs.sisense_column_count
+    result["sisense_sub_type"] = attrs.sisense_sub_type
+    result["sisense_size"] = attrs.sisense_size
     result["sisense_widget_dashboard_qualified_name"] = (
         attrs.sisense_widget_dashboard_qualified_name
     )
@@ -681,6 +690,7 @@ def _sisense_widget_from_nested(nested: SisenseWidgetNested) -> SisenseWidget:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -721,15 +731,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SisenseWidget.SISENSE_WIDGET_COLUMN_COUNT = NumericField(
-    "sisenseWidgetColumnCount", "sisenseWidgetColumnCount"
+SisenseWidget.SISENSE_COLUMN_COUNT = NumericField(
+    "sisenseColumnCount", "sisenseColumnCount"
 )
-SisenseWidget.SISENSE_WIDGET_SUB_TYPE = KeywordField(
-    "sisenseWidgetSubType", "sisenseWidgetSubType"
-)
-SisenseWidget.SISENSE_WIDGET_SIZE = KeywordField(
-    "sisenseWidgetSize", "sisenseWidgetSize"
-)
+SisenseWidget.SISENSE_SUB_TYPE = KeywordField("sisenseSubType", "sisenseSubType")
+SisenseWidget.SISENSE_SIZE = KeywordField("sisenseSize", "sisenseSize")
 SisenseWidget.SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
     "sisenseWidgetDashboardQualifiedName",
     "sisenseWidgetDashboardQualifiedName",
@@ -764,6 +770,7 @@ SisenseWidget.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SisenseWidget.MEANINGS = RelationField("meanings")
+SisenseWidget.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SisenseWidget.MC_MONITORS = RelationField("mcMonitors")
 SisenseWidget.MC_INCIDENTS = RelationField("mcIncidents")
 SisenseWidget.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

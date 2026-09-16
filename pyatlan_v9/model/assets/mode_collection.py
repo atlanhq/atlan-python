@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .mode_related import RelatedModeCollection, RelatedModeReport, RelatedModeWorkspace
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -95,6 +96,7 @@ class ModeCollection(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MODE_WORKSPACE: ClassVar[Any] = None
     MODE_REPORTS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -205,6 +207,9 @@ class ModeCollection(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mode_workspace: Union[RelatedModeWorkspace, None, UnsetType] = UNSET
     """Workspace in which this collection exists."""
@@ -492,6 +497,9 @@ class ModeCollectionRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mode_workspace: Union[RelatedModeWorkspace, None, UnsetType] = UNSET
     """Workspace in which this collection exists."""
 
@@ -586,6 +594,7 @@ _MODE_COLLECTION_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mode_workspace",
     "mode_reports",
     "mc_monitors",
@@ -714,6 +723,7 @@ def _mode_collection_from_nested(nested: ModeCollectionNested) -> ModeCollection
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -806,6 +816,7 @@ ModeCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 ModeCollection.MEANINGS = RelationField("meanings")
+ModeCollection.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 ModeCollection.MODE_WORKSPACE = RelationField("modeWorkspace")
 ModeCollection.MODE_REPORTS = RelationField("modeReports")
 ModeCollection.MC_MONITORS = RelationField("mcMonitors")

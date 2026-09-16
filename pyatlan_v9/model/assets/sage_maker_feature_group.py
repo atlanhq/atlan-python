@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -66,11 +67,11 @@ class SageMakerFeatureGroup(Asset):
     Instance of a SageMaker Feature Store Feature Group in Atlan. Represents a collection of related features that can be used for machine learning training and inference.
     """
 
-    SAGE_MAKER_FEATURE_GROUP_STATUS: ClassVar[Any] = None
-    SAGE_MAKER_FEATURE_GROUP_RECORD_ID_NAME: ClassVar[Any] = None
-    SAGE_MAKER_FEATURE_GROUP_GLUE_DATABASE_NAME: ClassVar[Any] = None
-    SAGE_MAKER_FEATURE_GROUP_GLUE_TABLE_NAME: ClassVar[Any] = None
-    SAGE_MAKER_FEATURE_GROUP_FEATURE_COUNT: ClassVar[Any] = None
+    SAGE_MAKER_STATUS: ClassVar[Any] = None
+    SAGE_MAKER_RECORD_ID_NAME: ClassVar[Any] = None
+    SAGE_MAKER_GLUE_DATABASE_NAME: ClassVar[Any] = None
+    SAGE_MAKER_GLUE_TABLE_NAME: ClassVar[Any] = None
+    SAGE_MAKER_FEATURE_COUNT: ClassVar[Any] = None
     SAGE_MAKER_S3_URI: ClassVar[Any] = None
     ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
@@ -107,6 +108,7 @@ class SageMakerFeatureGroup(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -124,19 +126,19 @@ class SageMakerFeatureGroup(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sage_maker_feature_group_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Feature Group (e.g., Created, Creating, Failed)."""
 
-    sage_maker_feature_group_record_id_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_record_id_name: Union[str, None, UnsetType] = UNSET
     """Name of the feature that serves as the record identifier."""
 
-    sage_maker_feature_group_glue_database_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_glue_database_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue database name associated with this Feature Group."""
 
-    sage_maker_feature_group_glue_table_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_glue_table_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue table name associated with this Feature Group."""
 
-    sage_maker_feature_group_feature_count: Union[int, None, UnsetType] = UNSET
+    sage_maker_feature_count: Union[int, None, UnsetType] = UNSET
     """Number of features in this Feature Group."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -266,6 +268,9 @@ class SageMakerFeatureGroup(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -439,19 +444,19 @@ class SageMakerFeatureGroup(Asset):
 class SageMakerFeatureGroupAttributes(AssetAttributes):
     """SageMakerFeatureGroup-specific attributes for nested API format."""
 
-    sage_maker_feature_group_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Feature Group (e.g., Created, Creating, Failed)."""
 
-    sage_maker_feature_group_record_id_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_record_id_name: Union[str, None, UnsetType] = UNSET
     """Name of the feature that serves as the record identifier."""
 
-    sage_maker_feature_group_glue_database_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_glue_database_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue database name associated with this Feature Group."""
 
-    sage_maker_feature_group_glue_table_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_glue_table_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue table name associated with this Feature Group."""
 
-    sage_maker_feature_group_feature_count: Union[int, None, UnsetType] = UNSET
+    sage_maker_feature_count: Union[int, None, UnsetType] = UNSET
     """Number of features in this Feature Group."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -586,6 +591,9 @@ class SageMakerFeatureGroupRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -677,6 +685,7 @@ _SAGE_MAKER_FEATURE_GROUP_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -701,19 +710,11 @@ def _populate_sage_maker_feature_group_attrs(
 ) -> None:
     """Populate SageMakerFeatureGroup-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sage_maker_feature_group_status = obj.sage_maker_feature_group_status
-    attrs.sage_maker_feature_group_record_id_name = (
-        obj.sage_maker_feature_group_record_id_name
-    )
-    attrs.sage_maker_feature_group_glue_database_name = (
-        obj.sage_maker_feature_group_glue_database_name
-    )
-    attrs.sage_maker_feature_group_glue_table_name = (
-        obj.sage_maker_feature_group_glue_table_name
-    )
-    attrs.sage_maker_feature_group_feature_count = (
-        obj.sage_maker_feature_group_feature_count
-    )
+    attrs.sage_maker_status = obj.sage_maker_status
+    attrs.sage_maker_record_id_name = obj.sage_maker_record_id_name
+    attrs.sage_maker_glue_database_name = obj.sage_maker_glue_database_name
+    attrs.sage_maker_glue_table_name = obj.sage_maker_glue_table_name
+    attrs.sage_maker_feature_count = obj.sage_maker_feature_count
     attrs.sage_maker_s3_uri = obj.sage_maker_s3_uri
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
@@ -744,19 +745,11 @@ def _extract_sage_maker_feature_group_attrs(
 ) -> dict:
     """Extract all SageMakerFeatureGroup attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sage_maker_feature_group_status"] = attrs.sage_maker_feature_group_status
-    result["sage_maker_feature_group_record_id_name"] = (
-        attrs.sage_maker_feature_group_record_id_name
-    )
-    result["sage_maker_feature_group_glue_database_name"] = (
-        attrs.sage_maker_feature_group_glue_database_name
-    )
-    result["sage_maker_feature_group_glue_table_name"] = (
-        attrs.sage_maker_feature_group_glue_table_name
-    )
-    result["sage_maker_feature_group_feature_count"] = (
-        attrs.sage_maker_feature_group_feature_count
-    )
+    result["sage_maker_status"] = attrs.sage_maker_status
+    result["sage_maker_record_id_name"] = attrs.sage_maker_record_id_name
+    result["sage_maker_glue_database_name"] = attrs.sage_maker_glue_database_name
+    result["sage_maker_glue_table_name"] = attrs.sage_maker_glue_table_name
+    result["sage_maker_feature_count"] = attrs.sage_maker_feature_count
     result["sage_maker_s3_uri"] = attrs.sage_maker_s3_uri
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
@@ -860,6 +853,7 @@ def _sage_maker_feature_group_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -902,20 +896,20 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_STATUS = KeywordField(
-    "sageMakerFeatureGroupStatus", "sageMakerFeatureGroupStatus"
+SageMakerFeatureGroup.SAGE_MAKER_STATUS = KeywordField(
+    "sageMakerStatus", "sageMakerStatus"
 )
-SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_RECORD_ID_NAME = KeywordField(
-    "sageMakerFeatureGroupRecordIdName", "sageMakerFeatureGroupRecordIdName"
+SageMakerFeatureGroup.SAGE_MAKER_RECORD_ID_NAME = KeywordField(
+    "sageMakerRecordIdName", "sageMakerRecordIdName"
 )
-SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_GLUE_DATABASE_NAME = KeywordField(
-    "sageMakerFeatureGroupGlueDatabaseName", "sageMakerFeatureGroupGlueDatabaseName"
+SageMakerFeatureGroup.SAGE_MAKER_GLUE_DATABASE_NAME = KeywordField(
+    "sageMakerGlueDatabaseName", "sageMakerGlueDatabaseName"
 )
-SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_GLUE_TABLE_NAME = KeywordField(
-    "sageMakerFeatureGroupGlueTableName", "sageMakerFeatureGroupGlueTableName"
+SageMakerFeatureGroup.SAGE_MAKER_GLUE_TABLE_NAME = KeywordField(
+    "sageMakerGlueTableName", "sageMakerGlueTableName"
 )
-SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_FEATURE_COUNT = NumericField(
-    "sageMakerFeatureGroupFeatureCount", "sageMakerFeatureGroupFeatureCount"
+SageMakerFeatureGroup.SAGE_MAKER_FEATURE_COUNT = NumericField(
+    "sageMakerFeatureCount", "sageMakerFeatureCount"
 )
 SageMakerFeatureGroup.SAGE_MAKER_S3_URI = KeywordField(
     "sageMakerS3Uri", "sageMakerS3Uri"
@@ -990,6 +984,7 @@ SageMakerFeatureGroup.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SageMakerFeatureGroup.MEANINGS = RelationField("meanings")
+SageMakerFeatureGroup.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SageMakerFeatureGroup.MC_MONITORS = RelationField("mcMonitors")
 SageMakerFeatureGroup.MC_INCIDENTS = RelationField("mcIncidents")
 SageMakerFeatureGroup.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -51,6 +51,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -81,11 +82,11 @@ class SnowflakeShare(Asset):
     Instance of a Snowflake share in Atlan.
     """
 
-    SNOWFLAKE_SHARE_KIND: ClassVar[Any] = None
-    SNOWFLAKE_SHARE_OWNER_ACCOUNT: ClassVar[Any] = None
-    SNOWFLAKE_SHARE_TARGET_ACCOUNTS: ClassVar[Any] = None
-    SNOWFLAKE_SHARE_LISTING_GLOBAL_NAME: ClassVar[Any] = None
-    SNOWFLAKE_SHARE_SECURE_OBJECT: ClassVar[Any] = None
+    SNOWFLAKE_KIND: ClassVar[Any] = None
+    SNOWFLAKE_OWNER_ACCOUNT: ClassVar[Any] = None
+    SNOWFLAKE_TARGET_ACCOUNTS: ClassVar[Any] = None
+    SNOWFLAKE_LISTING_GLOBAL_NAME: ClassVar[Any] = None
+    SNOWFLAKE_SECURE_OBJECT: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -143,6 +144,7 @@ class SnowflakeShare(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -164,19 +166,19 @@ class SnowflakeShare(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    snowflake_share_kind: Union[str, None, UnsetType] = UNSET
+    snowflake_kind: Union[str, None, UnsetType] = UNSET
     """Direction of the share (inbound or outbound)."""
 
-    snowflake_share_owner_account: Union[str, None, UnsetType] = UNSET
+    snowflake_owner_account: Union[str, None, UnsetType] = UNSET
     """Account that owns the share. Drives the share qualified name."""
 
-    snowflake_share_target_accounts: Union[List[str], None, UnsetType] = UNSET
+    snowflake_target_accounts: Union[List[str], None, UnsetType] = UNSET
     """Consumer accounts targeted by the share."""
 
-    snowflake_share_listing_global_name: Union[str, None, UnsetType] = UNSET
+    snowflake_listing_global_name: Union[str, None, UnsetType] = UNSET
     """Global name of the listing this share is bound to."""
 
-    snowflake_share_secure_object: Union[bool, None, UnsetType] = UNSET
+    snowflake_secure_object: Union[bool, None, UnsetType] = UNSET
     """Whether only secure objects are allowed in this share (true) or not (false)."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -359,6 +361,9 @@ class SnowflakeShare(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -564,19 +569,19 @@ class SnowflakeShare(Asset):
 class SnowflakeShareAttributes(AssetAttributes):
     """SnowflakeShare-specific attributes for nested API format."""
 
-    snowflake_share_kind: Union[str, None, UnsetType] = UNSET
+    snowflake_kind: Union[str, None, UnsetType] = UNSET
     """Direction of the share (inbound or outbound)."""
 
-    snowflake_share_owner_account: Union[str, None, UnsetType] = UNSET
+    snowflake_owner_account: Union[str, None, UnsetType] = UNSET
     """Account that owns the share. Drives the share qualified name."""
 
-    snowflake_share_target_accounts: Union[List[str], None, UnsetType] = UNSET
+    snowflake_target_accounts: Union[List[str], None, UnsetType] = UNSET
     """Consumer accounts targeted by the share."""
 
-    snowflake_share_listing_global_name: Union[str, None, UnsetType] = UNSET
+    snowflake_listing_global_name: Union[str, None, UnsetType] = UNSET
     """Global name of the listing this share is bound to."""
 
-    snowflake_share_secure_object: Union[bool, None, UnsetType] = UNSET
+    snowflake_secure_object: Union[bool, None, UnsetType] = UNSET
     """Whether only secure objects are allowed in this share (true) or not (false)."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -764,6 +769,9 @@ class SnowflakeShareRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -881,6 +889,7 @@ _SNOWFLAKE_SHARE_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -909,11 +918,11 @@ def _populate_snowflake_share_attrs(
 ) -> None:
     """Populate SnowflakeShare-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.snowflake_share_kind = obj.snowflake_share_kind
-    attrs.snowflake_share_owner_account = obj.snowflake_share_owner_account
-    attrs.snowflake_share_target_accounts = obj.snowflake_share_target_accounts
-    attrs.snowflake_share_listing_global_name = obj.snowflake_share_listing_global_name
-    attrs.snowflake_share_secure_object = obj.snowflake_share_secure_object
+    attrs.snowflake_kind = obj.snowflake_kind
+    attrs.snowflake_owner_account = obj.snowflake_owner_account
+    attrs.snowflake_target_accounts = obj.snowflake_target_accounts
+    attrs.snowflake_listing_global_name = obj.snowflake_listing_global_name
+    attrs.snowflake_secure_object = obj.snowflake_secure_object
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -957,13 +966,11 @@ def _populate_snowflake_share_attrs(
 def _extract_snowflake_share_attrs(attrs: SnowflakeShareAttributes) -> dict:
     """Extract all SnowflakeShare attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["snowflake_share_kind"] = attrs.snowflake_share_kind
-    result["snowflake_share_owner_account"] = attrs.snowflake_share_owner_account
-    result["snowflake_share_target_accounts"] = attrs.snowflake_share_target_accounts
-    result["snowflake_share_listing_global_name"] = (
-        attrs.snowflake_share_listing_global_name
-    )
-    result["snowflake_share_secure_object"] = attrs.snowflake_share_secure_object
+    result["snowflake_kind"] = attrs.snowflake_kind
+    result["snowflake_owner_account"] = attrs.snowflake_owner_account
+    result["snowflake_target_accounts"] = attrs.snowflake_target_accounts
+    result["snowflake_listing_global_name"] = attrs.snowflake_listing_global_name
+    result["snowflake_secure_object"] = attrs.snowflake_secure_object
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1082,6 +1089,7 @@ def _snowflake_share_from_nested(nested: SnowflakeShareNested) -> SnowflakeShare
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1123,20 +1131,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SnowflakeShare.SNOWFLAKE_SHARE_KIND = KeywordField(
-    "snowflakeShareKind", "snowflakeShareKind"
+SnowflakeShare.SNOWFLAKE_KIND = KeywordField("snowflakeKind", "snowflakeKind")
+SnowflakeShare.SNOWFLAKE_OWNER_ACCOUNT = KeywordField(
+    "snowflakeOwnerAccount", "snowflakeOwnerAccount"
 )
-SnowflakeShare.SNOWFLAKE_SHARE_OWNER_ACCOUNT = KeywordField(
-    "snowflakeShareOwnerAccount", "snowflakeShareOwnerAccount"
+SnowflakeShare.SNOWFLAKE_TARGET_ACCOUNTS = KeywordField(
+    "snowflakeTargetAccounts", "snowflakeTargetAccounts"
 )
-SnowflakeShare.SNOWFLAKE_SHARE_TARGET_ACCOUNTS = KeywordField(
-    "snowflakeShareTargetAccounts", "snowflakeShareTargetAccounts"
+SnowflakeShare.SNOWFLAKE_LISTING_GLOBAL_NAME = KeywordField(
+    "snowflakeListingGlobalName", "snowflakeListingGlobalName"
 )
-SnowflakeShare.SNOWFLAKE_SHARE_LISTING_GLOBAL_NAME = KeywordField(
-    "snowflakeShareListingGlobalName", "snowflakeShareListingGlobalName"
-)
-SnowflakeShare.SNOWFLAKE_SHARE_SECURE_OBJECT = BooleanField(
-    "snowflakeShareSecureObject", "snowflakeShareSecureObject"
+SnowflakeShare.SNOWFLAKE_SECURE_OBJECT = BooleanField(
+    "snowflakeSecureObject", "snowflakeSecureObject"
 )
 SnowflakeShare.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SnowflakeShare.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
@@ -1252,6 +1258,7 @@ SnowflakeShare.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SnowflakeShare.MEANINGS = RelationField("meanings")
+SnowflakeShare.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SnowflakeShare.MC_MONITORS = RelationField("mcMonitors")
 SnowflakeShare.MC_INCIDENTS = RelationField("mcIncidents")
 SnowflakeShare.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

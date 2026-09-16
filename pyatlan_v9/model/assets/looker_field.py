@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .looker_related import (
     RelatedLookerDashboard,
     RelatedLookerExplore,
@@ -107,6 +108,7 @@ class LookerField(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MODEL: ClassVar[Any] = None
     EXPLORE: ClassVar[Any] = None
     PROJECT: ClassVar[Any] = None
@@ -231,6 +233,9 @@ class LookerField(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     model: Union[RelatedLookerModel, None, UnsetType] = UNSET
     """Model in which this field exists."""
@@ -544,6 +549,9 @@ class LookerFieldRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     model: Union[RelatedLookerModel, None, UnsetType] = UNSET
     """Model in which this field exists."""
 
@@ -651,6 +659,7 @@ _LOOKER_FIELD_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "model",
     "explore",
     "project",
@@ -790,6 +799,7 @@ def _looker_field_from_nested(nested: LookerFieldNested) -> LookerField:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -889,6 +899,7 @@ LookerField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 LookerField.MEANINGS = RelationField("meanings")
+LookerField.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 LookerField.MODEL = RelationField("model")
 LookerField.EXPLORE = RelationField("explore")
 LookerField.PROJECT = RelationField("project")

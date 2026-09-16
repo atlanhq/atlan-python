@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .looker_related import RelatedLookerField, RelatedLookerProject, RelatedLookerView
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -68,7 +69,7 @@ class LookerView(Asset):
 
     PROJECT_NAME: ClassVar[Any] = None
     LOOKER_VIEW_FILE_PATH: ClassVar[Any] = None
-    LOOKER_VIEW_FILE_NAME: ClassVar[Any] = None
+    LOOKER_FILE_NAME: ClassVar[Any] = None
     LOOKER_SLUG: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -88,6 +89,7 @@ class LookerView(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     PROJECT: ClassVar[Any] = None
     FIELDS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -112,7 +114,7 @@ class LookerView(Asset):
     looker_view_file_path: Union[str, None, UnsetType] = UNSET
     """File path of this view within the project."""
 
-    looker_view_file_name: Union[str, None, UnsetType] = UNSET
+    looker_file_name: Union[str, None, UnsetType] = UNSET
     """File name of this view."""
 
     looker_slug: Union[str, None, UnsetType] = UNSET
@@ -177,6 +179,9 @@ class LookerView(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     project: Union[RelatedLookerProject, None, UnsetType] = UNSET
     """Project in which this view exists."""
@@ -371,7 +376,7 @@ class LookerViewAttributes(AssetAttributes):
     looker_view_file_path: Union[str, None, UnsetType] = UNSET
     """File path of this view within the project."""
 
-    looker_view_file_name: Union[str, None, UnsetType] = UNSET
+    looker_file_name: Union[str, None, UnsetType] = UNSET
     """File name of this view."""
 
     looker_slug: Union[str, None, UnsetType] = UNSET
@@ -440,6 +445,9 @@ class LookerViewRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     project: Union[RelatedLookerProject, None, UnsetType] = UNSET
     """Project in which this view exists."""
@@ -533,6 +541,7 @@ _LOOKER_VIEW_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "project",
     "fields",
     "mc_monitors",
@@ -558,7 +567,7 @@ def _populate_looker_view_attrs(attrs: LookerViewAttributes, obj: LookerView) ->
     _populate_asset_attrs(attrs, obj)
     attrs.project_name = obj.project_name
     attrs.looker_view_file_path = obj.looker_view_file_path
-    attrs.looker_view_file_name = obj.looker_view_file_name
+    attrs.looker_file_name = obj.looker_file_name
     attrs.looker_slug = obj.looker_slug
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
@@ -568,7 +577,7 @@ def _extract_looker_view_attrs(attrs: LookerViewAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["project_name"] = attrs.project_name
     result["looker_view_file_path"] = attrs.looker_view_file_path
-    result["looker_view_file_name"] = attrs.looker_view_file_name
+    result["looker_file_name"] = attrs.looker_file_name
     result["looker_slug"] = attrs.looker_slug
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
@@ -641,6 +650,7 @@ def _looker_view_from_nested(nested: LookerViewNested) -> LookerView:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -678,9 +688,7 @@ LookerView.PROJECT_NAME = KeywordField("projectName", "projectName")
 LookerView.LOOKER_VIEW_FILE_PATH = KeywordField(
     "lookerViewFilePath", "lookerViewFilePath"
 )
-LookerView.LOOKER_VIEW_FILE_NAME = KeywordField(
-    "lookerViewFileName", "lookerViewFileName"
-)
+LookerView.LOOKER_FILE_NAME = KeywordField("lookerFileName", "lookerFileName")
 LookerView.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
 LookerView.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
@@ -704,6 +712,7 @@ LookerView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 LookerView.MEANINGS = RelationField("meanings")
+LookerView.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 LookerView.PROJECT = RelationField("project")
 LookerView.FIELDS = RelationField("fields")
 LookerView.MC_MONITORS = RelationField("mcMonitors")

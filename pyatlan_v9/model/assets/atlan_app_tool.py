@@ -49,6 +49,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -70,10 +71,10 @@ class AtlanAppTool(Asset):
     Instance of a tool defined in an Atlan application.
     """
 
-    ATLAN_APP_TOOL_INPUT_SCHEMA: ClassVar[Any] = None
-    ATLAN_APP_TOOL_OUTPUT_SCHEMA: ClassVar[Any] = None
-    ATLAN_APP_TOOL_TASK_QUEUE: ClassVar[Any] = None
-    ATLAN_APP_TOOL_CATEGORY: ClassVar[Any] = None
+    ATLAN_APP_INPUT_SCHEMA: ClassVar[Any] = None
+    ATLAN_APP_OUTPUT_SCHEMA: ClassVar[Any] = None
+    ATLAN_APP_TASK_QUEUE: ClassVar[Any] = None
+    ATLAN_APP_CATEGORY: ClassVar[Any] = None
     ATLAN_APP_QUALIFIED_NAME: ClassVar[Any] = None
     ATLAN_APP_NAME: ClassVar[Any] = None
     ATLAN_APP_METADATA: ClassVar[Any] = None
@@ -99,6 +100,7 @@ class AtlanAppTool(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -115,16 +117,16 @@ class AtlanAppTool(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    atlan_app_tool_input_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_input_schema: Union[str, None, UnsetType] = UNSET
     """Input schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_tool_output_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_output_schema: Union[str, None, UnsetType] = UNSET
     """Output schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_tool_task_queue: Union[str, None, UnsetType] = UNSET
+    atlan_app_task_queue: Union[str, None, UnsetType] = UNSET
     """Name of the Temporal task queue for the Atlan application tool."""
 
-    atlan_app_tool_category: Union[str, None, UnsetType] = UNSET
+    atlan_app_category: Union[str, None, UnsetType] = UNSET
     """Category of the tool."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -207,6 +209,9 @@ class AtlanAppTool(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -389,16 +394,16 @@ class AtlanAppTool(Asset):
 class AtlanAppToolAttributes(AssetAttributes):
     """AtlanAppTool-specific attributes for nested API format."""
 
-    atlan_app_tool_input_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_input_schema: Union[str, None, UnsetType] = UNSET
     """Input schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_tool_output_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_output_schema: Union[str, None, UnsetType] = UNSET
     """Output schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_tool_task_queue: Union[str, None, UnsetType] = UNSET
+    atlan_app_task_queue: Union[str, None, UnsetType] = UNSET
     """Name of the Temporal task queue for the Atlan application tool."""
 
-    atlan_app_tool_category: Union[str, None, UnsetType] = UNSET
+    atlan_app_category: Union[str, None, UnsetType] = UNSET
     """Category of the tool."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -485,6 +490,9 @@ class AtlanAppToolRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -577,6 +585,7 @@ _ATLAN_APP_TOOL_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -600,10 +609,10 @@ def _populate_atlan_app_tool_attrs(
 ) -> None:
     """Populate AtlanAppTool-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.atlan_app_tool_input_schema = obj.atlan_app_tool_input_schema
-    attrs.atlan_app_tool_output_schema = obj.atlan_app_tool_output_schema
-    attrs.atlan_app_tool_task_queue = obj.atlan_app_tool_task_queue
-    attrs.atlan_app_tool_category = obj.atlan_app_tool_category
+    attrs.atlan_app_input_schema = obj.atlan_app_input_schema
+    attrs.atlan_app_output_schema = obj.atlan_app_output_schema
+    attrs.atlan_app_task_queue = obj.atlan_app_task_queue
+    attrs.atlan_app_category = obj.atlan_app_category
     attrs.atlan_app_qualified_name = obj.atlan_app_qualified_name
     attrs.atlan_app_name = obj.atlan_app_name
     attrs.atlan_app_metadata = obj.atlan_app_metadata
@@ -614,10 +623,10 @@ def _populate_atlan_app_tool_attrs(
 def _extract_atlan_app_tool_attrs(attrs: AtlanAppToolAttributes) -> dict:
     """Extract all AtlanAppTool attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["atlan_app_tool_input_schema"] = attrs.atlan_app_tool_input_schema
-    result["atlan_app_tool_output_schema"] = attrs.atlan_app_tool_output_schema
-    result["atlan_app_tool_task_queue"] = attrs.atlan_app_tool_task_queue
-    result["atlan_app_tool_category"] = attrs.atlan_app_tool_category
+    result["atlan_app_input_schema"] = attrs.atlan_app_input_schema
+    result["atlan_app_output_schema"] = attrs.atlan_app_output_schema
+    result["atlan_app_task_queue"] = attrs.atlan_app_task_queue
+    result["atlan_app_category"] = attrs.atlan_app_category
     result["atlan_app_qualified_name"] = attrs.atlan_app_qualified_name
     result["atlan_app_name"] = attrs.atlan_app_name
     result["atlan_app_metadata"] = attrs.atlan_app_metadata
@@ -695,6 +704,7 @@ def _atlan_app_tool_from_nested(nested: AtlanAppToolNested) -> AtlanAppTool:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -734,18 +744,16 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-AtlanAppTool.ATLAN_APP_TOOL_INPUT_SCHEMA = TextField(
-    "atlanAppToolInputSchema", "atlanAppToolInputSchema"
+AtlanAppTool.ATLAN_APP_INPUT_SCHEMA = TextField(
+    "atlanAppInputSchema", "atlanAppInputSchema"
 )
-AtlanAppTool.ATLAN_APP_TOOL_OUTPUT_SCHEMA = TextField(
-    "atlanAppToolOutputSchema", "atlanAppToolOutputSchema"
+AtlanAppTool.ATLAN_APP_OUTPUT_SCHEMA = TextField(
+    "atlanAppOutputSchema", "atlanAppOutputSchema"
 )
-AtlanAppTool.ATLAN_APP_TOOL_TASK_QUEUE = KeywordField(
-    "atlanAppToolTaskQueue", "atlanAppToolTaskQueue"
+AtlanAppTool.ATLAN_APP_TASK_QUEUE = KeywordField(
+    "atlanAppTaskQueue", "atlanAppTaskQueue"
 )
-AtlanAppTool.ATLAN_APP_TOOL_CATEGORY = KeywordField(
-    "atlanAppToolCategory", "atlanAppToolCategory"
-)
+AtlanAppTool.ATLAN_APP_CATEGORY = KeywordField("atlanAppCategory", "atlanAppCategory")
 AtlanAppTool.ATLAN_APP_QUALIFIED_NAME = KeywordField(
     "atlanAppQualifiedName", "atlanAppQualifiedName"
 )
@@ -779,6 +787,7 @@ AtlanAppTool.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 AtlanAppTool.MEANINGS = RelationField("meanings")
+AtlanAppTool.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 AtlanAppTool.MC_MONITORS = RelationField("mcMonitors")
 AtlanAppTool.MC_INCIDENTS = RelationField("mcIncidents")
 AtlanAppTool.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

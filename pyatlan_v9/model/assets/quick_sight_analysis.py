@@ -45,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -71,7 +72,7 @@ class QuickSightAnalysis(Asset):
     Instance of a QuickSight analysis in Atlan. In QuickSight, you analyze and visualize your data in analyses, which can be published as a dashboard to share with others.
     """
 
-    QUICK_SIGHT_ANALYSIS_STATUS: ClassVar[Any] = None
+    QUICK_SIGHT_STATUS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[Any] = None
@@ -96,6 +97,7 @@ class QuickSightAnalysis(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -114,7 +116,7 @@ class QuickSightAnalysis(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_analysis_status: Union[str, None, UnsetType] = UNSET
+    quick_sight_status: Union[str, None, UnsetType] = UNSET
     """Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc."""
 
     quick_sight_analysis_calculated_fields: Union[List[str], None, UnsetType] = UNSET
@@ -196,6 +198,9 @@ class QuickSightAnalysis(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -425,7 +430,7 @@ class QuickSightAnalysis(Asset):
 class QuickSightAnalysisAttributes(AssetAttributes):
     """QuickSightAnalysis-specific attributes for nested API format."""
 
-    quick_sight_analysis_status: Union[str, None, UnsetType] = UNSET
+    quick_sight_status: Union[str, None, UnsetType] = UNSET
     """Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc."""
 
     quick_sight_analysis_calculated_fields: Union[List[str], None, UnsetType] = UNSET
@@ -511,6 +516,9 @@ class QuickSightAnalysisRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -610,6 +618,7 @@ _QUICK_SIGHT_ANALYSIS_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -635,7 +644,7 @@ def _populate_quick_sight_analysis_attrs(
 ) -> None:
     """Populate QuickSightAnalysis-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_analysis_status = obj.quick_sight_analysis_status
+    attrs.quick_sight_status = obj.quick_sight_status
     attrs.quick_sight_analysis_calculated_fields = (
         obj.quick_sight_analysis_calculated_fields
     )
@@ -652,7 +661,7 @@ def _populate_quick_sight_analysis_attrs(
 def _extract_quick_sight_analysis_attrs(attrs: QuickSightAnalysisAttributes) -> dict:
     """Extract all QuickSightAnalysis attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_analysis_status"] = attrs.quick_sight_analysis_status
+    result["quick_sight_status"] = attrs.quick_sight_status
     result["quick_sight_analysis_calculated_fields"] = (
         attrs.quick_sight_analysis_calculated_fields
     )
@@ -744,6 +753,7 @@ def _quick_sight_analysis_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -785,8 +795,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightAnalysis.QUICK_SIGHT_ANALYSIS_STATUS = KeywordField(
-    "quickSightAnalysisStatus", "quickSightAnalysisStatus"
+QuickSightAnalysis.QUICK_SIGHT_STATUS = KeywordField(
+    "quickSightStatus", "quickSightStatus"
 )
 QuickSightAnalysis.QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS = KeywordField(
     "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"
@@ -832,6 +842,7 @@ QuickSightAnalysis.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 QuickSightAnalysis.MEANINGS = RelationField("meanings")
+QuickSightAnalysis.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 QuickSightAnalysis.MC_MONITORS = RelationField("mcMonitors")
 QuickSightAnalysis.MC_INCIDENTS = RelationField("mcIncidents")
 QuickSightAnalysis.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -63,7 +64,7 @@ class Google(Asset):
     GOOGLE_SERVICE: ClassVar[Any] = None
     GOOGLE_PROJECT_NAME: ClassVar[Any] = None
     GOOGLE_PROJECT_ID: ClassVar[Any] = None
-    GOOGLE_PROJECT_NUMBER: ClassVar[Any] = None
+    CLOUD_PROJECT_NUMBER: ClassVar[Any] = None
     GOOGLE_LOCATION: ClassVar[Any] = None
     GOOGLE_LOCATION_TYPE: ClassVar[Any] = None
     GOOGLE_LABELS: ClassVar[Any] = None
@@ -82,6 +83,7 @@ class Google(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -101,7 +103,7 @@ class Google(Asset):
     google_project_id: Union[str, None, UnsetType] = UNSET
     """ID of the project in which the asset exists."""
 
-    google_project_number: Union[int, None, UnsetType] = UNSET
+    cloud_project_number: Union[int, None, UnsetType] = UNSET
     """Number of the project in which the asset exists."""
 
     google_location: Union[str, None, UnsetType] = UNSET
@@ -161,6 +163,9 @@ class Google(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -320,7 +325,7 @@ class GoogleAttributes(AssetAttributes):
     google_project_id: Union[str, None, UnsetType] = UNSET
     """ID of the project in which the asset exists."""
 
-    google_project_number: Union[int, None, UnsetType] = UNSET
+    cloud_project_number: Union[int, None, UnsetType] = UNSET
     """Number of the project in which the asset exists."""
 
     google_location: Union[str, None, UnsetType] = UNSET
@@ -384,6 +389,9 @@ class GoogleRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -449,6 +457,7 @@ _GOOGLE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -467,7 +476,7 @@ def _populate_google_attrs(attrs: GoogleAttributes, obj: Google) -> None:
     attrs.google_service = obj.google_service
     attrs.google_project_name = obj.google_project_name
     attrs.google_project_id = obj.google_project_id
-    attrs.google_project_number = obj.google_project_number
+    attrs.cloud_project_number = obj.cloud_project_number
     attrs.google_location = obj.google_location
     attrs.google_location_type = obj.google_location_type
     attrs.google_labels = obj.google_labels
@@ -481,7 +490,7 @@ def _extract_google_attrs(attrs: GoogleAttributes) -> dict:
     result["google_service"] = attrs.google_service
     result["google_project_name"] = attrs.google_project_name
     result["google_project_id"] = attrs.google_project_id
-    result["google_project_number"] = attrs.google_project_number
+    result["cloud_project_number"] = attrs.cloud_project_number
     result["google_location"] = attrs.google_location
     result["google_location_type"] = attrs.google_location_type
     result["google_labels"] = attrs.google_labels
@@ -555,6 +564,7 @@ def _google_from_nested(nested: GoogleNested) -> Google:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -600,9 +610,7 @@ Google.GOOGLE_PROJECT_NAME = KeywordTextField(
 Google.GOOGLE_PROJECT_ID = KeywordTextField(
     "googleProjectId", "googleProjectId", "googleProjectId.text"
 )
-Google.GOOGLE_PROJECT_NUMBER = NumericField(
-    "googleProjectNumber", "googleProjectNumber"
-)
+Google.CLOUD_PROJECT_NUMBER = NumericField("cloudProjectNumber", "cloudProjectNumber")
 Google.GOOGLE_LOCATION = KeywordField("googleLocation", "googleLocation")
 Google.GOOGLE_LOCATION_TYPE = KeywordField("googleLocationType", "googleLocationType")
 Google.GOOGLE_LABELS = KeywordField("googleLabels", "googleLabels")
@@ -625,6 +633,7 @@ Google.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Google.MEANINGS = RelationField("meanings")
+Google.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Google.MC_MONITORS = RelationField("mcMonitors")
 Google.MC_INCIDENTS = RelationField("mcIncidents")
 Google.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

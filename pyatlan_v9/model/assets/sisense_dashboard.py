@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -72,7 +73,7 @@ class SisenseDashboard(Asset):
     """
 
     SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
-    SISENSE_DASHBOARD_WIDGET_COUNT: ClassVar[Any] = None
+    SISENSE_WIDGET_COUNT: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -91,6 +92,7 @@ class SisenseDashboard(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -113,7 +115,7 @@ class SisenseDashboard(Asset):
     sisense_dashboard_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this dashboard exists."""
 
-    sisense_dashboard_widget_count: Union[int, None, UnsetType] = UNSET
+    sisense_widget_count: Union[int, None, UnsetType] = UNSET
     """Number of widgets in this dashboard."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -175,6 +177,9 @@ class SisenseDashboard(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -369,7 +374,7 @@ class SisenseDashboardAttributes(AssetAttributes):
     sisense_dashboard_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this dashboard exists."""
 
-    sisense_dashboard_widget_count: Union[int, None, UnsetType] = UNSET
+    sisense_widget_count: Union[int, None, UnsetType] = UNSET
     """Number of widgets in this dashboard."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -435,6 +440,9 @@ class SisenseDashboardRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -533,6 +541,7 @@ _SISENSE_DASHBOARD_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -562,7 +571,7 @@ def _populate_sisense_dashboard_attrs(
     attrs.sisense_dashboard_folder_qualified_name = (
         obj.sisense_dashboard_folder_qualified_name
     )
-    attrs.sisense_dashboard_widget_count = obj.sisense_dashboard_widget_count
+    attrs.sisense_widget_count = obj.sisense_widget_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -572,7 +581,7 @@ def _extract_sisense_dashboard_attrs(attrs: SisenseDashboardAttributes) -> dict:
     result["sisense_dashboard_folder_qualified_name"] = (
         attrs.sisense_dashboard_folder_qualified_name
     )
-    result["sisense_dashboard_widget_count"] = attrs.sisense_dashboard_widget_count
+    result["sisense_widget_count"] = attrs.sisense_widget_count
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -650,6 +659,7 @@ def _sisense_dashboard_from_nested(nested: SisenseDashboardNested) -> SisenseDas
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -695,8 +705,8 @@ SisenseDashboard.SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME = KeywordTextField(
     "sisenseDashboardFolderQualifiedName",
     "sisenseDashboardFolderQualifiedName.text",
 )
-SisenseDashboard.SISENSE_DASHBOARD_WIDGET_COUNT = NumericField(
-    "sisenseDashboardWidgetCount", "sisenseDashboardWidgetCount"
+SisenseDashboard.SISENSE_WIDGET_COUNT = NumericField(
+    "sisenseWidgetCount", "sisenseWidgetCount"
 )
 SisenseDashboard.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
@@ -724,6 +734,7 @@ SisenseDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SisenseDashboard.MEANINGS = RelationField("meanings")
+SisenseDashboard.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SisenseDashboard.MC_MONITORS = RelationField("mcMonitors")
 SisenseDashboard.MC_INCIDENTS = RelationField("mcIncidents")
 SisenseDashboard.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

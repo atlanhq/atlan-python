@@ -51,6 +51,7 @@ from .kafka_related import (
     RelatedKafkaField,
     RelatedKafkaTopic,
 )
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -108,6 +109,7 @@ class KafkaTopic(Asset):
     KAFKA_CONSUMER_GROUPS: ClassVar[Any] = None
     KAFKA_CLUSTER: ClassVar[Any] = None
     KAFKA_FIELDS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -239,6 +241,9 @@ class KafkaTopic(Asset):
 
     kafka_fields: Union[List[RelatedKafkaField], None, UnsetType] = UNSET
     """Schema fields defined within this Kafka topic."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -569,6 +574,9 @@ class KafkaTopicRelationshipAttributes(AssetRelationshipAttributes):
     kafka_fields: Union[List[RelatedKafkaField], None, UnsetType] = UNSET
     """Schema fields defined within this Kafka topic."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -658,6 +666,7 @@ _KAFKA_TOPIC_REL_FIELDS: List[str] = [
     "kafka_consumer_groups",
     "kafka_cluster",
     "kafka_fields",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -792,6 +801,7 @@ def _kafka_topic_from_nested(nested: KafkaTopicNested) -> KafkaTopic:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -900,6 +910,7 @@ KafkaTopic.MEANINGS = RelationField("meanings")
 KafkaTopic.KAFKA_CONSUMER_GROUPS = RelationField("kafkaConsumerGroups")
 KafkaTopic.KAFKA_CLUSTER = RelationField("kafkaCluster")
 KafkaTopic.KAFKA_FIELDS = RelationField("kafkaFields")
+KafkaTopic.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 KafkaTopic.MC_MONITORS = RelationField("mcMonitors")
 KafkaTopic.MC_INCIDENTS = RelationField("mcIncidents")
 KafkaTopic.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

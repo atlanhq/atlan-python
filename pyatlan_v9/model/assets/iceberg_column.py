@@ -54,6 +54,7 @@ from .dbt_related import (
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .iceberg_related import RelatedIcebergColumn
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -235,6 +236,7 @@ class IcebergColumn(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MONGO_DB_COLLECTION: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -708,6 +710,9 @@ class IcebergColumn(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
         msgspec.field(default=UNSET, name="mongoDBCollection")
@@ -1387,6 +1392,9 @@ class IcebergColumnRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
         msgspec.field(default=UNSET, name="mongoDBCollection")
     )
@@ -1552,6 +1560,7 @@ _ICEBERG_COLUMN_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mongo_db_collection",
     "mc_monitors",
     "mc_incidents",
@@ -1919,6 +1928,7 @@ def _iceberg_column_from_nested(nested: IcebergColumnNested) -> IcebergColumn:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -2231,6 +2241,7 @@ IcebergColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 IcebergColumn.MEANINGS = RelationField("meanings")
+IcebergColumn.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 IcebergColumn.MONGO_DB_COLLECTION = RelationField("mongoDBCollection")
 IcebergColumn.MC_MONITORS = RelationField("mcMonitors")
 IcebergColumn.MC_INCIDENTS = RelationField("mcIncidents")

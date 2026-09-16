@@ -87,6 +87,7 @@ class KnowledgeFolder(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KNOWLEDGE_FILES: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -174,6 +175,9 @@ class KnowledgeFolder(Asset):
 
     knowledge_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
     """Knowledge files contained in this folder."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -420,6 +424,9 @@ class KnowledgeFolderRelationshipAttributes(AssetRelationshipAttributes):
     knowledge_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
     """Knowledge files contained in this folder."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -509,6 +516,7 @@ _KNOWLEDGE_FOLDER_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "knowledge_files",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -621,6 +629,7 @@ def _knowledge_folder_from_nested(nested: KnowledgeFolderNested) -> KnowledgeFol
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -692,6 +701,7 @@ KnowledgeFolder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 )
 KnowledgeFolder.MEANINGS = RelationField("meanings")
 KnowledgeFolder.KNOWLEDGE_FILES = RelationField("knowledgeFiles")
+KnowledgeFolder.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 KnowledgeFolder.MC_MONITORS = RelationField("mcMonitors")
 KnowledgeFolder.MC_INCIDENTS = RelationField("mcIncidents")
 KnowledgeFolder.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

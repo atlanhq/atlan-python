@@ -94,13 +94,13 @@ class RelatedDynamoDBTable(RelatedDynamoDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DynamoDBTable" so it serializes correctly
 
-    dynamo_db_table_gsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBTableGSICount"
+    dynamo_dbgsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBGSICount"
     )
     """Represents the number of global secondary indexes on the table."""
 
-    dynamo_db_table_lsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBTableLSICount"
+    dynamo_dblsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBLSICount"
     )
     """Represents the number of local secondary indexes on the table."""
 
@@ -119,8 +119,8 @@ class RelatedDynamoDBSecondaryIndex(RelatedDynamoDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DynamoDBSecondaryIndex" so it serializes correctly
 
-    dynamo_db_secondary_index_projection_type: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="dynamoDBSecondaryIndexProjectionType")
+    dynamo_db_projection_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBProjectionType"
     )
     """Specifies attributes that are projected from the DynamoDB table into the index."""
 

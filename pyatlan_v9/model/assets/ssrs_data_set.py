@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -66,20 +67,20 @@ class SSRSDataSet(Asset):
     Instance of a data set within an SSRS report in Atlan.
     """
 
-    SSRS_DATA_SET_SQL_QUERY: ClassVar[Any] = None
-    SSRS_DATA_SET_IS_SHARED_DATA_SET: ClassVar[Any] = None
-    SSRS_DATA_SET_QUERY_PARAMETERS: ClassVar[Any] = None
-    SSRS_DATA_SET_DATA_SOURCE_CONNECTION_STRING: ClassVar[Any] = None
-    SSRS_DATA_SET_DATA_SOURCE_REFERENCE: ClassVar[Any] = None
-    SSRS_DATA_SET_EXTENSION: ClassVar[Any] = None
-    SSRS_DATA_SET_REFERENCE_TABLE_NAMES: ClassVar[Any] = None
-    SSRS_DATA_SET_CUBE_NAME: ClassVar[Any] = None
-    SSRS_DATA_SET_STORED_PROCEDURE_NAME: ClassVar[Any] = None
-    SSRS_DATA_SET_PROCESSED_SQL: ClassVar[Any] = None
-    SSRS_DATA_SET_LOG_MESSAGES: ClassVar[Any] = None
-    SSRS_DATA_SET_ERROR_CODE: ClassVar[Any] = None
-    SSRS_DATA_SET_CONNECTED: ClassVar[Any] = None
-    SSRS_DATA_SET_FIELD_COUNT: ClassVar[Any] = None
+    SSRS_SQL_QUERY: ClassVar[Any] = None
+    SSRS_IS_SHARED_DATA_SET: ClassVar[Any] = None
+    SSRS_QUERY_PARAMETERS: ClassVar[Any] = None
+    SSRS_DATA_SOURCE_CONNECTION_STRING: ClassVar[Any] = None
+    SSRS_DATA_SOURCE_REFERENCE: ClassVar[Any] = None
+    SSRS_EXTENSION: ClassVar[Any] = None
+    SSRS_REFERENCE_TABLE_NAMES: ClassVar[Any] = None
+    SSRS_CUBE_NAME: ClassVar[Any] = None
+    SSRS_STORED_PROCEDURE_NAME: ClassVar[Any] = None
+    SSRS_PROCESSED_SQL: ClassVar[Any] = None
+    SSRS_LOG_MESSAGES: ClassVar[Any] = None
+    SSRS_ERROR_CODE: ClassVar[Any] = None
+    SSRS_CONNECTED: ClassVar[Any] = None
+    SSRS_FIELD_COUNT: ClassVar[Any] = None
     SSRS_PATH: ClassVar[Any] = None
     SSRS_USED_IN_REPORTS: ClassVar[Any] = None
     SSRS_HIDDEN: ClassVar[Any] = None
@@ -111,6 +112,7 @@ class SSRSDataSet(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -129,46 +131,46 @@ class SSRSDataSet(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    ssrs_data_set_sql_query: Union[str, None, UnsetType] = UNSET
+    ssrs_sql_query: Union[str, None, UnsetType] = UNSET
     """SQL query for the data set."""
 
-    ssrs_data_set_is_shared_data_set: Union[bool, None, UnsetType] = UNSET
+    ssrs_is_shared_data_set: Union[bool, None, UnsetType] = UNSET
     """Whether the data set is shared."""
 
-    ssrs_data_set_query_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_query_parameters: Union[str, None, UnsetType] = UNSET
     """Query parameters for the data set."""
 
-    ssrs_data_set_data_source_connection_string: Union[str, None, UnsetType] = UNSET
+    ssrs_data_source_connection_string: Union[str, None, UnsetType] = UNSET
     """Data source connection string for the data set."""
 
-    ssrs_data_set_data_source_reference: Union[str, None, UnsetType] = UNSET
+    ssrs_data_source_reference: Union[str, None, UnsetType] = UNSET
     """Data source reference for the data set."""
 
-    ssrs_data_set_extension: Union[str, None, UnsetType] = UNSET
+    ssrs_extension: Union[str, None, UnsetType] = UNSET
     """Extension for the data set."""
 
-    ssrs_data_set_reference_table_names: Union[List[str], None, UnsetType] = UNSET
+    ssrs_reference_table_names: Union[List[str], None, UnsetType] = UNSET
     """Reference table names for the data set."""
 
-    ssrs_data_set_cube_name: Union[str, None, UnsetType] = UNSET
+    ssrs_cube_name: Union[str, None, UnsetType] = UNSET
     """Cube name for the data set."""
 
-    ssrs_data_set_stored_procedure_name: Union[str, None, UnsetType] = UNSET
+    ssrs_stored_procedure_name: Union[str, None, UnsetType] = UNSET
     """Stored procedure name for the data set."""
 
-    ssrs_data_set_processed_sql: Union[str, None, UnsetType] = UNSET
+    ssrs_processed_sql: Union[str, None, UnsetType] = UNSET
     """Processed SQL for the data set."""
 
-    ssrs_data_set_log_messages: Union[str, None, UnsetType] = UNSET
+    ssrs_log_messages: Union[str, None, UnsetType] = UNSET
     """Log messages for the data set."""
 
-    ssrs_data_set_error_code: Union[str, None, UnsetType] = UNSET
+    ssrs_error_code: Union[str, None, UnsetType] = UNSET
     """Error code for the data set."""
 
-    ssrs_data_set_connected: Union[bool, None, UnsetType] = UNSET
+    ssrs_connected: Union[bool, None, UnsetType] = UNSET
     """Whether the data set is connected."""
 
-    ssrs_data_set_field_count: Union[int, None, UnsetType] = UNSET
+    ssrs_field_count: Union[int, None, UnsetType] = UNSET
     """Number of fields in this dataset."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -269,6 +271,9 @@ class SSRSDataSet(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -461,46 +466,46 @@ class SSRSDataSet(Asset):
 class SSRSDataSetAttributes(AssetAttributes):
     """SSRSDataSet-specific attributes for nested API format."""
 
-    ssrs_data_set_sql_query: Union[str, None, UnsetType] = UNSET
+    ssrs_sql_query: Union[str, None, UnsetType] = UNSET
     """SQL query for the data set."""
 
-    ssrs_data_set_is_shared_data_set: Union[bool, None, UnsetType] = UNSET
+    ssrs_is_shared_data_set: Union[bool, None, UnsetType] = UNSET
     """Whether the data set is shared."""
 
-    ssrs_data_set_query_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_query_parameters: Union[str, None, UnsetType] = UNSET
     """Query parameters for the data set."""
 
-    ssrs_data_set_data_source_connection_string: Union[str, None, UnsetType] = UNSET
+    ssrs_data_source_connection_string: Union[str, None, UnsetType] = UNSET
     """Data source connection string for the data set."""
 
-    ssrs_data_set_data_source_reference: Union[str, None, UnsetType] = UNSET
+    ssrs_data_source_reference: Union[str, None, UnsetType] = UNSET
     """Data source reference for the data set."""
 
-    ssrs_data_set_extension: Union[str, None, UnsetType] = UNSET
+    ssrs_extension: Union[str, None, UnsetType] = UNSET
     """Extension for the data set."""
 
-    ssrs_data_set_reference_table_names: Union[List[str], None, UnsetType] = UNSET
+    ssrs_reference_table_names: Union[List[str], None, UnsetType] = UNSET
     """Reference table names for the data set."""
 
-    ssrs_data_set_cube_name: Union[str, None, UnsetType] = UNSET
+    ssrs_cube_name: Union[str, None, UnsetType] = UNSET
     """Cube name for the data set."""
 
-    ssrs_data_set_stored_procedure_name: Union[str, None, UnsetType] = UNSET
+    ssrs_stored_procedure_name: Union[str, None, UnsetType] = UNSET
     """Stored procedure name for the data set."""
 
-    ssrs_data_set_processed_sql: Union[str, None, UnsetType] = UNSET
+    ssrs_processed_sql: Union[str, None, UnsetType] = UNSET
     """Processed SQL for the data set."""
 
-    ssrs_data_set_log_messages: Union[str, None, UnsetType] = UNSET
+    ssrs_log_messages: Union[str, None, UnsetType] = UNSET
     """Log messages for the data set."""
 
-    ssrs_data_set_error_code: Union[str, None, UnsetType] = UNSET
+    ssrs_error_code: Union[str, None, UnsetType] = UNSET
     """Error code for the data set."""
 
-    ssrs_data_set_connected: Union[bool, None, UnsetType] = UNSET
+    ssrs_connected: Union[bool, None, UnsetType] = UNSET
     """Whether the data set is connected."""
 
-    ssrs_data_set_field_count: Union[int, None, UnsetType] = UNSET
+    ssrs_field_count: Union[int, None, UnsetType] = UNSET
     """Number of fields in this dataset."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -606,6 +611,9 @@ class SSRSDataSetRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -698,6 +706,7 @@ _SSRS_DATA_SET_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -723,22 +732,20 @@ def _populate_ssrs_data_set_attrs(
 ) -> None:
     """Populate SSRSDataSet-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.ssrs_data_set_sql_query = obj.ssrs_data_set_sql_query
-    attrs.ssrs_data_set_is_shared_data_set = obj.ssrs_data_set_is_shared_data_set
-    attrs.ssrs_data_set_query_parameters = obj.ssrs_data_set_query_parameters
-    attrs.ssrs_data_set_data_source_connection_string = (
-        obj.ssrs_data_set_data_source_connection_string
-    )
-    attrs.ssrs_data_set_data_source_reference = obj.ssrs_data_set_data_source_reference
-    attrs.ssrs_data_set_extension = obj.ssrs_data_set_extension
-    attrs.ssrs_data_set_reference_table_names = obj.ssrs_data_set_reference_table_names
-    attrs.ssrs_data_set_cube_name = obj.ssrs_data_set_cube_name
-    attrs.ssrs_data_set_stored_procedure_name = obj.ssrs_data_set_stored_procedure_name
-    attrs.ssrs_data_set_processed_sql = obj.ssrs_data_set_processed_sql
-    attrs.ssrs_data_set_log_messages = obj.ssrs_data_set_log_messages
-    attrs.ssrs_data_set_error_code = obj.ssrs_data_set_error_code
-    attrs.ssrs_data_set_connected = obj.ssrs_data_set_connected
-    attrs.ssrs_data_set_field_count = obj.ssrs_data_set_field_count
+    attrs.ssrs_sql_query = obj.ssrs_sql_query
+    attrs.ssrs_is_shared_data_set = obj.ssrs_is_shared_data_set
+    attrs.ssrs_query_parameters = obj.ssrs_query_parameters
+    attrs.ssrs_data_source_connection_string = obj.ssrs_data_source_connection_string
+    attrs.ssrs_data_source_reference = obj.ssrs_data_source_reference
+    attrs.ssrs_extension = obj.ssrs_extension
+    attrs.ssrs_reference_table_names = obj.ssrs_reference_table_names
+    attrs.ssrs_cube_name = obj.ssrs_cube_name
+    attrs.ssrs_stored_procedure_name = obj.ssrs_stored_procedure_name
+    attrs.ssrs_processed_sql = obj.ssrs_processed_sql
+    attrs.ssrs_log_messages = obj.ssrs_log_messages
+    attrs.ssrs_error_code = obj.ssrs_error_code
+    attrs.ssrs_connected = obj.ssrs_connected
+    attrs.ssrs_field_count = obj.ssrs_field_count
     attrs.ssrs_path = obj.ssrs_path
     attrs.ssrs_used_in_reports = obj.ssrs_used_in_reports
     attrs.ssrs_hidden = obj.ssrs_hidden
@@ -758,28 +765,22 @@ def _populate_ssrs_data_set_attrs(
 def _extract_ssrs_data_set_attrs(attrs: SSRSDataSetAttributes) -> dict:
     """Extract all SSRSDataSet attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["ssrs_data_set_sql_query"] = attrs.ssrs_data_set_sql_query
-    result["ssrs_data_set_is_shared_data_set"] = attrs.ssrs_data_set_is_shared_data_set
-    result["ssrs_data_set_query_parameters"] = attrs.ssrs_data_set_query_parameters
-    result["ssrs_data_set_data_source_connection_string"] = (
-        attrs.ssrs_data_set_data_source_connection_string
+    result["ssrs_sql_query"] = attrs.ssrs_sql_query
+    result["ssrs_is_shared_data_set"] = attrs.ssrs_is_shared_data_set
+    result["ssrs_query_parameters"] = attrs.ssrs_query_parameters
+    result["ssrs_data_source_connection_string"] = (
+        attrs.ssrs_data_source_connection_string
     )
-    result["ssrs_data_set_data_source_reference"] = (
-        attrs.ssrs_data_set_data_source_reference
-    )
-    result["ssrs_data_set_extension"] = attrs.ssrs_data_set_extension
-    result["ssrs_data_set_reference_table_names"] = (
-        attrs.ssrs_data_set_reference_table_names
-    )
-    result["ssrs_data_set_cube_name"] = attrs.ssrs_data_set_cube_name
-    result["ssrs_data_set_stored_procedure_name"] = (
-        attrs.ssrs_data_set_stored_procedure_name
-    )
-    result["ssrs_data_set_processed_sql"] = attrs.ssrs_data_set_processed_sql
-    result["ssrs_data_set_log_messages"] = attrs.ssrs_data_set_log_messages
-    result["ssrs_data_set_error_code"] = attrs.ssrs_data_set_error_code
-    result["ssrs_data_set_connected"] = attrs.ssrs_data_set_connected
-    result["ssrs_data_set_field_count"] = attrs.ssrs_data_set_field_count
+    result["ssrs_data_source_reference"] = attrs.ssrs_data_source_reference
+    result["ssrs_extension"] = attrs.ssrs_extension
+    result["ssrs_reference_table_names"] = attrs.ssrs_reference_table_names
+    result["ssrs_cube_name"] = attrs.ssrs_cube_name
+    result["ssrs_stored_procedure_name"] = attrs.ssrs_stored_procedure_name
+    result["ssrs_processed_sql"] = attrs.ssrs_processed_sql
+    result["ssrs_log_messages"] = attrs.ssrs_log_messages
+    result["ssrs_error_code"] = attrs.ssrs_error_code
+    result["ssrs_connected"] = attrs.ssrs_connected
+    result["ssrs_field_count"] = attrs.ssrs_field_count
     result["ssrs_path"] = attrs.ssrs_path
     result["ssrs_used_in_reports"] = attrs.ssrs_used_in_reports
     result["ssrs_hidden"] = attrs.ssrs_hidden
@@ -866,6 +867,7 @@ def _ssrs_data_set_from_nested(nested: SSRSDataSetNested) -> SSRSDataSet:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -904,48 +906,32 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SSRSDataSet.SSRS_DATA_SET_SQL_QUERY = KeywordField(
-    "ssrsDataSetSqlQuery", "ssrsDataSetSqlQuery"
+SSRSDataSet.SSRS_SQL_QUERY = KeywordField("ssrsSqlQuery", "ssrsSqlQuery")
+SSRSDataSet.SSRS_IS_SHARED_DATA_SET = BooleanField(
+    "ssrsIsSharedDataSet", "ssrsIsSharedDataSet"
 )
-SSRSDataSet.SSRS_DATA_SET_IS_SHARED_DATA_SET = BooleanField(
-    "ssrsDataSetIsSharedDataSet", "ssrsDataSetIsSharedDataSet"
+SSRSDataSet.SSRS_QUERY_PARAMETERS = KeywordField(
+    "ssrsQueryParameters", "ssrsQueryParameters"
 )
-SSRSDataSet.SSRS_DATA_SET_QUERY_PARAMETERS = KeywordField(
-    "ssrsDataSetQueryParameters", "ssrsDataSetQueryParameters"
+SSRSDataSet.SSRS_DATA_SOURCE_CONNECTION_STRING = KeywordField(
+    "ssrsDataSourceConnectionString", "ssrsDataSourceConnectionString"
 )
-SSRSDataSet.SSRS_DATA_SET_DATA_SOURCE_CONNECTION_STRING = KeywordField(
-    "ssrsDataSetDataSourceConnectionString", "ssrsDataSetDataSourceConnectionString"
+SSRSDataSet.SSRS_DATA_SOURCE_REFERENCE = KeywordField(
+    "ssrsDataSourceReference", "ssrsDataSourceReference"
 )
-SSRSDataSet.SSRS_DATA_SET_DATA_SOURCE_REFERENCE = KeywordField(
-    "ssrsDataSetDataSourceReference", "ssrsDataSetDataSourceReference"
+SSRSDataSet.SSRS_EXTENSION = KeywordField("ssrsExtension", "ssrsExtension")
+SSRSDataSet.SSRS_REFERENCE_TABLE_NAMES = KeywordField(
+    "ssrsReferenceTableNames", "ssrsReferenceTableNames"
 )
-SSRSDataSet.SSRS_DATA_SET_EXTENSION = KeywordField(
-    "ssrsDataSetExtension", "ssrsDataSetExtension"
+SSRSDataSet.SSRS_CUBE_NAME = KeywordField("ssrsCubeName", "ssrsCubeName")
+SSRSDataSet.SSRS_STORED_PROCEDURE_NAME = KeywordField(
+    "ssrsStoredProcedureName", "ssrsStoredProcedureName"
 )
-SSRSDataSet.SSRS_DATA_SET_REFERENCE_TABLE_NAMES = KeywordField(
-    "ssrsDataSetReferenceTableNames", "ssrsDataSetReferenceTableNames"
-)
-SSRSDataSet.SSRS_DATA_SET_CUBE_NAME = KeywordField(
-    "ssrsDataSetCubeName", "ssrsDataSetCubeName"
-)
-SSRSDataSet.SSRS_DATA_SET_STORED_PROCEDURE_NAME = KeywordField(
-    "ssrsDataSetStoredProcedureName", "ssrsDataSetStoredProcedureName"
-)
-SSRSDataSet.SSRS_DATA_SET_PROCESSED_SQL = KeywordField(
-    "ssrsDataSetProcessedSql", "ssrsDataSetProcessedSql"
-)
-SSRSDataSet.SSRS_DATA_SET_LOG_MESSAGES = KeywordField(
-    "ssrsDataSetLogMessages", "ssrsDataSetLogMessages"
-)
-SSRSDataSet.SSRS_DATA_SET_ERROR_CODE = KeywordField(
-    "ssrsDataSetErrorCode", "ssrsDataSetErrorCode"
-)
-SSRSDataSet.SSRS_DATA_SET_CONNECTED = BooleanField(
-    "ssrsDataSetConnected", "ssrsDataSetConnected"
-)
-SSRSDataSet.SSRS_DATA_SET_FIELD_COUNT = NumericField(
-    "ssrsDataSetFieldCount", "ssrsDataSetFieldCount"
-)
+SSRSDataSet.SSRS_PROCESSED_SQL = KeywordField("ssrsProcessedSql", "ssrsProcessedSql")
+SSRSDataSet.SSRS_LOG_MESSAGES = KeywordField("ssrsLogMessages", "ssrsLogMessages")
+SSRSDataSet.SSRS_ERROR_CODE = KeywordField("ssrsErrorCode", "ssrsErrorCode")
+SSRSDataSet.SSRS_CONNECTED = BooleanField("ssrsConnected", "ssrsConnected")
+SSRSDataSet.SSRS_FIELD_COUNT = NumericField("ssrsFieldCount", "ssrsFieldCount")
 SSRSDataSet.SSRS_PATH = KeywordField("ssrsPath", "ssrsPath")
 SSRSDataSet.SSRS_USED_IN_REPORTS = BooleanField(
     "ssrsUsedInReports", "ssrsUsedInReports"
@@ -995,6 +981,7 @@ SSRSDataSet.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SSRSDataSet.MEANINGS = RelationField("meanings")
+SSRSDataSet.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SSRSDataSet.MC_MONITORS = RelationField("mcMonitors")
 SSRSDataSet.MC_INCIDENTS = RelationField("mcIncidents")
 SSRSDataSet.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

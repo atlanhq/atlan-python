@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
+from .agent_related import RelatedAgent
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -44,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -80,6 +82,7 @@ class ContextRepository(Asset):
     APPLICATION_FIELD: ClassVar[Any] = None
     CONTEXT_ARTIFACTS: ClassVar[Any] = None
     CONTEXT_OUTPUT_SKILL: ClassVar[Any] = None
+    CONTEXT_OUTPUT_AGENTS: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     CONTEXT_INPUT_ASSETS: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
@@ -93,6 +96,7 @@ class ContextRepository(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -153,6 +157,9 @@ class ContextRepository(Asset):
     context_output_skill: Union[RelatedSkill, None, UnsetType] = UNSET
     """Skill produced by this context repository."""
 
+    context_output_agents: Union[List[RelatedAgent], None, UnsetType] = UNSET
+    """Agents produced by this context repository."""
+
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
@@ -197,6 +204,9 @@ class ContextRepository(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -415,6 +425,9 @@ class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
     context_output_skill: Union[RelatedSkill, None, UnsetType] = UNSET
     """Skill produced by this context repository."""
 
+    context_output_agents: Union[List[RelatedAgent], None, UnsetType] = UNSET
+    """Agents produced by this context repository."""
+
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
@@ -459,6 +472,9 @@ class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -538,6 +554,7 @@ _CONTEXT_REPOSITORY_REL_FIELDS: List[str] = [
     "application_field",
     "context_artifacts",
     "context_output_skill",
+    "context_output_agents",
     "context_repositories",
     "context_input_assets",
     "data_contract_latest",
@@ -551,6 +568,7 @@ _CONTEXT_REPOSITORY_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -683,6 +701,7 @@ def _context_repository_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -750,6 +769,7 @@ ContextRepository.APPLICATION = RelationField("application")
 ContextRepository.APPLICATION_FIELD = RelationField("applicationField")
 ContextRepository.CONTEXT_ARTIFACTS = RelationField("contextArtifacts")
 ContextRepository.CONTEXT_OUTPUT_SKILL = RelationField("contextOutputSkill")
+ContextRepository.CONTEXT_OUTPUT_AGENTS = RelationField("contextOutputAgents")
 ContextRepository.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 ContextRepository.CONTEXT_INPUT_ASSETS = RelationField("contextInputAssets")
 ContextRepository.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
@@ -769,6 +789,7 @@ ContextRepository.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 ContextRepository.MEANINGS = RelationField("meanings")
+ContextRepository.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 ContextRepository.MC_MONITORS = RelationField("mcMonitors")
 ContextRepository.MC_INCIDENTS = RelationField("mcIncidents")
 ContextRepository.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

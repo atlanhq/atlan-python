@@ -56,6 +56,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -82,18 +83,18 @@ class DatabricksAIModelVersion(Asset):
     Instance of an ai model version in databricks.
     """
 
-    DATABRICKS_AI_MODEL_VERSION_ID: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_RUN_ID: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_RUN_NAME: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_RUN_START_TIME: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_RUN_END_TIME: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_STATUS: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_ALIASES: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_DATASET_COUNT: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_SOURCE: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_ARTIFACT_URI: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_METRICS: ClassVar[Any] = None
-    DATABRICKS_AI_MODEL_VERSION_PARAMS: ClassVar[Any] = None
+    DATABRICKS_ID: ClassVar[Any] = None
+    DATABRICKS_RUN_ID: ClassVar[Any] = None
+    DATABRICKS_RUN_NAME: ClassVar[Any] = None
+    DATABRICKS_RUN_START_TIME: ClassVar[Any] = None
+    DATABRICKS_RUN_END_TIME: ClassVar[Any] = None
+    DATABRICKS_STATUS: ClassVar[Any] = None
+    DATABRICKS_ALIASES: ClassVar[Any] = None
+    DATABRICKS_DATASET_COUNT: ClassVar[Any] = None
+    DATABRICKS_SOURCE: ClassVar[Any] = None
+    DATABRICKS_ARTIFACT_URI: ClassVar[Any] = None
+    DATABRICKS_METRICS: ClassVar[Any] = None
+    DATABRICKS_PARAMS: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -163,6 +164,7 @@ class DatabricksAIModelVersion(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -183,64 +185,40 @@ class DatabricksAIModelVersion(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_ai_model_version_id: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionId"
-    )
+    databricks_id: Union[int, None, UnsetType] = UNSET
     """The id of the model, unique to every version."""
 
-    databricks_ai_model_version_run_id: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionRunId"
-    )
+    databricks_run_id: Union[str, None, UnsetType] = UNSET
     """The run id of the model."""
 
-    databricks_ai_model_version_run_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionRunName"
-    )
+    databricks_run_name: Union[str, None, UnsetType] = UNSET
     """The run name of the model."""
 
-    databricks_ai_model_version_run_start_time: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionRunStartTime")
-    )
+    databricks_run_start_time: Union[int, None, UnsetType] = UNSET
     """The run start time of the model."""
 
-    databricks_ai_model_version_run_end_time: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionRunEndTime")
-    )
+    databricks_run_end_time: Union[int, None, UnsetType] = UNSET
     """The run end time of the model."""
 
-    databricks_ai_model_version_status: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionStatus"
-    )
+    databricks_status: Union[str, None, UnsetType] = UNSET
     """The status of the model."""
 
-    databricks_ai_model_version_aliases: Union[List[str], None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionAliases")
-    )
+    databricks_aliases: Union[List[str], None, UnsetType] = UNSET
     """The aliases of the model."""
 
-    databricks_ai_model_version_dataset_count: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionDatasetCount")
-    )
+    databricks_dataset_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets."""
 
-    databricks_ai_model_version_source: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionSource"
-    )
+    databricks_source: Union[str, None, UnsetType] = UNSET
     """Source artifact link for the model."""
 
-    databricks_ai_model_version_artifact_uri: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionArtifactUri")
-    )
+    databricks_artifact_uri: Union[str, None, UnsetType] = UNSET
     """Artifact uri for the model."""
 
-    databricks_ai_model_version_metrics: Union[
-        List[Dict[str, Any]], None, UnsetType
-    ] = msgspec.field(default=UNSET, name="databricksAIModelVersionMetrics")
+    databricks_metrics: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Metrics for an individual experiment."""
 
-    databricks_ai_model_version_params: Union[Dict[str, str], None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionParams")
-    )
+    databricks_params: Union[Dict[str, str], None, UnsetType] = UNSET
     """Params with key mapped to value for an individual experiment."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -476,6 +454,9 @@ class DatabricksAIModelVersion(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -689,64 +670,40 @@ class DatabricksAIModelVersion(Asset):
 class DatabricksAIModelVersionAttributes(AssetAttributes):
     """DatabricksAIModelVersion-specific attributes for nested API format."""
 
-    databricks_ai_model_version_id: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionId"
-    )
+    databricks_id: Union[int, None, UnsetType] = UNSET
     """The id of the model, unique to every version."""
 
-    databricks_ai_model_version_run_id: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionRunId"
-    )
+    databricks_run_id: Union[str, None, UnsetType] = UNSET
     """The run id of the model."""
 
-    databricks_ai_model_version_run_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionRunName"
-    )
+    databricks_run_name: Union[str, None, UnsetType] = UNSET
     """The run name of the model."""
 
-    databricks_ai_model_version_run_start_time: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionRunStartTime")
-    )
+    databricks_run_start_time: Union[int, None, UnsetType] = UNSET
     """The run start time of the model."""
 
-    databricks_ai_model_version_run_end_time: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionRunEndTime")
-    )
+    databricks_run_end_time: Union[int, None, UnsetType] = UNSET
     """The run end time of the model."""
 
-    databricks_ai_model_version_status: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionStatus"
-    )
+    databricks_status: Union[str, None, UnsetType] = UNSET
     """The status of the model."""
 
-    databricks_ai_model_version_aliases: Union[List[str], None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionAliases")
-    )
+    databricks_aliases: Union[List[str], None, UnsetType] = UNSET
     """The aliases of the model."""
 
-    databricks_ai_model_version_dataset_count: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionDatasetCount")
-    )
+    databricks_dataset_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets."""
 
-    databricks_ai_model_version_source: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="databricksAIModelVersionSource"
-    )
+    databricks_source: Union[str, None, UnsetType] = UNSET
     """Source artifact link for the model."""
 
-    databricks_ai_model_version_artifact_uri: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionArtifactUri")
-    )
+    databricks_artifact_uri: Union[str, None, UnsetType] = UNSET
     """Artifact uri for the model."""
 
-    databricks_ai_model_version_metrics: Union[
-        List[Dict[str, Any]], None, UnsetType
-    ] = msgspec.field(default=UNSET, name="databricksAIModelVersionMetrics")
+    databricks_metrics: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Metrics for an individual experiment."""
 
-    databricks_ai_model_version_params: Union[Dict[str, str], None, UnsetType] = (
-        msgspec.field(default=UNSET, name="databricksAIModelVersionParams")
-    )
+    databricks_params: Union[Dict[str, str], None, UnsetType] = UNSET
     """Params with key mapped to value for an individual experiment."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -986,6 +943,9 @@ class DatabricksAIModelVersionRelationshipAttributes(AssetRelationshipAttributes
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1102,6 +1062,7 @@ _DATABRICKS_AI_MODEL_VERSION_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1129,28 +1090,18 @@ def _populate_databricks_ai_model_version_attrs(
 ) -> None:
     """Populate DatabricksAIModelVersion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_ai_model_version_id = obj.databricks_ai_model_version_id
-    attrs.databricks_ai_model_version_run_id = obj.databricks_ai_model_version_run_id
-    attrs.databricks_ai_model_version_run_name = (
-        obj.databricks_ai_model_version_run_name
-    )
-    attrs.databricks_ai_model_version_run_start_time = (
-        obj.databricks_ai_model_version_run_start_time
-    )
-    attrs.databricks_ai_model_version_run_end_time = (
-        obj.databricks_ai_model_version_run_end_time
-    )
-    attrs.databricks_ai_model_version_status = obj.databricks_ai_model_version_status
-    attrs.databricks_ai_model_version_aliases = obj.databricks_ai_model_version_aliases
-    attrs.databricks_ai_model_version_dataset_count = (
-        obj.databricks_ai_model_version_dataset_count
-    )
-    attrs.databricks_ai_model_version_source = obj.databricks_ai_model_version_source
-    attrs.databricks_ai_model_version_artifact_uri = (
-        obj.databricks_ai_model_version_artifact_uri
-    )
-    attrs.databricks_ai_model_version_metrics = obj.databricks_ai_model_version_metrics
-    attrs.databricks_ai_model_version_params = obj.databricks_ai_model_version_params
+    attrs.databricks_id = obj.databricks_id
+    attrs.databricks_run_id = obj.databricks_run_id
+    attrs.databricks_run_name = obj.databricks_run_name
+    attrs.databricks_run_start_time = obj.databricks_run_start_time
+    attrs.databricks_run_end_time = obj.databricks_run_end_time
+    attrs.databricks_status = obj.databricks_status
+    attrs.databricks_aliases = obj.databricks_aliases
+    attrs.databricks_dataset_count = obj.databricks_dataset_count
+    attrs.databricks_source = obj.databricks_source
+    attrs.databricks_artifact_uri = obj.databricks_artifact_uri
+    attrs.databricks_metrics = obj.databricks_metrics
+    attrs.databricks_params = obj.databricks_params
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1210,40 +1161,18 @@ def _extract_databricks_ai_model_version_attrs(
 ) -> dict:
     """Extract all DatabricksAIModelVersion attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_ai_model_version_id"] = attrs.databricks_ai_model_version_id
-    result["databricks_ai_model_version_run_id"] = (
-        attrs.databricks_ai_model_version_run_id
-    )
-    result["databricks_ai_model_version_run_name"] = (
-        attrs.databricks_ai_model_version_run_name
-    )
-    result["databricks_ai_model_version_run_start_time"] = (
-        attrs.databricks_ai_model_version_run_start_time
-    )
-    result["databricks_ai_model_version_run_end_time"] = (
-        attrs.databricks_ai_model_version_run_end_time
-    )
-    result["databricks_ai_model_version_status"] = (
-        attrs.databricks_ai_model_version_status
-    )
-    result["databricks_ai_model_version_aliases"] = (
-        attrs.databricks_ai_model_version_aliases
-    )
-    result["databricks_ai_model_version_dataset_count"] = (
-        attrs.databricks_ai_model_version_dataset_count
-    )
-    result["databricks_ai_model_version_source"] = (
-        attrs.databricks_ai_model_version_source
-    )
-    result["databricks_ai_model_version_artifact_uri"] = (
-        attrs.databricks_ai_model_version_artifact_uri
-    )
-    result["databricks_ai_model_version_metrics"] = (
-        attrs.databricks_ai_model_version_metrics
-    )
-    result["databricks_ai_model_version_params"] = (
-        attrs.databricks_ai_model_version_params
-    )
+    result["databricks_id"] = attrs.databricks_id
+    result["databricks_run_id"] = attrs.databricks_run_id
+    result["databricks_run_name"] = attrs.databricks_run_name
+    result["databricks_run_start_time"] = attrs.databricks_run_start_time
+    result["databricks_run_end_time"] = attrs.databricks_run_end_time
+    result["databricks_status"] = attrs.databricks_status
+    result["databricks_aliases"] = attrs.databricks_aliases
+    result["databricks_dataset_count"] = attrs.databricks_dataset_count
+    result["databricks_source"] = attrs.databricks_source
+    result["databricks_artifact_uri"] = attrs.databricks_artifact_uri
+    result["databricks_metrics"] = attrs.databricks_metrics
+    result["databricks_params"] = attrs.databricks_params
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1382,6 +1311,7 @@ def _databricks_ai_model_version_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1427,41 +1357,39 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_ID = NumericField(
-    "databricksAIModelVersionId", "databricksAIModelVersionId"
+DatabricksAIModelVersion.DATABRICKS_ID = NumericField("databricksId", "databricksId")
+DatabricksAIModelVersion.DATABRICKS_RUN_ID = KeywordField(
+    "databricksRunId", "databricksRunId"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_RUN_ID = KeywordField(
-    "databricksAIModelVersionRunId", "databricksAIModelVersionRunId"
+DatabricksAIModelVersion.DATABRICKS_RUN_NAME = KeywordField(
+    "databricksRunName", "databricksRunName"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_RUN_NAME = KeywordField(
-    "databricksAIModelVersionRunName", "databricksAIModelVersionRunName"
+DatabricksAIModelVersion.DATABRICKS_RUN_START_TIME = NumericField(
+    "databricksRunStartTime", "databricksRunStartTime"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_RUN_START_TIME = NumericField(
-    "databricksAIModelVersionRunStartTime", "databricksAIModelVersionRunStartTime"
+DatabricksAIModelVersion.DATABRICKS_RUN_END_TIME = NumericField(
+    "databricksRunEndTime", "databricksRunEndTime"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_RUN_END_TIME = NumericField(
-    "databricksAIModelVersionRunEndTime", "databricksAIModelVersionRunEndTime"
+DatabricksAIModelVersion.DATABRICKS_STATUS = KeywordField(
+    "databricksStatus", "databricksStatus"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_STATUS = KeywordField(
-    "databricksAIModelVersionStatus", "databricksAIModelVersionStatus"
+DatabricksAIModelVersion.DATABRICKS_ALIASES = KeywordField(
+    "databricksAliases", "databricksAliases"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_ALIASES = KeywordField(
-    "databricksAIModelVersionAliases", "databricksAIModelVersionAliases"
+DatabricksAIModelVersion.DATABRICKS_DATASET_COUNT = NumericField(
+    "databricksDatasetCount", "databricksDatasetCount"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_DATASET_COUNT = NumericField(
-    "databricksAIModelVersionDatasetCount", "databricksAIModelVersionDatasetCount"
+DatabricksAIModelVersion.DATABRICKS_SOURCE = KeywordField(
+    "databricksSource", "databricksSource"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_SOURCE = KeywordField(
-    "databricksAIModelVersionSource", "databricksAIModelVersionSource"
+DatabricksAIModelVersion.DATABRICKS_ARTIFACT_URI = KeywordField(
+    "databricksArtifactUri", "databricksArtifactUri"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_ARTIFACT_URI = KeywordField(
-    "databricksAIModelVersionArtifactUri", "databricksAIModelVersionArtifactUri"
+DatabricksAIModelVersion.DATABRICKS_METRICS = KeywordField(
+    "databricksMetrics", "databricksMetrics"
 )
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_METRICS = KeywordField(
-    "databricksAIModelVersionMetrics", "databricksAIModelVersionMetrics"
-)
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_VERSION_PARAMS = KeywordField(
-    "databricksAIModelVersionParams", "databricksAIModelVersionParams"
+DatabricksAIModelVersion.DATABRICKS_PARAMS = KeywordField(
+    "databricksParams", "databricksParams"
 )
 DatabricksAIModelVersion.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksAIModelVersion.QUERY_USER_COUNT = NumericField(
@@ -1626,6 +1554,7 @@ DatabricksAIModelVersion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationFi
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DatabricksAIModelVersion.MEANINGS = RelationField("meanings")
+DatabricksAIModelVersion.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DatabricksAIModelVersion.MC_MONITORS = RelationField("mcMonitors")
 DatabricksAIModelVersion.MC_INCIDENTS = RelationField("mcIncidents")
 DatabricksAIModelVersion.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

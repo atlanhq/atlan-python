@@ -52,6 +52,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -78,12 +79,12 @@ class DatabricksDashboard(Asset):
     Instance of a Databricks AI/BI dashboard in Atlan.
     """
 
-    DATABRICKS_DASHBOARD_PATH: ClassVar[Any] = None
-    DATABRICKS_DASHBOARD_WORKSPACE_ID: ClassVar[Any] = None
-    DATABRICKS_DASHBOARD_WAREHOUSE_ID: ClassVar[Any] = None
-    DATABRICKS_DASHBOARD_ETAG: ClassVar[Any] = None
-    DATABRICKS_DASHBOARD_IS_GENIE_SPACE_ENABLED: ClassVar[Any] = None
-    DATABRICKS_DASHBOARD_LIFECYCLE_STATE: ClassVar[Any] = None
+    DATABRICKS_PATH: ClassVar[Any] = None
+    DATABRICKS_WORKSPACE_ID: ClassVar[Any] = None
+    DATABRICKS_WAREHOUSE_ID: ClassVar[Any] = None
+    DATABRICKS_ETAG: ClassVar[Any] = None
+    DATABRICKS_IS_GENIE_SPACE_ENABLED: ClassVar[Any] = None
+    DATABRICKS_LIFECYCLE_STATE: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -141,6 +142,7 @@ class DatabricksDashboard(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -161,22 +163,22 @@ class DatabricksDashboard(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_dashboard_path: Union[str, None, UnsetType] = UNSET
+    databricks_path: Union[str, None, UnsetType] = UNSET
     """Workspace path of the dashboard asset, including its file name. The parent folder path can be derived by dropping the last path segment."""
 
-    databricks_dashboard_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the workspace containing the dashboard."""
 
-    databricks_dashboard_warehouse_id: Union[str, None, UnsetType] = UNSET
+    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the SQL warehouse backing the dashboard."""
 
-    databricks_dashboard_etag: Union[str, None, UnsetType] = UNSET
+    databricks_etag: Union[str, None, UnsetType] = UNSET
     """Entity tag used as a change token for the dashboard."""
 
-    databricks_dashboard_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
+    databricks_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether a Genie space is enabled for the dashboard."""
 
-    databricks_dashboard_lifecycle_state: Union[str, None, UnsetType] = UNSET
+    databricks_lifecycle_state: Union[str, None, UnsetType] = UNSET
     """Lifecycle state of the dashboard."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -359,6 +361,9 @@ class DatabricksDashboard(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -558,22 +563,22 @@ class DatabricksDashboard(Asset):
 class DatabricksDashboardAttributes(AssetAttributes):
     """DatabricksDashboard-specific attributes for nested API format."""
 
-    databricks_dashboard_path: Union[str, None, UnsetType] = UNSET
+    databricks_path: Union[str, None, UnsetType] = UNSET
     """Workspace path of the dashboard asset, including its file name. The parent folder path can be derived by dropping the last path segment."""
 
-    databricks_dashboard_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the workspace containing the dashboard."""
 
-    databricks_dashboard_warehouse_id: Union[str, None, UnsetType] = UNSET
+    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the SQL warehouse backing the dashboard."""
 
-    databricks_dashboard_etag: Union[str, None, UnsetType] = UNSET
+    databricks_etag: Union[str, None, UnsetType] = UNSET
     """Entity tag used as a change token for the dashboard."""
 
-    databricks_dashboard_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
+    databricks_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether a Genie space is enabled for the dashboard."""
 
-    databricks_dashboard_lifecycle_state: Union[str, None, UnsetType] = UNSET
+    databricks_lifecycle_state: Union[str, None, UnsetType] = UNSET
     """Lifecycle state of the dashboard."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -761,6 +766,9 @@ class DatabricksDashboardRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -875,6 +883,7 @@ _DATABRICKS_DASHBOARD_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -902,16 +911,12 @@ def _populate_databricks_dashboard_attrs(
 ) -> None:
     """Populate DatabricksDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_dashboard_path = obj.databricks_dashboard_path
-    attrs.databricks_dashboard_workspace_id = obj.databricks_dashboard_workspace_id
-    attrs.databricks_dashboard_warehouse_id = obj.databricks_dashboard_warehouse_id
-    attrs.databricks_dashboard_etag = obj.databricks_dashboard_etag
-    attrs.databricks_dashboard_is_genie_space_enabled = (
-        obj.databricks_dashboard_is_genie_space_enabled
-    )
-    attrs.databricks_dashboard_lifecycle_state = (
-        obj.databricks_dashboard_lifecycle_state
-    )
+    attrs.databricks_path = obj.databricks_path
+    attrs.databricks_workspace_id = obj.databricks_workspace_id
+    attrs.databricks_warehouse_id = obj.databricks_warehouse_id
+    attrs.databricks_etag = obj.databricks_etag
+    attrs.databricks_is_genie_space_enabled = obj.databricks_is_genie_space_enabled
+    attrs.databricks_lifecycle_state = obj.databricks_lifecycle_state
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -955,20 +960,14 @@ def _populate_databricks_dashboard_attrs(
 def _extract_databricks_dashboard_attrs(attrs: DatabricksDashboardAttributes) -> dict:
     """Extract all DatabricksDashboard attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_dashboard_path"] = attrs.databricks_dashboard_path
-    result["databricks_dashboard_workspace_id"] = (
-        attrs.databricks_dashboard_workspace_id
+    result["databricks_path"] = attrs.databricks_path
+    result["databricks_workspace_id"] = attrs.databricks_workspace_id
+    result["databricks_warehouse_id"] = attrs.databricks_warehouse_id
+    result["databricks_etag"] = attrs.databricks_etag
+    result["databricks_is_genie_space_enabled"] = (
+        attrs.databricks_is_genie_space_enabled
     )
-    result["databricks_dashboard_warehouse_id"] = (
-        attrs.databricks_dashboard_warehouse_id
-    )
-    result["databricks_dashboard_etag"] = attrs.databricks_dashboard_etag
-    result["databricks_dashboard_is_genie_space_enabled"] = (
-        attrs.databricks_dashboard_is_genie_space_enabled
-    )
-    result["databricks_dashboard_lifecycle_state"] = (
-        attrs.databricks_dashboard_lifecycle_state
-    )
+    result["databricks_lifecycle_state"] = attrs.databricks_lifecycle_state
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1091,6 +1090,7 @@ def _databricks_dashboard_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1134,23 +1134,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksDashboard.DATABRICKS_DASHBOARD_PATH = KeywordField(
-    "databricksDashboardPath", "databricksDashboardPath"
+DatabricksDashboard.DATABRICKS_PATH = KeywordField("databricksPath", "databricksPath")
+DatabricksDashboard.DATABRICKS_WORKSPACE_ID = KeywordField(
+    "databricksWorkspaceId", "databricksWorkspaceId"
 )
-DatabricksDashboard.DATABRICKS_DASHBOARD_WORKSPACE_ID = KeywordField(
-    "databricksDashboardWorkspaceId", "databricksDashboardWorkspaceId"
+DatabricksDashboard.DATABRICKS_WAREHOUSE_ID = KeywordField(
+    "databricksWarehouseId", "databricksWarehouseId"
 )
-DatabricksDashboard.DATABRICKS_DASHBOARD_WAREHOUSE_ID = KeywordField(
-    "databricksDashboardWarehouseId", "databricksDashboardWarehouseId"
+DatabricksDashboard.DATABRICKS_ETAG = KeywordField("databricksEtag", "databricksEtag")
+DatabricksDashboard.DATABRICKS_IS_GENIE_SPACE_ENABLED = BooleanField(
+    "databricksIsGenieSpaceEnabled", "databricksIsGenieSpaceEnabled"
 )
-DatabricksDashboard.DATABRICKS_DASHBOARD_ETAG = KeywordField(
-    "databricksDashboardEtag", "databricksDashboardEtag"
-)
-DatabricksDashboard.DATABRICKS_DASHBOARD_IS_GENIE_SPACE_ENABLED = BooleanField(
-    "databricksDashboardIsGenieSpaceEnabled", "databricksDashboardIsGenieSpaceEnabled"
-)
-DatabricksDashboard.DATABRICKS_DASHBOARD_LIFECYCLE_STATE = KeywordField(
-    "databricksDashboardLifecycleState", "databricksDashboardLifecycleState"
+DatabricksDashboard.DATABRICKS_LIFECYCLE_STATE = KeywordField(
+    "databricksLifecycleState", "databricksLifecycleState"
 )
 DatabricksDashboard.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksDashboard.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
@@ -1270,6 +1266,7 @@ DatabricksDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DatabricksDashboard.MEANINGS = RelationField("meanings")
+DatabricksDashboard.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DatabricksDashboard.MC_MONITORS = RelationField("mcMonitors")
 DatabricksDashboard.MC_INCIDENTS = RelationField("mcIncidents")
 DatabricksDashboard.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

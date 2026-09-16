@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -72,6 +73,7 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
     """
 
     SMUS_PUBLISHED_ASSET_SUBSCRIPTIONS_COUNT: ClassVar[Any] = None
+    SMUS_PUBLISHED_ASSET_FILTERS: ClassVar[Any] = None
     SMUS_DOMAIN_NAME: ClassVar[Any] = None
     SMUS_DOMAIN_ID: ClassVar[Any] = None
     SMUS_DOMAIN_UNIT_NAME: ClassVar[Any] = None
@@ -101,6 +103,7 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -122,6 +125,9 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
 
     smus_published_asset_subscriptions_count: Union[int, None, UnsetType] = UNSET
     """Number of subscriptions for the published asset."""
+
+    smus_published_asset_filters: Union[str, None, UnsetType] = UNSET
+    """Asset filters configured for the published asset in SageMaker Unified Studio, as a JSON-serialized array. Each entry represents a row-level or column-level access restriction (id, name, description, effectiveRowFilter, effectiveColumnNames)."""
 
     smus_domain_name: Union[str, None, UnsetType] = UNSET
     """Name of the SageMaker Unified Studio domain."""
@@ -215,6 +221,9 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -421,6 +430,9 @@ class SageMakerUnifiedStudioPublishedAssetAttributes(AssetAttributes):
     smus_published_asset_subscriptions_count: Union[int, None, UnsetType] = UNSET
     """Number of subscriptions for the published asset."""
 
+    smus_published_asset_filters: Union[str, None, UnsetType] = UNSET
+    """Asset filters configured for the published asset in SageMaker Unified Studio, as a JSON-serialized array. Each entry represents a row-level or column-level access restriction (id, name, description, effectiveRowFilter, effectiveColumnNames)."""
+
     smus_domain_name: Union[str, None, UnsetType] = UNSET
     """Name of the SageMaker Unified Studio domain."""
 
@@ -519,6 +531,9 @@ class SageMakerUnifiedStudioPublishedAssetRelationshipAttributes(
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -621,6 +636,7 @@ _SAGE_MAKER_UNIFIED_STUDIO_PUBLISHED_ASSET_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -651,6 +667,7 @@ def _populate_sage_maker_unified_studio_published_asset_attrs(
     attrs.smus_published_asset_subscriptions_count = (
         obj.smus_published_asset_subscriptions_count
     )
+    attrs.smus_published_asset_filters = obj.smus_published_asset_filters
     attrs.smus_domain_name = obj.smus_domain_name
     attrs.smus_domain_id = obj.smus_domain_id
     attrs.smus_domain_unit_name = obj.smus_domain_unit_name
@@ -673,6 +690,7 @@ def _extract_sage_maker_unified_studio_published_asset_attrs(
     result["smus_published_asset_subscriptions_count"] = (
         attrs.smus_published_asset_subscriptions_count
     )
+    result["smus_published_asset_filters"] = attrs.smus_published_asset_filters
     result["smus_domain_name"] = attrs.smus_domain_name
     result["smus_domain_id"] = attrs.smus_domain_id
     result["smus_domain_unit_name"] = attrs.smus_domain_unit_name
@@ -765,6 +783,7 @@ def _sage_maker_unified_studio_published_asset_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -809,12 +828,16 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
     NumericField,
     RelationField,
+    TextField,
 )
 
 SageMakerUnifiedStudioPublishedAsset.SMUS_PUBLISHED_ASSET_SUBSCRIPTIONS_COUNT = (
     NumericField(
         "smusPublishedAssetSubscriptionsCount", "smusPublishedAssetSubscriptionsCount"
     )
+)
+SageMakerUnifiedStudioPublishedAsset.SMUS_PUBLISHED_ASSET_FILTERS = TextField(
+    "smusPublishedAssetFilters", "smusPublishedAssetFilters"
 )
 SageMakerUnifiedStudioPublishedAsset.SMUS_DOMAIN_NAME = KeywordField(
     "smusDomainName", "smusDomainName"
@@ -895,6 +918,9 @@ SageMakerUnifiedStudioPublishedAsset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES 
     RelationField("gcpDataplexAspectTypeMetadataEntities")
 )
 SageMakerUnifiedStudioPublishedAsset.MEANINGS = RelationField("meanings")
+SageMakerUnifiedStudioPublishedAsset.KNOWLEDGE_LINKED_FILES = RelationField(
+    "knowledgeLinkedFiles"
+)
 SageMakerUnifiedStudioPublishedAsset.MC_MONITORS = RelationField("mcMonitors")
 SageMakerUnifiedStudioPublishedAsset.MC_INCIDENTS = RelationField("mcIncidents")
 SageMakerUnifiedStudioPublishedAsset.PARTIAL_CHILD_FIELDS = RelationField(

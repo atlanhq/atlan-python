@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -74,8 +75,8 @@ class ThoughtspotColumn(Asset):
     THOUGHTSPOT_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
     THOUGHTSPOT_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
     THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME: ClassVar[Any] = None
-    THOUGHTSPOT_COLUMN_DATA_TYPE: ClassVar[Any] = None
-    THOUGHTSPOT_COLUMN_TYPE: ClassVar[Any] = None
+    THOUGHTSPOT_DATA_TYPE: ClassVar[Any] = None
+    THOUGHTSPOT_TYPE: ClassVar[Any] = None
     THOUGHTSPOT_CHART_TYPE: ClassVar[Any] = None
     THOUGHTSPOT_QUESTION_TEXT: ClassVar[Any] = None
     THOUGHTSPOT_JOIN_COUNT: ClassVar[Any] = None
@@ -98,6 +99,7 @@ class ThoughtspotColumn(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -126,10 +128,10 @@ class ThoughtspotColumn(Asset):
     thoughtspot_worksheet_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the worksheet in which this column exists."""
 
-    thoughtspot_column_data_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the technical format of data stored in a column such as integer, float, string, date, boolean etc."""
 
-    thoughtspot_column_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_type: Union[str, None, UnsetType] = UNSET
     """Defines the analytical role of a column in data analysis categorizing it as a dimension, measure, or attribute."""
 
     thoughtspot_chart_type: Union[str, None, UnsetType] = UNSET
@@ -203,6 +205,9 @@ class ThoughtspotColumn(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -407,10 +412,10 @@ class ThoughtspotColumnAttributes(AssetAttributes):
     thoughtspot_worksheet_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the worksheet in which this column exists."""
 
-    thoughtspot_column_data_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the technical format of data stored in a column such as integer, float, string, date, boolean etc."""
 
-    thoughtspot_column_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_type: Union[str, None, UnsetType] = UNSET
     """Defines the analytical role of a column in data analysis categorizing it as a dimension, measure, or attribute."""
 
     thoughtspot_chart_type: Union[str, None, UnsetType] = UNSET
@@ -488,6 +493,9 @@ class ThoughtspotColumnRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -586,6 +594,7 @@ _THOUGHTSPOT_COLUMN_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -617,8 +626,8 @@ def _populate_thoughtspot_column_attrs(
     attrs.thoughtspot_worksheet_qualified_name = (
         obj.thoughtspot_worksheet_qualified_name
     )
-    attrs.thoughtspot_column_data_type = obj.thoughtspot_column_data_type
-    attrs.thoughtspot_column_type = obj.thoughtspot_column_type
+    attrs.thoughtspot_data_type = obj.thoughtspot_data_type
+    attrs.thoughtspot_type = obj.thoughtspot_type
     attrs.thoughtspot_chart_type = obj.thoughtspot_chart_type
     attrs.thoughtspot_question_text = obj.thoughtspot_question_text
     attrs.thoughtspot_join_count = obj.thoughtspot_join_count
@@ -634,8 +643,8 @@ def _extract_thoughtspot_column_attrs(attrs: ThoughtspotColumnAttributes) -> dic
     result["thoughtspot_worksheet_qualified_name"] = (
         attrs.thoughtspot_worksheet_qualified_name
     )
-    result["thoughtspot_column_data_type"] = attrs.thoughtspot_column_data_type
-    result["thoughtspot_column_type"] = attrs.thoughtspot_column_type
+    result["thoughtspot_data_type"] = attrs.thoughtspot_data_type
+    result["thoughtspot_type"] = attrs.thoughtspot_type
     result["thoughtspot_chart_type"] = attrs.thoughtspot_chart_type
     result["thoughtspot_question_text"] = attrs.thoughtspot_question_text
     result["thoughtspot_join_count"] = attrs.thoughtspot_join_count
@@ -719,6 +728,7 @@ def _thoughtspot_column_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -776,12 +786,10 @@ ThoughtspotColumn.THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME = KeywordTextField(
     "thoughtspotWorksheetQualifiedName",
     "thoughtspotWorksheetQualifiedName.text",
 )
-ThoughtspotColumn.THOUGHTSPOT_COLUMN_DATA_TYPE = KeywordField(
-    "thoughtspotColumnDataType", "thoughtspotColumnDataType"
+ThoughtspotColumn.THOUGHTSPOT_DATA_TYPE = KeywordField(
+    "thoughtspotDataType", "thoughtspotDataType"
 )
-ThoughtspotColumn.THOUGHTSPOT_COLUMN_TYPE = KeywordField(
-    "thoughtspotColumnType", "thoughtspotColumnType"
-)
+ThoughtspotColumn.THOUGHTSPOT_TYPE = KeywordField("thoughtspotType", "thoughtspotType")
 ThoughtspotColumn.THOUGHTSPOT_CHART_TYPE = KeywordField(
     "thoughtspotChartType", "thoughtspotChartType"
 )
@@ -820,6 +828,7 @@ ThoughtspotColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 ThoughtspotColumn.MEANINGS = RelationField("meanings")
+ThoughtspotColumn.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 ThoughtspotColumn.MC_MONITORS = RelationField("mcMonitors")
 ThoughtspotColumn.MC_INCIDENTS = RelationField("mcIncidents")
 ThoughtspotColumn.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

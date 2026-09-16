@@ -45,6 +45,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .flow_related import RelatedFlowControlOperation
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -68,12 +69,12 @@ class SapDatasphereReplicationFlow(Asset):
     Instance of a SAP Datasphere replication flow in Atlan. A replication flow is a trigger that moves data from sources outside Datasphere (such as S/4HANA, SAP ECC, SAP BW, or S3) into tables created within a Datasphere space, which is modelled as a SQL Schema in Atlan.
     """
 
-    SAP_DATASPHERE_REPLICATION_FLOW_SPACE_NAME: ClassVar[Any] = None
-    SAP_DATASPHERE_REPLICATION_FLOW_SPACE_QUALIFIED_NAME: ClassVar[Any] = None
-    SAP_DATASPHERE_REPLICATION_FLOW_SOURCE_CONNECTION: ClassVar[Any] = None
-    SAP_DATASPHERE_REPLICATION_FLOW_TARGET_CONNECTION: ClassVar[Any] = None
-    SAP_DATASPHERE_REPLICATION_FLOW_LOAD_TYPE: ClassVar[Any] = None
-    SAP_DATASPHERE_REPLICATION_FLOW_DATASET_COUNT: ClassVar[Any] = None
+    SAP_SPACE_NAME: ClassVar[Any] = None
+    SAP_SPACE_QUALIFIED_NAME: ClassVar[Any] = None
+    SAP_SOURCE_CONNECTION: ClassVar[Any] = None
+    SAP_TARGET_CONNECTION: ClassVar[Any] = None
+    SAP_LOAD_TYPE: ClassVar[Any] = None
+    SAP_DATASET_COUNT: ClassVar[Any] = None
     FLOW_STARTED_AT: ClassVar[Any] = None
     FLOW_FINISHED_AT: ClassVar[Any] = None
     FLOW_STATUS: ClassVar[Any] = None
@@ -110,6 +111,7 @@ class SapDatasphereReplicationFlow(Asset):
     FLOW_CONTROLLED_BY: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -127,28 +129,22 @@ class SapDatasphereReplicationFlow(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sap_datasphere_replication_flow_space_name: Union[str, None, UnsetType] = UNSET
+    sap_space_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Datasphere space in which this replication flow runs and creates its target tables."""
 
-    sap_datasphere_replication_flow_space_qualified_name: Union[
-        str, None, UnsetType
-    ] = UNSET
+    sap_space_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Datasphere space in which this replication flow runs and creates its target tables."""
 
-    sap_datasphere_replication_flow_source_connection: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    sap_source_connection: Union[str, None, UnsetType] = UNSET
     """Name of the source connection from which this replication flow reads data, such as an S/4HANA, SAP ECC, SAP BW, or S3 connection outside Datasphere."""
 
-    sap_datasphere_replication_flow_target_connection: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    sap_target_connection: Union[str, None, UnsetType] = UNSET
     """Name of the target connection into which this replication flow writes data, such as the local Datasphere repository."""
 
-    sap_datasphere_replication_flow_load_type: Union[str, None, UnsetType] = UNSET
+    sap_load_type: Union[str, None, UnsetType] = UNSET
     """Type of load performed by this replication flow, such as INITIAL or INITIAL_AND_DELTA."""
 
-    sap_datasphere_replication_flow_dataset_count: Union[int, None, UnsetType] = UNSET
+    sap_dataset_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets moved by this replication flow."""
 
     flow_started_at: Union[int, None, UnsetType] = UNSET
@@ -266,6 +262,9 @@ class SapDatasphereReplicationFlow(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -453,28 +452,22 @@ class SapDatasphereReplicationFlow(Asset):
 class SapDatasphereReplicationFlowAttributes(AssetAttributes):
     """SapDatasphereReplicationFlow-specific attributes for nested API format."""
 
-    sap_datasphere_replication_flow_space_name: Union[str, None, UnsetType] = UNSET
+    sap_space_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Datasphere space in which this replication flow runs and creates its target tables."""
 
-    sap_datasphere_replication_flow_space_qualified_name: Union[
-        str, None, UnsetType
-    ] = UNSET
+    sap_space_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Datasphere space in which this replication flow runs and creates its target tables."""
 
-    sap_datasphere_replication_flow_source_connection: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    sap_source_connection: Union[str, None, UnsetType] = UNSET
     """Name of the source connection from which this replication flow reads data, such as an S/4HANA, SAP ECC, SAP BW, or S3 connection outside Datasphere."""
 
-    sap_datasphere_replication_flow_target_connection: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    sap_target_connection: Union[str, None, UnsetType] = UNSET
     """Name of the target connection into which this replication flow writes data, such as the local Datasphere repository."""
 
-    sap_datasphere_replication_flow_load_type: Union[str, None, UnsetType] = UNSET
+    sap_load_type: Union[str, None, UnsetType] = UNSET
     """Type of load performed by this replication flow, such as INITIAL or INITIAL_AND_DELTA."""
 
-    sap_datasphere_replication_flow_dataset_count: Union[int, None, UnsetType] = UNSET
+    sap_dataset_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets moved by this replication flow."""
 
     flow_started_at: Union[int, None, UnsetType] = UNSET
@@ -597,6 +590,9 @@ class SapDatasphereReplicationFlowRelationshipAttributes(AssetRelationshipAttrib
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -693,6 +689,7 @@ _SAP_DATASPHERE_REPLICATION_FLOW_REL_FIELDS: List[str] = [
     "flow_controlled_by",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -717,24 +714,12 @@ def _populate_sap_datasphere_replication_flow_attrs(
 ) -> None:
     """Populate SapDatasphereReplicationFlow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_datasphere_replication_flow_space_name = (
-        obj.sap_datasphere_replication_flow_space_name
-    )
-    attrs.sap_datasphere_replication_flow_space_qualified_name = (
-        obj.sap_datasphere_replication_flow_space_qualified_name
-    )
-    attrs.sap_datasphere_replication_flow_source_connection = (
-        obj.sap_datasphere_replication_flow_source_connection
-    )
-    attrs.sap_datasphere_replication_flow_target_connection = (
-        obj.sap_datasphere_replication_flow_target_connection
-    )
-    attrs.sap_datasphere_replication_flow_load_type = (
-        obj.sap_datasphere_replication_flow_load_type
-    )
-    attrs.sap_datasphere_replication_flow_dataset_count = (
-        obj.sap_datasphere_replication_flow_dataset_count
-    )
+    attrs.sap_space_name = obj.sap_space_name
+    attrs.sap_space_qualified_name = obj.sap_space_qualified_name
+    attrs.sap_source_connection = obj.sap_source_connection
+    attrs.sap_target_connection = obj.sap_target_connection
+    attrs.sap_load_type = obj.sap_load_type
+    attrs.sap_dataset_count = obj.sap_dataset_count
     attrs.flow_started_at = obj.flow_started_at
     attrs.flow_finished_at = obj.flow_finished_at
     attrs.flow_status = obj.flow_status
@@ -756,24 +741,12 @@ def _extract_sap_datasphere_replication_flow_attrs(
 ) -> dict:
     """Extract all SapDatasphereReplicationFlow attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_datasphere_replication_flow_space_name"] = (
-        attrs.sap_datasphere_replication_flow_space_name
-    )
-    result["sap_datasphere_replication_flow_space_qualified_name"] = (
-        attrs.sap_datasphere_replication_flow_space_qualified_name
-    )
-    result["sap_datasphere_replication_flow_source_connection"] = (
-        attrs.sap_datasphere_replication_flow_source_connection
-    )
-    result["sap_datasphere_replication_flow_target_connection"] = (
-        attrs.sap_datasphere_replication_flow_target_connection
-    )
-    result["sap_datasphere_replication_flow_load_type"] = (
-        attrs.sap_datasphere_replication_flow_load_type
-    )
-    result["sap_datasphere_replication_flow_dataset_count"] = (
-        attrs.sap_datasphere_replication_flow_dataset_count
-    )
+    result["sap_space_name"] = attrs.sap_space_name
+    result["sap_space_qualified_name"] = attrs.sap_space_qualified_name
+    result["sap_source_connection"] = attrs.sap_source_connection
+    result["sap_target_connection"] = attrs.sap_target_connection
+    result["sap_load_type"] = attrs.sap_load_type
+    result["sap_dataset_count"] = attrs.sap_dataset_count
     result["flow_started_at"] = attrs.flow_started_at
     result["flow_finished_at"] = attrs.flow_finished_at
     result["flow_status"] = attrs.flow_status
@@ -870,6 +843,7 @@ def _sap_datasphere_replication_flow_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -914,39 +888,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapDatasphereReplicationFlow.SAP_DATASPHERE_REPLICATION_FLOW_SPACE_NAME = (
-    KeywordTextField(
-        "sapDatasphereReplicationFlowSpaceName",
-        "sapDatasphereReplicationFlowSpaceName",
-        "sapDatasphereReplicationFlowSpaceName.text",
-    )
+SapDatasphereReplicationFlow.SAP_SPACE_NAME = KeywordTextField(
+    "sapSpaceName", "sapSpaceName", "sapSpaceName.text"
 )
-SapDatasphereReplicationFlow.SAP_DATASPHERE_REPLICATION_FLOW_SPACE_QUALIFIED_NAME = (
-    KeywordField(
-        "sapDatasphereReplicationFlowSpaceQualifiedName",
-        "sapDatasphereReplicationFlowSpaceQualifiedName",
-    )
+SapDatasphereReplicationFlow.SAP_SPACE_QUALIFIED_NAME = KeywordField(
+    "sapSpaceQualifiedName", "sapSpaceQualifiedName"
 )
-SapDatasphereReplicationFlow.SAP_DATASPHERE_REPLICATION_FLOW_SOURCE_CONNECTION = (
-    KeywordField(
-        "sapDatasphereReplicationFlowSourceConnection",
-        "sapDatasphereReplicationFlowSourceConnection",
-    )
+SapDatasphereReplicationFlow.SAP_SOURCE_CONNECTION = KeywordField(
+    "sapSourceConnection", "sapSourceConnection"
 )
-SapDatasphereReplicationFlow.SAP_DATASPHERE_REPLICATION_FLOW_TARGET_CONNECTION = (
-    KeywordField(
-        "sapDatasphereReplicationFlowTargetConnection",
-        "sapDatasphereReplicationFlowTargetConnection",
-    )
+SapDatasphereReplicationFlow.SAP_TARGET_CONNECTION = KeywordField(
+    "sapTargetConnection", "sapTargetConnection"
 )
-SapDatasphereReplicationFlow.SAP_DATASPHERE_REPLICATION_FLOW_LOAD_TYPE = KeywordField(
-    "sapDatasphereReplicationFlowLoadType", "sapDatasphereReplicationFlowLoadType"
-)
-SapDatasphereReplicationFlow.SAP_DATASPHERE_REPLICATION_FLOW_DATASET_COUNT = (
-    NumericField(
-        "sapDatasphereReplicationFlowDatasetCount",
-        "sapDatasphereReplicationFlowDatasetCount",
-    )
+SapDatasphereReplicationFlow.SAP_LOAD_TYPE = KeywordField("sapLoadType", "sapLoadType")
+SapDatasphereReplicationFlow.SAP_DATASET_COUNT = NumericField(
+    "sapDatasetCount", "sapDatasetCount"
 )
 SapDatasphereReplicationFlow.FLOW_STARTED_AT = NumericField(
     "flowStartedAt", "flowStartedAt"
@@ -1026,6 +982,9 @@ SapDatasphereReplicationFlow.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = Relati
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SapDatasphereReplicationFlow.MEANINGS = RelationField("meanings")
+SapDatasphereReplicationFlow.KNOWLEDGE_LINKED_FILES = RelationField(
+    "knowledgeLinkedFiles"
+)
 SapDatasphereReplicationFlow.MC_MONITORS = RelationField("mcMonitors")
 SapDatasphereReplicationFlow.MC_INCIDENTS = RelationField("mcIncidents")
 SapDatasphereReplicationFlow.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

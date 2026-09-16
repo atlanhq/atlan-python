@@ -52,6 +52,7 @@ from .fivetran_related import RelatedFivetranConnector
 from .flow_related import RelatedFlowControlOperation
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .power_bi_related import RelatedPowerBIDataflow
@@ -81,6 +82,7 @@ class Process(Asset):
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
     IS_PASS_THROUGH: ClassVar[Any] = None
+    PROCESS_DERIVATION: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -99,6 +101,7 @@ class Process(Asset):
     FLOW_ORCHESTRATED_BY: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MATILLION_COMPONENT: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -137,6 +140,9 @@ class Process(Asset):
 
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
 
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
@@ -195,6 +201,9 @@ class Process(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -511,6 +520,9 @@ class ProcessAttributes(AssetAttributes):
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
+
 
 class ProcessRelationshipAttributes(AssetRelationshipAttributes):
     """Process-specific relationship attributes for nested API format."""
@@ -572,6 +584,9 @@ class ProcessRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -668,6 +683,7 @@ _PROCESS_REL_FIELDS: List[str] = [
     "flow_orchestrated_by",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "matillion_component",
     "mc_monitors",
     "mc_incidents",
@@ -700,6 +716,7 @@ def _populate_process_attrs(attrs: ProcessAttributes, obj: Process) -> None:
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
     attrs.is_pass_through = obj.is_pass_through
+    attrs.process_derivation = obj.process_derivation
 
 
 def _extract_process_attrs(attrs: ProcessAttributes) -> dict:
@@ -714,6 +731,7 @@ def _extract_process_attrs(attrs: ProcessAttributes) -> dict:
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     result["is_pass_through"] = attrs.is_pass_through
+    result["process_derivation"] = attrs.process_derivation
     return result
 
 
@@ -782,6 +800,7 @@ def _process_from_nested(nested: ProcessNested) -> Process:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -830,6 +849,7 @@ Process.ADDITIONAL_ETL_CONTEXT = KeywordField(
 )
 Process.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 Process.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
+Process.PROCESS_DERIVATION = KeywordField("processDerivation", "processDerivation")
 Process.ADF_ACTIVITY = RelationField("adfActivity")
 Process.AIRFLOW_TASKS = RelationField("airflowTasks")
 Process.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -850,6 +870,7 @@ Process.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Process.MEANINGS = RelationField("meanings")
+Process.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Process.MATILLION_COMPONENT = RelationField("matillionComponent")
 Process.MC_MONITORS = RelationField("mcMonitors")
 Process.MC_INCIDENTS = RelationField("mcIncidents")

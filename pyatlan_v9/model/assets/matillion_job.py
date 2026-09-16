@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .matillion_related import (
     RelatedMatillionComponent,
     RelatedMatillionJob,
@@ -95,6 +96,7 @@ class MatillionJob(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MATILLION_PROJECT: ClassVar[Any] = None
     MATILLION_COMPONENTS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -193,6 +195,9 @@ class MatillionJob(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_project: Union[RelatedMatillionProject, None, UnsetType] = UNSET
     """Project in which the job exists."""
@@ -474,6 +479,9 @@ class MatillionJobRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     matillion_project: Union[RelatedMatillionProject, None, UnsetType] = UNSET
     """Project in which the job exists."""
 
@@ -570,6 +578,7 @@ _MATILLION_JOB_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "matillion_project",
     "matillion_components",
     "mc_monitors",
@@ -688,6 +697,7 @@ def _matillion_job_from_nested(nested: MatillionJobNested) -> MatillionJob:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -769,6 +779,7 @@ MatillionJob.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MatillionJob.MEANINGS = RelationField("meanings")
+MatillionJob.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MatillionJob.MATILLION_PROJECT = RelationField("matillionProject")
 MatillionJob.MATILLION_COMPONENTS = RelationField("matillionComponents")
 MatillionJob.MC_MONITORS = RelationField("mcMonitors")

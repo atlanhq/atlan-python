@@ -55,6 +55,7 @@ from .dbt_related import (
 from .dynamo_db_related import RelatedDynamoDBAttribute, RelatedDynamoDBTable
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -241,6 +242,7 @@ class DynamoDBAttribute(Asset):
     DYNAMO_DB_TABLE: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MONGO_DB_COLLECTION: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -744,6 +746,9 @@ class DynamoDBAttribute(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
         msgspec.field(default=UNSET, name="mongoDBCollection")
     )
@@ -905,6 +910,8 @@ class DynamoDBAttribute(Asset):
                 errors.append("table_qualified_name is required for creation")
             if self.order is UNSET:
                 errors.append("order is required for creation")
+            if self.dynamo_db_table is UNSET:
+                errors.append("dynamo_db_table is required for creation")
         if errors:
             raise ValueError(f"DynamoDBAttribute validation failed: {errors}")
 
@@ -1468,6 +1475,9 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
         msgspec.field(default=UNSET, name="mongoDBCollection")
     )
@@ -1634,6 +1644,7 @@ _DYNAMO_DB_ATTRIBUTE_REL_FIELDS: List[str] = [
     "dynamo_db_table",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mongo_db_collection",
     "mc_monitors",
     "mc_incidents",
@@ -2011,6 +2022,7 @@ def _dynamo_db_attribute_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -2344,6 +2356,7 @@ DynamoDBAttribute.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DynamoDBAttribute.MEANINGS = RelationField("meanings")
+DynamoDBAttribute.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DynamoDBAttribute.MONGO_DB_COLLECTION = RelationField("mongoDBCollection")
 DynamoDBAttribute.MC_MONITORS = RelationField("mcMonitors")
 DynamoDBAttribute.MC_INCIDENTS = RelationField("mcIncidents")

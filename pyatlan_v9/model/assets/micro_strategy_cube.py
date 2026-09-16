@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .micro_strategy_related import (
     RelatedMicroStrategyAttribute,
     RelatedMicroStrategyColumn,
@@ -102,6 +103,7 @@ class MicroStrategyCube(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MICRO_STRATEGY_PROJECT: ClassVar[Any] = None
     MICRO_STRATEGY_METRICS: ClassVar[Any] = None
     MICRO_STRATEGY_ATTRIBUTES: ClassVar[Any] = None
@@ -217,6 +219,9 @@ class MicroStrategyCube(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     micro_strategy_project: Union[RelatedMicroStrategyProject, None, UnsetType] = UNSET
     """Project in which this cube exists."""
@@ -523,6 +528,9 @@ class MicroStrategyCubeRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     micro_strategy_project: Union[RelatedMicroStrategyProject, None, UnsetType] = UNSET
     """Project in which this cube exists."""
 
@@ -629,6 +637,7 @@ _MICRO_STRATEGY_CUBE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "micro_strategy_project",
     "micro_strategy_metrics",
     "micro_strategy_attributes",
@@ -775,6 +784,7 @@ def _micro_strategy_cube_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -888,6 +898,7 @@ MicroStrategyCube.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MicroStrategyCube.MEANINGS = RelationField("meanings")
+MicroStrategyCube.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MicroStrategyCube.MICRO_STRATEGY_PROJECT = RelationField("microStrategyProject")
 MicroStrategyCube.MICRO_STRATEGY_METRICS = RelationField("microStrategyMetrics")
 MicroStrategyCube.MICRO_STRATEGY_ATTRIBUTES = RelationField("microStrategyAttributes")

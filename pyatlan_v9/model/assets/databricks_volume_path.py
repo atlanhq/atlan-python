@@ -52,6 +52,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -78,9 +79,9 @@ class DatabricksVolumePath(Asset):
     Represents a path within a Databricks Volume, providing access to specific data files or directories.
     """
 
-    DATABRICKS_VOLUME_PATH_PATH: ClassVar[Any] = None
-    DATABRICKS_VOLUME_PATH_VOLUME_QUALIFIED_NAME: ClassVar[Any] = None
-    DATABRICKS_VOLUME_PATH_VOLUME_NAME: ClassVar[Any] = None
+    DATABRICKS_PATH: ClassVar[Any] = None
+    DATABRICKS_VOLUME_QUALIFIED_NAME: ClassVar[Any] = None
+    DATABRICKS_VOLUME_NAME: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -139,6 +140,7 @@ class DatabricksVolumePath(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -159,13 +161,13 @@ class DatabricksVolumePath(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_volume_path_path: Union[str, None, UnsetType] = UNSET
+    databricks_path: Union[str, None, UnsetType] = UNSET
     """Path of data on the volume."""
 
-    databricks_volume_path_volume_qualified_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent volume."""
 
-    databricks_volume_path_volume_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent volume."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -351,6 +353,9 @@ class DatabricksVolumePath(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -569,13 +574,13 @@ class DatabricksVolumePath(Asset):
 class DatabricksVolumePathAttributes(AssetAttributes):
     """DatabricksVolumePath-specific attributes for nested API format."""
 
-    databricks_volume_path_path: Union[str, None, UnsetType] = UNSET
+    databricks_path: Union[str, None, UnsetType] = UNSET
     """Path of data on the volume."""
 
-    databricks_volume_path_volume_qualified_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent volume."""
 
-    databricks_volume_path_volume_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent volume."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -766,6 +771,9 @@ class DatabricksVolumePathRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -881,6 +889,7 @@ _DATABRICKS_VOLUME_PATH_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -908,11 +917,9 @@ def _populate_databricks_volume_path_attrs(
 ) -> None:
     """Populate DatabricksVolumePath-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_volume_path_path = obj.databricks_volume_path_path
-    attrs.databricks_volume_path_volume_qualified_name = (
-        obj.databricks_volume_path_volume_qualified_name
-    )
-    attrs.databricks_volume_path_volume_name = obj.databricks_volume_path_volume_name
+    attrs.databricks_path = obj.databricks_path
+    attrs.databricks_volume_qualified_name = obj.databricks_volume_qualified_name
+    attrs.databricks_volume_name = obj.databricks_volume_name
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -958,13 +965,9 @@ def _extract_databricks_volume_path_attrs(
 ) -> dict:
     """Extract all DatabricksVolumePath attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_volume_path_path"] = attrs.databricks_volume_path_path
-    result["databricks_volume_path_volume_qualified_name"] = (
-        attrs.databricks_volume_path_volume_qualified_name
-    )
-    result["databricks_volume_path_volume_name"] = (
-        attrs.databricks_volume_path_volume_name
-    )
+    result["databricks_path"] = attrs.databricks_path
+    result["databricks_volume_qualified_name"] = attrs.databricks_volume_qualified_name
+    result["databricks_volume_name"] = attrs.databricks_volume_name
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1087,6 +1090,7 @@ def _databricks_volume_path_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1130,14 +1134,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksVolumePath.DATABRICKS_VOLUME_PATH_PATH = KeywordField(
-    "databricksVolumePathPath", "databricksVolumePathPath"
+DatabricksVolumePath.DATABRICKS_PATH = KeywordField("databricksPath", "databricksPath")
+DatabricksVolumePath.DATABRICKS_VOLUME_QUALIFIED_NAME = KeywordField(
+    "databricksVolumeQualifiedName", "databricksVolumeQualifiedName"
 )
-DatabricksVolumePath.DATABRICKS_VOLUME_PATH_VOLUME_QUALIFIED_NAME = KeywordField(
-    "databricksVolumePathVolumeQualifiedName", "databricksVolumePathVolumeQualifiedName"
-)
-DatabricksVolumePath.DATABRICKS_VOLUME_PATH_VOLUME_NAME = KeywordField(
-    "databricksVolumePathVolumeName", "databricksVolumePathVolumeName"
+DatabricksVolumePath.DATABRICKS_VOLUME_NAME = KeywordField(
+    "databricksVolumeName", "databricksVolumeName"
 )
 DatabricksVolumePath.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksVolumePath.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
@@ -1258,6 +1260,7 @@ DatabricksVolumePath.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DatabricksVolumePath.MEANINGS = RelationField("meanings")
+DatabricksVolumePath.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DatabricksVolumePath.MC_MONITORS = RelationField("mcMonitors")
 DatabricksVolumePath.MC_INCIDENTS = RelationField("mcIncidents")
 DatabricksVolumePath.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -53,6 +53,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -74,9 +75,9 @@ class CognosColumn(Asset):
     Instance of a Cognos column in Atlan.
     """
 
-    COGNOS_COLUMN_DATATYPE: ClassVar[Any] = None
-    COGNOS_COLUMN_NULLABLE: ClassVar[Any] = None
-    COGNOS_COLUMN_REGULAR_AGGREGATE: ClassVar[Any] = None
+    COGNOS_DATATYPE: ClassVar[Any] = None
+    COGNOS_NULLABLE: ClassVar[Any] = None
+    COGNOS_REGULAR_AGGREGATE: ClassVar[Any] = None
     COGNOS_ID: ClassVar[Any] = None
     COGNOS_PATH: ClassVar[Any] = None
     COGNOS_PARENT_NAME: ClassVar[Any] = None
@@ -110,6 +111,7 @@ class CognosColumn(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -126,13 +128,13 @@ class CognosColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    cognos_column_datatype: Union[str, None, UnsetType] = UNSET
+    cognos_datatype: Union[str, None, UnsetType] = UNSET
     """Data type of the CognosColumn."""
 
-    cognos_column_nullable: Union[str, None, UnsetType] = UNSET
+    cognos_nullable: Union[str, None, UnsetType] = UNSET
     """Whether the CognosColumn is nullable."""
 
-    cognos_column_regular_aggregate: Union[str, None, UnsetType] = UNSET
+    cognos_regular_aggregate: Union[str, None, UnsetType] = UNSET
     """How data should be summarized when aggregated across different dimensions or groupings."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -239,6 +241,9 @@ class CognosColumn(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -421,13 +426,13 @@ class CognosColumn(Asset):
 class CognosColumnAttributes(AssetAttributes):
     """CognosColumn-specific attributes for nested API format."""
 
-    cognos_column_datatype: Union[str, None, UnsetType] = UNSET
+    cognos_datatype: Union[str, None, UnsetType] = UNSET
     """Data type of the CognosColumn."""
 
-    cognos_column_nullable: Union[str, None, UnsetType] = UNSET
+    cognos_nullable: Union[str, None, UnsetType] = UNSET
     """Whether the CognosColumn is nullable."""
 
-    cognos_column_regular_aggregate: Union[str, None, UnsetType] = UNSET
+    cognos_regular_aggregate: Union[str, None, UnsetType] = UNSET
     """How data should be summarized when aggregated across different dimensions or groupings."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -539,6 +544,9 @@ class CognosColumnRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -633,6 +641,7 @@ _COGNOS_COLUMN_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -656,9 +665,9 @@ def _populate_cognos_column_attrs(
 ) -> None:
     """Populate CognosColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.cognos_column_datatype = obj.cognos_column_datatype
-    attrs.cognos_column_nullable = obj.cognos_column_nullable
-    attrs.cognos_column_regular_aggregate = obj.cognos_column_regular_aggregate
+    attrs.cognos_datatype = obj.cognos_datatype
+    attrs.cognos_nullable = obj.cognos_nullable
+    attrs.cognos_regular_aggregate = obj.cognos_regular_aggregate
     attrs.cognos_id = obj.cognos_id
     attrs.cognos_path = obj.cognos_path
     attrs.cognos_parent_name = obj.cognos_parent_name
@@ -674,9 +683,9 @@ def _populate_cognos_column_attrs(
 def _extract_cognos_column_attrs(attrs: CognosColumnAttributes) -> dict:
     """Extract all CognosColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cognos_column_datatype"] = attrs.cognos_column_datatype
-    result["cognos_column_nullable"] = attrs.cognos_column_nullable
-    result["cognos_column_regular_aggregate"] = attrs.cognos_column_regular_aggregate
+    result["cognos_datatype"] = attrs.cognos_datatype
+    result["cognos_nullable"] = attrs.cognos_nullable
+    result["cognos_regular_aggregate"] = attrs.cognos_regular_aggregate
     result["cognos_id"] = attrs.cognos_id
     result["cognos_path"] = attrs.cognos_path
     result["cognos_parent_name"] = attrs.cognos_parent_name
@@ -759,6 +768,7 @@ def _cognos_column_from_nested(nested: CognosColumnNested) -> CognosColumn:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -797,14 +807,10 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CognosColumn.COGNOS_COLUMN_DATATYPE = KeywordField(
-    "cognosColumnDatatype", "cognosColumnDatatype"
-)
-CognosColumn.COGNOS_COLUMN_NULLABLE = KeywordField(
-    "cognosColumnNullable", "cognosColumnNullable"
-)
-CognosColumn.COGNOS_COLUMN_REGULAR_AGGREGATE = KeywordField(
-    "cognosColumnRegularAggregate", "cognosColumnRegularAggregate"
+CognosColumn.COGNOS_DATATYPE = KeywordField("cognosDatatype", "cognosDatatype")
+CognosColumn.COGNOS_NULLABLE = KeywordField("cognosNullable", "cognosNullable")
+CognosColumn.COGNOS_REGULAR_AGGREGATE = KeywordField(
+    "cognosRegularAggregate", "cognosRegularAggregate"
 )
 CognosColumn.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosColumn.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")
@@ -851,6 +857,7 @@ CognosColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 CognosColumn.MEANINGS = RelationField("meanings")
+CognosColumn.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 CognosColumn.MC_MONITORS = RelationField("mcMonitors")
 CognosColumn.MC_INCIDENTS = RelationField("mcIncidents")
 CognosColumn.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -45,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -82,6 +83,7 @@ class AppWorkflowRun(Asset):
     APP_WORKFLOW_RUN_APP_WORKFLOW_VERSION: ClassVar[Any] = None
     APP_WORKFLOW_RUN_WORKFLOW_OWNERSHIP: ClassVar[Any] = None
     APP_WORKFLOW_RUN_SOURCE: ClassVar[Any] = None
+    APP_WORKFLOW_RUN_DEPLOYMENT_NAME: ClassVar[Any] = None
     APP_WORKFLOW_RUN_TEMPORAL_RUN_ID: ClassVar[Any] = None
     APP_WORKFLOW_RUN_IS_TEST_RUN: ClassVar[Any] = None
     APP_WORKFLOW_RUN_DAG: ClassVar[Any] = None
@@ -105,6 +107,7 @@ class AppWorkflowRun(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -168,6 +171,9 @@ class AppWorkflowRun(Asset):
 
     app_workflow_run_source: Union[str, None, UnsetType] = UNSET
     """Product surface of the parent workflow (marketplace, enrichment_studio, context_studio), denormalized onto the run and emitted as a metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028)."""
+
+    app_workflow_run_deployment_name: Union[str, None, UnsetType] = UNSET
+    """SDR deployment this run executed under, denormalized from the parent workflow so a deployment's run history can be filtered directly. Without it, filtering requires two queries — resolve the deployment's workflow slugs, then match runs by parent slug — because Elasticsearch cannot join across entity types. Null for runs on Atlan-managed infrastructure (DISTR-832)."""
 
     app_workflow_run_temporal_run_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the temporal run associated with this workflow execution."""
@@ -243,6 +249,9 @@ class AppWorkflowRun(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -459,6 +468,9 @@ class AppWorkflowRunAttributes(AssetAttributes):
     app_workflow_run_source: Union[str, None, UnsetType] = UNSET
     """Product surface of the parent workflow (marketplace, enrichment_studio, context_studio), denormalized onto the run and emitted as a metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028)."""
 
+    app_workflow_run_deployment_name: Union[str, None, UnsetType] = UNSET
+    """SDR deployment this run executed under, denormalized from the parent workflow so a deployment's run history can be filtered directly. Without it, filtering requires two queries — resolve the deployment's workflow slugs, then match runs by parent slug — because Elasticsearch cannot join across entity types. Null for runs on Atlan-managed infrastructure (DISTR-832)."""
+
     app_workflow_run_temporal_run_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the temporal run associated with this workflow execution."""
 
@@ -537,6 +549,9 @@ class AppWorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -627,6 +642,7 @@ _APP_WORKFLOW_RUN_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -670,6 +686,7 @@ def _populate_app_workflow_run_attrs(
     )
     attrs.app_workflow_run_workflow_ownership = obj.app_workflow_run_workflow_ownership
     attrs.app_workflow_run_source = obj.app_workflow_run_source
+    attrs.app_workflow_run_deployment_name = obj.app_workflow_run_deployment_name
     attrs.app_workflow_run_temporal_run_id = obj.app_workflow_run_temporal_run_id
     attrs.app_workflow_run_is_test_run = obj.app_workflow_run_is_test_run
     attrs.app_workflow_run_dag = obj.app_workflow_run_dag
@@ -708,6 +725,7 @@ def _extract_app_workflow_run_attrs(attrs: AppWorkflowRunAttributes) -> dict:
         attrs.app_workflow_run_workflow_ownership
     )
     result["app_workflow_run_source"] = attrs.app_workflow_run_source
+    result["app_workflow_run_deployment_name"] = attrs.app_workflow_run_deployment_name
     result["app_workflow_run_temporal_run_id"] = attrs.app_workflow_run_temporal_run_id
     result["app_workflow_run_is_test_run"] = attrs.app_workflow_run_is_test_run
     result["app_workflow_run_dag"] = attrs.app_workflow_run_dag
@@ -789,6 +807,7 @@ def _app_workflow_run_from_nested(nested: AppWorkflowRunNested) -> AppWorkflowRu
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -878,6 +897,9 @@ AppWorkflowRun.APP_WORKFLOW_RUN_WORKFLOW_OWNERSHIP = KeywordField(
 AppWorkflowRun.APP_WORKFLOW_RUN_SOURCE = KeywordField(
     "appWorkflowRunSource", "appWorkflowRunSource"
 )
+AppWorkflowRun.APP_WORKFLOW_RUN_DEPLOYMENT_NAME = KeywordField(
+    "appWorkflowRunDeploymentName", "appWorkflowRunDeploymentName"
+)
 AppWorkflowRun.APP_WORKFLOW_RUN_TEMPORAL_RUN_ID = KeywordField(
     "appWorkflowRunTemporalRunId", "appWorkflowRunTemporalRunId"
 )
@@ -917,6 +939,7 @@ AppWorkflowRun.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 AppWorkflowRun.MEANINGS = RelationField("meanings")
+AppWorkflowRun.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 AppWorkflowRun.MC_MONITORS = RelationField("mcMonitors")
 AppWorkflowRun.MC_INCIDENTS = RelationField("mcIncidents")
 AppWorkflowRun.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

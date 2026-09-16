@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -67,16 +68,16 @@ class SqlInsightJoin(Asset):
     A directed join pattern observed between two SQL datasets from real query traffic.
     """
 
-    SQL_INSIGHT_JOIN_SOURCE_DATASET_QUALIFIED_NAME: ClassVar[Any] = None
-    SQL_INSIGHT_JOIN_JOINED_DATASET_QUALIFIED_NAME: ClassVar[Any] = None
-    SQL_INSIGHT_JOIN_TYPE: ClassVar[Any] = None
-    SQL_INSIGHT_JOIN_CARDINALITY: ClassVar[Any] = None
-    SQL_INSIGHT_JOIN_WHEN_TO_USE: ClassVar[Any] = None
-    SQL_INSIGHT_JOIN_COLUMN_PAIRS: ClassVar[Any] = None
-    SQL_INSIGHT_JOIN_QUERY_COUNT: ClassVar[Any] = None
-    SQL_INSIGHT_JOIN_UNIQUE_USERS: ClassVar[Any] = None
-    SQL_INSIGHT_JOIN_LAST_SEEN_AT: ClassVar[Any] = None
-    SQL_INSIGHT_JOIN_EXAMPLE_QUERIES: ClassVar[Any] = None
+    SQL_INSIGHT_SOURCE_DATASET_QUALIFIED_NAME: ClassVar[Any] = None
+    SQL_INSIGHT_JOINED_DATASET_QUALIFIED_NAME: ClassVar[Any] = None
+    SQL_INSIGHT_TYPE: ClassVar[Any] = None
+    SQL_INSIGHT_CARDINALITY: ClassVar[Any] = None
+    SQL_INSIGHT_WHEN_TO_USE: ClassVar[Any] = None
+    SQL_INSIGHT_COLUMN_PAIRS: ClassVar[Any] = None
+    SQL_INSIGHT_QUERY_COUNT: ClassVar[Any] = None
+    SQL_INSIGHT_UNIQUE_USERS: ClassVar[Any] = None
+    SQL_INSIGHT_LAST_SEEN_AT: ClassVar[Any] = None
+    SQL_INSIGHT_EXAMPLE_QUERIES: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -95,6 +96,7 @@ class SqlInsightJoin(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -113,36 +115,34 @@ class SqlInsightJoin(Asset):
     SQL_INSIGHT_SOURCE_DATASET: ClassVar[Any] = None
     SQL_INSIGHT_JOINED_DATASET: ClassVar[Any] = None
 
-    sql_insight_join_source_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_source_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the source dataset in this join pattern."""
 
-    sql_insight_join_joined_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_joined_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the joined dataset in this join pattern."""
 
-    sql_insight_join_type: Union[str, None, UnsetType] = UNSET
+    sql_insight_type: Union[str, None, UnsetType] = UNSET
     """Type of SQL join observed in this pattern."""
 
-    sql_insight_join_cardinality: Union[str, None, UnsetType] = UNSET
+    sql_insight_cardinality: Union[str, None, UnsetType] = UNSET
     """Observed cardinality of the join relationship."""
 
-    sql_insight_join_when_to_use: Union[str, None, UnsetType] = UNSET
+    sql_insight_when_to_use: Union[str, None, UnsetType] = UNSET
     """Guidance on when this join pattern should be used."""
 
-    sql_insight_join_column_pairs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    sql_insight_column_pairs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Column mappings in this join, pairing source columns to joined columns."""
 
-    sql_insight_join_query_count: Union[int, None, UnsetType] = UNSET
+    sql_insight_query_count: Union[int, None, UnsetType] = UNSET
     """Number of queries that use this join pattern."""
 
-    sql_insight_join_unique_users: Union[int, None, UnsetType] = UNSET
+    sql_insight_unique_users: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have used this join pattern."""
 
-    sql_insight_join_last_seen_at: Union[int, None, UnsetType] = UNSET
+    sql_insight_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this join pattern was last observed, in milliseconds."""
 
-    sql_insight_join_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Example SQL queries that demonstrate this join pattern, with usage details."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -204,6 +204,9 @@ class SqlInsightJoin(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -388,36 +391,34 @@ class SqlInsightJoin(Asset):
 class SqlInsightJoinAttributes(AssetAttributes):
     """SqlInsightJoin-specific attributes for nested API format."""
 
-    sql_insight_join_source_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_source_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the source dataset in this join pattern."""
 
-    sql_insight_join_joined_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_joined_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the joined dataset in this join pattern."""
 
-    sql_insight_join_type: Union[str, None, UnsetType] = UNSET
+    sql_insight_type: Union[str, None, UnsetType] = UNSET
     """Type of SQL join observed in this pattern."""
 
-    sql_insight_join_cardinality: Union[str, None, UnsetType] = UNSET
+    sql_insight_cardinality: Union[str, None, UnsetType] = UNSET
     """Observed cardinality of the join relationship."""
 
-    sql_insight_join_when_to_use: Union[str, None, UnsetType] = UNSET
+    sql_insight_when_to_use: Union[str, None, UnsetType] = UNSET
     """Guidance on when this join pattern should be used."""
 
-    sql_insight_join_column_pairs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    sql_insight_column_pairs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Column mappings in this join, pairing source columns to joined columns."""
 
-    sql_insight_join_query_count: Union[int, None, UnsetType] = UNSET
+    sql_insight_query_count: Union[int, None, UnsetType] = UNSET
     """Number of queries that use this join pattern."""
 
-    sql_insight_join_unique_users: Union[int, None, UnsetType] = UNSET
+    sql_insight_unique_users: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have used this join pattern."""
 
-    sql_insight_join_last_seen_at: Union[int, None, UnsetType] = UNSET
+    sql_insight_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this join pattern was last observed, in milliseconds."""
 
-    sql_insight_join_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Example SQL queries that demonstrate this join pattern, with usage details."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -483,6 +484,9 @@ class SqlInsightJoinRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -578,6 +582,7 @@ _SQL_INSIGHT_JOIN_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -603,40 +608,40 @@ def _populate_sql_insight_join_attrs(
 ) -> None:
     """Populate SqlInsightJoin-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sql_insight_join_source_dataset_qualified_name = (
-        obj.sql_insight_join_source_dataset_qualified_name
+    attrs.sql_insight_source_dataset_qualified_name = (
+        obj.sql_insight_source_dataset_qualified_name
     )
-    attrs.sql_insight_join_joined_dataset_qualified_name = (
-        obj.sql_insight_join_joined_dataset_qualified_name
+    attrs.sql_insight_joined_dataset_qualified_name = (
+        obj.sql_insight_joined_dataset_qualified_name
     )
-    attrs.sql_insight_join_type = obj.sql_insight_join_type
-    attrs.sql_insight_join_cardinality = obj.sql_insight_join_cardinality
-    attrs.sql_insight_join_when_to_use = obj.sql_insight_join_when_to_use
-    attrs.sql_insight_join_column_pairs = obj.sql_insight_join_column_pairs
-    attrs.sql_insight_join_query_count = obj.sql_insight_join_query_count
-    attrs.sql_insight_join_unique_users = obj.sql_insight_join_unique_users
-    attrs.sql_insight_join_last_seen_at = obj.sql_insight_join_last_seen_at
-    attrs.sql_insight_join_example_queries = obj.sql_insight_join_example_queries
+    attrs.sql_insight_type = obj.sql_insight_type
+    attrs.sql_insight_cardinality = obj.sql_insight_cardinality
+    attrs.sql_insight_when_to_use = obj.sql_insight_when_to_use
+    attrs.sql_insight_column_pairs = obj.sql_insight_column_pairs
+    attrs.sql_insight_query_count = obj.sql_insight_query_count
+    attrs.sql_insight_unique_users = obj.sql_insight_unique_users
+    attrs.sql_insight_last_seen_at = obj.sql_insight_last_seen_at
+    attrs.sql_insight_example_queries = obj.sql_insight_example_queries
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_sql_insight_join_attrs(attrs: SqlInsightJoinAttributes) -> dict:
     """Extract all SqlInsightJoin attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sql_insight_join_source_dataset_qualified_name"] = (
-        attrs.sql_insight_join_source_dataset_qualified_name
+    result["sql_insight_source_dataset_qualified_name"] = (
+        attrs.sql_insight_source_dataset_qualified_name
     )
-    result["sql_insight_join_joined_dataset_qualified_name"] = (
-        attrs.sql_insight_join_joined_dataset_qualified_name
+    result["sql_insight_joined_dataset_qualified_name"] = (
+        attrs.sql_insight_joined_dataset_qualified_name
     )
-    result["sql_insight_join_type"] = attrs.sql_insight_join_type
-    result["sql_insight_join_cardinality"] = attrs.sql_insight_join_cardinality
-    result["sql_insight_join_when_to_use"] = attrs.sql_insight_join_when_to_use
-    result["sql_insight_join_column_pairs"] = attrs.sql_insight_join_column_pairs
-    result["sql_insight_join_query_count"] = attrs.sql_insight_join_query_count
-    result["sql_insight_join_unique_users"] = attrs.sql_insight_join_unique_users
-    result["sql_insight_join_last_seen_at"] = attrs.sql_insight_join_last_seen_at
-    result["sql_insight_join_example_queries"] = attrs.sql_insight_join_example_queries
+    result["sql_insight_type"] = attrs.sql_insight_type
+    result["sql_insight_cardinality"] = attrs.sql_insight_cardinality
+    result["sql_insight_when_to_use"] = attrs.sql_insight_when_to_use
+    result["sql_insight_column_pairs"] = attrs.sql_insight_column_pairs
+    result["sql_insight_query_count"] = attrs.sql_insight_query_count
+    result["sql_insight_unique_users"] = attrs.sql_insight_unique_users
+    result["sql_insight_last_seen_at"] = attrs.sql_insight_last_seen_at
+    result["sql_insight_example_queries"] = attrs.sql_insight_example_queries
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -714,6 +719,7 @@ def _sql_insight_join_from_nested(nested: SqlInsightJoinNested) -> SqlInsightJoi
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -753,37 +759,33 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SqlInsightJoin.SQL_INSIGHT_JOIN_SOURCE_DATASET_QUALIFIED_NAME = KeywordField(
-    "sqlInsightJoinSourceDatasetQualifiedName",
-    "sqlInsightJoinSourceDatasetQualifiedName",
+SqlInsightJoin.SQL_INSIGHT_SOURCE_DATASET_QUALIFIED_NAME = KeywordField(
+    "sqlInsightSourceDatasetQualifiedName", "sqlInsightSourceDatasetQualifiedName"
 )
-SqlInsightJoin.SQL_INSIGHT_JOIN_JOINED_DATASET_QUALIFIED_NAME = KeywordField(
-    "sqlInsightJoinJoinedDatasetQualifiedName",
-    "sqlInsightJoinJoinedDatasetQualifiedName",
+SqlInsightJoin.SQL_INSIGHT_JOINED_DATASET_QUALIFIED_NAME = KeywordField(
+    "sqlInsightJoinedDatasetQualifiedName", "sqlInsightJoinedDatasetQualifiedName"
 )
-SqlInsightJoin.SQL_INSIGHT_JOIN_TYPE = KeywordField(
-    "sqlInsightJoinType", "sqlInsightJoinType"
+SqlInsightJoin.SQL_INSIGHT_TYPE = KeywordField("sqlInsightType", "sqlInsightType")
+SqlInsightJoin.SQL_INSIGHT_CARDINALITY = KeywordField(
+    "sqlInsightCardinality", "sqlInsightCardinality"
 )
-SqlInsightJoin.SQL_INSIGHT_JOIN_CARDINALITY = KeywordField(
-    "sqlInsightJoinCardinality", "sqlInsightJoinCardinality"
+SqlInsightJoin.SQL_INSIGHT_WHEN_TO_USE = KeywordField(
+    "sqlInsightWhenToUse", "sqlInsightWhenToUse"
 )
-SqlInsightJoin.SQL_INSIGHT_JOIN_WHEN_TO_USE = KeywordField(
-    "sqlInsightJoinWhenToUse", "sqlInsightJoinWhenToUse"
+SqlInsightJoin.SQL_INSIGHT_COLUMN_PAIRS = KeywordField(
+    "sqlInsightColumnPairs", "sqlInsightColumnPairs"
 )
-SqlInsightJoin.SQL_INSIGHT_JOIN_COLUMN_PAIRS = KeywordField(
-    "sqlInsightJoinColumnPairs", "sqlInsightJoinColumnPairs"
+SqlInsightJoin.SQL_INSIGHT_QUERY_COUNT = NumericField(
+    "sqlInsightQueryCount", "sqlInsightQueryCount"
 )
-SqlInsightJoin.SQL_INSIGHT_JOIN_QUERY_COUNT = NumericField(
-    "sqlInsightJoinQueryCount", "sqlInsightJoinQueryCount"
+SqlInsightJoin.SQL_INSIGHT_UNIQUE_USERS = NumericField(
+    "sqlInsightUniqueUsers", "sqlInsightUniqueUsers"
 )
-SqlInsightJoin.SQL_INSIGHT_JOIN_UNIQUE_USERS = NumericField(
-    "sqlInsightJoinUniqueUsers", "sqlInsightJoinUniqueUsers"
+SqlInsightJoin.SQL_INSIGHT_LAST_SEEN_AT = NumericField(
+    "sqlInsightLastSeenAt", "sqlInsightLastSeenAt"
 )
-SqlInsightJoin.SQL_INSIGHT_JOIN_LAST_SEEN_AT = NumericField(
-    "sqlInsightJoinLastSeenAt", "sqlInsightJoinLastSeenAt"
-)
-SqlInsightJoin.SQL_INSIGHT_JOIN_EXAMPLE_QUERIES = KeywordField(
-    "sqlInsightJoinExampleQueries", "sqlInsightJoinExampleQueries"
+SqlInsightJoin.SQL_INSIGHT_EXAMPLE_QUERIES = KeywordField(
+    "sqlInsightExampleQueries", "sqlInsightExampleQueries"
 )
 SqlInsightJoin.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
@@ -811,6 +813,7 @@ SqlInsightJoin.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SqlInsightJoin.MEANINGS = RelationField("meanings")
+SqlInsightJoin.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SqlInsightJoin.MC_MONITORS = RelationField("mcMonitors")
 SqlInsightJoin.MC_INCIDENTS = RelationField("mcIncidents")
 SqlInsightJoin.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

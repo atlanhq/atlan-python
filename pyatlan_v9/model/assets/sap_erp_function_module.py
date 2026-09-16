@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -69,11 +70,11 @@ class SapErpFunctionModule(Asset):
     Instance of a SAP Function in Atlan.
     """
 
-    SAP_ERP_FUNCTION_MODULE_GROUP: ClassVar[Any] = None
+    SAP_GROUP: ClassVar[Any] = None
     SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS: ClassVar[Any] = None
-    SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS_COUNT: ClassVar[Any] = None
+    SAP_IMPORT_PARAMS_COUNT: ClassVar[Any] = None
     SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS: ClassVar[Any] = None
-    SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS_COUNT: ClassVar[Any] = None
+    SAP_EXPORT_PARAMS_COUNT: ClassVar[Any] = None
     SAP_ERP_FUNCTION_EXCEPTION_LIST: ClassVar[Any] = None
     SAP_ERP_FUNCTION_EXCEPTION_LIST_COUNT: ClassVar[Any] = None
     SAP_TECHNICAL_NAME: ClassVar[Any] = None
@@ -101,6 +102,7 @@ class SapErpFunctionModule(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -119,7 +121,7 @@ class SapErpFunctionModule(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sap_erp_function_module_group: Union[str, None, UnsetType] = UNSET
+    sap_group: Union[str, None, UnsetType] = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 
     sap_erp_function_module_import_params: Union[
@@ -127,7 +129,7 @@ class SapErpFunctionModule(Asset):
     ] = UNSET
     """Parameters imported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_erp_function_module_import_params_count: Union[int, None, UnsetType] = UNSET
+    sap_import_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Import Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_module_export_params: Union[
@@ -135,7 +137,7 @@ class SapErpFunctionModule(Asset):
     ] = UNSET
     """Parameters exported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_erp_function_module_export_params_count: Union[int, None, UnsetType] = UNSET
+    sap_export_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Export Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_exception_list: Union[List[Dict[str, str]], None, UnsetType] = (
@@ -226,6 +228,9 @@ class SapErpFunctionModule(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -402,7 +407,7 @@ class SapErpFunctionModule(Asset):
 class SapErpFunctionModuleAttributes(AssetAttributes):
     """SapErpFunctionModule-specific attributes for nested API format."""
 
-    sap_erp_function_module_group: Union[str, None, UnsetType] = UNSET
+    sap_group: Union[str, None, UnsetType] = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 
     sap_erp_function_module_import_params: Union[
@@ -410,7 +415,7 @@ class SapErpFunctionModuleAttributes(AssetAttributes):
     ] = UNSET
     """Parameters imported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_erp_function_module_import_params_count: Union[int, None, UnsetType] = UNSET
+    sap_import_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Import Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_module_export_params: Union[
@@ -418,7 +423,7 @@ class SapErpFunctionModuleAttributes(AssetAttributes):
     ] = UNSET
     """Parameters exported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_erp_function_module_export_params_count: Union[int, None, UnsetType] = UNSET
+    sap_export_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Export Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_exception_list: Union[List[Dict[str, str]], None, UnsetType] = (
@@ -514,6 +519,9 @@ class SapErpFunctionModuleRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -608,6 +616,7 @@ _SAP_ERP_FUNCTION_MODULE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -633,19 +642,15 @@ def _populate_sap_erp_function_module_attrs(
 ) -> None:
     """Populate SapErpFunctionModule-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_erp_function_module_group = obj.sap_erp_function_module_group
+    attrs.sap_group = obj.sap_group
     attrs.sap_erp_function_module_import_params = (
         obj.sap_erp_function_module_import_params
     )
-    attrs.sap_erp_function_module_import_params_count = (
-        obj.sap_erp_function_module_import_params_count
-    )
+    attrs.sap_import_params_count = obj.sap_import_params_count
     attrs.sap_erp_function_module_export_params = (
         obj.sap_erp_function_module_export_params
     )
-    attrs.sap_erp_function_module_export_params_count = (
-        obj.sap_erp_function_module_export_params_count
-    )
+    attrs.sap_export_params_count = obj.sap_export_params_count
     attrs.sap_erp_function_exception_list = obj.sap_erp_function_exception_list
     attrs.sap_erp_function_exception_list_count = (
         obj.sap_erp_function_exception_list_count
@@ -665,19 +670,15 @@ def _extract_sap_erp_function_module_attrs(
 ) -> dict:
     """Extract all SapErpFunctionModule attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_erp_function_module_group"] = attrs.sap_erp_function_module_group
+    result["sap_group"] = attrs.sap_group
     result["sap_erp_function_module_import_params"] = (
         attrs.sap_erp_function_module_import_params
     )
-    result["sap_erp_function_module_import_params_count"] = (
-        attrs.sap_erp_function_module_import_params_count
-    )
+    result["sap_import_params_count"] = attrs.sap_import_params_count
     result["sap_erp_function_module_export_params"] = (
         attrs.sap_erp_function_module_export_params
     )
-    result["sap_erp_function_module_export_params_count"] = (
-        attrs.sap_erp_function_module_export_params_count
-    )
+    result["sap_export_params_count"] = attrs.sap_export_params_count
     result["sap_erp_function_exception_list"] = attrs.sap_erp_function_exception_list
     result["sap_erp_function_exception_list_count"] = (
         attrs.sap_erp_function_exception_list_count
@@ -768,6 +769,7 @@ def _sap_erp_function_module_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -809,20 +811,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_GROUP = KeywordField(
-    "sapErpFunctionModuleGroup", "sapErpFunctionModuleGroup"
-)
+SapErpFunctionModule.SAP_GROUP = KeywordField("sapGroup", "sapGroup")
 SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS = KeywordField(
     "sapErpFunctionModuleImportParams", "sapErpFunctionModuleImportParams"
 )
-SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS_COUNT = NumericField(
-    "sapErpFunctionModuleImportParamsCount", "sapErpFunctionModuleImportParamsCount"
+SapErpFunctionModule.SAP_IMPORT_PARAMS_COUNT = NumericField(
+    "sapImportParamsCount", "sapImportParamsCount"
 )
 SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS = KeywordField(
     "sapErpFunctionModuleExportParams", "sapErpFunctionModuleExportParams"
 )
-SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS_COUNT = NumericField(
-    "sapErpFunctionModuleExportParamsCount", "sapErpFunctionModuleExportParamsCount"
+SapErpFunctionModule.SAP_EXPORT_PARAMS_COUNT = NumericField(
+    "sapExportParamsCount", "sapExportParamsCount"
 )
 SapErpFunctionModule.SAP_ERP_FUNCTION_EXCEPTION_LIST = KeywordField(
     "sapErpFunctionExceptionList", "sapErpFunctionExceptionList"
@@ -871,6 +871,7 @@ SapErpFunctionModule.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SapErpFunctionModule.MEANINGS = RelationField("meanings")
+SapErpFunctionModule.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SapErpFunctionModule.MC_MONITORS = RelationField("mcMonitors")
 SapErpFunctionModule.MC_INCIDENTS = RelationField("mcIncidents")
 SapErpFunctionModule.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

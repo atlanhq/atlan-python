@@ -45,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .metabase_related import (
     RelatedMetabaseCollection,
     RelatedMetabaseDashboard,
@@ -94,6 +95,7 @@ class MetabaseQuestion(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     METABASE_COLLECTION: ClassVar[Any] = None
     METABASE_DASHBOARDS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -186,6 +188,9 @@ class MetabaseQuestion(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     metabase_collection: Union[RelatedMetabaseCollection, None, UnsetType] = UNSET
     """Collection in which this question exists."""
@@ -489,6 +494,9 @@ class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     metabase_collection: Union[RelatedMetabaseCollection, None, UnsetType] = UNSET
     """Collection in which this question exists."""
 
@@ -583,6 +591,7 @@ _METABASE_QUESTION_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "metabase_collection",
     "metabase_dashboards",
     "mc_monitors",
@@ -703,6 +712,7 @@ def _metabase_question_from_nested(nested: MetabaseQuestionNested) -> MetabaseQu
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -784,6 +794,7 @@ MetabaseQuestion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MetabaseQuestion.MEANINGS = RelationField("meanings")
+MetabaseQuestion.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MetabaseQuestion.METABASE_COLLECTION = RelationField("metabaseCollection")
 MetabaseQuestion.METABASE_DASHBOARDS = RelationField("metabaseDashboards")
 MetabaseQuestion.MC_MONITORS = RelationField("mcMonitors")

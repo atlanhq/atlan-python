@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -69,10 +70,9 @@ class SapErpCdsView(Asset):
     Instance of a SAP CDS View in Atlan.
     """
 
-    SAP_ERP_CDS_VIEW_TECHNICAL_NAME: ClassVar[Any] = None
-    SAP_ERP_CDS_VIEW_SOURCE_NAME: ClassVar[Any] = None
-    SAP_ERP_CDS_VIEW_SOURCE_TYPE: ClassVar[Any] = None
     SAP_TECHNICAL_NAME: ClassVar[Any] = None
+    SAP_SOURCE_NAME: ClassVar[Any] = None
+    SAP_SOURCE_TYPE: ClassVar[Any] = None
     SAP_LOGICAL_NAME: ClassVar[Any] = None
     SAP_PACKAGE_NAME: ClassVar[Any] = None
     SAP_COMPONENT_NAME: ClassVar[Any] = None
@@ -97,6 +97,7 @@ class SapErpCdsView(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -115,17 +116,14 @@ class SapErpCdsView(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sap_erp_cds_view_technical_name: Union[str, None, UnsetType] = UNSET
-    """The technical database view name of the SAP ERP CDS View."""
-
-    sap_erp_cds_view_source_name: Union[str, None, UnsetType] = UNSET
-    """The source name of the SAP ERP CDS View Definition."""
-
-    sap_erp_cds_view_source_type: Union[str, None, UnsetType] = UNSET
-    """The source type of the SAP ERP CDS View Definition."""
-
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
+
+    sap_source_name: Union[str, None, UnsetType] = UNSET
+    """The source name of the SAP ERP CDS View Definition."""
+
+    sap_source_type: Union[str, None, UnsetType] = UNSET
+    """The source type of the SAP ERP CDS View Definition."""
 
     sap_logical_name: Union[str, None, UnsetType] = UNSET
     """Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts."""
@@ -204,6 +202,9 @@ class SapErpCdsView(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -378,17 +379,14 @@ class SapErpCdsView(Asset):
 class SapErpCdsViewAttributes(AssetAttributes):
     """SapErpCdsView-specific attributes for nested API format."""
 
-    sap_erp_cds_view_technical_name: Union[str, None, UnsetType] = UNSET
-    """The technical database view name of the SAP ERP CDS View."""
-
-    sap_erp_cds_view_source_name: Union[str, None, UnsetType] = UNSET
-    """The source name of the SAP ERP CDS View Definition."""
-
-    sap_erp_cds_view_source_type: Union[str, None, UnsetType] = UNSET
-    """The source type of the SAP ERP CDS View Definition."""
-
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
+
+    sap_source_name: Union[str, None, UnsetType] = UNSET
+    """The source name of the SAP ERP CDS View Definition."""
+
+    sap_source_type: Union[str, None, UnsetType] = UNSET
+    """The source type of the SAP ERP CDS View Definition."""
 
     sap_logical_name: Union[str, None, UnsetType] = UNSET
     """Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts."""
@@ -471,6 +469,9 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -566,6 +567,7 @@ _SAP_ERP_CDS_VIEW_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -591,10 +593,9 @@ def _populate_sap_erp_cds_view_attrs(
 ) -> None:
     """Populate SapErpCdsView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_erp_cds_view_technical_name = obj.sap_erp_cds_view_technical_name
-    attrs.sap_erp_cds_view_source_name = obj.sap_erp_cds_view_source_name
-    attrs.sap_erp_cds_view_source_type = obj.sap_erp_cds_view_source_type
     attrs.sap_technical_name = obj.sap_technical_name
+    attrs.sap_source_name = obj.sap_source_name
+    attrs.sap_source_type = obj.sap_source_type
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
     attrs.sap_component_name = obj.sap_component_name
@@ -607,10 +608,9 @@ def _populate_sap_erp_cds_view_attrs(
 def _extract_sap_erp_cds_view_attrs(attrs: SapErpCdsViewAttributes) -> dict:
     """Extract all SapErpCdsView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_erp_cds_view_technical_name"] = attrs.sap_erp_cds_view_technical_name
-    result["sap_erp_cds_view_source_name"] = attrs.sap_erp_cds_view_source_name
-    result["sap_erp_cds_view_source_type"] = attrs.sap_erp_cds_view_source_type
     result["sap_technical_name"] = attrs.sap_technical_name
+    result["sap_source_name"] = attrs.sap_source_name
+    result["sap_source_type"] = attrs.sap_source_type
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
     result["sap_component_name"] = attrs.sap_component_name
@@ -692,6 +692,7 @@ def _sap_erp_cds_view_from_nested(nested: SapErpCdsViewNested) -> SapErpCdsView:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -731,16 +732,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpCdsView.SAP_ERP_CDS_VIEW_TECHNICAL_NAME = KeywordField(
-    "sapErpCdsViewTechnicalName", "sapErpCdsViewTechnicalName"
-)
-SapErpCdsView.SAP_ERP_CDS_VIEW_SOURCE_NAME = KeywordField(
-    "sapErpCdsViewSourceName", "sapErpCdsViewSourceName"
-)
-SapErpCdsView.SAP_ERP_CDS_VIEW_SOURCE_TYPE = KeywordField(
-    "sapErpCdsViewSourceType", "sapErpCdsViewSourceType"
-)
 SapErpCdsView.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
+SapErpCdsView.SAP_SOURCE_NAME = KeywordField("sapSourceName", "sapSourceName")
+SapErpCdsView.SAP_SOURCE_TYPE = KeywordField("sapSourceType", "sapSourceType")
 SapErpCdsView.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapErpCdsView.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
 SapErpCdsView.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponentName")
@@ -771,6 +765,7 @@ SapErpCdsView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SapErpCdsView.MEANINGS = RelationField("meanings")
+SapErpCdsView.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SapErpCdsView.MC_MONITORS = RelationField("mcMonitors")
 SapErpCdsView.MC_INCIDENTS = RelationField("mcIncidents")
 SapErpCdsView.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

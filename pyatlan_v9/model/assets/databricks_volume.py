@@ -52,6 +52,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -79,9 +80,9 @@ class DatabricksVolume(Asset):
     Represents a Databricks Volume, a storage object for managing and accessing data files within Databricks workspaces.
     """
 
-    DATABRICKS_VOLUME_OWNER: ClassVar[Any] = None
-    DATABRICKS_VOLUME_EXTERNAL_LOCATION: ClassVar[Any] = None
-    DATABRICKS_VOLUME_TYPE: ClassVar[Any] = None
+    DATABRICKS_OWNER: ClassVar[Any] = None
+    DATABRICKS_EXTERNAL_LOCATION: ClassVar[Any] = None
+    DATABRICKS_TYPE: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -141,6 +142,7 @@ class DatabricksVolume(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -161,13 +163,13 @@ class DatabricksVolume(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_volume_owner: Union[str, None, UnsetType] = UNSET
+    databricks_owner: Union[str, None, UnsetType] = UNSET
     """User or group (principal) currently owning the volume."""
 
-    databricks_volume_external_location: Union[str, None, UnsetType] = UNSET
+    databricks_external_location: Union[str, None, UnsetType] = UNSET
     """The storage location where the volume is created."""
 
-    databricks_volume_type: Union[str, None, UnsetType] = UNSET
+    databricks_type: Union[str, None, UnsetType] = UNSET
     """Type of the volume."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -358,6 +360,9 @@ class DatabricksVolume(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -568,13 +573,13 @@ class DatabricksVolume(Asset):
 class DatabricksVolumeAttributes(AssetAttributes):
     """DatabricksVolume-specific attributes for nested API format."""
 
-    databricks_volume_owner: Union[str, None, UnsetType] = UNSET
+    databricks_owner: Union[str, None, UnsetType] = UNSET
     """User or group (principal) currently owning the volume."""
 
-    databricks_volume_external_location: Union[str, None, UnsetType] = UNSET
+    databricks_external_location: Union[str, None, UnsetType] = UNSET
     """The storage location where the volume is created."""
 
-    databricks_volume_type: Union[str, None, UnsetType] = UNSET
+    databricks_type: Union[str, None, UnsetType] = UNSET
     """Type of the volume."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -770,6 +775,9 @@ class DatabricksVolumeRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -886,6 +894,7 @@ _DATABRICKS_VOLUME_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -913,9 +922,9 @@ def _populate_databricks_volume_attrs(
 ) -> None:
     """Populate DatabricksVolume-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_volume_owner = obj.databricks_volume_owner
-    attrs.databricks_volume_external_location = obj.databricks_volume_external_location
-    attrs.databricks_volume_type = obj.databricks_volume_type
+    attrs.databricks_owner = obj.databricks_owner
+    attrs.databricks_external_location = obj.databricks_external_location
+    attrs.databricks_type = obj.databricks_type
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -959,11 +968,9 @@ def _populate_databricks_volume_attrs(
 def _extract_databricks_volume_attrs(attrs: DatabricksVolumeAttributes) -> dict:
     """Extract all DatabricksVolume attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_volume_owner"] = attrs.databricks_volume_owner
-    result["databricks_volume_external_location"] = (
-        attrs.databricks_volume_external_location
-    )
-    result["databricks_volume_type"] = attrs.databricks_volume_type
+    result["databricks_owner"] = attrs.databricks_owner
+    result["databricks_external_location"] = attrs.databricks_external_location
+    result["databricks_type"] = attrs.databricks_type
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1084,6 +1091,7 @@ def _databricks_volume_from_nested(nested: DatabricksVolumeNested) -> Databricks
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1125,15 +1133,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksVolume.DATABRICKS_VOLUME_OWNER = KeywordField(
-    "databricksVolumeOwner", "databricksVolumeOwner"
+DatabricksVolume.DATABRICKS_OWNER = KeywordField("databricksOwner", "databricksOwner")
+DatabricksVolume.DATABRICKS_EXTERNAL_LOCATION = KeywordField(
+    "databricksExternalLocation", "databricksExternalLocation"
 )
-DatabricksVolume.DATABRICKS_VOLUME_EXTERNAL_LOCATION = KeywordField(
-    "databricksVolumeExternalLocation", "databricksVolumeExternalLocation"
-)
-DatabricksVolume.DATABRICKS_VOLUME_TYPE = KeywordField(
-    "databricksVolumeType", "databricksVolumeType"
-)
+DatabricksVolume.DATABRICKS_TYPE = KeywordField("databricksType", "databricksType")
 DatabricksVolume.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksVolume.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DatabricksVolume.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
@@ -1250,6 +1254,7 @@ DatabricksVolume.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DatabricksVolume.MEANINGS = RelationField("meanings")
+DatabricksVolume.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DatabricksVolume.MC_MONITORS = RelationField("mcMonitors")
 DatabricksVolume.MC_INCIDENTS = RelationField("mcIncidents")
 DatabricksVolume.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
