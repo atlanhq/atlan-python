@@ -1607,10 +1607,32 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_REVERSE_SYNC_STRATEGY" class="md-nav__link">
     <span class="md-ellipsis">
       
         CONNECTION_REVERSE_SYNC_STRATEGY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_SOURCE_ACCOUNT_IDENTIFIER" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CONNECTION_SOURCE_ACCOUNT_IDENTIFIER
       
     </span>
   </a>
@@ -4062,10 +4084,32 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_REVERSE_SYNC_STRATEGY" class="md-nav__link">
     <span class="md-ellipsis">
       
         CONNECTION_REVERSE_SYNC_STRATEGY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_SOURCE_ACCOUNT_IDENTIFIER" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CONNECTION_SOURCE_ACCOUNT_IDENTIFIER
       
     </span>
   </a>
@@ -6629,6 +6673,28 @@
 
 
 
+<h4 id="pyatlan.model.assets.connection.Connection.CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;connectionPopularityInsightsComputedAt&#39;</span><span class="p">,</span> <span class="s1">&#39;connectionPopularityInsightsComputedAt&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.connection.Connection.CONNECTION_POPULARITY_INSIGHTS_COMPUTED_AT" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Time (epoch) at which popularity insights were last computed for this connection, in milliseconds. Marks the end of the popularity window; the start is this value minus popularityInsightsTimeframe days.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
 <h4 id="pyatlan.model.assets.connection.Connection.CONNECTION_REVERSE_SYNC_STRATEGY" class="doc doc-heading">
             <code class="highlight language-python"><span class="n">CONNECTION_REVERSE_SYNC_STRATEGY</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;connectionReverseSyncStrategy&#39;</span><span class="p">,</span> <span class="s1">&#39;connectionReverseSyncStrategy&#39;</span><span class="p">)</span></code>
 
@@ -6642,6 +6708,28 @@
     <div class="doc doc-contents ">
 
         <p>Strategy configuration for reverse-sync operations on this connection, stored as a stringified JSON array. Each element specifies a source entity type and whether reverse-sync is enabled for it, e.g. [{"source_entity": "Aspects", "enabled": true}].</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.connection.Connection.CONNECTION_SOURCE_ACCOUNT_IDENTIFIER" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">CONNECTION_SOURCE_ACCOUNT_IDENTIFIER</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;connectionSourceAccountIdentifier&#39;</span><span class="p">,</span> <span class="s1">&#39;connectionSourceAccountIdentifier&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.connection.Connection.CONNECTION_SOURCE_ACCOUNT_IDENTIFIER" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Identifier of the source account this connection points to, expressed in the source's own namespace (for example 'MYORG.MYACCOUNT' for Snowflake). Distinct from the credential host, which uses a different namespace and does not convert.</p>
 
     </div>
 
@@ -9907,7 +9995,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra).</p>
+        <p>Target deployment environment where the app is installed, for example atlan (Atlan-managed infra) or a customer SDR deployment name (customer-managed infra).</p>
 
     </div>
 
@@ -10159,7 +10247,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra).</p>
+        <p>Target deployment environment where the app is installed, for example atlan (Atlan-managed infra) or a customer SDR deployment name (customer-managed infra).</p>
 
     </div>
 
