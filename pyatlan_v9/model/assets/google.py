@@ -36,7 +36,6 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .cloud_related import RelatedGoogle
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -93,6 +92,8 @@ class Google(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Google"
 
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
@@ -200,66 +201,6 @@ class Google(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Google"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Google instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Google validation failed: {errors}")
-
-    def minimize(self) -> "Google":
-        """
-        Return a minimal copy of this Google with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Google with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Google instance with only the minimum required fields.
-        """
-        self.validate()
-        return Google(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedGoogle":
-        """
-        Create a :class:`RelatedGoogle` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedGoogle reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedGoogle(guid=self.guid)
-        return RelatedGoogle(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -532,9 +473,6 @@ def _google_to_nested(google: Google) -> GoogleNested:
         is_incomplete=google.is_incomplete,
         provenance_type=google.provenance_type,
         home_id=google.home_id,
-        depth=google.depth,
-        immediate_upstream=google.immediate_upstream,
-        immediate_downstream=google.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -573,9 +511,6 @@ def _google_from_nested(nested: GoogleNested) -> Google:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_google_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

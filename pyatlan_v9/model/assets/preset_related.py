@@ -52,7 +52,8 @@ class RelatedPreset(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Preset"
+        if self.type_name is UNSET:
+            self.type_name = "Preset"
 
 
 class RelatedPresetChart(RelatedPreset):
@@ -73,7 +74,8 @@ class RelatedPresetChart(RelatedPreset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PresetChart"
+        if self.type_name is UNSET:
+            self.type_name = "PresetChart"
 
 
 class RelatedPresetDashboard(RelatedPreset):
@@ -110,7 +112,8 @@ class RelatedPresetDashboard(RelatedPreset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PresetDashboard"
+        if self.type_name is UNSET:
+            self.type_name = "PresetDashboard"
 
 
 class RelatedPresetDataset(RelatedPreset):
@@ -134,7 +137,8 @@ class RelatedPresetDataset(RelatedPreset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PresetDataset"
+        if self.type_name is UNSET:
+            self.type_name = "PresetDataset"
 
 
 class RelatedPresetWorkspace(RelatedPreset):
@@ -176,4 +180,5 @@ class RelatedPresetWorkspace(RelatedPreset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PresetWorkspace"
+        if self.type_name is UNSET:
+            self.type_name = "PresetWorkspace"

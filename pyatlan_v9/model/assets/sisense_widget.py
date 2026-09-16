@@ -56,7 +56,6 @@ from .sisense_related import (
     RelatedSisenseDashboard,
     RelatedSisenseDatamodelTable,
     RelatedSisenseFolder,
-    RelatedSisenseWidget,
 )
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -114,6 +113,8 @@ class SisenseWidget(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SisenseWidget"
 
     sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns used in this widget."""
@@ -263,72 +264,6 @@ class SisenseWidget(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SisenseWidget instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.sisense_dashboard is UNSET:
-                errors.append("sisense_dashboard is required for creation")
-        if errors:
-            raise ValueError(f"SisenseWidget validation failed: {errors}")
-
-    def minimize(self) -> "SisenseWidget":
-        """
-        Return a minimal copy of this SisenseWidget with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SisenseWidget with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SisenseWidget instance with only the minimum required fields.
-        """
-        self.validate()
-        return SisenseWidget(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSisenseWidget":
-        """
-        Create a :class:`RelatedSisenseWidget` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSisenseWidget reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSisenseWidget(guid=self.guid)
-        return RelatedSisenseWidget(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -654,9 +589,6 @@ def _sisense_widget_to_nested(sisense_widget: SisenseWidget) -> SisenseWidgetNes
         is_incomplete=sisense_widget.is_incomplete,
         provenance_type=sisense_widget.provenance_type,
         home_id=sisense_widget.home_id,
-        depth=sisense_widget.depth,
-        immediate_upstream=sisense_widget.immediate_upstream,
-        immediate_downstream=sisense_widget.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -699,9 +631,6 @@ def _sisense_widget_from_nested(nested: SisenseWidgetNested) -> SisenseWidget:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sisense_widget_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

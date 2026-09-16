@@ -49,7 +49,8 @@ class RelatedLooker(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Looker"
+        if self.type_name is UNSET:
+            self.type_name = "Looker"
 
 
 class RelatedLookerDashboard(RelatedLooker):
@@ -85,7 +86,8 @@ class RelatedLookerDashboard(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerDashboard"
+        if self.type_name is UNSET:
+            self.type_name = "LookerDashboard"
 
 
 class RelatedLookerExplore(RelatedLooker):
@@ -115,7 +117,8 @@ class RelatedLookerExplore(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerExplore"
+        if self.type_name is UNSET:
+            self.type_name = "LookerExplore"
 
 
 class RelatedLookerView(RelatedLooker):
@@ -139,7 +142,8 @@ class RelatedLookerView(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerView"
+        if self.type_name is UNSET:
+            self.type_name = "LookerView"
 
 
 class RelatedLookerLook(RelatedLooker):
@@ -184,7 +188,8 @@ class RelatedLookerLook(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerLook"
+        if self.type_name is UNSET:
+            self.type_name = "LookerLook"
 
 
 class RelatedLookerTile(RelatedLooker):
@@ -227,7 +232,8 @@ class RelatedLookerTile(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerTile"
+        if self.type_name is UNSET:
+            self.type_name = "LookerTile"
 
 
 class RelatedLookerModel(RelatedLooker):
@@ -245,7 +251,8 @@ class RelatedLookerModel(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerModel"
+        if self.type_name is UNSET:
+            self.type_name = "LookerModel"
 
 
 class RelatedLookerProject(RelatedLooker):
@@ -260,7 +267,8 @@ class RelatedLookerProject(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerProject"
+        if self.type_name is UNSET:
+            self.type_name = "LookerProject"
 
 
 class RelatedLookerQuery(RelatedLooker):
@@ -287,7 +295,8 @@ class RelatedLookerQuery(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerQuery"
+        if self.type_name is UNSET:
+            self.type_name = "LookerQuery"
 
 
 class RelatedLookerField(RelatedLooker):
@@ -341,7 +350,8 @@ class RelatedLookerField(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerField"
+        if self.type_name is UNSET:
+            self.type_name = "LookerField"
 
 
 class RelatedLookerFolder(RelatedLooker):
@@ -370,4 +380,5 @@ class RelatedLookerFolder(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "LookerFolder"
+        if self.type_name is UNSET:
+            self.type_name = "LookerFolder"

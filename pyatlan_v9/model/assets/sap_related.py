@@ -69,7 +69,8 @@ class RelatedSAP(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAP"
+        if self.type_name is UNSET:
+            self.type_name = "SAP"
 
 
 class RelatedSAPProcess(RelatedSAP):
@@ -84,7 +85,8 @@ class RelatedSAPProcess(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPProcess"
+        if self.type_name is UNSET:
+            self.type_name = "SAPProcess"
 
 
 class RelatedSAPColumnProcess(RelatedSAP):
@@ -99,7 +101,8 @@ class RelatedSAPColumnProcess(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPColumnProcess"
+        if self.type_name is UNSET:
+            self.type_name = "SAPColumnProcess"
 
 
 class RelatedSapErpTransactionCode(RelatedSAP):
@@ -114,7 +117,8 @@ class RelatedSapErpTransactionCode(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapErpTransactionCode"
+        if self.type_name is UNSET:
+            self.type_name = "SapErpTransactionCode"
 
 
 class RelatedSapErpView(RelatedSAP):
@@ -135,7 +139,8 @@ class RelatedSapErpView(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapErpView"
+        if self.type_name is UNSET:
+            self.type_name = "SapErpView"
 
 
 class RelatedSapErpCdsView(RelatedSAP):
@@ -159,7 +164,8 @@ class RelatedSapErpCdsView(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapErpCdsView"
+        if self.type_name is UNSET:
+            self.type_name = "SapErpCdsView"
 
 
 class RelatedSapErpColumn(RelatedSAP):
@@ -219,7 +225,8 @@ class RelatedSapErpColumn(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapErpColumn"
+        if self.type_name is UNSET:
+            self.type_name = "SapErpColumn"
 
 
 class RelatedSapErpComponent(RelatedSAP):
@@ -234,7 +241,8 @@ class RelatedSapErpComponent(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapErpComponent"
+        if self.type_name is UNSET:
+            self.type_name = "SapErpComponent"
 
 
 class RelatedSapErpFunctionModule(RelatedSAP):
@@ -276,7 +284,8 @@ class RelatedSapErpFunctionModule(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapErpFunctionModule"
+        if self.type_name is UNSET:
+            self.type_name = "SapErpFunctionModule"
 
 
 class RelatedSapErpTable(RelatedSAP):
@@ -297,7 +306,8 @@ class RelatedSapErpTable(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapErpTable"
+        if self.type_name is UNSET:
+            self.type_name = "SapErpTable"
 
 
 class RelatedSapErpAbapProgram(RelatedSAP):
@@ -315,7 +325,8 @@ class RelatedSapErpAbapProgram(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapErpAbapProgram"
+        if self.type_name is UNSET:
+            self.type_name = "SapErpAbapProgram"
 
 
 class RelatedSapErpFioriApp(RelatedSAP):
@@ -351,7 +362,8 @@ class RelatedSapErpFioriApp(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapErpFioriApp"
+        if self.type_name is UNSET:
+            self.type_name = "SapErpFioriApp"
 
 
 class RelatedSapDatasphereReplicationFlow(RelatedFlowControlOperation):
@@ -384,4 +396,5 @@ class RelatedSapDatasphereReplicationFlow(RelatedFlowControlOperation):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SapDatasphereReplicationFlow"
+        if self.type_name is UNSET:
+            self.type_name = "SapDatasphereReplicationFlow"

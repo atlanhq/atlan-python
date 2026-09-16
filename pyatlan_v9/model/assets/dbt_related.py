@@ -106,7 +106,8 @@ class RelatedDbt(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Dbt"
+        if self.type_name is UNSET:
+            self.type_name = "Dbt"
 
 
 class RelatedDbtSemanticModel(RelatedDbt):
@@ -121,7 +122,8 @@ class RelatedDbtSemanticModel(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtSemanticModel"
+        if self.type_name is UNSET:
+            self.type_name = "DbtSemanticModel"
 
 
 class RelatedDbtDimension(RelatedDbt):
@@ -142,7 +144,8 @@ class RelatedDbtDimension(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtDimension"
+        if self.type_name is UNSET:
+            self.type_name = "DbtDimension"
 
 
 class RelatedDbtMeasure(RelatedDbt):
@@ -160,7 +163,8 @@ class RelatedDbtMeasure(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtMeasure"
+        if self.type_name is UNSET:
+            self.type_name = "DbtMeasure"
 
 
 class RelatedDbtEntity(RelatedDbt):
@@ -178,7 +182,8 @@ class RelatedDbtEntity(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtEntity"
+        if self.type_name is UNSET:
+            self.type_name = "DbtEntity"
 
 
 class RelatedDbtModel(RelatedDbt):
@@ -236,7 +241,8 @@ class RelatedDbtModel(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtModel"
+        if self.type_name is UNSET:
+            self.type_name = "DbtModel"
 
 
 class RelatedDbtTest(RelatedDbt):
@@ -279,7 +285,8 @@ class RelatedDbtTest(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtTest"
+        if self.type_name is UNSET:
+            self.type_name = "DbtTest"
 
 
 class RelatedDbtSource(RelatedDbt):
@@ -300,7 +307,8 @@ class RelatedDbtSource(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtSource"
+        if self.type_name is UNSET:
+            self.type_name = "DbtSource"
 
 
 class RelatedDbtMetric(RelatedDbt):
@@ -330,7 +338,8 @@ class RelatedDbtMetric(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtMetric"
+        if self.type_name is UNSET:
+            self.type_name = "DbtMetric"
 
 
 class RelatedDbtModelColumn(RelatedDbt):
@@ -354,7 +363,8 @@ class RelatedDbtModelColumn(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtModelColumn"
+        if self.type_name is UNSET:
+            self.type_name = "DbtModelColumn"
 
 
 class RelatedDbtProcess(RelatedDbt):
@@ -375,7 +385,8 @@ class RelatedDbtProcess(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtProcess"
+        if self.type_name is UNSET:
+            self.type_name = "DbtProcess"
 
 
 class RelatedDbtColumnProcess(RelatedDbt):
@@ -393,7 +404,8 @@ class RelatedDbtColumnProcess(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtColumnProcess"
+        if self.type_name is UNSET:
+            self.type_name = "DbtColumnProcess"
 
 
 class RelatedDbtTag(RelatedDbt):
@@ -408,7 +420,8 @@ class RelatedDbtTag(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtTag"
+        if self.type_name is UNSET:
+            self.type_name = "DbtTag"
 
 
 class RelatedDbtSeed(RelatedDbt):
@@ -429,4 +442,5 @@ class RelatedDbtSeed(RelatedDbt):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DbtSeed"
+        if self.type_name is UNSET:
+            self.type_name = "DbtSeed"

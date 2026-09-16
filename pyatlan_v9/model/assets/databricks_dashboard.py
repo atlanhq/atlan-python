@@ -43,7 +43,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import RelatedDatabricksDashboard
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
@@ -162,6 +161,8 @@ class DatabricksDashboard(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DatabricksDashboard"
 
     databricks_path: Union[str, None, UnsetType] = UNSET
     """Workspace path of the dashboard asset, including its file name. The parent folder path can be derived by dropping the last path segment."""
@@ -444,67 +445,6 @@ class DatabricksDashboard(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/dashboards/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DatabricksDashboard instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if errors:
-            raise ValueError(f"DatabricksDashboard validation failed: {errors}")
-
-    def minimize(self) -> "DatabricksDashboard":
-        """
-        Return a minimal copy of this DatabricksDashboard with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DatabricksDashboard with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DatabricksDashboard instance with only the minimum required fields.
-        """
-        self.validate()
-        return DatabricksDashboard(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDatabricksDashboard":
-        """
-        Create a :class:`RelatedDatabricksDashboard` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDatabricksDashboard reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDatabricksDashboard(guid=self.guid)
-        return RelatedDatabricksDashboard(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1052,9 +992,6 @@ def _databricks_dashboard_to_nested(
         is_incomplete=databricks_dashboard.is_incomplete,
         provenance_type=databricks_dashboard.provenance_type,
         home_id=databricks_dashboard.home_id,
-        depth=databricks_dashboard.depth,
-        immediate_upstream=databricks_dashboard.immediate_upstream,
-        immediate_downstream=databricks_dashboard.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1099,9 +1036,6 @@ def _databricks_dashboard_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_databricks_dashboard_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

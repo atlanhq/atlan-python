@@ -58,7 +58,8 @@ class RelatedSageMakerUnifiedStudio(RelatedSaaS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerUnifiedStudio"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerUnifiedStudio"
 
 
 class RelatedSageMakerUnifiedStudioProject(RelatedSageMakerUnifiedStudio):
@@ -88,7 +89,8 @@ class RelatedSageMakerUnifiedStudioProject(RelatedSageMakerUnifiedStudio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerUnifiedStudioProject"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerUnifiedStudioProject"
 
 
 class RelatedSageMakerUnifiedStudioAsset(RelatedSageMakerUnifiedStudio):
@@ -118,7 +120,8 @@ class RelatedSageMakerUnifiedStudioAsset(RelatedSageMakerUnifiedStudio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerUnifiedStudioAsset"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerUnifiedStudioAsset"
 
 
 class RelatedSageMakerUnifiedStudioPublishedAsset(RelatedSageMakerUnifiedStudio):
@@ -139,7 +142,8 @@ class RelatedSageMakerUnifiedStudioPublishedAsset(RelatedSageMakerUnifiedStudio)
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerUnifiedStudioPublishedAsset"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerUnifiedStudioPublishedAsset"
 
 
 class RelatedSageMakerUnifiedStudioSubscribedAsset(RelatedSageMakerUnifiedStudio):
@@ -178,7 +182,8 @@ class RelatedSageMakerUnifiedStudioSubscribedAsset(RelatedSageMakerUnifiedStudio
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerUnifiedStudioSubscribedAsset"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerUnifiedStudioSubscribedAsset"
 
 
 class RelatedSageMakerUnifiedStudioAssetSchema(RelatedSageMakerUnifiedStudio):
@@ -202,4 +207,5 @@ class RelatedSageMakerUnifiedStudioAssetSchema(RelatedSageMakerUnifiedStudio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerUnifiedStudioAssetSchema"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerUnifiedStudioAssetSchema"
