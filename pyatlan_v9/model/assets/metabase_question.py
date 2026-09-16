@@ -115,8 +115,6 @@ class MetabaseQuestion(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MetabaseQuestion"
-
     metabase_dashboard_count: Union[int, None, UnsetType] = UNSET
     """"""
 

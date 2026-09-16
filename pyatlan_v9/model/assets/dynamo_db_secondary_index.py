@@ -203,8 +203,6 @@ class DynamoDBSecondaryIndex(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DynamoDBSecondaryIndex"
-
     dynamo_db_projection_type: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dynamoDBProjectionType"
     )

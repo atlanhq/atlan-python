@@ -116,8 +116,6 @@ class SqlInsightJoin(Asset):
     SQL_INSIGHT_SOURCE_DATASET: ClassVar[Any] = None
     SQL_INSIGHT_JOINED_DATASET: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SqlInsightJoin"
-
     sql_insight_source_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the source dataset in this join pattern."""
 

@@ -168,8 +168,6 @@ class DocumentDBDatabase(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DocumentDBDatabase"
-
     document_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="documentDBDatabaseCollectionCount"
     )

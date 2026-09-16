@@ -222,8 +222,6 @@ class CosmosMongoDBCollection(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CosmosMongoDBCollection"
-
     cosmos_mongo_db_database_qualified_name: Union[str, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBDatabaseQualifiedName")
     )

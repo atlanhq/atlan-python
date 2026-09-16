@@ -126,8 +126,6 @@ class SAPBWADSO(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SAPBWADSO"
-
     sap_bw_planning_mode: Union[str, None, UnsetType] = UNSET
     """Whether this ADSO supports planning or write-back (RSOADSO.PLANNING_MODE)."""
 

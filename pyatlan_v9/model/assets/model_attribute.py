@@ -134,8 +134,6 @@ class ModelAttribute(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ModelAttribute"
-
     model_attribute_is_nullable: Union[bool, None, UnsetType] = UNSET
     """When true, the values in this attribute can be null."""
 

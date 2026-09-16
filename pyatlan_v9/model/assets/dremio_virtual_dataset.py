@@ -183,8 +183,6 @@ class DremioVirtualDataset(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DremioVirtualDataset"
-
     dremio_id: Union[str, None, UnsetType] = UNSET
     """Source ID of this asset in Dremio."""
 

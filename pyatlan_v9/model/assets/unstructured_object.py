@@ -118,8 +118,6 @@ class UnstructuredObject(Asset):
     UNSTRUCTURED_CONTAINER: ClassVar[Any] = None
     UNSTRUCTURED_PARENT_FOLDER: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "UnstructuredObject"
-
     unstructured_object_key: Union[str, None, UnsetType] = UNSET
     """Unique identity of this object within its container — typically the concatenation of any folder path and the object's own filename."""
 

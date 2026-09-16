@@ -164,8 +164,6 @@ class Database(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Database"
-
     schema_count: Union[int, None, UnsetType] = UNSET
     """Number of schemas in this database."""
 

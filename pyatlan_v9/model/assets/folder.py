@@ -95,8 +95,6 @@ class Folder(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Folder"
-
     parent_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent folder or collection in which this folder exists."""
 

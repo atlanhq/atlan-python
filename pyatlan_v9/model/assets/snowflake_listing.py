@@ -177,8 +177,6 @@ class SnowflakeListing(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SnowflakeListing"
-
     snowflake_title: Union[str, None, UnsetType] = UNSET
     """Snowflake's source-truthful title for the listing. Distinct from `name` (the non-human-readable Snowflake identifier)."""
 

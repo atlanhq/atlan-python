@@ -112,8 +112,6 @@ class Artifact(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Artifact"
-
     artifact_version: Union[str, None, UnsetType] = UNSET
     """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
 

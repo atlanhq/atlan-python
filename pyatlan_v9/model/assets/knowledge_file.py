@@ -117,8 +117,6 @@ class KnowledgeFile(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "KnowledgeFile"
-
     knowledge_content_hash: Union[str, None, UnsetType] = UNSET
     """SHA-256 hex digest of file content, used for deduplication."""
 

@@ -177,8 +177,6 @@ class TablePartition(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TablePartition"
-
     constraint: Union[str, None, UnsetType] = UNSET
     """Constraint that defines this table partition."""
 

@@ -94,8 +94,6 @@ class Collection(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Collection"
-
     icon: Union[str, None, UnsetType] = UNSET
     """Image used to represent this collection."""
 

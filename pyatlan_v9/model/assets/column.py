@@ -272,8 +272,6 @@ class Column(Asset):
     SQL_INSIGHT_FILTERS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Column"
-
     data_type: Union[str, None, UnsetType] = UNSET
     """Data type of values in this column."""
 

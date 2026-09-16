@@ -105,8 +105,6 @@ class KnowledgeFolder(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "KnowledgeFolder"
-
     knowledge_folder_type: Union[str, None, UnsetType] = UNSET
     """Type of this folder based on how it was created and how it is managed."""
 

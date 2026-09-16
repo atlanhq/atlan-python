@@ -115,8 +115,6 @@ class SqlInsightFilter(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SQL_INSIGHT_COLUMN: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SqlInsightFilter"
-
     sql_insight_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the dataset containing the filtered column."""
 

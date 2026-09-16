@@ -120,8 +120,6 @@ class KafkaField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "KafkaField"
-
     kafka_field_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of this field as defined in the schema, for example: string, int, record."""
 

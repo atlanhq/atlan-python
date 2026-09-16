@@ -187,8 +187,6 @@ class SapErpColumn(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SapErpColumn"
-
     sap_data_element: Union[str, None, UnsetType] = UNSET
     """Represents the SAP ERP data element, providing semantic information about the column."""
 

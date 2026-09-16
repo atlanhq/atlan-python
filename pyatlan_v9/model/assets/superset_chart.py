@@ -109,8 +109,6 @@ class SupersetChart(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SUPERSET_DASHBOARD: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SupersetChart"
-
     superset_chart_description_markdown: Union[str, None, UnsetType] = UNSET
     """Description markdown of the chart."""
 

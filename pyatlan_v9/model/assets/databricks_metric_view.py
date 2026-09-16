@@ -168,8 +168,6 @@ class DatabricksMetricView(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksMetricView"
-
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 

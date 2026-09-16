@@ -166,8 +166,6 @@ class SnowflakeShare(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SnowflakeShare"
-
     snowflake_kind: Union[str, None, UnsetType] = UNSET
     """Direction of the share (inbound or outbound)."""
 

@@ -200,8 +200,6 @@ class Schema(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Schema"
-
     table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this schema."""
 

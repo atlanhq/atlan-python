@@ -115,8 +115,6 @@ class SSRS(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SSRS"
-
     ssrs_path: Union[str, None, UnsetType] = UNSET
     """Path of the asset in SSRS."""
 

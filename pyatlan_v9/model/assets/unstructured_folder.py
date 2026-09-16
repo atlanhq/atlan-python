@@ -117,8 +117,6 @@ class UnstructuredFolder(Asset):
     UNSTRUCTURED_PARENT_FOLDER: ClassVar[Any] = None
     UNSTRUCTURED_OBJECTS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "UnstructuredFolder"
-
     unstructured_folder_count: Union[int, None, UnsetType] = UNSET
     """Count of child folders directly nested under this folder (immediate children only — sub-folders further down the tree are not counted)."""
 

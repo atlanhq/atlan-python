@@ -115,8 +115,6 @@ class SkillArtifact(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SkillArtifact"
-
     skill_artifact_content: Union[str, None, UnsetType] = UNSET
     """Full textual body of this skill artifact file (for example, the markdown of SKILL.md or the source of a script). Stored per-artifact because a skill folder contains many files, each with distinct content."""
 

@@ -114,8 +114,6 @@ class AIModelVersion(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AIModelVersion"
-
     ai_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the AI model to which this version belongs, used to navigate from a version back to its parent model."""
 

@@ -182,8 +182,6 @@ class SnowflakeSemanticLogicalTable(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SnowflakeSemanticLogicalTable"
-
     snowflake_semantic_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the semantic view in which this logical table exists."""
 

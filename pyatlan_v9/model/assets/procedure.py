@@ -174,8 +174,6 @@ class Procedure(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Procedure"
-
     definition: Union[str, None, UnsetType] = UNSET
     """SQL definition of the procedure."""
 

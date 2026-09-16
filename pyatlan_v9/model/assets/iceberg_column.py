@@ -270,8 +270,6 @@ class IcebergColumn(Asset):
     SQL_INSIGHT_FILTERS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "IcebergColumn"
-
     iceberg_parent_namespace_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the immediate parent namespace in which this asset exists."""
 

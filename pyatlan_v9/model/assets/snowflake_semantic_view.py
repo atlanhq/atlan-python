@@ -170,8 +170,6 @@ class SnowflakeSemanticView(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SnowflakeSemanticView"
-
     snowflake_definition: Union[str, None, UnsetType] = UNSET
     """DDL definition of the semantic view (via GET_DDL)."""
 

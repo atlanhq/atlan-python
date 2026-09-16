@@ -106,8 +106,6 @@ class Unstructured(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Unstructured"
-
     unstructured_container_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the data container that holds this asset."""
 

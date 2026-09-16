@@ -167,8 +167,6 @@ class MongoDBDatabase(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MongoDBDatabase"
-
     mongo_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBDatabaseCollectionCount"
     )

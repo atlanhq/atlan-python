@@ -119,8 +119,6 @@ class SAPBWDataSource(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SAPBWDataSource"
-
     sap_bw_logical_system: Union[str, None, UnsetType] = UNSET
     """Source logical system this DataSource belongs to (RSDS.LOGSYS). Part of the composite primary key."""
 

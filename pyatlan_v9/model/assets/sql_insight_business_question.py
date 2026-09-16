@@ -112,8 +112,6 @@ class SqlInsightBusinessQuestion(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SQL_INSIGHT_DATASET: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SqlInsightBusinessQuestion"
-
     sql_insight_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the dataset this business question relates to."""
 

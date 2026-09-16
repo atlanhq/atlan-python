@@ -123,8 +123,6 @@ class SAPBWQuery(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SAPBWQuery"
-
     sap_bw_query_uid: Union[str, None, UnsetType] = UNSET
     """Internal stable UID of the query (RSZCOMPDIR.COMPUID). This is the join key inside SAP BW and is the preferred identifier for qualifiedName."""
 

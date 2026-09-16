@@ -108,8 +108,6 @@ class AuthPolicy(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AuthPolicy"
-
     is_policy_enabled: Union[bool, None, UnsetType] = UNSET
     """TBC"""
 

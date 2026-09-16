@@ -286,8 +286,6 @@ class Incident(Referenceable):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Incident"
-
     asset_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
 

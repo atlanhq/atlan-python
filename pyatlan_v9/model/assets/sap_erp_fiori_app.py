@@ -118,8 +118,6 @@ class SapErpFioriApp(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SapErpFioriApp"
-
     sap_type: Union[str, None, UnsetType] = UNSET
     """Application type of the Fiori App from sap.app.type in the manifest, such as application, transactional, or factsheet."""
 

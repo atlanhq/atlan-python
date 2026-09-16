@@ -123,8 +123,6 @@ class SAPBWInfoSourceField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SAPBWInfoSourceField"
-
     sap_bw_is_key_field: Union[bool, None, UnsetType] = UNSET
     """Whether this field is a key field (RSKSFIELDNEW.KEYFLAG)."""
 

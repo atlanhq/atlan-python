@@ -163,8 +163,6 @@ class DatabricksDashboard(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksDashboard"
-
     databricks_path: Union[str, None, UnsetType] = UNSET
     """Workspace path of the dashboard asset, including its file name. The parent folder path can be derived by dropping the last path segment."""
 

@@ -203,8 +203,6 @@ class IcebergNamespace(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "IcebergNamespace"
-
     iceberg_parent_namespace_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the immediate parent namespace in which this asset exists."""
 

@@ -116,8 +116,6 @@ class Agent(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Agent"
-
     agent_slug: Union[str, None, UnsetType] = UNSET
     """URL-safe unique identifier for this agent (for example, my-data-agent)."""
 

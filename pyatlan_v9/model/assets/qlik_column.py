@@ -123,8 +123,6 @@ class QlikColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "QlikColumn"
-
     qlik_column_name: Union[str, None, UnsetType] = UNSET
     """Qlik Column name."""
 

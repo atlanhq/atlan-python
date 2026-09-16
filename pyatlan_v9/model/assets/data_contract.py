@@ -115,8 +115,6 @@ class DataContract(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DataContract"
-
     data_contract_json: Union[str, None, UnsetType] = UNSET
     """(Deprecated) Replaced by dataContractSpec attribute."""
 

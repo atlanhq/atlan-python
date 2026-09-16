@@ -212,8 +212,6 @@ class MongoDBCollection(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MongoDBCollection"
-
     mongo_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBCollectionSubtype"
     )

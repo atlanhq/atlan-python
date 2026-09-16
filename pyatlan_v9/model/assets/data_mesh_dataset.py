@@ -106,8 +106,6 @@ class DataMeshDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DataMeshDataset"
-
     data_mesh_dataset_type: Union[str, None, UnsetType] = UNSET
     """Type classification of this dataset (Raw, Refined, or Aggregated)."""
 

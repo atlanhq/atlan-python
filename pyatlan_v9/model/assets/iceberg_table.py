@@ -203,8 +203,6 @@ class IcebergTable(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "IcebergTable"
-
     iceberg_current_snapshot_id: Union[int, None, UnsetType] = UNSET
     """Current snapshot identifier for this Iceberg table."""
 

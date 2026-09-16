@@ -178,8 +178,6 @@ class BigqueryRoutine(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "BigqueryRoutine"
-
     bigquery_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 

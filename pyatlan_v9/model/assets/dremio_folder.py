@@ -178,8 +178,6 @@ class DremioFolder(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DremioFolder"
-
     dremio_parent_asset_type: Union[str, None, UnsetType] = UNSET
     """Type of top level asset that contains this folder."""
 

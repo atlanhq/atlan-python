@@ -104,8 +104,6 @@ class Superset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Superset"
-
     superset_dashboard_id: Union[int, None, UnsetType] = UNSET
     """Identifier of the dashboard in which this asset exists, in Superset."""
 

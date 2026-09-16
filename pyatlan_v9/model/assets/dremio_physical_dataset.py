@@ -211,8 +211,6 @@ class DremioPhysicalDataset(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DremioPhysicalDataset"
-
     dremio_id: Union[str, None, UnsetType] = UNSET
     """Source ID of this asset in Dremio."""
 

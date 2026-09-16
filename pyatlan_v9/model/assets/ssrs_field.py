@@ -129,8 +129,6 @@ class SSRSField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SSRSField"
-
     ssrs_datatype: Union[str, None, UnsetType] = UNSET
     """Data type of the field."""
 

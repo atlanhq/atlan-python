@@ -121,8 +121,6 @@ class AnaplanLineItem(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AnaplanLineItem"
-
     anaplan_line_item_formula: Union[str, None, UnsetType] = UNSET
     """Formula of the AnaplanLineItem from the source system."""
 

@@ -133,8 +133,6 @@ class SAPBWInfoObject(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SAPBWInfoObject"
-
     sap_bw_field_name: Union[str, None, UnsetType] = UNSET
     """Associated ABAP field name (RSDIOBJ.FIELDNM)."""
 

@@ -109,8 +109,6 @@ class Purpose(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Purpose"
-
     purpose_classifications: Union[List[str], None, UnsetType] = UNSET
     """TBC"""
 

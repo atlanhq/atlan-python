@@ -161,8 +161,6 @@ class DatabricksVolumePath(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksVolumePath"
-
     databricks_path: Union[str, None, UnsetType] = UNSET
     """Path of data on the volume."""
 

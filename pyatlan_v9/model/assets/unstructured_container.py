@@ -114,8 +114,6 @@ class UnstructuredContainer(Asset):
     UNSTRUCTURED_FOLDERS: ClassVar[Any] = None
     UNSTRUCTURED_OBJECTS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "UnstructuredContainer"
-
     unstructured_object_count: Union[int, None, UnsetType] = UNSET
     """Total count of objects within this container, including those nested under folders at any depth."""
 

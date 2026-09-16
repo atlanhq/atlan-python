@@ -111,8 +111,6 @@ class Persona(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Persona"
-
     persona_groups: Union[List[str], None, UnsetType] = UNSET
     """TBC"""
 

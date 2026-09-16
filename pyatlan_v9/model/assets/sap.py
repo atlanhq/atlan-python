@@ -109,8 +109,6 @@ class SAP(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SAP"
-
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
 

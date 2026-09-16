@@ -276,8 +276,6 @@ class DynamoDBAttribute(Asset):
     SQL_INSIGHT_FILTERS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DynamoDBAttribute"
-
     dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dynamoDBStatus"
     )

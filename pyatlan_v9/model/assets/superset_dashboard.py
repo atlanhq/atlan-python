@@ -117,8 +117,6 @@ class SupersetDashboard(Asset):
     SUPERSET_CHARTS: ClassVar[Any] = None
     SUPERSET_DATASETS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SupersetDashboard"
-
     superset_dashboard_changed_by_name: Union[str, None, UnsetType] = UNSET
     """Name of the user who changed the dashboard."""
 

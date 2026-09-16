@@ -125,8 +125,6 @@ class SAPBWCompositeProvider(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SAPBWCompositeProvider"
-
     sap_bw_is_hana_model: Union[bool, None, UnsetType] = UNSET
     """Whether this CompositeProvider is a HANA model (RSOHCPR.HANAMODELFL)."""
 

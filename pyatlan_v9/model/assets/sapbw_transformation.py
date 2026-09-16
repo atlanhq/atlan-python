@@ -119,8 +119,6 @@ class SAPBWTransformation(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SAPBWTransformation"
-
     sap_bw_rules: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Rules defined within this transformation as key-value pairs (rule_id mapped to rule_type, sourced from RSTRANRULE). Mirrors the SAP ERP sapErpFunctionModuleImportParams shape."""
 

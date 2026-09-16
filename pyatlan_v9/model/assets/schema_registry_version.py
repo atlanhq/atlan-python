@@ -112,8 +112,6 @@ class SchemaRegistryVersion(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SchemaRegistryVersion"
-
     schema_registry_version_number: Union[str, None, UnsetType] = UNSET
     """Version number of this schema version."""
 

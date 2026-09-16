@@ -119,8 +119,6 @@ class SageMakerUnifiedStudioProject(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SageMakerUnifiedStudioProject"
-
     smus_project_status: Union[str, None, UnsetType] = UNSET
     """Status of the SageMaker Unified Studio project."""
 

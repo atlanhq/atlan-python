@@ -159,8 +159,6 @@ class Starburst(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Starburst"
-
     starburst_data_product_name: Union[str, None, UnsetType] = UNSET
     """Name of the Starburst Data Product that contains this asset."""
 

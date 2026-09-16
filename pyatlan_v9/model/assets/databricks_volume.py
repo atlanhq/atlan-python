@@ -163,8 +163,6 @@ class DatabricksVolume(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksVolume"
-
     databricks_owner: Union[str, None, UnsetType] = UNSET
     """User or group (principal) currently owning the volume."""
 

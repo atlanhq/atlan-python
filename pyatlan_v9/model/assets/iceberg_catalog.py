@@ -171,8 +171,6 @@ class IcebergCatalog(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "IcebergCatalog"
-
     iceberg_catalog_type: Union[str, None, UnsetType] = UNSET
     """Type of the Iceberg catalog (e.g., 'hadoop', 'hive', 'nessie', 'rest')."""
 

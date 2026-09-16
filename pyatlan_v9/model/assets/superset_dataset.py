@@ -110,8 +110,6 @@ class SupersetDataset(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SUPERSET_DASHBOARD: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SupersetDataset"
-
     superset_dataset_datasource_name: Union[str, None, UnsetType] = UNSET
     """Name of the datasource for the dataset."""
 

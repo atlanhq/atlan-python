@@ -117,8 +117,6 @@ class GCPDataplexAspectType(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "GCPDataplexAspectType"
-
     gcp_dataplex_aspect_type_resource_name: Union[str, None, UnsetType] = UNSET
     """Full GCP resource name of this Aspect Type (e.g. projects/{project}/locations/{location}/aspectTypes/{id}). Used to match against assetGCPDataplexAspectType on BigQuery entry assets."""
 

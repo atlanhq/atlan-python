@@ -174,8 +174,6 @@ class Function(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Function"
-
     function_definition: Union[str, None, UnsetType] = UNSET
     """Code or set of statements that determine the output of the function."""
 

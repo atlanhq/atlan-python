@@ -122,8 +122,6 @@ class SAPBWInfoSource(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SAPBWInfoSource"
-
     sap_bw_object_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of the object in SAP BW such as active, inactive, or modified (e.g. RSDAREA.OBJSTAT, RSKSNEW.OBJSTAT)."""
 

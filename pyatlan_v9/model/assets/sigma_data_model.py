@@ -116,8 +116,6 @@ class SigmaDataModel(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SigmaDataModel"
-
     sigma_data_model_url_id: Union[str, None, UnsetType] = UNSET
     """Short (21-22 character) URL-safe identifier of this data model in Sigma, used in deep-link URLs into the Sigma UI."""
 
