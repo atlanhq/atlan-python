@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -648,6 +648,9 @@ def _bi_process_to_nested(bi_process: BIProcess) -> BIProcessNested:
         is_incomplete=bi_process.is_incomplete,
         provenance_type=bi_process.provenance_type,
         home_id=bi_process.home_id,
+        depth=bi_process.depth,
+        immediate_upstream=bi_process.immediate_upstream,
+        immediate_downstream=bi_process.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -688,6 +691,9 @@ def _bi_process_from_nested(nested: BIProcessNested) -> BIProcess:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_bi_process_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -872,6 +872,9 @@ def _data_product_to_nested(data_product: DataProduct) -> DataProductNested:
         is_incomplete=data_product.is_incomplete,
         provenance_type=data_product.provenance_type,
         home_id=data_product.home_id,
+        depth=data_product.depth,
+        immediate_upstream=data_product.immediate_upstream,
+        immediate_downstream=data_product.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -912,6 +915,9 @@ def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_data_product_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -710,6 +711,9 @@ def _sapbw_transformation_to_nested(
         is_incomplete=sapbw_transformation.is_incomplete,
         provenance_type=sapbw_transformation.provenance_type,
         home_id=sapbw_transformation.home_id,
+        depth=sapbw_transformation.depth,
+        immediate_upstream=sapbw_transformation.immediate_upstream,
+        immediate_downstream=sapbw_transformation.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -754,6 +758,9 @@ def _sapbw_transformation_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sapbw_transformation_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

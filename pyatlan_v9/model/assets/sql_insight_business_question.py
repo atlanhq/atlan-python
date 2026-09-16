@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -655,6 +655,9 @@ def _sql_insight_business_question_to_nested(
         is_incomplete=sql_insight_business_question.is_incomplete,
         provenance_type=sql_insight_business_question.provenance_type,
         home_id=sql_insight_business_question.home_id,
+        depth=sql_insight_business_question.depth,
+        immediate_upstream=sql_insight_business_question.immediate_upstream,
+        immediate_downstream=sql_insight_business_question.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -699,6 +702,9 @@ def _sql_insight_business_question_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sql_insight_business_question_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

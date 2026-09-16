@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1399,6 +1399,9 @@ def _dremio_physical_dataset_to_nested(
         is_incomplete=dremio_physical_dataset.is_incomplete,
         provenance_type=dremio_physical_dataset.provenance_type,
         home_id=dremio_physical_dataset.home_id,
+        depth=dremio_physical_dataset.depth,
+        immediate_upstream=dremio_physical_dataset.immediate_upstream,
+        immediate_downstream=dremio_physical_dataset.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1443,6 +1446,9 @@ def _dremio_physical_dataset_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_dremio_physical_dataset_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

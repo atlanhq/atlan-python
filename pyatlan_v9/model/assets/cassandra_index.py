@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -672,6 +672,9 @@ def _cassandra_index_to_nested(cassandra_index: CassandraIndex) -> CassandraInde
         is_incomplete=cassandra_index.is_incomplete,
         provenance_type=cassandra_index.provenance_type,
         home_id=cassandra_index.home_id,
+        depth=cassandra_index.depth,
+        immediate_upstream=cassandra_index.immediate_upstream,
+        immediate_downstream=cassandra_index.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -714,6 +717,9 @@ def _cassandra_index_from_nested(nested: CassandraIndexNested) -> CassandraIndex
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_cassandra_index_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

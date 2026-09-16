@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -646,6 +647,9 @@ def _custom_entity_to_nested(custom_entity: CustomEntity) -> CustomEntityNested:
         is_incomplete=custom_entity.is_incomplete,
         provenance_type=custom_entity.provenance_type,
         home_id=custom_entity.home_id,
+        depth=custom_entity.depth,
+        immediate_upstream=custom_entity.immediate_upstream,
+        immediate_downstream=custom_entity.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -688,6 +692,9 @@ def _custom_entity_from_nested(nested: CustomEntityNested) -> CustomEntity:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_custom_entity_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

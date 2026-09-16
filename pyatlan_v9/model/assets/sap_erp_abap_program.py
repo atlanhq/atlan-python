@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -670,6 +671,9 @@ def _sap_erp_abap_program_to_nested(
         is_incomplete=sap_erp_abap_program.is_incomplete,
         provenance_type=sap_erp_abap_program.provenance_type,
         home_id=sap_erp_abap_program.home_id,
+        depth=sap_erp_abap_program.depth,
+        immediate_upstream=sap_erp_abap_program.immediate_upstream,
+        immediate_downstream=sap_erp_abap_program.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -714,6 +718,9 @@ def _sap_erp_abap_program_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_abap_program_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.model.enums import AtlanConnectorType
@@ -745,6 +746,9 @@ def _anaplan_dimension_to_nested(
         is_incomplete=anaplan_dimension.is_incomplete,
         provenance_type=anaplan_dimension.provenance_type,
         home_id=anaplan_dimension.home_id,
+        depth=anaplan_dimension.depth,
+        immediate_upstream=anaplan_dimension.immediate_upstream,
+        immediate_downstream=anaplan_dimension.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -787,6 +791,9 @@ def _anaplan_dimension_from_nested(nested: AnaplanDimensionNested) -> AnaplanDim
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_anaplan_dimension_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

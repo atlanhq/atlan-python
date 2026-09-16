@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1043,6 +1043,9 @@ def _fivetran_connector_to_nested(
         is_incomplete=fivetran_connector.is_incomplete,
         provenance_type=fivetran_connector.provenance_type,
         home_id=fivetran_connector.home_id,
+        depth=fivetran_connector.depth,
+        immediate_upstream=fivetran_connector.immediate_upstream,
+        immediate_downstream=fivetran_connector.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1087,6 +1090,9 @@ def _fivetran_connector_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_fivetran_connector_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

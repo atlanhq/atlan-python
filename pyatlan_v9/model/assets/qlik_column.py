@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -708,6 +708,9 @@ def _qlik_column_to_nested(qlik_column: QlikColumn) -> QlikColumnNested:
         is_incomplete=qlik_column.is_incomplete,
         provenance_type=qlik_column.provenance_type,
         home_id=qlik_column.home_id,
+        depth=qlik_column.depth,
+        immediate_upstream=qlik_column.immediate_upstream,
+        immediate_downstream=qlik_column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -748,6 +751,9 @@ def _qlik_column_from_nested(nested: QlikColumnNested) -> QlikColumn:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_qlik_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

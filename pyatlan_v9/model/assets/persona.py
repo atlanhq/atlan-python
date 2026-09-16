@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.model.enums import (
@@ -756,6 +757,9 @@ def _persona_to_nested(persona: Persona) -> PersonaNested:
         is_incomplete=persona.is_incomplete,
         provenance_type=persona.provenance_type,
         home_id=persona.home_id,
+        depth=persona.depth,
+        immediate_upstream=persona.immediate_upstream,
+        immediate_downstream=persona.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -794,6 +798,9 @@ def _persona_from_nested(nested: PersonaNested) -> Persona:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_persona_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

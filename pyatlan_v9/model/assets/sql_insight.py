@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -551,6 +552,9 @@ def _sql_insight_to_nested(sql_insight: SqlInsight) -> SqlInsightNested:
         is_incomplete=sql_insight.is_incomplete,
         provenance_type=sql_insight.provenance_type,
         home_id=sql_insight.home_id,
+        depth=sql_insight.depth,
+        immediate_upstream=sql_insight.immediate_upstream,
+        immediate_downstream=sql_insight.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -591,6 +595,9 @@ def _sql_insight_from_nested(nested: SqlInsightNested) -> SqlInsight:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sql_insight_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

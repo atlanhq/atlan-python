@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1174,6 +1174,9 @@ def _bigquery_routine_to_nested(
         is_incomplete=bigquery_routine.is_incomplete,
         provenance_type=bigquery_routine.provenance_type,
         home_id=bigquery_routine.home_id,
+        depth=bigquery_routine.depth,
+        immediate_upstream=bigquery_routine.immediate_upstream,
+        immediate_downstream=bigquery_routine.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1216,6 +1219,9 @@ def _bigquery_routine_from_nested(nested: BigqueryRoutineNested) -> BigqueryRout
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_bigquery_routine_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

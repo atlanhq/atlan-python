@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -610,6 +610,9 @@ def _cassandra_to_nested(cassandra: Cassandra) -> CassandraNested:
         is_incomplete=cassandra.is_incomplete,
         provenance_type=cassandra.provenance_type,
         home_id=cassandra.home_id,
+        depth=cassandra.depth,
+        immediate_upstream=cassandra.immediate_upstream,
+        immediate_downstream=cassandra.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -650,6 +653,9 @@ def _cassandra_from_nested(nested: CassandraNested) -> Cassandra:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_cassandra_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

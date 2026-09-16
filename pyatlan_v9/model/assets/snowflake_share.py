@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1055,6 +1055,9 @@ def _snowflake_share_to_nested(snowflake_share: SnowflakeShare) -> SnowflakeShar
         is_incomplete=snowflake_share.is_incomplete,
         provenance_type=snowflake_share.provenance_type,
         home_id=snowflake_share.home_id,
+        depth=snowflake_share.depth,
+        immediate_upstream=snowflake_share.immediate_upstream,
+        immediate_downstream=snowflake_share.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1097,6 +1100,9 @@ def _snowflake_share_from_nested(nested: SnowflakeShareNested) -> SnowflakeShare
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_snowflake_share_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -568,6 +569,9 @@ def _data_mesh_to_nested(data_mesh: DataMesh) -> DataMeshNested:
         is_incomplete=data_mesh.is_incomplete,
         provenance_type=data_mesh.provenance_type,
         home_id=data_mesh.home_id,
+        depth=data_mesh.depth,
+        immediate_upstream=data_mesh.immediate_upstream,
+        immediate_downstream=data_mesh.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -608,6 +612,9 @@ def _data_mesh_from_nested(nested: DataMeshNested) -> DataMesh:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_data_mesh_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -582,6 +583,9 @@ def _cognite_time_series_to_nested(
         is_incomplete=cognite_time_series.is_incomplete,
         provenance_type=cognite_time_series.provenance_type,
         home_id=cognite_time_series.home_id,
+        depth=cognite_time_series.depth,
+        immediate_upstream=cognite_time_series.immediate_upstream,
+        immediate_downstream=cognite_time_series.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -626,6 +630,9 @@ def _cognite_time_series_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_cognite_time_series_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

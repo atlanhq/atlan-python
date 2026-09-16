@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -578,6 +579,9 @@ def _quick_sight_to_nested(quick_sight: QuickSight) -> QuickSightNested:
         is_incomplete=quick_sight.is_incomplete,
         provenance_type=quick_sight.provenance_type,
         home_id=quick_sight.home_id,
+        depth=quick_sight.depth,
+        immediate_upstream=quick_sight.immediate_upstream,
+        immediate_downstream=quick_sight.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -618,6 +622,9 @@ def _quick_sight_from_nested(nested: QuickSightNested) -> QuickSight:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_quick_sight_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -653,6 +654,9 @@ def _sigma_page_to_nested(sigma_page: SigmaPage) -> SigmaPageNested:
         is_incomplete=sigma_page.is_incomplete,
         provenance_type=sigma_page.provenance_type,
         home_id=sigma_page.home_id,
+        depth=sigma_page.depth,
+        immediate_upstream=sigma_page.immediate_upstream,
+        immediate_downstream=sigma_page.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -693,6 +697,9 @@ def _sigma_page_from_nested(nested: SigmaPageNested) -> SigmaPage:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sigma_page_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

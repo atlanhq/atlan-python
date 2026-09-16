@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -707,6 +708,9 @@ def _gcp_dataplex_aspect_type_to_nested(
         is_incomplete=gcp_dataplex_aspect_type.is_incomplete,
         provenance_type=gcp_dataplex_aspect_type.provenance_type,
         home_id=gcp_dataplex_aspect_type.home_id,
+        depth=gcp_dataplex_aspect_type.depth,
+        immediate_upstream=gcp_dataplex_aspect_type.immediate_upstream,
+        immediate_downstream=gcp_dataplex_aspect_type.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -751,6 +755,9 @@ def _gcp_dataplex_aspect_type_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_gcp_dataplex_aspect_type_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

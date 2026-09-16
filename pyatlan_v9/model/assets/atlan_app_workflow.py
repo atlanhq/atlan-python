@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -748,6 +749,9 @@ def _atlan_app_workflow_to_nested(
         is_incomplete=atlan_app_workflow.is_incomplete,
         provenance_type=atlan_app_workflow.provenance_type,
         home_id=atlan_app_workflow.home_id,
+        depth=atlan_app_workflow.depth,
+        immediate_upstream=atlan_app_workflow.immediate_upstream,
+        immediate_downstream=atlan_app_workflow.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -790,6 +794,9 @@ def _atlan_app_workflow_from_nested(nested: AtlanAppWorkflowNested) -> AtlanAppW
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_atlan_app_workflow_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1308,6 +1308,9 @@ def _schema__to_nested(schema_: Schema) -> SchemaNested:
         is_incomplete=schema_.is_incomplete,
         provenance_type=schema_.provenance_type,
         home_id=schema_.home_id,
+        depth=schema_.depth,
+        immediate_upstream=schema_.immediate_upstream,
+        immediate_downstream=schema_.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1346,6 +1349,9 @@ def _schema__from_nested(nested: SchemaNested) -> Schema:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_schema__attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

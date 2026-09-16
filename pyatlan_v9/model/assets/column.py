@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 from warnings import warn
 
 import msgspec
@@ -2098,6 +2098,9 @@ def _column_to_nested(column: Column) -> ColumnNested:
         is_incomplete=column.is_incomplete,
         provenance_type=column.provenance_type,
         home_id=column.home_id,
+        depth=column.depth,
+        immediate_upstream=column.immediate_upstream,
+        immediate_downstream=column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -2136,6 +2139,9 @@ def _column_from_nested(nested: ColumnNested) -> Column:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1000,6 +1000,9 @@ def _iceberg_to_nested(iceberg: Iceberg) -> IcebergNested:
         is_incomplete=iceberg.is_incomplete,
         provenance_type=iceberg.provenance_type,
         home_id=iceberg.home_id,
+        depth=iceberg.depth,
+        immediate_upstream=iceberg.immediate_upstream,
+        immediate_downstream=iceberg.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1038,6 +1041,9 @@ def _iceberg_from_nested(nested: IcebergNested) -> Iceberg:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_iceberg_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

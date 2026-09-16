@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1025,6 +1025,9 @@ def _databricks_external_location_to_nested(
         is_incomplete=databricks_external_location.is_incomplete,
         provenance_type=databricks_external_location.provenance_type,
         home_id=databricks_external_location.home_id,
+        depth=databricks_external_location.depth,
+        immediate_upstream=databricks_external_location.immediate_upstream,
+        immediate_downstream=databricks_external_location.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1069,6 +1072,9 @@ def _databricks_external_location_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_databricks_external_location_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

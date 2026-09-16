@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -564,6 +565,9 @@ def _access_control_to_nested(access_control: AccessControl) -> AccessControlNes
         is_incomplete=access_control.is_incomplete,
         provenance_type=access_control.provenance_type,
         home_id=access_control.home_id,
+        depth=access_control.depth,
+        immediate_upstream=access_control.immediate_upstream,
+        immediate_downstream=access_control.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -606,6 +610,9 @@ def _access_control_from_nested(nested: AccessControlNested) -> AccessControl:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_access_control_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

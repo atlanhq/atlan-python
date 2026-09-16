@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -641,6 +642,9 @@ def _semantic_entity_to_nested(semantic_entity: SemanticEntity) -> SemanticEntit
         is_incomplete=semantic_entity.is_incomplete,
         provenance_type=semantic_entity.provenance_type,
         home_id=semantic_entity.home_id,
+        depth=semantic_entity.depth,
+        immediate_upstream=semantic_entity.immediate_upstream,
+        immediate_downstream=semantic_entity.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -683,6 +687,9 @@ def _semantic_entity_from_nested(nested: SemanticEntityNested) -> SemanticEntity
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_semantic_entity_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

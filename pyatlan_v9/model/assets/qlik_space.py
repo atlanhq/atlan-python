@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -649,6 +649,9 @@ def _qlik_space_to_nested(qlik_space: QlikSpace) -> QlikSpaceNested:
         is_incomplete=qlik_space.is_incomplete,
         provenance_type=qlik_space.provenance_type,
         home_id=qlik_space.home_id,
+        depth=qlik_space.depth,
+        immediate_upstream=qlik_space.immediate_upstream,
+        immediate_downstream=qlik_space.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -689,6 +692,9 @@ def _qlik_space_from_nested(nested: QlikSpaceNested) -> QlikSpace:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_qlik_space_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

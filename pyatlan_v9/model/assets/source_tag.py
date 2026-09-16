@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -603,6 +604,9 @@ def _source_tag_to_nested(source_tag: SourceTag) -> SourceTagNested:
         is_incomplete=source_tag.is_incomplete,
         provenance_type=source_tag.provenance_type,
         home_id=source_tag.home_id,
+        depth=source_tag.depth,
+        immediate_upstream=source_tag.immediate_upstream,
+        immediate_downstream=source_tag.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -643,6 +647,9 @@ def _source_tag_from_nested(nested: SourceTagNested) -> SourceTag:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_source_tag_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

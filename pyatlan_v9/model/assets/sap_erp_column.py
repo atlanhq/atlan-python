@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1226,6 +1226,9 @@ def _sap_erp_column_to_nested(sap_erp_column: SapErpColumn) -> SapErpColumnNeste
         is_incomplete=sap_erp_column.is_incomplete,
         provenance_type=sap_erp_column.provenance_type,
         home_id=sap_erp_column.home_id,
+        depth=sap_erp_column.depth,
+        immediate_upstream=sap_erp_column.immediate_upstream,
+        immediate_downstream=sap_erp_column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1268,6 +1271,9 @@ def _sap_erp_column_from_nested(nested: SapErpColumnNested) -> SapErpColumn:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

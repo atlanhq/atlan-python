@@ -14,9 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Set, Union
 from uuid import uuid4
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.errors import AtlanError, ErrorCode
@@ -258,6 +259,7 @@ class Collection(Asset):
 
     @classmethod
     def _generate_qualified_name(cls, client: "AtlanClient") -> str:
+        from pyatlan.errors import AtlanError
 
         try:
             username = client.user.get_current().username
@@ -511,6 +513,9 @@ def _collection_to_nested(collection: Collection) -> CollectionNested:
         is_incomplete=collection.is_incomplete,
         provenance_type=collection.provenance_type,
         home_id=collection.home_id,
+        depth=collection.depth,
+        immediate_upstream=collection.immediate_upstream,
+        immediate_downstream=collection.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -551,6 +556,9 @@ def _collection_from_nested(nested: CollectionNested) -> Collection:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_collection_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

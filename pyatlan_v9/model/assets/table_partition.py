@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1285,6 +1285,9 @@ def _table_partition_to_nested(table_partition: TablePartition) -> TablePartitio
         is_incomplete=table_partition.is_incomplete,
         provenance_type=table_partition.provenance_type,
         home_id=table_partition.home_id,
+        depth=table_partition.depth,
+        immediate_upstream=table_partition.immediate_upstream,
+        immediate_downstream=table_partition.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1327,6 +1330,9 @@ def _table_partition_from_nested(nested: TablePartitionNested) -> TablePartition
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_table_partition_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

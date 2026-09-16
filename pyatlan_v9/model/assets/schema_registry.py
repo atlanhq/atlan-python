@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -574,6 +575,9 @@ def _schema_registry_to_nested(schema_registry: SchemaRegistry) -> SchemaRegistr
         is_incomplete=schema_registry.is_incomplete,
         provenance_type=schema_registry.provenance_type,
         home_id=schema_registry.home_id,
+        depth=schema_registry.depth,
+        immediate_upstream=schema_registry.immediate_upstream,
+        immediate_downstream=schema_registry.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -616,6 +620,9 @@ def _schema_registry_from_nested(nested: SchemaRegistryNested) -> SchemaRegistry
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_schema_registry_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

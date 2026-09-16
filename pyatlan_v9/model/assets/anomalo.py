@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -559,6 +560,9 @@ def _anomalo_to_nested(anomalo: Anomalo) -> AnomaloNested:
         is_incomplete=anomalo.is_incomplete,
         provenance_type=anomalo.provenance_type,
         home_id=anomalo.home_id,
+        depth=anomalo.depth,
+        immediate_upstream=anomalo.immediate_upstream,
+        immediate_downstream=anomalo.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -597,6 +601,9 @@ def _anomalo_from_nested(nested: AnomaloNested) -> Anomalo:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_anomalo_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

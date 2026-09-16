@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -838,6 +838,9 @@ def _sap_column_process_to_nested(
         is_incomplete=sap_column_process.is_incomplete,
         provenance_type=sap_column_process.provenance_type,
         home_id=sap_column_process.home_id,
+        depth=sap_column_process.depth,
+        immediate_upstream=sap_column_process.immediate_upstream,
+        immediate_downstream=sap_column_process.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -880,6 +883,9 @@ def _sap_column_process_from_nested(nested: SAPColumnProcessNested) -> SAPColumn
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_column_process_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.model.enums import (
@@ -31,6 +32,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.core import AtlanTagName
 from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.structs import SourceTagAttachment
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
@@ -759,6 +761,9 @@ def _purpose_to_nested(purpose: Purpose) -> PurposeNested:
         is_incomplete=purpose.is_incomplete,
         provenance_type=purpose.provenance_type,
         home_id=purpose.home_id,
+        depth=purpose.depth,
+        immediate_upstream=purpose.immediate_upstream,
+        immediate_downstream=purpose.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -797,6 +802,9 @@ def _purpose_from_nested(nested: PurposeNested) -> Purpose:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_purpose_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

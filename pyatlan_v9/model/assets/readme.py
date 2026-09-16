@@ -15,9 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 from urllib.parse import quote, unquote
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -686,6 +687,9 @@ def _readme_to_nested(readme: Readme) -> ReadmeNested:
         is_incomplete=readme.is_incomplete,
         provenance_type=readme.provenance_type,
         home_id=readme.home_id,
+        depth=readme.depth,
+        immediate_upstream=readme.immediate_upstream,
+        immediate_downstream=readme.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -724,6 +728,9 @@ def _readme_from_nested(nested: ReadmeNested) -> Readme:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_readme_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

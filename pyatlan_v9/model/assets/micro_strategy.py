@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -655,6 +656,9 @@ def _micro_strategy_to_nested(micro_strategy: MicroStrategy) -> MicroStrategyNes
         is_incomplete=micro_strategy.is_incomplete,
         provenance_type=micro_strategy.provenance_type,
         home_id=micro_strategy.home_id,
+        depth=micro_strategy.depth,
+        immediate_upstream=micro_strategy.immediate_upstream,
+        immediate_downstream=micro_strategy.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -697,6 +701,9 @@ def _micro_strategy_from_nested(nested: MicroStrategyNested) -> MicroStrategy:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_micro_strategy_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

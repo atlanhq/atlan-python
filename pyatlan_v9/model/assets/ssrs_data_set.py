@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -835,6 +836,9 @@ def _ssrs_data_set_to_nested(ssrs_data_set: SSRSDataSet) -> SSRSDataSetNested:
         is_incomplete=ssrs_data_set.is_incomplete,
         provenance_type=ssrs_data_set.provenance_type,
         home_id=ssrs_data_set.home_id,
+        depth=ssrs_data_set.depth,
+        immediate_upstream=ssrs_data_set.immediate_upstream,
+        immediate_downstream=ssrs_data_set.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -875,6 +879,9 @@ def _ssrs_data_set_from_nested(nested: SSRSDataSetNested) -> SSRSDataSet:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_ssrs_data_set_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -758,6 +759,9 @@ def _adf_linkedservice_to_nested(
         is_incomplete=adf_linkedservice.is_incomplete,
         provenance_type=adf_linkedservice.provenance_type,
         home_id=adf_linkedservice.home_id,
+        depth=adf_linkedservice.depth,
+        immediate_upstream=adf_linkedservice.immediate_upstream,
+        immediate_downstream=adf_linkedservice.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -800,6 +804,9 @@ def _adf_linkedservice_from_nested(nested: AdfLinkedserviceNested) -> AdfLinkeds
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_adf_linkedservice_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -674,6 +674,9 @@ def _s3_to_nested(s3: S3) -> S3Nested:
         is_incomplete=s3.is_incomplete,
         provenance_type=s3.provenance_type,
         home_id=s3.home_id,
+        depth=s3.depth,
+        immediate_upstream=s3.immediate_upstream,
+        immediate_downstream=s3.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -712,6 +715,9 @@ def _s3_from_nested(nested: S3Nested) -> S3:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_s3_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

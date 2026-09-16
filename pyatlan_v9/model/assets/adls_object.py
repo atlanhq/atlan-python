@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -486,6 +486,7 @@ class ADLSObject(Asset):
                 adls_container_qualified_name,
             ],
         )
+        from pyatlan.model.utils import construct_object_key
 
         fields = connection_qualified_name.split("/")
         if len(fields) != 3:
@@ -943,6 +944,9 @@ def _adls_object_to_nested(adls_object: ADLSObject) -> ADLSObjectNested:
         is_incomplete=adls_object.is_incomplete,
         provenance_type=adls_object.provenance_type,
         home_id=adls_object.home_id,
+        depth=adls_object.depth,
+        immediate_upstream=adls_object.immediate_upstream,
+        immediate_downstream=adls_object.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -983,6 +987,9 @@ def _adls_object_from_nested(nested: ADLSObjectNested) -> ADLSObject:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_adls_object_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

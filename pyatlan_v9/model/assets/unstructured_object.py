@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -697,6 +698,9 @@ def _unstructured_object_to_nested(
         is_incomplete=unstructured_object.is_incomplete,
         provenance_type=unstructured_object.provenance_type,
         home_id=unstructured_object.home_id,
+        depth=unstructured_object.depth,
+        immediate_upstream=unstructured_object.immediate_upstream,
+        immediate_downstream=unstructured_object.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -741,6 +745,9 @@ def _unstructured_object_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_unstructured_object_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

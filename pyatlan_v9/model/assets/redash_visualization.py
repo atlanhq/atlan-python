@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -622,6 +623,9 @@ def _redash_visualization_to_nested(
         is_incomplete=redash_visualization.is_incomplete,
         provenance_type=redash_visualization.provenance_type,
         home_id=redash_visualization.home_id,
+        depth=redash_visualization.depth,
+        immediate_upstream=redash_visualization.immediate_upstream,
+        immediate_downstream=redash_visualization.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -666,6 +670,9 @@ def _redash_visualization_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_redash_visualization_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

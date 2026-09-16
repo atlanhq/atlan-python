@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import hashlib
 from io import StringIO
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -770,6 +770,9 @@ def _process_to_nested(process: Process) -> ProcessNested:
         is_incomplete=process.is_incomplete,
         provenance_type=process.provenance_type,
         home_id=process.home_id,
+        depth=process.depth,
+        immediate_upstream=process.immediate_upstream,
+        immediate_downstream=process.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -808,6 +811,9 @@ def _process_from_nested(nested: ProcessNested) -> Process:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_process_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

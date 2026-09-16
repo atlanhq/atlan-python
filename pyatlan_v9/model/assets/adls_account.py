@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -752,6 +752,9 @@ def _adls_account_to_nested(adls_account: ADLSAccount) -> ADLSAccountNested:
         is_incomplete=adls_account.is_incomplete,
         provenance_type=adls_account.provenance_type,
         home_id=adls_account.home_id,
+        depth=adls_account.depth,
+        immediate_upstream=adls_account.immediate_upstream,
+        immediate_downstream=adls_account.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -792,6 +795,9 @@ def _adls_account_from_nested(nested: ADLSAccountNested) -> ADLSAccount:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_adls_account_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

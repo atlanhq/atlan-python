@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -641,6 +642,9 @@ def _salesforce_report_to_nested(
         is_incomplete=salesforce_report.is_incomplete,
         provenance_type=salesforce_report.provenance_type,
         home_id=salesforce_report.home_id,
+        depth=salesforce_report.depth,
+        immediate_upstream=salesforce_report.immediate_upstream,
+        immediate_downstream=salesforce_report.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -683,6 +687,9 @@ def _salesforce_report_from_nested(nested: SalesforceReportNested) -> Salesforce
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_salesforce_report_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

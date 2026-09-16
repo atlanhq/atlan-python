@@ -15,11 +15,13 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.utils import validate_required_fields
+from pyatlan_v9.model.assets import Collection
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -270,6 +272,7 @@ class Folder(Asset):
         collection_qualified_name: str | None = None,
         parent_folder_qualified_name: str | None = None,
     ) -> "Folder":
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(["name"], [name])
         if not (parent_folder_qualified_name or collection_qualified_name):
@@ -552,6 +555,9 @@ def _folder_to_nested(folder: Folder) -> FolderNested:
         is_incomplete=folder.is_incomplete,
         provenance_type=folder.provenance_type,
         home_id=folder.home_id,
+        depth=folder.depth,
+        immediate_upstream=folder.immediate_upstream,
+        immediate_downstream=folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -590,6 +596,9 @@ def _folder_from_nested(nested: FolderNested) -> Folder:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1138,6 +1138,9 @@ def _dremio_source_to_nested(dremio_source: DremioSource) -> DremioSourceNested:
         is_incomplete=dremio_source.is_incomplete,
         provenance_type=dremio_source.provenance_type,
         home_id=dremio_source.home_id,
+        depth=dremio_source.depth,
+        immediate_upstream=dremio_source.immediate_upstream,
+        immediate_downstream=dremio_source.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1180,6 +1183,9 @@ def _dremio_source_from_nested(nested: DremioSourceNested) -> DremioSource:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_dremio_source_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -665,6 +666,9 @@ def _cube_hierarchy_to_nested(cube_hierarchy: CubeHierarchy) -> CubeHierarchyNes
         is_incomplete=cube_hierarchy.is_incomplete,
         provenance_type=cube_hierarchy.provenance_type,
         home_id=cube_hierarchy.home_id,
+        depth=cube_hierarchy.depth,
+        immediate_upstream=cube_hierarchy.immediate_upstream,
+        immediate_downstream=cube_hierarchy.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -707,6 +711,9 @@ def _cube_hierarchy_from_nested(nested: CubeHierarchyNested) -> CubeHierarchy:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_cube_hierarchy_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

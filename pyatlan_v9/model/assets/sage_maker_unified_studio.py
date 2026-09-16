@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -619,6 +620,9 @@ def _sage_maker_unified_studio_to_nested(
         is_incomplete=sage_maker_unified_studio.is_incomplete,
         provenance_type=sage_maker_unified_studio.provenance_type,
         home_id=sage_maker_unified_studio.home_id,
+        depth=sage_maker_unified_studio.depth,
+        immediate_upstream=sage_maker_unified_studio.immediate_upstream,
+        immediate_downstream=sage_maker_unified_studio.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -663,6 +667,9 @@ def _sage_maker_unified_studio_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sage_maker_unified_studio_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -648,6 +649,9 @@ def _fabric_semantic_model_table_to_nested(
         is_incomplete=fabric_semantic_model_table.is_incomplete,
         provenance_type=fabric_semantic_model_table.provenance_type,
         home_id=fabric_semantic_model_table.home_id,
+        depth=fabric_semantic_model_table.depth,
+        immediate_upstream=fabric_semantic_model_table.immediate_upstream,
+        immediate_downstream=fabric_semantic_model_table.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -692,6 +696,9 @@ def _fabric_semantic_model_table_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_fabric_semantic_model_table_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

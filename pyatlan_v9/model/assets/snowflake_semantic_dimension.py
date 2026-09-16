@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1153,6 +1153,9 @@ def _snowflake_semantic_dimension_to_nested(
         is_incomplete=snowflake_semantic_dimension.is_incomplete,
         provenance_type=snowflake_semantic_dimension.provenance_type,
         home_id=snowflake_semantic_dimension.home_id,
+        depth=snowflake_semantic_dimension.depth,
+        immediate_upstream=snowflake_semantic_dimension.immediate_upstream,
+        immediate_downstream=snowflake_semantic_dimension.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1197,6 +1200,9 @@ def _snowflake_semantic_dimension_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_snowflake_semantic_dimension_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

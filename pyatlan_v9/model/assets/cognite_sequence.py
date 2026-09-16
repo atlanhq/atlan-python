@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -582,6 +583,9 @@ def _cognite_sequence_to_nested(
         is_incomplete=cognite_sequence.is_incomplete,
         provenance_type=cognite_sequence.provenance_type,
         home_id=cognite_sequence.home_id,
+        depth=cognite_sequence.depth,
+        immediate_upstream=cognite_sequence.immediate_upstream,
+        immediate_downstream=cognite_sequence.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -624,6 +628,9 @@ def _cognite_sequence_from_nested(nested: CogniteSequenceNested) -> CogniteSeque
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_cognite_sequence_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

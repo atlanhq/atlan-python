@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1427,6 +1427,9 @@ def _dynamo_db_table_to_nested(dynamo_db_table: DynamoDBTable) -> DynamoDBTableN
         is_incomplete=dynamo_db_table.is_incomplete,
         provenance_type=dynamo_db_table.provenance_type,
         home_id=dynamo_db_table.home_id,
+        depth=dynamo_db_table.depth,
+        immediate_upstream=dynamo_db_table.immediate_upstream,
+        immediate_downstream=dynamo_db_table.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1469,6 +1472,9 @@ def _dynamo_db_table_from_nested(nested: DynamoDBTableNested) -> DynamoDBTable:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_dynamo_db_table_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

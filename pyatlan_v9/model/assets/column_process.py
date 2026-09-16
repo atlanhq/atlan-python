@@ -17,7 +17,7 @@ from __future__ import annotations
 import hashlib
 import re
 from io import StringIO
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -810,6 +810,9 @@ def _column_process_to_nested(column_process: ColumnProcess) -> ColumnProcessNes
         is_incomplete=column_process.is_incomplete,
         provenance_type=column_process.provenance_type,
         home_id=column_process.home_id,
+        depth=column_process.depth,
+        immediate_upstream=column_process.immediate_upstream,
+        immediate_downstream=column_process.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -852,6 +855,9 @@ def _column_process_from_nested(nested: ColumnProcessNested) -> ColumnProcess:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_column_process_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

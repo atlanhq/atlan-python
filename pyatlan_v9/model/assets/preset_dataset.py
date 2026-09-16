@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -679,6 +680,9 @@ def _preset_dataset_to_nested(preset_dataset: PresetDataset) -> PresetDatasetNes
         is_incomplete=preset_dataset.is_incomplete,
         provenance_type=preset_dataset.provenance_type,
         home_id=preset_dataset.home_id,
+        depth=preset_dataset.depth,
+        immediate_upstream=preset_dataset.immediate_upstream,
+        immediate_downstream=preset_dataset.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -721,6 +725,9 @@ def _preset_dataset_from_nested(nested: PresetDatasetNested) -> PresetDataset:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_preset_dataset_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

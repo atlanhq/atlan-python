@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -697,6 +697,9 @@ def _power_bi_app_to_nested(power_bi_app: PowerBIApp) -> PowerBIAppNested:
         is_incomplete=power_bi_app.is_incomplete,
         provenance_type=power_bi_app.provenance_type,
         home_id=power_bi_app.home_id,
+        depth=power_bi_app.depth,
+        immediate_upstream=power_bi_app.immediate_upstream,
+        immediate_downstream=power_bi_app.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -737,6 +740,9 @@ def _power_bi_app_from_nested(nested: PowerBIAppNested) -> PowerBIApp:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_power_bi_app_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

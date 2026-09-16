@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -555,6 +556,9 @@ def _soda_to_nested(soda: Soda) -> SodaNested:
         is_incomplete=soda.is_incomplete,
         provenance_type=soda.provenance_type,
         home_id=soda.home_id,
+        depth=soda.depth,
+        immediate_upstream=soda.immediate_upstream,
+        immediate_downstream=soda.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -593,6 +597,9 @@ def _soda_from_nested(nested: SodaNested) -> Soda:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_soda_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

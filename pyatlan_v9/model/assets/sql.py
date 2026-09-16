@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -974,6 +974,9 @@ def _sql_to_nested(sql: SQL) -> SQLNested:
         is_incomplete=sql.is_incomplete,
         provenance_type=sql.provenance_type,
         home_id=sql.home_id,
+        depth=sql.depth,
+        immediate_upstream=sql.immediate_upstream,
+        immediate_downstream=sql.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1012,6 +1015,9 @@ def _sql_from_nested(nested: SQLNested) -> SQL:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sql_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

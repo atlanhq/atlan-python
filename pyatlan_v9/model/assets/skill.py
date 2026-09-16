@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -687,6 +688,9 @@ def _skill_to_nested(skill: Skill) -> SkillNested:
         is_incomplete=skill.is_incomplete,
         provenance_type=skill.provenance_type,
         home_id=skill.home_id,
+        depth=skill.depth,
+        immediate_upstream=skill.immediate_upstream,
+        immediate_downstream=skill.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -725,6 +729,9 @@ def _skill_from_nested(nested: SkillNested) -> Skill:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_skill_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

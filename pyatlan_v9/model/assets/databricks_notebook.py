@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1006,6 +1006,9 @@ def _databricks_notebook_to_nested(
         is_incomplete=databricks_notebook.is_incomplete,
         provenance_type=databricks_notebook.provenance_type,
         home_id=databricks_notebook.home_id,
+        depth=databricks_notebook.depth,
+        immediate_upstream=databricks_notebook.immediate_upstream,
+        immediate_downstream=databricks_notebook.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1050,6 +1053,9 @@ def _databricks_notebook_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_databricks_notebook_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1946,6 +1946,9 @@ def _dremio_column_to_nested(dremio_column: DremioColumn) -> DremioColumnNested:
         is_incomplete=dremio_column.is_incomplete,
         provenance_type=dremio_column.provenance_type,
         home_id=dremio_column.home_id,
+        depth=dremio_column.depth,
+        immediate_upstream=dremio_column.immediate_upstream,
+        immediate_downstream=dremio_column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1988,6 +1991,9 @@ def _dremio_column_from_nested(nested: DremioColumnNested) -> DremioColumn:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_dremio_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

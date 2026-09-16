@@ -1205,6 +1205,8 @@ class Asset(Referenceable):
 
     def get_announcment(self):
         """Return an Announcement object for this asset, or None if no announcement is set."""
+        from pyatlan_v9.model.core import Announcement
+        from pyatlan_v9.model.enums import AnnouncementType
 
         ann_type = self.announcement_type
         ann_title = self.announcement_title
@@ -2871,6 +2873,9 @@ def _asset_to_nested(asset: Asset) -> AssetNested:
         is_incomplete=asset.is_incomplete,
         provenance_type=asset.provenance_type,
         home_id=asset.home_id,
+        depth=asset.depth,
+        immediate_upstream=asset.immediate_upstream,
+        immediate_downstream=asset.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -2909,6 +2914,9 @@ def _asset_from_nested(nested: AssetNested) -> Asset:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_asset_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

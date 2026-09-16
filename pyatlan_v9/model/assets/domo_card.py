@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -625,6 +626,9 @@ def _domo_card_to_nested(domo_card: DomoCard) -> DomoCardNested:
         is_incomplete=domo_card.is_incomplete,
         provenance_type=domo_card.provenance_type,
         home_id=domo_card.home_id,
+        depth=domo_card.depth,
+        immediate_upstream=domo_card.immediate_upstream,
+        immediate_downstream=domo_card.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -665,6 +669,9 @@ def _domo_card_from_nested(nested: DomoCardNested) -> DomoCard:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_domo_card_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -1381,6 +1381,9 @@ def _dynamo_db_secondary_index_to_nested(
         is_incomplete=dynamo_db_secondary_index.is_incomplete,
         provenance_type=dynamo_db_secondary_index.provenance_type,
         home_id=dynamo_db_secondary_index.home_id,
+        depth=dynamo_db_secondary_index.depth,
+        immediate_upstream=dynamo_db_secondary_index.immediate_upstream,
+        immediate_downstream=dynamo_db_secondary_index.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1425,6 +1428,9 @@ def _dynamo_db_secondary_index_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_dynamo_db_secondary_index_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

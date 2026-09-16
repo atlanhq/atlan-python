@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -560,6 +561,9 @@ def _matillion_to_nested(matillion: Matillion) -> MatillionNested:
         is_incomplete=matillion.is_incomplete,
         provenance_type=matillion.provenance_type,
         home_id=matillion.home_id,
+        depth=matillion.depth,
+        immediate_upstream=matillion.immediate_upstream,
+        immediate_downstream=matillion.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -600,6 +604,9 @@ def _matillion_from_nested(nested: MatillionNested) -> Matillion:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_matillion_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

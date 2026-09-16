@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -659,6 +660,9 @@ def _cube_dimension_to_nested(cube_dimension: CubeDimension) -> CubeDimensionNes
         is_incomplete=cube_dimension.is_incomplete,
         provenance_type=cube_dimension.provenance_type,
         home_id=cube_dimension.home_id,
+        depth=cube_dimension.depth,
+        immediate_upstream=cube_dimension.immediate_upstream,
+        immediate_downstream=cube_dimension.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -701,6 +705,9 @@ def _cube_dimension_from_nested(nested: CubeDimensionNested) -> CubeDimension:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_cube_dimension_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

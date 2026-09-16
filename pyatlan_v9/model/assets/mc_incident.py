@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -670,6 +671,9 @@ def _mc_incident_to_nested(mc_incident: MCIncident) -> MCIncidentNested:
         is_incomplete=mc_incident.is_incomplete,
         provenance_type=mc_incident.provenance_type,
         home_id=mc_incident.home_id,
+        depth=mc_incident.depth,
+        immediate_upstream=mc_incident.immediate_upstream,
+        immediate_downstream=mc_incident.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -710,6 +714,9 @@ def _mc_incident_from_nested(nested: MCIncidentNested) -> MCIncident:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_mc_incident_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

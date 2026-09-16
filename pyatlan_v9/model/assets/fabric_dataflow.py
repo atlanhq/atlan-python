@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -621,6 +622,9 @@ def _fabric_dataflow_to_nested(fabric_dataflow: FabricDataflow) -> FabricDataflo
         is_incomplete=fabric_dataflow.is_incomplete,
         provenance_type=fabric_dataflow.provenance_type,
         home_id=fabric_dataflow.home_id,
+        depth=fabric_dataflow.depth,
+        immediate_upstream=fabric_dataflow.immediate_upstream,
+        immediate_downstream=fabric_dataflow.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -663,6 +667,9 @@ def _fabric_dataflow_from_nested(nested: FabricDataflowNested) -> FabricDataflow
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_fabric_dataflow_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

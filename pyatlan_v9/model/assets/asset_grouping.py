@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -555,6 +556,9 @@ def _asset_grouping_to_nested(asset_grouping: AssetGrouping) -> AssetGroupingNes
         is_incomplete=asset_grouping.is_incomplete,
         provenance_type=asset_grouping.provenance_type,
         home_id=asset_grouping.home_id,
+        depth=asset_grouping.depth,
+        immediate_upstream=asset_grouping.immediate_upstream,
+        immediate_downstream=asset_grouping.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -597,6 +601,9 @@ def _asset_grouping_from_nested(nested: AssetGroupingNested) -> AssetGrouping:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_asset_grouping_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

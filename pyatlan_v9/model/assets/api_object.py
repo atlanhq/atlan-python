@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -674,6 +675,9 @@ def _api_object_to_nested(api_object: APIObject) -> APIObjectNested:
         is_incomplete=api_object.is_incomplete,
         provenance_type=api_object.provenance_type,
         home_id=api_object.home_id,
+        depth=api_object.depth,
+        immediate_upstream=api_object.immediate_upstream,
+        immediate_downstream=api_object.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -714,6 +718,9 @@ def _api_object_from_nested(nested: APIObjectNested) -> APIObject:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_api_object_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

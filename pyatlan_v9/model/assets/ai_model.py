@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -798,6 +798,9 @@ def _ai_model_to_nested(ai_model: AIModel) -> AIModelNested:
         is_incomplete=ai_model.is_incomplete,
         provenance_type=ai_model.provenance_type,
         home_id=ai_model.home_id,
+        depth=ai_model.depth,
+        immediate_upstream=ai_model.immediate_upstream,
+        immediate_downstream=ai_model.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -836,6 +839,9 @@ def _ai_model_from_nested(nested: AIModelNested) -> AIModel:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_ai_model_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

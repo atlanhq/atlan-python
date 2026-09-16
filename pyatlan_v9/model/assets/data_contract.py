@@ -16,8 +16,9 @@ from __future__ import annotations
 
 import re
 from json import JSONDecodeError, loads
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.errors import ErrorCode
@@ -697,6 +698,9 @@ def _data_contract_to_nested(data_contract: DataContract) -> DataContractNested:
         is_incomplete=data_contract.is_incomplete,
         provenance_type=data_contract.provenance_type,
         home_id=data_contract.home_id,
+        depth=data_contract.depth,
+        immediate_upstream=data_contract.immediate_upstream,
+        immediate_downstream=data_contract.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -739,6 +743,9 @@ def _data_contract_from_nested(nested: DataContractNested) -> DataContract:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_data_contract_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

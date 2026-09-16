@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -671,6 +672,9 @@ def _cognos_module_to_nested(cognos_module: CognosModule) -> CognosModuleNested:
         is_incomplete=cognos_module.is_incomplete,
         provenance_type=cognos_module.provenance_type,
         home_id=cognos_module.home_id,
+        depth=cognos_module.depth,
+        immediate_upstream=cognos_module.immediate_upstream,
+        immediate_downstream=cognos_module.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -713,6 +717,9 @@ def _cognos_module_from_nested(nested: CognosModuleNested) -> CognosModule:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_cognos_module_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

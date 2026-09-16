@@ -15,13 +15,14 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.utils import validate_required_fields
+from pyatlan_v9.model.assets import Collection, Folder
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -562,6 +563,7 @@ class Query(Asset):
         collection_qualified_name: str | None = None,
         parent_folder_qualified_name: str | None = None,
     ) -> "Query":
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(["name"], [name])
         if not (parent_folder_qualified_name or collection_qualified_name):
@@ -607,6 +609,7 @@ class Query(Asset):
         collection_qualified_name: str,
         parent_qualified_name: str,
     ) -> "Query":
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["name", "collection_qualified_name", "parent_qualified_name"],
@@ -632,6 +635,8 @@ class Query(Asset):
     def with_raw_query(self, schema_qualified_name: str, query: str):
         from base64 import b64encode
         from json import dumps
+
+        from pyatlan.model.enums import AtlanConnectorType
 
         _DEFAULT_VARIABLE_SCHEMA = dumps(
             {
@@ -1237,6 +1242,9 @@ def _query_to_nested(query: Query) -> QueryNested:
         is_incomplete=query.is_incomplete,
         provenance_type=query.provenance_type,
         home_id=query.home_id,
+        depth=query.depth,
+        immediate_upstream=query.immediate_upstream,
+        immediate_downstream=query.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1275,6 +1283,9 @@ def _query_from_nested(nested: QueryNested) -> Query:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_query_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -718,6 +719,9 @@ def _sapbw_query_to_nested(sapbw_query: SAPBWQuery) -> SAPBWQueryNested:
         is_incomplete=sapbw_query.is_incomplete,
         provenance_type=sapbw_query.provenance_type,
         home_id=sapbw_query.home_id,
+        depth=sapbw_query.depth,
+        immediate_upstream=sapbw_query.immediate_upstream,
+        immediate_downstream=sapbw_query.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -758,6 +762,9 @@ def _sapbw_query_from_nested(nested: SAPBWQueryNested) -> SAPBWQuery:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sapbw_query_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

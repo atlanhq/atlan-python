@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -571,6 +572,9 @@ def _metabase_to_nested(metabase: Metabase) -> MetabaseNested:
         is_incomplete=metabase.is_incomplete,
         provenance_type=metabase.provenance_type,
         home_id=metabase.home_id,
+        depth=metabase.depth,
+        immediate_upstream=metabase.immediate_upstream,
+        immediate_downstream=metabase.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -611,6 +615,9 @@ def _metabase_from_nested(nested: MetabaseNested) -> Metabase:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_metabase_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,8 +14,9 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -615,6 +616,9 @@ def _azure_service_bus_namespace_to_nested(
         is_incomplete=azure_service_bus_namespace.is_incomplete,
         provenance_type=azure_service_bus_namespace.provenance_type,
         home_id=azure_service_bus_namespace.home_id,
+        depth=azure_service_bus_namespace.depth,
+        immediate_upstream=azure_service_bus_namespace.immediate_upstream,
+        immediate_downstream=azure_service_bus_namespace.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -659,6 +663,9 @@ def _azure_service_bus_namespace_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_azure_service_bus_namespace_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

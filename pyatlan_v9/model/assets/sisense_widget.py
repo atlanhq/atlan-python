@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -656,6 +657,9 @@ def _sisense_widget_to_nested(sisense_widget: SisenseWidget) -> SisenseWidgetNes
         is_incomplete=sisense_widget.is_incomplete,
         provenance_type=sisense_widget.provenance_type,
         home_id=sisense_widget.home_id,
+        depth=sisense_widget.depth,
+        immediate_upstream=sisense_widget.immediate_upstream,
+        immediate_downstream=sisense_widget.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -698,6 +702,9 @@ def _sisense_widget_from_nested(nested: SisenseWidgetNested) -> SisenseWidget:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sisense_widget_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

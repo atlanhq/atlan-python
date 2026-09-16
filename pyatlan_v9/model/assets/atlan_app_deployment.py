@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -676,6 +676,9 @@ def _atlan_app_deployment_to_nested(
         is_incomplete=atlan_app_deployment.is_incomplete,
         provenance_type=atlan_app_deployment.provenance_type,
         home_id=atlan_app_deployment.home_id,
+        depth=atlan_app_deployment.depth,
+        immediate_upstream=atlan_app_deployment.immediate_upstream,
+        immediate_downstream=atlan_app_deployment.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -720,6 +723,9 @@ def _atlan_app_deployment_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_atlan_app_deployment_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

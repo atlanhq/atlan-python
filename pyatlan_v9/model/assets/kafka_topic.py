@@ -15,8 +15,9 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -769,6 +770,9 @@ def _kafka_topic_to_nested(kafka_topic: KafkaTopic) -> KafkaTopicNested:
         is_incomplete=kafka_topic.is_incomplete,
         provenance_type=kafka_topic.provenance_type,
         home_id=kafka_topic.home_id,
+        depth=kafka_topic.depth,
+        immediate_upstream=kafka_topic.immediate_upstream,
+        immediate_downstream=kafka_topic.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -809,6 +813,9 @@ def _kafka_topic_from_nested(nested: KafkaTopicNested) -> KafkaTopic:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_kafka_topic_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -841,6 +841,9 @@ def _dbt_test_to_nested(dbt_test: DbtTest) -> DbtTestNested:
         is_incomplete=dbt_test.is_incomplete,
         provenance_type=dbt_test.provenance_type,
         home_id=dbt_test.home_id,
+        depth=dbt_test.depth,
+        immediate_upstream=dbt_test.immediate_upstream,
+        immediate_downstream=dbt_test.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -879,6 +882,9 @@ def _dbt_test_from_nested(nested: DbtTestNested) -> DbtTest:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_dbt_test_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
