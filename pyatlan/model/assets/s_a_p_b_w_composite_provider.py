@@ -132,9 +132,7 @@ class SAPBWCompositeProvider(SAPBW):
 
 
 from .s_a_p_b_w_a_d_s_o import SAPBWADSO  # noqa: E402, F401
-from .s_a_p_b_w_composite_provider_field import (
-    SAPBWCompositeProviderField,  # noqa: E402, F401
-)
+from .s_a_p_b_w_composite_provider_field import SAPBWCompositeProviderField  # noqa: E402, F401
 from .s_a_p_b_w_info_area import SAPBWInfoArea  # noqa: E402, F401
 
 SAPBWCompositeProvider.Attributes.update_forward_refs()

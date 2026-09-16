@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AIDatasetType
+from pyatlan.model.enums import AIDatasetType, ProcessLineageDerivation
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -118,12 +118,42 @@ class SAPColumnProcess(SAP):
     """
     Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified.
     """  # noqa: E501
+    PROCESS_DERIVATION: ClassVar[KeywordField] = KeywordField(
+        "processDerivation", "processDerivation"
+    )
+    """
+    How this lineage process was derived — statically from an asset definition, or from an operational data-processing run.
+    """  # noqa: E501
 
-    FLOW_ORCHESTRATED_BY: ClassVar[RelationField] = RelationField("flowOrchestratedBy")
+    SQL_PROCEDURES: ClassVar[RelationField] = RelationField("sqlProcedures")
     """
     TBC
     """
-    SQL_PROCEDURES: ClassVar[RelationField] = RelationField("sqlProcedures")
+    ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
+    """
+    TBC
+    """
+    BIGQUERY_ROUTINES: ClassVar[RelationField] = RelationField("bigqueryRoutines")
+    """
+    TBC
+    """
+    SQL_FUNCTIONS: ClassVar[RelationField] = RelationField("sqlFunctions")
+    """
+    TBC
+    """
+    AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
+    """
+    TBC
+    """
+    FIVETRAN_CONNECTOR: ClassVar[RelationField] = RelationField("fivetranConnector")
+    """
+    TBC
+    """
+    COLUMN_PROCESSES: ClassVar[RelationField] = RelationField("columnProcesses")
+    """
+    TBC
+    """
+    FLOW_ORCHESTRATED_BY: ClassVar[RelationField] = RelationField("flowOrchestratedBy")
     """
     TBC
     """
@@ -137,19 +167,7 @@ class SAPColumnProcess(SAP):
     """
     TBC
     """
-    ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
-    """
-    TBC
-    """
-    BIGQUERY_ROUTINES: ClassVar[RelationField] = RelationField("bigqueryRoutines")
-    """
-    TBC
-    """
     SPARK_JOBS: ClassVar[RelationField] = RelationField("sparkJobs")
-    """
-    TBC
-    """
-    SQL_FUNCTIONS: ClassVar[RelationField] = RelationField("sqlFunctions")
     """
     TBC
     """
@@ -161,19 +179,7 @@ class SAPColumnProcess(SAP):
     """
     TBC
     """
-    AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
-    """
-    TBC
-    """
-    FIVETRAN_CONNECTOR: ClassVar[RelationField] = RelationField("fivetranConnector")
-    """
-    TBC
-    """
     POWER_BI_DATAFLOW: ClassVar[RelationField] = RelationField("powerBIDataflow")
-    """
-    TBC
-    """
-    COLUMN_PROCESSES: ClassVar[RelationField] = RelationField("columnProcesses")
     """
     TBC
     """
@@ -196,20 +202,21 @@ class SAPColumnProcess(SAP):
         "additional_etl_context",
         "ai_dataset_type",
         "is_pass_through",
-        "flow_orchestrated_by",
+        "process_derivation",
         "sql_procedures",
-        "sap_bw_transformations",
-        "fabric_activities",
         "adf_activity",
         "bigquery_routines",
-        "spark_jobs",
         "sql_functions",
-        "matillion_component",
-        "process",
         "airflow_tasks",
         "fivetran_connector",
-        "power_b_i_dataflow",
         "column_processes",
+        "flow_orchestrated_by",
+        "sap_bw_transformations",
+        "fabric_activities",
+        "spark_jobs",
+        "matillion_component",
+        "process",
+        "power_b_i_dataflow",
     ]
 
     @property
@@ -393,16 +400,16 @@ class SAPColumnProcess(SAP):
         self.attributes.is_pass_through = is_pass_through
 
     @property
-    def flow_orchestrated_by(self) -> Optional[FlowControlOperation]:
-        return None if self.attributes is None else self.attributes.flow_orchestrated_by
+    def process_derivation(self) -> Optional[ProcessLineageDerivation]:
+        return None if self.attributes is None else self.attributes.process_derivation
 
-    @flow_orchestrated_by.setter
-    def flow_orchestrated_by(
-        self, flow_orchestrated_by: Optional[FlowControlOperation]
+    @process_derivation.setter
+    def process_derivation(
+        self, process_derivation: Optional[ProcessLineageDerivation]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.flow_orchestrated_by = flow_orchestrated_by
+        self.attributes.process_derivation = process_derivation
 
     @property
     def sql_procedures(self) -> Optional[List[Procedure]]:
@@ -413,6 +420,78 @@ class SAPColumnProcess(SAP):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_procedures = sql_procedures
+
+    @property
+    def adf_activity(self) -> Optional[AdfActivity]:
+        return None if self.attributes is None else self.attributes.adf_activity
+
+    @adf_activity.setter
+    def adf_activity(self, adf_activity: Optional[AdfActivity]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adf_activity = adf_activity
+
+    @property
+    def bigquery_routines(self) -> Optional[List[BigqueryRoutine]]:
+        return None if self.attributes is None else self.attributes.bigquery_routines
+
+    @bigquery_routines.setter
+    def bigquery_routines(self, bigquery_routines: Optional[List[BigqueryRoutine]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.bigquery_routines = bigquery_routines
+
+    @property
+    def sql_functions(self) -> Optional[List[Function]]:
+        return None if self.attributes is None else self.attributes.sql_functions
+
+    @sql_functions.setter
+    def sql_functions(self, sql_functions: Optional[List[Function]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_functions = sql_functions
+
+    @property
+    def airflow_tasks(self) -> Optional[List[AirflowTask]]:
+        return None if self.attributes is None else self.attributes.airflow_tasks
+
+    @airflow_tasks.setter
+    def airflow_tasks(self, airflow_tasks: Optional[List[AirflowTask]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_tasks = airflow_tasks
+
+    @property
+    def fivetran_connector(self) -> Optional[FivetranConnector]:
+        return None if self.attributes is None else self.attributes.fivetran_connector
+
+    @fivetran_connector.setter
+    def fivetran_connector(self, fivetran_connector: Optional[FivetranConnector]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fivetran_connector = fivetran_connector
+
+    @property
+    def column_processes(self) -> Optional[List[ColumnProcess]]:
+        return None if self.attributes is None else self.attributes.column_processes
+
+    @column_processes.setter
+    def column_processes(self, column_processes: Optional[List[ColumnProcess]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_processes = column_processes
+
+    @property
+    def flow_orchestrated_by(self) -> Optional[FlowControlOperation]:
+        return None if self.attributes is None else self.attributes.flow_orchestrated_by
+
+    @flow_orchestrated_by.setter
+    def flow_orchestrated_by(
+        self, flow_orchestrated_by: Optional[FlowControlOperation]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_orchestrated_by = flow_orchestrated_by
 
     @property
     def sap_bw_transformations(self) -> Optional[List[SAPBWTransformation]]:
@@ -439,26 +518,6 @@ class SAPColumnProcess(SAP):
         self.attributes.fabric_activities = fabric_activities
 
     @property
-    def adf_activity(self) -> Optional[AdfActivity]:
-        return None if self.attributes is None else self.attributes.adf_activity
-
-    @adf_activity.setter
-    def adf_activity(self, adf_activity: Optional[AdfActivity]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adf_activity = adf_activity
-
-    @property
-    def bigquery_routines(self) -> Optional[List[BigqueryRoutine]]:
-        return None if self.attributes is None else self.attributes.bigquery_routines
-
-    @bigquery_routines.setter
-    def bigquery_routines(self, bigquery_routines: Optional[List[BigqueryRoutine]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.bigquery_routines = bigquery_routines
-
-    @property
     def spark_jobs(self) -> Optional[List[SparkJob]]:
         return None if self.attributes is None else self.attributes.spark_jobs
 
@@ -467,16 +526,6 @@ class SAPColumnProcess(SAP):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.spark_jobs = spark_jobs
-
-    @property
-    def sql_functions(self) -> Optional[List[Function]]:
-        return None if self.attributes is None else self.attributes.sql_functions
-
-    @sql_functions.setter
-    def sql_functions(self, sql_functions: Optional[List[Function]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_functions = sql_functions
 
     @property
     def matillion_component(self) -> Optional[MatillionComponent]:
@@ -499,26 +548,6 @@ class SAPColumnProcess(SAP):
         self.attributes.process = process
 
     @property
-    def airflow_tasks(self) -> Optional[List[AirflowTask]]:
-        return None if self.attributes is None else self.attributes.airflow_tasks
-
-    @airflow_tasks.setter
-    def airflow_tasks(self, airflow_tasks: Optional[List[AirflowTask]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.airflow_tasks = airflow_tasks
-
-    @property
-    def fivetran_connector(self) -> Optional[FivetranConnector]:
-        return None if self.attributes is None else self.attributes.fivetran_connector
-
-    @fivetran_connector.setter
-    def fivetran_connector(self, fivetran_connector: Optional[FivetranConnector]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.fivetran_connector = fivetran_connector
-
-    @property
     def power_b_i_dataflow(self) -> Optional[PowerBIDataflow]:
         return None if self.attributes is None else self.attributes.power_b_i_dataflow
 
@@ -527,16 +556,6 @@ class SAPColumnProcess(SAP):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_dataflow = power_b_i_dataflow
-
-    @property
-    def column_processes(self) -> Optional[List[ColumnProcess]]:
-        return None if self.attributes is None else self.attributes.column_processes
-
-    @column_processes.setter
-    def column_processes(self, column_processes: Optional[List[ColumnProcess]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_processes = column_processes
 
     class Attributes(SAP.Attributes):
         sap_technical_name: Optional[str] = Field(default=None, description="")
@@ -558,16 +577,10 @@ class SAPColumnProcess(SAP):
         additional_etl_context: Optional[str] = Field(default=None, description="")
         ai_dataset_type: Optional[AIDatasetType] = Field(default=None, description="")
         is_pass_through: Optional[bool] = Field(default=None, description="")
-        flow_orchestrated_by: Optional[FlowControlOperation] = Field(
+        process_derivation: Optional[ProcessLineageDerivation] = Field(
             default=None, description=""
-        )  # relationship
+        )
         sql_procedures: Optional[List[Procedure]] = Field(
-            default=None, description=""
-        )  # relationship
-        sap_bw_transformations: Optional[List[SAPBWTransformation]] = Field(
-            default=None, description=""
-        )  # relationship
-        fabric_activities: Optional[List[FabricActivity]] = Field(
             default=None, description=""
         )  # relationship
         adf_activity: Optional[AdfActivity] = Field(
@@ -576,26 +589,35 @@ class SAPColumnProcess(SAP):
         bigquery_routines: Optional[List[BigqueryRoutine]] = Field(
             default=None, description=""
         )  # relationship
-        spark_jobs: Optional[List[SparkJob]] = Field(
-            default=None, description=""
-        )  # relationship
         sql_functions: Optional[List[Function]] = Field(
             default=None, description=""
         )  # relationship
-        matillion_component: Optional[MatillionComponent] = Field(
-            default=None, description=""
-        )  # relationship
-        process: Optional[Process] = Field(default=None, description="")  # relationship
         airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
         fivetran_connector: Optional[FivetranConnector] = Field(
             default=None, description=""
         )  # relationship
-        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
+        column_processes: Optional[List[ColumnProcess]] = Field(
             default=None, description=""
         )  # relationship
-        column_processes: Optional[List[ColumnProcess]] = Field(
+        flow_orchestrated_by: Optional[FlowControlOperation] = Field(
+            default=None, description=""
+        )  # relationship
+        sap_bw_transformations: Optional[List[SAPBWTransformation]] = Field(
+            default=None, description=""
+        )  # relationship
+        fabric_activities: Optional[List[FabricActivity]] = Field(
+            default=None, description=""
+        )  # relationship
+        spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
+        matillion_component: Optional[MatillionComponent] = Field(
+            default=None, description=""
+        )  # relationship
+        process: Optional[Process] = Field(default=None, description="")  # relationship
+        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
             default=None, description=""
         )  # relationship
 
@@ -622,7 +644,7 @@ from .core.matillion_component import MatillionComponent  # noqa: E402, F401
 from .core.power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
 from .core.procedure import Procedure  # noqa: E402, F401
 from .core.process import Process  # noqa: E402, F401
-from .core.spark_job import SparkJob  # noqa: E402, F401
 from .s_a_p_b_w_transformation import SAPBWTransformation  # noqa: E402, F401
+from .core.spark_job import SparkJob  # noqa: E402, F401
 
 SAPColumnProcess.Attributes.update_forward_refs()

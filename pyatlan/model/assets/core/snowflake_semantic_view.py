@@ -263,12 +263,6 @@ class SnowflakeSemanticView(Snowflake):
     """
     TBC
     """
-    SNOWFLAKE_SEMANTIC_VIEW: ClassVar[RelationField] = RelationField(
-        "snowflakeSemanticView"
-    )
-    """
-    TBC
-    """
     SEMANTIC_DIMENSIONS: ClassVar[RelationField] = RelationField("semanticDimensions")
     """
     TBC
@@ -313,7 +307,6 @@ class SnowflakeSemanticView(Snowflake):
         "snowflake_semantic_view_schema",
         "semantic_entities",
         "semantic_measures",
-        "snowflake_semantic_view",
         "semantic_dimensions",
     ]
 
@@ -802,20 +795,6 @@ class SnowflakeSemanticView(Snowflake):
         self.attributes.semantic_measures = semantic_measures
 
     @property
-    def snowflake_semantic_view(self) -> Optional[SnowflakeV1CortexAgentTool]:
-        return (
-            None if self.attributes is None else self.attributes.snowflake_semantic_view
-        )
-
-    @snowflake_semantic_view.setter
-    def snowflake_semantic_view(
-        self, snowflake_semantic_view: Optional[SnowflakeV1CortexAgentTool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_semantic_view = snowflake_semantic_view
-
-    @property
     def semantic_dimensions(self) -> Optional[List[SemanticDimension]]:
         return None if self.attributes is None else self.attributes.semantic_dimensions
 
@@ -894,9 +873,6 @@ class SnowflakeSemanticView(Snowflake):
         semantic_measures: Optional[List[SemanticMeasure]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_semantic_view: Optional[SnowflakeV1CortexAgentTool] = Field(
-            default=None, description=""
-        )  # relationship
         semantic_dimensions: Optional[List[SemanticDimension]] = Field(
             default=None, description=""
         )  # relationship
@@ -915,6 +891,3 @@ from .schema import Schema  # noqa: E402, F401
 from .semantic_dimension import SemanticDimension  # noqa: E402, F401
 from .semantic_entity import SemanticEntity  # noqa: E402, F401
 from .semantic_measure import SemanticMeasure  # noqa: E402, F401
-from .snowflake_v1_cortex_agent_tool import (
-    SnowflakeV1CortexAgentTool,  # noqa: E402, F401
-)

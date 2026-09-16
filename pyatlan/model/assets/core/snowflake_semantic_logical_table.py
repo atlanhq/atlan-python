@@ -377,12 +377,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
     """
     TBC
     """
-    SNOWFLAKE_SEMANTIC_LOGICAL_TABLE_JOINS: ClassVar[RelationField] = RelationField(
-        "snowflakeSemanticLogicalTableJoins"
-    )
-    """
-    TBC
-    """
     SNOWFLAKE_SEMANTIC_VIEW: ClassVar[RelationField] = RelationField(
         "snowflakeSemanticView"
     )
@@ -457,7 +451,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         "sql_insight_outgoing_joins",
         "snowflake_semantic_logical_tables",
         "dbt_tests",
-        "snowflake_semantic_logical_table_joins",
         "snowflake_semantic_view",
         "sql_dbt_sources",
         "dbt_seed_assets",
@@ -1237,29 +1230,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         self.attributes.dbt_tests = dbt_tests
 
     @property
-    def snowflake_semantic_logical_table_joins(
-        self,
-    ) -> Optional[List[SnowflakeSemanticLogicalTable]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_semantic_logical_table_joins
-        )
-
-    @snowflake_semantic_logical_table_joins.setter
-    def snowflake_semantic_logical_table_joins(
-        self,
-        snowflake_semantic_logical_table_joins: Optional[
-            List[SnowflakeSemanticLogicalTable]
-        ],
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_semantic_logical_table_joins = (
-            snowflake_semantic_logical_table_joins
-        )
-
-    @property
     def snowflake_semantic_view(self) -> Optional[SnowflakeSemanticView]:
         return (
             None if self.attributes is None else self.attributes.snowflake_semantic_view
@@ -1408,9 +1378,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         dbt_tests: Optional[List[DbtTest]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_semantic_logical_table_joins: Optional[
-            List[SnowflakeSemanticLogicalTable]
-        ] = Field(default=None, description="")  # relationship
         snowflake_semantic_view: Optional[SnowflakeSemanticView] = Field(
             default=None, description=""
         )  # relationship
@@ -1440,7 +1407,5 @@ from .snowflake_semantic_dimension import SnowflakeSemanticDimension  # noqa: E4
 from .snowflake_semantic_fact import SnowflakeSemanticFact  # noqa: E402, F401
 from .snowflake_semantic_metric import SnowflakeSemanticMetric  # noqa: E402, F401
 from .snowflake_semantic_view import SnowflakeSemanticView  # noqa: E402, F401
-from .sql_insight_business_question import (
-    SqlInsightBusinessQuestion,  # noqa: E402, F401
-)
+from .sql_insight_business_question import SqlInsightBusinessQuestion  # noqa: E402, F401
 from .sql_insight_join import SqlInsightJoin  # noqa: E402, F401

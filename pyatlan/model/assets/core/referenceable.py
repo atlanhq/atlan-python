@@ -525,6 +525,4 @@ class Referenceable(AtlanObject):
 
 # Imports required for fixing circular dependencies:
 from .asset import Asset  # noqa: I001, E402, F401
-
-
 from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: E402, F401

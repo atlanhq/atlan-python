@@ -29,29 +29,19 @@ class Namespace(Asset, type_name="Namespace"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CHILDREN_FOLDERS: ClassVar[RelationField] = RelationField("childrenFolders")
+    CHILDREN_QUERIES: ClassVar[RelationField] = RelationField("childrenQueries")
     """
     TBC
     """
-    CHILDREN_QUERIES: ClassVar[RelationField] = RelationField("childrenQueries")
+    CHILDREN_FOLDERS: ClassVar[RelationField] = RelationField("childrenFolders")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "children_folders",
         "children_queries",
+        "children_folders",
     ]
-
-    @property
-    def children_folders(self) -> Optional[List[Folder]]:
-        return None if self.attributes is None else self.attributes.children_folders
-
-    @children_folders.setter
-    def children_folders(self, children_folders: Optional[List[Folder]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.children_folders = children_folders
 
     @property
     def children_queries(self) -> Optional[List[Query]]:
@@ -63,11 +53,21 @@ class Namespace(Asset, type_name="Namespace"):
             self.attributes = self.Attributes()
         self.attributes.children_queries = children_queries
 
+    @property
+    def children_folders(self) -> Optional[List[Folder]]:
+        return None if self.attributes is None else self.attributes.children_folders
+
+    @children_folders.setter
+    def children_folders(self, children_folders: Optional[List[Folder]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.children_folders = children_folders
+
     class Attributes(Asset.Attributes):
-        children_folders: Optional[List[Folder]] = Field(
+        children_queries: Optional[List[Query]] = Field(
             default=None, description=""
         )  # relationship
-        children_queries: Optional[List[Query]] = Field(
+        children_folders: Optional[List[Folder]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -166,8 +166,6 @@ class SageMakerUnifiedStudioAsset(SageMakerUnifiedStudio):
     )
 
 
-from .sage_maker_unified_studio_asset_schema import (
-    SageMakerUnifiedStudioAssetSchema,  # noqa: E402, F401
-)
+from .sage_maker_unified_studio_asset_schema import SageMakerUnifiedStudioAssetSchema  # noqa: E402, F401
 
 SageMakerUnifiedStudioAsset.Attributes.update_forward_refs()

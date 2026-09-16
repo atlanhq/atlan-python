@@ -90,5 +90,3 @@ class KnowledgeFolder(Knowledge):
 
 
 from .knowledge_file import KnowledgeFile  # noqa: E402, F401
-
-KnowledgeFolder.Attributes.update_forward_refs()

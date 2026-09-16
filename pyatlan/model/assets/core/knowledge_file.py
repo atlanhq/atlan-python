@@ -113,6 +113,12 @@ class KnowledgeFile(Knowledge):
     """
     TBC
     """
+    KNOWLEDGE_LINKED_ASSETS: ClassVar[RelationField] = RelationField(
+        "knowledgeLinkedAssets"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "knowledge_content_hash",
@@ -130,6 +136,7 @@ class KnowledgeFile(Knowledge):
         "resource_metadata",
         "file_assets",
         "knowledge_folders",
+        "knowledge_linked_assets",
     ]
 
     @property
@@ -290,6 +297,18 @@ class KnowledgeFile(Knowledge):
             self.attributes = self.Attributes()
         self.attributes.knowledge_folders = knowledge_folders
 
+    @property
+    def knowledge_linked_assets(self) -> Optional[List[Asset]]:
+        return (
+            None if self.attributes is None else self.attributes.knowledge_linked_assets
+        )
+
+    @knowledge_linked_assets.setter
+    def knowledge_linked_assets(self, knowledge_linked_assets: Optional[List[Asset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.knowledge_linked_assets = knowledge_linked_assets
+
     class Attributes(Knowledge.Attributes):
         knowledge_content_hash: Optional[str] = Field(default=None, description="")
         knowledge_folder_names: Optional[Set[str]] = Field(default=None, description="")
@@ -314,6 +333,9 @@ class KnowledgeFile(Knowledge):
         knowledge_folders: Optional[List[KnowledgeFolder]] = Field(
             default=None, description=""
         )  # relationship
+        knowledge_linked_assets: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: KnowledgeFile.Attributes = Field(
         default_factory=lambda: KnowledgeFile.Attributes(),
@@ -325,7 +347,5 @@ class KnowledgeFile(Knowledge):
     )
 
 
-from .core.asset import Asset  # noqa: E402, F401
+from .asset import Asset  # noqa: E402, F401
 from .knowledge_folder import KnowledgeFolder  # noqa: E402, F401
-
-KnowledgeFile.Attributes.update_forward_refs()

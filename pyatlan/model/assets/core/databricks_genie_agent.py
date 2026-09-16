@@ -9,51 +9,122 @@ from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AgenticLifecycleStatus, AgenticSource, AgentType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
-from .snowflake import Snowflake
+from .agent import Agent
 
 
-class SnowflakeV1CortexAgentTool(Snowflake):
+class DatabricksGenieAgent(Agent):
     """Description"""
 
-    type_name: str = Field(default="SnowflakeV1CortexAgentTool", allow_mutation=False)
+    type_name: str = Field(default="DatabricksGenieAgent", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SnowflakeV1CortexAgentTool":
-            raise ValueError("must be SnowflakeV1CortexAgentTool")
+        if v != "DatabricksGenieAgent":
+            raise ValueError("must be DatabricksGenieAgent")
         return v
 
     def __setattr__(self, name, value):
-        if name in SnowflakeV1CortexAgentTool._convenience_properties:
+        if name in DatabricksGenieAgent._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SNOWFLAKE_V1CORTEX_AGENT_TOOL_TOOL_TYPE: ClassVar[KeywordField] = KeywordField(
-        "snowflakeV1CortexAgentToolToolType", "snowflakeV1CortexAgentToolToolType"
+    DATABRICKS_GENIE_AGENT_WORKSPACE_ID: ClassVar[KeywordField] = KeywordField(
+        "databricksGenieAgentWorkspaceId", "databricksGenieAgentWorkspaceId"
     )
     """
-    Kind of tool exposed to the agent (for example, CORTEX_ANALYST_TEXT_TO_SQL, CORTEX_SEARCH, SQL_EXEC, GENERIC).
+    Identifier of the workspace containing the Genie space.
     """
-    SNOWFLAKE_V1CORTEX_AGENT_TOOL_TOOL_WAREHOUSE: ClassVar[KeywordField] = KeywordField(
-        "snowflakeV1CortexAgentToolToolWarehouse",
-        "snowflakeV1CortexAgentToolToolWarehouse",
+    DATABRICKS_GENIE_AGENT_WAREHOUSE_ID: ClassVar[KeywordField] = KeywordField(
+        "databricksGenieAgentWarehouseId", "databricksGenieAgentWarehouseId"
     )
     """
-    Snowflake warehouse used by this tool when it executes a query.
+    Identifier of the SQL warehouse backing the Genie space.
     """
-    SNOWFLAKE_V1CORTEX_AGENT_TOOL_TOOL_FILTERS: ClassVar[KeywordField] = KeywordField(
-        "snowflakeV1CortexAgentToolToolFilters", "snowflakeV1CortexAgentToolToolFilters"
+    DATABRICKS_GENIE_AGENT_PARENT_PATH: ClassVar[KeywordField] = KeywordField(
+        "databricksGenieAgentParentPath", "databricksGenieAgentParentPath"
     )
     """
-    Static filters applied to every invocation of this tool, expressed as predicate strings.
+    Workspace folder path containing the Genie space. It is descriptive only and creates no containment or hierarchy edge.
+    """  # noqa: E501
+    DATABRICKS_GENIE_AGENT_ETAG: ClassVar[KeywordField] = KeywordField(
+        "databricksGenieAgentEtag", "databricksGenieAgentEtag"
+    )
+    """
+    Entity tag used as a change token for the Genie space. It is populated only by an enabled serialized-detail read, so it is null when that read is disabled, denied, or omitted by the source.
+    """  # noqa: E501
+    AGENT_SLUG: ClassVar[KeywordField] = KeywordField("agentSlug", "agentSlug")
+    """
+    URL-safe unique identifier for this agent (for example, my-data-agent).
+    """
+    AGENT_TYPE: ClassVar[KeywordField] = KeywordField("agentType", "agentType")
+    """
+    Origin type of this agent — system-provided or custom user-created.
+    """
+    AGENT_STATUS: ClassVar[KeywordField] = KeywordField("agentStatus", "agentStatus")
+    """
+    Lifecycle status of this agent version (draft or published).
+    """
+    AGENT_SYSTEM_PROMPT: ClassVar[TextField] = TextField(
+        "agentSystemPrompt", "agentSystemPrompt"
+    )
+    """
+    System prompt for this agent version.
+    """
+    AGENT_LLM_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "agentLlmConfig", "agentLlmConfig"
+    )
+    """
+    JSON-serialized LLMConfig (model, temperature, maxTokens, maxTurns, baseUrl).
+    """
+    AGENT_MCP_SERVERS: ClassVar[KeywordField] = KeywordField(
+        "agentMcpServers", "agentMcpServers"
+    )
+    """
+    JSON list of MCPServerConfig entries (name, url, headers, enabled).
+    """
+    AGENT_SCHEDULES: ClassVar[TextField] = TextField("agentSchedules", "agentSchedules")
+    """
+    JSON-serialized agent schedule configuration, including kickoff message, cron expression, timezone, version policy, status, and Temporal schedule identifier.
+    """  # noqa: E501
+    AGENT_SKILL_NAMES: ClassVar[KeywordField] = KeywordField(
+        "agentSkillNames", "agentSkillNames"
+    )
+    """
+    Denormalized list of names of the skills bound to this agent version.
+    """
+    AGENT_SKILL_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "agentSkillQualifiedNames", "agentSkillQualifiedNames"
+    )
+    """
+    Denormalized list of qualifiedNames of the skills bound to this agent version.
+    """
+    AGENTIC_VERSION: ClassVar[NumericField] = NumericField(
+        "agenticVersion", "agenticVersion"
+    )
+    """
+    Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple.
+    """
+    AGENTIC_SOURCE: ClassVar[KeywordField] = KeywordField(
+        "agenticSource", "agenticSource"
+    )
+    """
+    Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028).
+    """  # noqa: E501
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
     """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
@@ -254,30 +325,73 @@ class SnowflakeV1CortexAgentTool(Snowflake):
     """
     Qualified names of data shares this asset is granted to.
     """
-    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
-        "catalogDatasetGuid", "catalogDatasetGuid"
-    )
-    """
-    Unique identifier of the dataset this asset belongs to.
-    """
 
-    SNOWFLAKE_CORTEX_AGENT_TOOLS: ClassVar[RelationField] = RelationField(
-        "snowflakeCortexAgentTools"
+    DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
+    """
+    TBC
+    """
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[RelationField] = RelationField(
+        "snowflakeSemanticLogicalTables"
     )
     """
     TBC
     """
-    SNOWFLAKE_CORTEX_AGENT: ClassVar[RelationField] = RelationField(
-        "snowflakeCortexAgent"
+    SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
+    """
+    TBC
+    """
+    SQL_INSIGHT_INCOMING_JOINS: ClassVar[RelationField] = RelationField(
+        "sqlInsightIncomingJoins"
+    )
+    """
+    TBC
+    """
+    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
+    SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[RelationField] = RelationField(
+        "sqlInsightBusinessQuestions"
+    )
+    """
+    TBC
+    """
+    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
+    """
+    TBC
+    """
+    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
+    """
+    TBC
+    """
+    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
+    """
+    TBC
+    """
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[RelationField] = RelationField(
+        "sqlInsightOutgoingJoins"
     )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "snowflake_v1_cortex_agent_tool_tool_type",
-        "snowflake_v1_cortex_agent_tool_tool_warehouse",
-        "snowflake_v1_cortex_agent_tool_tool_filters",
+        "databricks_genie_agent_workspace_id",
+        "databricks_genie_agent_warehouse_id",
+        "databricks_genie_agent_parent_path",
+        "databricks_genie_agent_etag",
+        "agent_slug",
+        "agent_type",
+        "agent_status",
+        "agent_system_prompt",
+        "agent_llm_config",
+        "agent_mcp_servers",
+        "agent_schedules",
+        "agent_skill_names",
+        "agent_skill_qualified_names",
+        "agentic_version",
+        "agentic_source",
+        "catalog_dataset_guid",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -311,64 +425,211 @@ class SnowflakeV1CortexAgentTool(Snowflake):
         "sql_coalesce_project_id",
         "sql_coalesce_project_name",
         "sql_share_qualified_names",
-        "catalog_dataset_guid",
-        "snowflake_cortex_agent_tools",
-        "snowflake_cortex_agent",
+        "dbt_sources",
+        "snowflake_semantic_logical_tables",
+        "sql_dbt_models",
+        "sql_insight_incoming_joins",
+        "dbt_tests",
+        "sql_insight_business_questions",
+        "sql_dbt_sources",
+        "dbt_models",
+        "dbt_seed_assets",
+        "sql_insight_outgoing_joins",
     ]
 
     @property
-    def snowflake_v1_cortex_agent_tool_tool_type(self) -> Optional[str]:
+    def databricks_genie_agent_workspace_id(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.snowflake_v1_cortex_agent_tool_tool_type
+            else self.attributes.databricks_genie_agent_workspace_id
         )
 
-    @snowflake_v1_cortex_agent_tool_tool_type.setter
-    def snowflake_v1_cortex_agent_tool_tool_type(
-        self, snowflake_v1_cortex_agent_tool_tool_type: Optional[str]
+    @databricks_genie_agent_workspace_id.setter
+    def databricks_genie_agent_workspace_id(
+        self, databricks_genie_agent_workspace_id: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.snowflake_v1_cortex_agent_tool_tool_type = (
-            snowflake_v1_cortex_agent_tool_tool_type
+        self.attributes.databricks_genie_agent_workspace_id = (
+            databricks_genie_agent_workspace_id
         )
 
     @property
-    def snowflake_v1_cortex_agent_tool_tool_warehouse(self) -> Optional[str]:
+    def databricks_genie_agent_warehouse_id(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.snowflake_v1_cortex_agent_tool_tool_warehouse
+            else self.attributes.databricks_genie_agent_warehouse_id
         )
 
-    @snowflake_v1_cortex_agent_tool_tool_warehouse.setter
-    def snowflake_v1_cortex_agent_tool_tool_warehouse(
-        self, snowflake_v1_cortex_agent_tool_tool_warehouse: Optional[str]
+    @databricks_genie_agent_warehouse_id.setter
+    def databricks_genie_agent_warehouse_id(
+        self, databricks_genie_agent_warehouse_id: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.snowflake_v1_cortex_agent_tool_tool_warehouse = (
-            snowflake_v1_cortex_agent_tool_tool_warehouse
+        self.attributes.databricks_genie_agent_warehouse_id = (
+            databricks_genie_agent_warehouse_id
         )
 
     @property
-    def snowflake_v1_cortex_agent_tool_tool_filters(self) -> Optional[Set[str]]:
+    def databricks_genie_agent_parent_path(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.snowflake_v1_cortex_agent_tool_tool_filters
+            else self.attributes.databricks_genie_agent_parent_path
         )
 
-    @snowflake_v1_cortex_agent_tool_tool_filters.setter
-    def snowflake_v1_cortex_agent_tool_tool_filters(
-        self, snowflake_v1_cortex_agent_tool_tool_filters: Optional[Set[str]]
+    @databricks_genie_agent_parent_path.setter
+    def databricks_genie_agent_parent_path(
+        self, databricks_genie_agent_parent_path: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.snowflake_v1_cortex_agent_tool_tool_filters = (
-            snowflake_v1_cortex_agent_tool_tool_filters
+        self.attributes.databricks_genie_agent_parent_path = (
+            databricks_genie_agent_parent_path
         )
+
+    @property
+    def databricks_genie_agent_etag(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.databricks_genie_agent_etag
+        )
+
+    @databricks_genie_agent_etag.setter
+    def databricks_genie_agent_etag(self, databricks_genie_agent_etag: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.databricks_genie_agent_etag = databricks_genie_agent_etag
+
+    @property
+    def agent_slug(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.agent_slug
+
+    @agent_slug.setter
+    def agent_slug(self, agent_slug: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agent_slug = agent_slug
+
+    @property
+    def agent_type(self) -> Optional[AgentType]:
+        return None if self.attributes is None else self.attributes.agent_type
+
+    @agent_type.setter
+    def agent_type(self, agent_type: Optional[AgentType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agent_type = agent_type
+
+    @property
+    def agent_status(self) -> Optional[AgenticLifecycleStatus]:
+        return None if self.attributes is None else self.attributes.agent_status
+
+    @agent_status.setter
+    def agent_status(self, agent_status: Optional[AgenticLifecycleStatus]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agent_status = agent_status
+
+    @property
+    def agent_system_prompt(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.agent_system_prompt
+
+    @agent_system_prompt.setter
+    def agent_system_prompt(self, agent_system_prompt: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agent_system_prompt = agent_system_prompt
+
+    @property
+    def agent_llm_config(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.agent_llm_config
+
+    @agent_llm_config.setter
+    def agent_llm_config(self, agent_llm_config: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agent_llm_config = agent_llm_config
+
+    @property
+    def agent_mcp_servers(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.agent_mcp_servers
+
+    @agent_mcp_servers.setter
+    def agent_mcp_servers(self, agent_mcp_servers: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agent_mcp_servers = agent_mcp_servers
+
+    @property
+    def agent_schedules(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.agent_schedules
+
+    @agent_schedules.setter
+    def agent_schedules(self, agent_schedules: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agent_schedules = agent_schedules
+
+    @property
+    def agent_skill_names(self) -> Optional[Set[str]]:
+        return None if self.attributes is None else self.attributes.agent_skill_names
+
+    @agent_skill_names.setter
+    def agent_skill_names(self, agent_skill_names: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agent_skill_names = agent_skill_names
+
+    @property
+    def agent_skill_qualified_names(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.agent_skill_qualified_names
+        )
+
+    @agent_skill_qualified_names.setter
+    def agent_skill_qualified_names(
+        self, agent_skill_qualified_names: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agent_skill_qualified_names = agent_skill_qualified_names
+
+    @property
+    def agentic_version(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.agentic_version
+
+    @agentic_version.setter
+    def agentic_version(self, agentic_version: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agentic_version = agentic_version
+
+    @property
+    def agentic_source(self) -> Optional[AgenticSource]:
+        return None if self.attributes is None else self.attributes.agentic_source
+
+    @agentic_source.setter
+    def agentic_source(self, agentic_source: Optional[AgenticSource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.agentic_source = agentic_source
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
 
     @property
     def query_count(self) -> Optional[int]:
@@ -799,55 +1060,165 @@ class SnowflakeV1CortexAgentTool(Snowflake):
         self.attributes.sql_share_qualified_names = sql_share_qualified_names
 
     @property
-    def catalog_dataset_guid(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+    def dbt_sources(self) -> Optional[List[DbtSource]]:
+        return None if self.attributes is None else self.attributes.dbt_sources
 
-    @catalog_dataset_guid.setter
-    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+    @dbt_sources.setter
+    def dbt_sources(self, dbt_sources: Optional[List[DbtSource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+        self.attributes.dbt_sources = dbt_sources
 
     @property
-    def snowflake_cortex_agent_tools(self) -> Optional[SnowflakeV1CortexSearchService]:
+    def snowflake_semantic_logical_tables(
+        self,
+    ) -> Optional[List[SnowflakeSemanticLogicalTable]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.snowflake_cortex_agent_tools
+            else self.attributes.snowflake_semantic_logical_tables
         )
 
-    @snowflake_cortex_agent_tools.setter
-    def snowflake_cortex_agent_tools(
-        self, snowflake_cortex_agent_tools: Optional[SnowflakeV1CortexSearchService]
+    @snowflake_semantic_logical_tables.setter
+    def snowflake_semantic_logical_tables(
+        self,
+        snowflake_semantic_logical_tables: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.snowflake_cortex_agent_tools = snowflake_cortex_agent_tools
+        self.attributes.snowflake_semantic_logical_tables = (
+            snowflake_semantic_logical_tables
+        )
 
     @property
-    def snowflake_cortex_agent(self) -> Optional[SnowflakeV1CortexAgent]:
+    def sql_dbt_models(self) -> Optional[List[DbtModel]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_models
+
+    @sql_dbt_models.setter
+    def sql_dbt_models(self, sql_dbt_models: Optional[List[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_models = sql_dbt_models
+
+    @property
+    def sql_insight_incoming_joins(self) -> Optional[List[SqlInsightJoin]]:
         return (
-            None if self.attributes is None else self.attributes.snowflake_cortex_agent
+            None
+            if self.attributes is None
+            else self.attributes.sql_insight_incoming_joins
         )
 
-    @snowflake_cortex_agent.setter
-    def snowflake_cortex_agent(
-        self, snowflake_cortex_agent: Optional[SnowflakeV1CortexAgent]
+    @sql_insight_incoming_joins.setter
+    def sql_insight_incoming_joins(
+        self, sql_insight_incoming_joins: Optional[List[SqlInsightJoin]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.snowflake_cortex_agent = snowflake_cortex_agent
+        self.attributes.sql_insight_incoming_joins = sql_insight_incoming_joins
 
-    class Attributes(Snowflake.Attributes):
-        snowflake_v1_cortex_agent_tool_tool_type: Optional[str] = Field(
+    @property
+    def dbt_tests(self) -> Optional[List[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
+    def sql_insight_business_questions(
+        self,
+    ) -> Optional[List[SqlInsightBusinessQuestion]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_insight_business_questions
+        )
+
+    @sql_insight_business_questions.setter
+    def sql_insight_business_questions(
+        self, sql_insight_business_questions: Optional[List[SqlInsightBusinessQuestion]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_insight_business_questions = sql_insight_business_questions
+
+    @property
+    def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_sources
+
+    @sql_dbt_sources.setter
+    def sql_dbt_sources(self, sql_dbt_sources: Optional[List[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_sources = sql_dbt_sources
+
+    @property
+    def dbt_models(self) -> Optional[List[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
+
+    @property
+    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
+        return None if self.attributes is None else self.attributes.dbt_seed_assets
+
+    @dbt_seed_assets.setter
+    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_seed_assets = dbt_seed_assets
+
+    @property
+    def sql_insight_outgoing_joins(self) -> Optional[List[SqlInsightJoin]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_insight_outgoing_joins
+        )
+
+    @sql_insight_outgoing_joins.setter
+    def sql_insight_outgoing_joins(
+        self, sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_insight_outgoing_joins = sql_insight_outgoing_joins
+
+    class Attributes(Agent.Attributes):
+        databricks_genie_agent_workspace_id: Optional[str] = Field(
             default=None, description=""
         )
-        snowflake_v1_cortex_agent_tool_tool_warehouse: Optional[str] = Field(
+        databricks_genie_agent_warehouse_id: Optional[str] = Field(
             default=None, description=""
         )
-        snowflake_v1_cortex_agent_tool_tool_filters: Optional[Set[str]] = Field(
+        databricks_genie_agent_parent_path: Optional[str] = Field(
             default=None, description=""
         )
+        databricks_genie_agent_etag: Optional[str] = Field(default=None, description="")
+        agent_slug: Optional[str] = Field(default=None, description="")
+        agent_type: Optional[AgentType] = Field(default=None, description="")
+        agent_status: Optional[AgenticLifecycleStatus] = Field(
+            default=None, description=""
+        )
+        agent_system_prompt: Optional[str] = Field(default=None, description="")
+        agent_llm_config: Optional[str] = Field(default=None, description="")
+        agent_mcp_servers: Optional[str] = Field(default=None, description="")
+        agent_schedules: Optional[str] = Field(default=None, description="")
+        agent_skill_names: Optional[Set[str]] = Field(default=None, description="")
+        agent_skill_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        agentic_version: Optional[int] = Field(default=None, description="")
+        agentic_source: Optional[AgenticSource] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
         query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")
@@ -903,16 +1274,39 @@ class SnowflakeV1CortexAgentTool(Snowflake):
         sql_share_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
-        snowflake_cortex_agent_tools: Optional[SnowflakeV1CortexSearchService] = Field(
+        dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_cortex_agent: Optional[SnowflakeV1CortexAgent] = Field(
+        snowflake_semantic_logical_tables: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ] = Field(default=None, description="")  # relationship
+        sql_dbt_models: Optional[List[DbtModel]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_insight_incoming_joins: Optional[List[SqlInsightJoin]] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_tests: Optional[List[DbtTest]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_insight_business_questions: Optional[List[SqlInsightBusinessQuestion]] = (
+            Field(default=None, description="")
+        )  # relationship
+        sql_dbt_sources: Optional[List[DbtSource]] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_models: Optional[List[DbtModel]] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]] = Field(
             default=None, description=""
         )  # relationship
 
-    attributes: SnowflakeV1CortexAgentTool.Attributes = Field(
-        default_factory=lambda: SnowflakeV1CortexAgentTool.Attributes(),
+    attributes: DatabricksGenieAgent.Attributes = Field(
+        default_factory=lambda: DatabricksGenieAgent.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -921,7 +1315,10 @@ class SnowflakeV1CortexAgentTool(Snowflake):
     )
 
 
-from .snowflake_v1_cortex_agent import SnowflakeV1CortexAgent  # noqa: E402, F401
-from .snowflake_v1_cortex_search_service import (
-    SnowflakeV1CortexSearchService,  # noqa: E402, F401
-)
+from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_seed import DbtSeed  # noqa: E402, F401
+from .dbt_source import DbtSource  # noqa: E402, F401
+from .dbt_test import DbtTest  # noqa: E402, F401
+from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable  # noqa: E402, F401
+from .sql_insight_business_question import SqlInsightBusinessQuestion  # noqa: E402, F401
+from .sql_insight_join import SqlInsightJoin  # noqa: E402, F401

@@ -446,12 +446,6 @@ class DremioPhysicalDataset(Dremio):
     """
     TBC
     """
-    SNOWFLAKE_TARGET_TABLE: ClassVar[RelationField] = RelationField(
-        "snowflakeTargetTable"
-    )
-    """
-    TBC
-    """
     COLUMNS: ClassVar[RelationField] = RelationField("columns")
     """
     TBC
@@ -546,7 +540,6 @@ class DremioPhysicalDataset(Dremio):
         "atlan_schema",
         "dremio_folder",
         "partitions",
-        "snowflake_target_table",
         "columns",
         "facts",
         "dremio_source",
@@ -1427,20 +1420,6 @@ class DremioPhysicalDataset(Dremio):
         self.attributes.partitions = partitions
 
     @property
-    def snowflake_target_table(self) -> Optional[SnowflakeV1CortexSearchService]:
-        return (
-            None if self.attributes is None else self.attributes.snowflake_target_table
-        )
-
-    @snowflake_target_table.setter
-    def snowflake_target_table(
-        self, snowflake_target_table: Optional[SnowflakeV1CortexSearchService]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_target_table = snowflake_target_table
-
-    @property
     def columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
@@ -1603,9 +1582,6 @@ class DremioPhysicalDataset(Dremio):
         partitions: Optional[List[TablePartition]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_target_table: Optional[SnowflakeV1CortexSearchService] = Field(
-            default=None, description=""
-        )  # relationship
         columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
@@ -1637,8 +1613,5 @@ from .dremio_folder import DremioFolder  # noqa: E402, F401
 from .dremio_source import DremioSource  # noqa: E402, F401
 from .query import Query  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401
-from .snowflake_v1_cortex_search_service import (
-    SnowflakeV1CortexSearchService,  # noqa: E402, F401
-)
 from .table import Table  # noqa: E402, F401
 from .table_partition import TablePartition  # noqa: E402, F401

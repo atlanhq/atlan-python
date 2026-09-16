@@ -8,26 +8,23 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .core.asset import Asset
+from .agentic import Agentic
 
 
-class Coalesce(Asset, type_name="Coalesce"):
+class Knowledge(Agentic):
     """Description"""
 
-    type_name: str = Field(default="Coalesce", allow_mutation=False)
+    type_name: str = Field(default="Knowledge", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Coalesce":
-            raise ValueError("must be Coalesce")
+        if v != "Knowledge":
+            raise ValueError("must be Knowledge")
         return v
 
     def __setattr__(self, name, value):
-        if name in Coalesce._convenience_properties:
+        if name in Knowledge._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
-
-
-Coalesce.Attributes.update_forward_refs()

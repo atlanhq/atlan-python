@@ -130,12 +130,6 @@ class Schema(SQL):
     """
     TBC
     """
-    SNOWFLAKE_SNOWFLAKE_CORTEX_SEARCH_SERVICES: ClassVar[RelationField] = RelationField(
-        "snowflakeSnowflakeCortexSearchServices"
-    )
-    """
-    TBC
-    """
     SQL_DATABASES: ClassVar[RelationField] = RelationField("sqlDatabases")
     """
     TBC
@@ -149,12 +143,6 @@ class Schema(SQL):
     TBC
     """
     MATERIALISED_VIEWS: ClassVar[RelationField] = RelationField("materialisedViews")
-    """
-    TBC
-    """
-    SNOWFLAKE_SNOWFLAKE_CORTEX_AGENTS: ClassVar[RelationField] = RelationField(
-        "snowflakeSnowflakeCortexAgents"
-    )
     """
     TBC
     """
@@ -221,12 +209,10 @@ class Schema(SQL):
         "databricks_a_i_model_contexts",
         "functions",
         "sap_datasphere_replication_flows",
-        "snowflake_snowflake_cortex_search_services",
         "sql_databases",
         "tables",
         "bigquery_routines",
         "materialised_views",
-        "snowflake_snowflake_cortex_agents",
         "snowflake_pipes",
         "snowflake_streams",
         "calculation_views",
@@ -337,29 +323,6 @@ class Schema(SQL):
         )
 
     @property
-    def snowflake_snowflake_cortex_search_services(
-        self,
-    ) -> Optional[List[SnowflakeV1CortexSearchService]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_snowflake_cortex_search_services
-        )
-
-    @snowflake_snowflake_cortex_search_services.setter
-    def snowflake_snowflake_cortex_search_services(
-        self,
-        snowflake_snowflake_cortex_search_services: Optional[
-            List[SnowflakeV1CortexSearchService]
-        ],
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_snowflake_cortex_search_services = (
-            snowflake_snowflake_cortex_search_services
-        )
-
-    @property
     def sql_databases(self) -> Optional[List[Database]]:
         return None if self.attributes is None else self.attributes.sql_databases
 
@@ -398,26 +361,6 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.materialised_views = materialised_views
-
-    @property
-    def snowflake_snowflake_cortex_agents(
-        self,
-    ) -> Optional[List[SnowflakeV1CortexAgent]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_snowflake_cortex_agents
-        )
-
-    @snowflake_snowflake_cortex_agents.setter
-    def snowflake_snowflake_cortex_agents(
-        self, snowflake_snowflake_cortex_agents: Optional[List[SnowflakeV1CortexAgent]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_snowflake_cortex_agents = (
-            snowflake_snowflake_cortex_agents
-        )
 
     @property
     def snowflake_pipes(self) -> Optional[List[SnowflakePipe]]:
@@ -573,9 +516,6 @@ class Schema(SQL):
         sap_datasphere_replication_flows: Optional[
             List[SapDatasphereReplicationFlow]
         ] = Field(default=None, description="")  # relationship
-        snowflake_snowflake_cortex_search_services: Optional[
-            List[SnowflakeV1CortexSearchService]
-        ] = Field(default=None, description="")  # relationship
         sql_databases: Optional[List[Database]] = Field(
             default=None, description=""
         )  # relationship
@@ -587,9 +527,6 @@ class Schema(SQL):
         )  # relationship
         materialised_views: Optional[List[MaterialisedView]] = Field(
             default=None, description=""
-        )  # relationship
-        snowflake_snowflake_cortex_agents: Optional[List[SnowflakeV1CortexAgent]] = (
-            Field(default=None, description="")
         )  # relationship
         snowflake_pipes: Optional[List[SnowflakePipe]] = Field(
             default=None, description=""
@@ -684,17 +621,11 @@ from .databricks_volume import DatabricksVolume  # noqa: E402, F401
 from .function import Function  # noqa: E402, F401
 from .materialised_view import MaterialisedView  # noqa: E402, F401
 from .procedure import Procedure  # noqa: E402, F401
-from .sap_datasphere_replication_flow import (
-    SapDatasphereReplicationFlow,  # noqa: E402, F401
-)
+from .sap_datasphere_replication_flow import SapDatasphereReplicationFlow  # noqa: E402, F401
 from .snowflake_a_i_model_context import SnowflakeAIModelContext  # noqa: E402, F401
 from .snowflake_pipe import SnowflakePipe  # noqa: E402, F401
 from .snowflake_semantic_view import SnowflakeSemanticView  # noqa: E402, F401
 from .snowflake_stage import SnowflakeStage  # noqa: E402, F401
 from .snowflake_stream import SnowflakeStream  # noqa: E402, F401
 from .snowflake_tag import SnowflakeTag  # noqa: E402, F401
-from .snowflake_v1_cortex_agent import SnowflakeV1CortexAgent  # noqa: E402, F401
-from .snowflake_v1_cortex_search_service import (
-    SnowflakeV1CortexSearchService,  # noqa: E402, F401
-)
 from .view import View  # noqa: E402, F401

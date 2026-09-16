@@ -7,17 +7,16 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 
 from pydantic.v1 import BaseModel, Extra, Field, root_validator
-
 from pyatlan.model.enums import (
-    AppWorkflowRunStatus,
-    AssetSmusMetadataFormStatus,
     AtlanConnectorType,
     BadgeComparisonOperator,
     BadgeConditionColor,
-    DataQualityRuleThresholdUnit,
+    SourceCostUnitType,
     FormFieldDimension,
     FormFieldType,
-    SourceCostUnitType,
+    DataQualityRuleThresholdUnit,
+    AppWorkflowRunStatus,
+    AssetSmusMetadataFormStatus,
 )
 from pyatlan.model.utils import to_camel_case
 from pyatlan.utils import select_optional_set_fields, validate_required_fields
@@ -25,8 +24,8 @@ from pyatlan.utils import select_optional_set_fields, validate_required_fields
 if TYPE_CHECKING:
     from pyatlan.cache.aio.source_tag_cache import AsyncSourceTagName
     from pyatlan.cache.source_tag_cache import SourceTagName
-    from pyatlan.client.aio import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
+    from pyatlan.client.aio import AsyncAtlanClient
 
 
 class AtlanObject(BaseModel):
@@ -73,6 +72,13 @@ class AwsCloudWatchMetric(AtlanObject):
     aws_cloud_watch_metric_scope: str = Field(description="")
 
 
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: Set[float] = Field(description="")
+    frequencies: Set[float] = Field(description="")
+
+
 class AtlanAppErrorHandling(AtlanObject):
     """Description"""
 
@@ -91,13 +97,6 @@ class AtlanAppErrorHandling(AtlanObject):
     atlan_app_error_handling_non_retryable_error_types: Optional[Set[str]] = Field(
         default=None, description=""
     )
-
-
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: Set[float] = Field(description="")
-    frequencies: Set[float] = Field(description="")
 
 
 class BadgeCondition(AtlanObject):
@@ -130,20 +129,6 @@ class BadgeCondition(AtlanObject):
     badge_condition_operator: Optional[str] = Field(default=None, description="")
     badge_condition_value: Optional[str] = Field(default=None, description="")
     badge_condition_colorhex: Optional[str] = Field(default=None, description="")
-
-
-class SageMakerUnifiedStudioAssetFilter(AtlanObject):
-    """Description"""
-
-    smus_asset_filter_id: Optional[str] = Field(default=None, description="")
-    smus_asset_filter_name: Optional[str] = Field(default=None, description="")
-    smus_asset_filter_description: Optional[str] = Field(default=None, description="")
-    smus_asset_filter_effective_row_filter: Optional[str] = Field(
-        default=None, description=""
-    )
-    smus_asset_filter_effective_column_names: Optional[Set[str]] = Field(
-        default=None, description=""
-    )
 
 
 class AssetExternalDQTestScoreDimension(AtlanObject):
@@ -295,22 +280,6 @@ class AssetExternalDQScoreBreakdownByDimension(AtlanObject):
         default=None, description=""
     )
     asset_external_d_q_score_dimension_score_type: Optional[str] = Field(
-        default=None, description=""
-    )
-
-
-class SQLProcedureReturnType(AtlanObject):
-    """Description"""
-
-    sql_return_type: Optional[str] = Field(default=None, description="")
-    sql_return_character_maximum_length: Optional[int] = Field(
-        default=None, description=""
-    )
-    sql_return_character_octet_length: Optional[int] = Field(
-        default=None, description=""
-    )
-    sql_return_numeric_precision: Optional[int] = Field(default=None, description="")
-    sql_return_numeric_precision_radix: Optional[int] = Field(
         default=None, description=""
     )
 
@@ -584,19 +553,6 @@ class AwsTag(AtlanObject):
 
     aws_tag_key: str = Field(description="")
     aws_tag_value: str = Field(description="")
-
-
-class SQLProcedureAdditionalProperties(AtlanObject):
-    """Description"""
-
-    sql_external_access_integrations: Optional[str] = Field(
-        default=None, description=""
-    )
-    sql_secrets: Optional[str] = Field(default=None, description="")
-    sql_packages: Optional[str] = Field(default=None, description="")
-    sql_installed_packages: Optional[str] = Field(default=None, description="")
-    sql_schema_id: Optional[str] = Field(default=None, description="")
-    sql_catalog_id: Optional[str] = Field(default=None, description="")
 
 
 class AssetExternalDQTestDetails(AtlanObject):
@@ -1014,13 +970,11 @@ DbtJobRun.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-AtlanAppErrorHandling.update_forward_refs()
-
 Histogram.update_forward_refs()
 
-BadgeCondition.update_forward_refs()
+AtlanAppErrorHandling.update_forward_refs()
 
-SageMakerUnifiedStudioAssetFilter.update_forward_refs()
+BadgeCondition.update_forward_refs()
 
 AssetExternalDQTestScoreDimension.update_forward_refs()
 
@@ -1043,8 +997,6 @@ AssetExternalDQTestsByStatus.update_forward_refs()
 AzureTag.update_forward_refs()
 
 AssetExternalDQScoreBreakdownByDimension.update_forward_refs()
-
-SQLProcedureReturnType.update_forward_refs()
 
 AssetGCPDataplexMetadata.update_forward_refs()
 
@@ -1085,8 +1037,6 @@ StarredDetails.update_forward_refs()
 AssetExternalDQTestStats.update_forward_refs()
 
 AwsTag.update_forward_refs()
-
-SQLProcedureAdditionalProperties.update_forward_refs()
 
 AssetExternalDQTestDetails.update_forward_refs()
 

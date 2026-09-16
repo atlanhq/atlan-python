@@ -83,10 +83,6 @@ class SigmaDataModel(Sigma):
     """
     TBC
     """
-    DATA_MODEL_ELEMENTS: ClassVar[RelationField] = RelationField("dataModelElements")
-    """
-    TBC
-    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "sigma_data_model_url_id",
@@ -97,7 +93,6 @@ class SigmaDataModel(Sigma):
         "sigma_data_model_column_count",
         "sigma_data_model_path",
         "sigma_data_model_columns",
-        "data_model_elements",
     ]
 
     @property
@@ -226,18 +221,6 @@ class SigmaDataModel(Sigma):
             self.attributes = self.Attributes()
         self.attributes.sigma_data_model_columns = sigma_data_model_columns
 
-    @property
-    def data_model_elements(self) -> Optional[List[SigmaDataModelElement]]:
-        return None if self.attributes is None else self.attributes.data_model_elements
-
-    @data_model_elements.setter
-    def data_model_elements(
-        self, data_model_elements: Optional[List[SigmaDataModelElement]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_model_elements = data_model_elements
-
     class Attributes(Sigma.Attributes):
         sigma_data_model_url_id: Optional[str] = Field(default=None, description="")
         sigma_data_model_document_version: Optional[int] = Field(
@@ -259,9 +242,6 @@ class SigmaDataModel(Sigma):
         sigma_data_model_columns: Optional[List[SigmaDataModelColumn]] = Field(
             default=None, description=""
         )  # relationship
-        data_model_elements: Optional[List[SigmaDataModelElement]] = Field(
-            default=None, description=""
-        )  # relationship
 
     attributes: SigmaDataModel.Attributes = Field(
         default_factory=lambda: SigmaDataModel.Attributes(),
@@ -274,6 +254,5 @@ class SigmaDataModel(Sigma):
 
 
 from .sigma_data_model_column import SigmaDataModelColumn  # noqa: E402, F401
-from .sigma_data_model_element import SigmaDataModelElement  # noqa: E402, F401
 
 SigmaDataModel.Attributes.update_forward_refs()

@@ -152,10 +152,6 @@ class KafkaTopic(Kafka):
     """
     TBC
     """
-    KAFKA_PARTITIONS: ClassVar[RelationField] = RelationField("kafkaPartitions")
-    """
-    TBC
-    """
     KAFKA_CLUSTER: ClassVar[RelationField] = RelationField("kafkaCluster")
     """
     TBC
@@ -179,7 +175,6 @@ class KafkaTopic(Kafka):
         "kafka_topic_cluster_qualified_name",
         "kafka_fields",
         "kafka_consumer_groups",
-        "kafka_partitions",
         "kafka_cluster",
     ]
 
@@ -438,16 +433,6 @@ class KafkaTopic(Kafka):
         self.attributes.kafka_consumer_groups = kafka_consumer_groups
 
     @property
-    def kafka_partitions(self) -> Optional[List[KafkaPartition]]:
-        return None if self.attributes is None else self.attributes.kafka_partitions
-
-    @kafka_partitions.setter
-    def kafka_partitions(self, kafka_partitions: Optional[List[KafkaPartition]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_partitions = kafka_partitions
-
-    @property
     def kafka_cluster(self) -> Optional[KafkaCluster]:
         return None if self.attributes is None else self.attributes.kafka_cluster
 
@@ -497,9 +482,6 @@ class KafkaTopic(Kafka):
         kafka_consumer_groups: Optional[List[KafkaConsumerGroup]] = Field(
             default=None, description=""
         )  # relationship
-        kafka_partitions: Optional[List[KafkaPartition]] = Field(
-            default=None, description=""
-        )  # relationship
         kafka_cluster: Optional[KafkaCluster] = Field(
             default=None, description=""
         )  # relationship
@@ -534,6 +516,5 @@ class KafkaTopic(Kafka):
 from .kafka_cluster import KafkaCluster  # noqa: E402, F401
 from .kafka_consumer_group import KafkaConsumerGroup  # noqa: E402, F401
 from .kafka_field import KafkaField  # noqa: E402, F401
-from .kafka_partition import KafkaPartition  # noqa: E402, F401
 
 KafkaTopic.Attributes.update_forward_refs()

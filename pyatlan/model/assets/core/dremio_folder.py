@@ -41,17 +41,17 @@ class DremioFolder(Dremio):
     """
     TBC
     """
-    DREMIO_PHYSICAL_DATASETS: ClassVar[RelationField] = RelationField(
-        "dremioPhysicalDatasets"
-    )
-    """
-    TBC
-    """
     DREMIO_PARENT_FOLDER: ClassVar[RelationField] = RelationField("dremioParentFolder")
     """
     TBC
     """
     DREMIO_SUB_FOLDERS: ClassVar[RelationField] = RelationField("dremioSubFolders")
+    """
+    TBC
+    """
+    DREMIO_PHYSICAL_DATASETS: ClassVar[RelationField] = RelationField(
+        "dremioPhysicalDatasets"
+    )
     """
     TBC
     """
@@ -69,9 +69,9 @@ class DremioFolder(Dremio):
     _convenience_properties: ClassVar[List[str]] = [
         "dremio_parent_asset_type",
         "dremio_space",
-        "dremio_physical_datasets",
         "dremio_parent_folder",
         "dremio_sub_folders",
+        "dremio_physical_datasets",
         "dremio_source",
         "dremio_virtual_datasets",
     ]
@@ -103,22 +103,6 @@ class DremioFolder(Dremio):
         self.attributes.dremio_space = dremio_space
 
     @property
-    def dremio_physical_datasets(self) -> Optional[List[DremioPhysicalDataset]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dremio_physical_datasets
-        )
-
-    @dremio_physical_datasets.setter
-    def dremio_physical_datasets(
-        self, dremio_physical_datasets: Optional[List[DremioPhysicalDataset]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_physical_datasets = dremio_physical_datasets
-
-    @property
     def dremio_parent_folder(self) -> Optional[DremioFolder]:
         return None if self.attributes is None else self.attributes.dremio_parent_folder
 
@@ -137,6 +121,22 @@ class DremioFolder(Dremio):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dremio_sub_folders = dremio_sub_folders
+
+    @property
+    def dremio_physical_datasets(self) -> Optional[List[DremioPhysicalDataset]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dremio_physical_datasets
+        )
+
+    @dremio_physical_datasets.setter
+    def dremio_physical_datasets(
+        self, dremio_physical_datasets: Optional[List[DremioPhysicalDataset]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dremio_physical_datasets = dremio_physical_datasets
 
     @property
     def dremio_source(self) -> Optional[DremioSource]:
@@ -169,13 +169,13 @@ class DremioFolder(Dremio):
         dremio_space: Optional[DremioSpace] = Field(
             default=None, description=""
         )  # relationship
-        dremio_physical_datasets: Optional[List[DremioPhysicalDataset]] = Field(
-            default=None, description=""
-        )  # relationship
         dremio_parent_folder: Optional[DremioFolder] = Field(
             default=None, description=""
         )  # relationship
         dremio_sub_folders: Optional[List[DremioFolder]] = Field(
+            default=None, description=""
+        )  # relationship
+        dremio_physical_datasets: Optional[List[DremioPhysicalDataset]] = Field(
             default=None, description=""
         )  # relationship
         dremio_source: Optional[DremioSource] = Field(

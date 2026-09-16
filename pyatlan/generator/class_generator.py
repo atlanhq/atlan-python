@@ -596,13 +596,16 @@ class AssetInfo:
                             super_asset.is_core_asset = True
                             cls._CORE_ASSETS.add(related_asset.super_class)
 
-        # A core asset's referenced assets must also be core. The BFS pass above
-        # can miss this when an asset is promoted to core only after its
-        # dependants were visited (single-pass, order-dependent). If a core
-        # asset ends up referencing a non-core sibling, the core module imports
-        # it across the assets/ -> assets/core/ package boundary, which turns a
-        # normal same-package deferred-import cycle into a cross-package circular
-        # import that fails at runtime. Close over that rule to a fixpoint so the
+        # A core asset's referenced assets AND its super-class chain must also be
+        # core. The BFS pass above can miss this when an asset is promoted to
+        # core only after its dependants/ancestors were visited (single-pass,
+        # order-dependent). If a core asset ends up referencing or extending a
+        # non-core sibling, the core module imports it across the assets/ ->
+        # assets/core/ package boundary. For a referenced asset that is a
+        # deferred bottom-of-file import cycle that fails at runtime; for a
+        # super-class it is worse, since the parent is imported eagerly at the
+        # top of the file and its forward-ref resolution runs mid-cycle before
+        # the full namespace exists. Close over both rules to a fixpoint so the
         # classification is order-independent (promote-only; nothing is demoted).
         promotion_pending = True
         while promotion_pending:
@@ -610,6 +613,12 @@ class AssetInfo:
             for asset_info in cls.asset_info_by_name.values():
                 if not asset_info.is_core_asset:
                     continue
+                if asset_info.super_class != "AtlanObject":
+                    super_asset = cls.asset_info_by_name.get(asset_info.super_class)
+                    if super_asset is not None and not super_asset.is_core_asset:
+                        super_asset.is_core_asset = True
+                        cls._CORE_ASSETS.add(super_asset.name)
+                        promotion_pending = True
                 for related_asset in asset_info.required_asset_infos:
                     if related_asset.is_core_asset:
                         continue

@@ -70,6 +70,12 @@ class ContextRepository(Context):
     """
     TBC
     """
+    CONTEXT_OUTPUT_AGENTS: ClassVar[RelationField] = RelationField(
+        "contextOutputAgents"
+    )
+    """
+    TBC
+    """
     CONTEXT_OUTPUT_SKILL: ClassVar[RelationField] = RelationField("contextOutputSkill")
     """
     TBC
@@ -81,6 +87,7 @@ class ContextRepository(Context):
         "context_repository_target_connection_qualified_name",
         "context_input_assets",
         "context_artifacts",
+        "context_output_agents",
         "context_output_skill",
     ]
 
@@ -159,6 +166,18 @@ class ContextRepository(Context):
         self.attributes.context_artifacts = context_artifacts
 
     @property
+    def context_output_agents(self) -> Optional[List[Agent]]:
+        return (
+            None if self.attributes is None else self.attributes.context_output_agents
+        )
+
+    @context_output_agents.setter
+    def context_output_agents(self, context_output_agents: Optional[List[Agent]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.context_output_agents = context_output_agents
+
+    @property
     def context_output_skill(self) -> Optional[Skill]:
         return None if self.attributes is None else self.attributes.context_output_skill
 
@@ -184,6 +203,9 @@ class ContextRepository(Context):
         context_artifacts: Optional[List[ContextArtifact]] = Field(
             default=None, description=""
         )  # relationship
+        context_output_agents: Optional[List[Agent]] = Field(
+            default=None, description=""
+        )  # relationship
         context_output_skill: Optional[Skill] = Field(
             default=None, description=""
         )  # relationship
@@ -207,6 +229,7 @@ class ContextRepository(Context):
     )
 
 
+from .agent import Agent  # noqa: E402, F401
 from .asset import Asset  # noqa: E402, F401
 from .context_artifact import ContextArtifact  # noqa: E402, F401
 from .skill import Skill  # noqa: E402, F401
