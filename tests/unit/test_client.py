@@ -39,6 +39,7 @@ from pyatlan.model.assets import (
     Column,
     DataDomain,
     DataProduct,
+    KnowledgeFile,
     Table,
     View,
 )
@@ -3165,3 +3166,100 @@ def test_set_dq_row_scope_filter_column(mock_api_caller):
 
         mock_save.assert_called_once()
         assert result == mock_response
+
+
+@pytest.mark.parametrize(
+    "guid, qualified_name, expected_message",
+    [
+        (
+            None,
+            None,
+            "ATLAN-PYTHON-400-043 Either qualified_name or guid should be provided.",
+        ),
+        (
+            "123",
+            "default/abc",
+            "ATLAN-PYTHON-400-042 Only qualified_name or guid should be provided but not both.",
+        ),
+    ],
+)
+def test_append_knowledge_files_invalid_parameters_raises_error(
+    guid, qualified_name, expected_message
+):
+    client = AtlanClient()
+    with pytest.raises(InvalidRequestError, match=expected_message):
+        client.asset.append_knowledge_files(
+            asset_type=Table,
+            files=[KnowledgeFile.ref_by_guid("kf-1")],
+            guid=guid,
+            qualified_name=qualified_name,
+        )
+
+
+@patch("pyatlan.model.fluent_search.FluentSearch.execute")
+def test_append_knowledge_files_asset_not_found(mock_execute):
+    mock_execute.return_value.current_page = lambda: []
+    client = AtlanClient()
+    with pytest.raises(
+        NotFoundError,
+        match="ATLAN-PYTHON-404-001 Asset with GUID missing does not exist.",
+    ):
+        client.asset.append_knowledge_files(
+            asset_type=Table, files=[KnowledgeFile.ref_by_guid("kf-1")], guid="missing"
+        )
+
+
+@pytest.mark.parametrize(
+    "method, semantic",
+    [
+        ("append_knowledge_files", SaveSemantic.APPEND),
+        ("replace_knowledge_files", SaveSemantic.REPLACE),
+        ("remove_knowledge_files", SaveSemantic.REMOVE),
+    ],
+)
+def test_manage_knowledge_files_saves_refs_with_semantic(method, semantic):
+    table = Table()
+    table.name = "table-test"
+    table.qualified_name = "table_qn"
+    files = [
+        KnowledgeFile.ref_by_guid("kf-1"),
+        KnowledgeFile.ref_by_qualified_name("kf/2"),
+    ]
+
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+            mock_execute.return_value.current_page = lambda: [table]
+            mock_save.return_value.assets_updated.return_value = [table]
+
+            client = AtlanClient()
+            asset = getattr(client.asset, method)(
+                asset_type=Table, files=files, qualified_name="table_qn"
+            )
+
+    assert asset == table
+    mock_execute.assert_called_once()
+    saved = mock_save.call_args.kwargs["entity"]
+    assert saved.qualified_name == "table_qn" and saved.name == "table-test"
+    refs = saved.knowledge_linked_files
+    assert [r.guid for r in refs] == ["kf-1", None]
+    assert refs[1].unique_attributes == {"qualifiedName": "kf/2"}
+    assert all(r.semantic == semantic for r in refs)
+
+
+def test_replace_knowledge_files_with_empty_list_clears_links():
+    table = Table()
+    table.name = "table-test"
+    table.qualified_name = "table_qn"
+
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+            mock_execute.return_value.current_page = lambda: [table]
+            mock_save.return_value.assets_updated.return_value = []
+
+            client = AtlanClient()
+            asset = client.asset.replace_knowledge_files(
+                asset_type=Table, files=[], guid="123"
+            )
+
+    assert asset.knowledge_linked_files == []
+    assert asset.qualified_name == "table_qn"

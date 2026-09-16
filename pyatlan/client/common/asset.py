@@ -22,6 +22,7 @@ from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
+    KnowledgeFile,
     Persona,
     Purpose,
     Referenceable,
@@ -1617,6 +1618,35 @@ class ManageTerms:
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
         return updated_asset
+
+
+class ManageKnowledgeFiles(ManageTerms):
+    """Shared logic for linking knowledge files; asset lookup comes from ManageTerms."""
+
+    @staticmethod
+    def process_files_with_semantic(
+        files: List[KnowledgeFile], semantic: SaveSemantic
+    ) -> List[KnowledgeFile]:
+        """
+        Convert knowledge files to references carrying the save semantic.
+
+        :param files: knowledge files to link, each identified by guid or qualified_name
+        :param semantic: save semantic to apply
+        :returns: list of KnowledgeFile references
+        """
+        processed = []
+        for file in files:
+            if file.guid:
+                processed.append(
+                    KnowledgeFile.ref_by_guid(guid=file.guid, semantic=semantic)
+                )
+            elif file.qualified_name:
+                processed.append(
+                    KnowledgeFile.ref_by_qualified_name(
+                        qualified_name=file.qualified_name, semantic=semantic
+                    )
+                )
+        return processed
 
 
 class SearchForAssetWithName:

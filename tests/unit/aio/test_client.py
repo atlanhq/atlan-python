@@ -37,6 +37,7 @@ from pyatlan.model.assets import (
     Column,
     DataDomain,
     DataProduct,
+    KnowledgeFile,
     Table,
     View,
 )
@@ -3125,3 +3126,54 @@ async def test_get_by_qualified_name_asset_not_found(mock_async_api_caller):
             )
 
         mock_aexecute.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_append_knowledge_files_invalid_parameters_raises_error():
+    client = AsyncAtlanClient()
+    with pytest.raises(
+        InvalidRequestError,
+        match="ATLAN-PYTHON-400-043 Either qualified_name or guid should be provided.",
+    ):
+        await client.asset.append_knowledge_files(
+            asset_type=Table, files=[KnowledgeFile.ref_by_guid("kf-1")]
+        )
+
+
+@pytest.mark.parametrize(
+    "method, semantic",
+    [
+        ("append_knowledge_files", SaveSemantic.APPEND),
+        ("replace_knowledge_files", SaveSemantic.REPLACE),
+        ("remove_knowledge_files", SaveSemantic.REMOVE),
+    ],
+)
+@pytest.mark.asyncio
+async def test_manage_knowledge_files_saves_refs_with_semantic(method, semantic):
+    table = Table()
+    table.name = "table-test"
+    table.qualified_name = "table_qn"
+    files = [KnowledgeFile.ref_by_guid("kf-1")]
+
+    with patch(
+        "pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+    ) as mock_aexecute:
+        with patch(
+            "pyatlan.client.aio.asset.AsyncAssetClient.save", new_callable=AsyncMock
+        ) as mock_save:
+            mock_results = AsyncMock()
+            mock_results.current_page = Mock(return_value=[table])
+            mock_aexecute.return_value = mock_results
+            mock_save.return_value = Mock(assets_updated=Mock(return_value=[table]))
+
+            client = AsyncAtlanClient()
+            asset = await getattr(client.asset, method)(
+                asset_type=Table, files=files, guid="123"
+            )
+
+    assert asset == table
+    mock_aexecute.assert_called_once()
+    saved = mock_save.call_args.kwargs["entity"]
+    assert saved.qualified_name == "table_qn"
+    assert [r.guid for r in saved.knowledge_linked_files] == ["kf-1"]
+    assert saved.knowledge_linked_files[0].semantic == semantic
