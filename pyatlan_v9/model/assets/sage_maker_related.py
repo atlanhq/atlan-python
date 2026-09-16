@@ -43,7 +43,8 @@ class RelatedSageMaker(RelatedAI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMaker"
+        if self.type_name is UNSET:
+            self.type_name = "SageMaker"
 
 
 class RelatedSageMakerFeatureGroup(RelatedSageMaker):
@@ -73,7 +74,8 @@ class RelatedSageMakerFeatureGroup(RelatedSageMaker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerFeatureGroup"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerFeatureGroup"
 
 
 class RelatedSageMakerFeature(RelatedSageMaker):
@@ -100,7 +102,8 @@ class RelatedSageMakerFeature(RelatedSageMaker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerFeature"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerFeature"
 
 
 class RelatedSageMakerModel(RelatedSageMaker):
@@ -133,7 +136,8 @@ class RelatedSageMakerModel(RelatedSageMaker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerModel"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerModel"
 
 
 class RelatedSageMakerModelGroup(RelatedSageMaker):
@@ -151,7 +155,8 @@ class RelatedSageMakerModelGroup(RelatedSageMaker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerModelGroup"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerModelGroup"
 
 
 class RelatedSageMakerModelDeployment(RelatedSageMaker):
@@ -178,4 +183,5 @@ class RelatedSageMakerModelDeployment(RelatedSageMaker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SageMakerModelDeployment"
+        if self.type_name is UNSET:
+            self.type_name = "SageMakerModelDeployment"

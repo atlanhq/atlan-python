@@ -53,7 +53,8 @@ class RelatedTableau(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Tableau"
+        if self.type_name is UNSET:
+            self.type_name = "Tableau"
 
 
 class RelatedTableauCalculatedField(RelatedTableau):
@@ -101,7 +102,8 @@ class RelatedTableauCalculatedField(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauCalculatedField"
+        if self.type_name is UNSET:
+            self.type_name = "TableauCalculatedField"
 
 
 class RelatedTableauDashboard(RelatedTableau):
@@ -131,7 +133,8 @@ class RelatedTableauDashboard(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauDashboard"
+        if self.type_name is UNSET:
+            self.type_name = "TableauDashboard"
 
 
 class RelatedTableauDashboardField(RelatedTableau):
@@ -195,7 +198,8 @@ class RelatedTableauDashboardField(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauDashboardField"
+        if self.type_name is UNSET:
+            self.type_name = "TableauDashboardField"
 
 
 class RelatedTableauDatasource(RelatedTableau):
@@ -249,7 +253,8 @@ class RelatedTableauDatasource(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauDatasource"
+        if self.type_name is UNSET:
+            self.type_name = "TableauDatasource"
 
 
 class RelatedTableauDatasourceField(RelatedTableau):
@@ -312,7 +317,8 @@ class RelatedTableauDatasourceField(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauDatasourceField"
+        if self.type_name is UNSET:
+            self.type_name = "TableauDatasourceField"
 
 
 class RelatedTableauFlow(RelatedTableau):
@@ -348,7 +354,8 @@ class RelatedTableauFlow(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauFlow"
+        if self.type_name is UNSET:
+            self.type_name = "TableauFlow"
 
 
 class RelatedTableauMetric(RelatedTableau):
@@ -375,7 +382,8 @@ class RelatedTableauMetric(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauMetric"
+        if self.type_name is UNSET:
+            self.type_name = "TableauMetric"
 
 
 class RelatedTableauProject(RelatedTableau):
@@ -402,7 +410,8 @@ class RelatedTableauProject(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauProject"
+        if self.type_name is UNSET:
+            self.type_name = "TableauProject"
 
 
 class RelatedTableauSite(RelatedTableau):
@@ -417,7 +426,8 @@ class RelatedTableauSite(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauSite"
+        if self.type_name is UNSET:
+            self.type_name = "TableauSite"
 
 
 class RelatedTableauWorkbook(RelatedTableau):
@@ -447,7 +457,8 @@ class RelatedTableauWorkbook(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauWorkbook"
+        if self.type_name is UNSET:
+            self.type_name = "TableauWorkbook"
 
 
 class RelatedTableauWorksheet(RelatedTableau):
@@ -477,7 +488,8 @@ class RelatedTableauWorksheet(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauWorksheet"
+        if self.type_name is UNSET:
+            self.type_name = "TableauWorksheet"
 
 
 class RelatedTableauWorksheetField(RelatedTableau):
@@ -546,4 +558,5 @@ class RelatedTableauWorksheetField(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TableauWorksheetField"
+        if self.type_name is UNSET:
+            self.type_name = "TableauWorksheetField"

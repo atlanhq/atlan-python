@@ -42,7 +42,8 @@ class RelatedDataQuality(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DataQuality"
+        if self.type_name is UNSET:
+            self.type_name = "DataQuality"
 
 
 class RelatedDataQualityRule(RelatedDataQuality):
@@ -143,7 +144,8 @@ class RelatedDataQualityRule(RelatedDataQuality):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DataQualityRule"
+        if self.type_name is UNSET:
+            self.type_name = "DataQualityRule"
 
 
 class RelatedDataQualityRuleTemplate(RelatedDataQuality):
@@ -167,7 +169,8 @@ class RelatedDataQualityRuleTemplate(RelatedDataQuality):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DataQualityRuleTemplate"
+        if self.type_name is UNSET:
+            self.type_name = "DataQualityRuleTemplate"
 
 
 class RelatedMetric(RelatedDataQuality):
@@ -196,4 +199,5 @@ class RelatedMetric(RelatedDataQuality):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Metric"
+        if self.type_name is UNSET:
+            self.type_name = "Metric"

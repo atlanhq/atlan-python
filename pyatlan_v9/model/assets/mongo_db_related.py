@@ -38,7 +38,8 @@ class RelatedMongoDB(RelatedNoSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MongoDB"
+        if self.type_name is UNSET:
+            self.type_name = "MongoDB"
 
 
 class RelatedMongoDBDatabase(RelatedMongoDB):
@@ -58,7 +59,8 @@ class RelatedMongoDBDatabase(RelatedMongoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MongoDBDatabase"
+        if self.type_name is UNSET:
+            self.type_name = "MongoDBDatabase"
 
 
 class RelatedMongoDBCollection(RelatedMongoDB):
@@ -133,4 +135,5 @@ class RelatedMongoDBCollection(RelatedMongoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MongoDBCollection"
+        if self.type_name is UNSET:
+            self.type_name = "MongoDBCollection"

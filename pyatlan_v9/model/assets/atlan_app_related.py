@@ -49,7 +49,8 @@ class RelatedAtlanApp(RelatedApp):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AtlanApp"
+        if self.type_name is UNSET:
+            self.type_name = "AtlanApp"
 
 
 class RelatedAtlanAppInstalled(RelatedAtlanApp):
@@ -78,7 +79,8 @@ class RelatedAtlanAppInstalled(RelatedAtlanApp):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AtlanAppInstalled"
+        if self.type_name is UNSET:
+            self.type_name = "AtlanAppInstalled"
 
 
 class RelatedAtlanAppDeployment(RelatedAtlanApp):
@@ -113,7 +115,8 @@ class RelatedAtlanAppDeployment(RelatedAtlanApp):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AtlanAppDeployment"
+        if self.type_name is UNSET:
+            self.type_name = "AtlanAppDeployment"
 
 
 class RelatedAtlanAppTool(RelatedAtlanApp):
@@ -140,7 +143,8 @@ class RelatedAtlanAppTool(RelatedAtlanApp):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AtlanAppTool"
+        if self.type_name is UNSET:
+            self.type_name = "AtlanAppTool"
 
 
 class RelatedAtlanAppWorkflow(RelatedAtlanApp):
@@ -188,4 +192,5 @@ class RelatedAtlanAppWorkflow(RelatedAtlanApp):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AtlanAppWorkflow"
+        if self.type_name is UNSET:
+            self.type_name = "AtlanAppWorkflow"

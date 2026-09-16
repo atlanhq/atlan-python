@@ -47,4 +47,5 @@ class RelatedDataContract(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DataContract"
+        if self.type_name is UNSET:
+            self.type_name = "DataContract"

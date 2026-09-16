@@ -11,6 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from msgspec import UNSET
 
 from .catalog_related import RelatedCatalog
 from .referenceable_related import RelatedReferenceable
@@ -34,7 +35,8 @@ class RelatedAssetGrouping(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AssetGrouping"
+        if self.type_name is UNSET:
+            self.type_name = "AssetGrouping"
 
 
 class RelatedAssetGroupingStrategy(RelatedAssetGrouping):
@@ -49,7 +51,8 @@ class RelatedAssetGroupingStrategy(RelatedAssetGrouping):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AssetGroupingStrategy"
+        if self.type_name is UNSET:
+            self.type_name = "AssetGroupingStrategy"
 
 
 class RelatedAssetGroupingCollection(RelatedAssetGrouping):
@@ -64,4 +67,5 @@ class RelatedAssetGroupingCollection(RelatedAssetGrouping):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AssetGroupingCollection"
+        if self.type_name is UNSET:
+            self.type_name = "AssetGroupingCollection"

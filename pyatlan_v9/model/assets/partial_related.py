@@ -55,7 +55,8 @@ class RelatedPartial(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Partial"
+        if self.type_name is UNSET:
+            self.type_name = "Partial"
 
 
 class RelatedPartialObject(RelatedPartial):
@@ -70,7 +71,8 @@ class RelatedPartialObject(RelatedPartial):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PartialObject"
+        if self.type_name is UNSET:
+            self.type_name = "PartialObject"
 
 
 class RelatedPartialField(RelatedPartial):
@@ -88,4 +90,5 @@ class RelatedPartialField(RelatedPartial):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "PartialField"
+        if self.type_name is UNSET:
+            self.type_name = "PartialField"

@@ -40,7 +40,8 @@ class RelatedContext(RelatedAgentic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Context"
+        if self.type_name is UNSET:
+            self.type_name = "Context"
 
 
 class RelatedContextRepository(RelatedContext):
@@ -66,7 +67,8 @@ class RelatedContextRepository(RelatedContext):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ContextRepository"
+        if self.type_name is UNSET:
+            self.type_name = "ContextRepository"
 
 
 class RelatedContextArtifact(RelatedContext):
@@ -81,4 +83,5 @@ class RelatedContextArtifact(RelatedContext):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ContextArtifact"
+        if self.type_name is UNSET:
+            self.type_name = "ContextArtifact"

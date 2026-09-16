@@ -36,7 +36,8 @@ class RelatedGCPDataplex(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "GCPDataplex"
+        if self.type_name is UNSET:
+            self.type_name = "GCPDataplex"
 
 
 class RelatedGCPDataplexAspectType(RelatedGCPDataplex):
@@ -66,4 +67,5 @@ class RelatedGCPDataplexAspectType(RelatedGCPDataplex):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "GCPDataplexAspectType"
+        if self.type_name is UNSET:
+            self.type_name = "GCPDataplexAspectType"

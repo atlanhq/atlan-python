@@ -67,7 +67,8 @@ class RelatedQlik(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Qlik"
+        if self.type_name is UNSET:
+            self.type_name = "Qlik"
 
 
 class RelatedQlikChart(RelatedQlik):
@@ -94,7 +95,8 @@ class RelatedQlikChart(RelatedQlik):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QlikChart"
+        if self.type_name is UNSET:
+            self.type_name = "QlikChart"
 
 
 class RelatedQlikSheet(RelatedQlik):
@@ -112,7 +114,8 @@ class RelatedQlikSheet(RelatedQlik):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QlikSheet"
+        if self.type_name is UNSET:
+            self.type_name = "QlikSheet"
 
 
 class RelatedQlikSpace(RelatedQlik):
@@ -130,7 +133,8 @@ class RelatedQlikSpace(RelatedQlik):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QlikSpace"
+        if self.type_name is UNSET:
+            self.type_name = "QlikSpace"
 
 
 class RelatedQlikStream(RelatedQlik):
@@ -145,7 +149,8 @@ class RelatedQlikStream(RelatedQlik):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QlikStream"
+        if self.type_name is UNSET:
+            self.type_name = "QlikStream"
 
 
 class RelatedQlikApp(RelatedQlik):
@@ -175,7 +180,8 @@ class RelatedQlikApp(RelatedQlik):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QlikApp"
+        if self.type_name is UNSET:
+            self.type_name = "QlikApp"
 
 
 class RelatedQlikDataset(RelatedQlik):
@@ -205,7 +211,8 @@ class RelatedQlikDataset(RelatedQlik):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QlikDataset"
+        if self.type_name is UNSET:
+            self.type_name = "QlikDataset"
 
 
 class RelatedQlikColumn(RelatedQlik):
@@ -232,4 +239,5 @@ class RelatedQlikColumn(RelatedQlik):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QlikColumn"
+        if self.type_name is UNSET:
+            self.type_name = "QlikColumn"

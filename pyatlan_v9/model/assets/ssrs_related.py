@@ -78,7 +78,8 @@ class RelatedSSRS(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SSRS"
+        if self.type_name is UNSET:
+            self.type_name = "SSRS"
 
 
 class RelatedSSRSFolder(RelatedSSRS):
@@ -93,7 +94,8 @@ class RelatedSSRSFolder(RelatedSSRS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SSRSFolder"
+        if self.type_name is UNSET:
+            self.type_name = "SSRSFolder"
 
 
 class RelatedSSRSReport(RelatedSSRS):
@@ -120,7 +122,8 @@ class RelatedSSRSReport(RelatedSSRS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SSRSReport"
+        if self.type_name is UNSET:
+            self.type_name = "SSRSReport"
 
 
 class RelatedSSRSDataSet(RelatedSSRS):
@@ -177,7 +180,8 @@ class RelatedSSRSDataSet(RelatedSSRS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SSRSDataSet"
+        if self.type_name is UNSET:
+            self.type_name = "SSRSDataSet"
 
 
 class RelatedSSRSField(RelatedSSRS):
@@ -228,4 +232,5 @@ class RelatedSSRSField(RelatedSSRS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SSRSField"
+        if self.type_name is UNSET:
+            self.type_name = "SSRSField"
