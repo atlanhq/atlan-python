@@ -1,3 +1,24 @@
+## 11.2.0 (September 16, 2026)
+
+### New Features
+
+- **Latest asset models (pydantic + `pyatlan_v9`)**: Both the pydantic (`pyatlan.model.assets`) and experimental `pyatlan_v9` (msgspec) asset models are regenerated from the latest Atlan typedefs. Adds the newest asset types — including `DatabricksGenieAgent` — and the latest attributes across connectors, and promotes `KnowledgeFile` / `KnowledgeFolder` (with their `Knowledge` base) into the core asset set.
+
+### Breaking Changes
+
+- **Removed platform-deprecated asset types**: Dropped types that no longer exist in the Atlan typedefs — the `Coalesce` / `V1Coalesce` family, the Snowflake V1 Cortex types (`SnowflakeV1CortexAgent` and related), `KafkaPartition`, and `SigmaDataModelElement` — along with their relationship attributes. Code importing these classes directly will need to be updated.
+
+### Experimental: pyatlan_v9
+
+- **Related decode preserves the wire typeName (AICHAT-1883)**: `Related{Type}.__post_init__` no longer overwrites the `typeName` decoded from the wire with the class default. A relationship that arrives as a concrete subtype (e.g. `SigmaDataElementField` decoded into a broader `RelatedSigma` field) now keeps its real type instead of collapsing to the parent's default.
+- **Lifecycle methods on regenerated assets**: The regenerated `pyatlan_v9` assets emit the per-asset `validate()` / `minimize()` / `relate()` lifecycle methods.
+- **Lineage fields preserved in nested conversion (BLDX-711)**: Restored copying of `depth` / `immediate_upstream` / `immediate_downstream` through the nested `_from_nested` conversion, so lineage-API fields survive round-tripping.
+- **`typeName` always serializes (BLDX-710)**: Dropped the redundant per-class `type_name` field default. Because the msgspec structs use `omit_defaults=True`, a value equal to its own class default was being omitted from the wire; `type_name` is now declared once (as `UNSET`) so `typeName` always serializes.
+
+### QOL Improvements
+
+- **CI**: Removed the automated Claude Code PR-review workflow.
+
 ## 11.1.0 (September 10, 2026)
 
 ### Bug Fixes
