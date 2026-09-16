@@ -1,9 +1,5 @@
 # SAP
 
-## SAP
-
-::: pyatlan.model.assets.s_a_p.SAP
-
 ## SapErpTable
 
 ::: pyatlan.model.assets.sap_erp_table.SapErpTable

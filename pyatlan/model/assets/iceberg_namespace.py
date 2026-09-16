@@ -290,12 +290,6 @@ class IcebergNamespace(Iceberg):
     """
     TBC
     """
-    SNOWFLAKE_SNOWFLAKE_CORTEX_SEARCH_SERVICES: ClassVar[RelationField] = RelationField(
-        "snowflakeSnowflakeCortexSearchServices"
-    )
-    """
-    TBC
-    """
     SQL_DATABASES: ClassVar[RelationField] = RelationField("sqlDatabases")
     """
     TBC
@@ -314,12 +308,6 @@ class IcebergNamespace(Iceberg):
     """
     ICEBERG_PARENT_NAMESPACE: ClassVar[RelationField] = RelationField(
         "icebergParentNamespace"
-    )
-    """
-    TBC
-    """
-    SNOWFLAKE_SNOWFLAKE_CORTEX_AGENTS: ClassVar[RelationField] = RelationField(
-        "snowflakeSnowflakeCortexAgents"
     )
     """
     TBC
@@ -429,13 +417,11 @@ class IcebergNamespace(Iceberg):
         "databricks_a_i_model_contexts",
         "functions",
         "sap_datasphere_replication_flows",
-        "snowflake_snowflake_cortex_search_services",
         "sql_databases",
         "tables",
         "bigquery_routines",
         "materialised_views",
         "iceberg_parent_namespace",
-        "snowflake_snowflake_cortex_agents",
         "snowflake_pipes",
         "snowflake_streams",
         "calculation_views",
@@ -1019,29 +1005,6 @@ class IcebergNamespace(Iceberg):
         )
 
     @property
-    def snowflake_snowflake_cortex_search_services(
-        self,
-    ) -> Optional[List[SnowflakeV1CortexSearchService]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_snowflake_cortex_search_services
-        )
-
-    @snowflake_snowflake_cortex_search_services.setter
-    def snowflake_snowflake_cortex_search_services(
-        self,
-        snowflake_snowflake_cortex_search_services: Optional[
-            List[SnowflakeV1CortexSearchService]
-        ],
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_snowflake_cortex_search_services = (
-            snowflake_snowflake_cortex_search_services
-        )
-
-    @property
     def sql_databases(self) -> Optional[List[Database]]:
         return None if self.attributes is None else self.attributes.sql_databases
 
@@ -1096,26 +1059,6 @@ class IcebergNamespace(Iceberg):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.iceberg_parent_namespace = iceberg_parent_namespace
-
-    @property
-    def snowflake_snowflake_cortex_agents(
-        self,
-    ) -> Optional[List[SnowflakeV1CortexAgent]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_snowflake_cortex_agents
-        )
-
-    @snowflake_snowflake_cortex_agents.setter
-    def snowflake_snowflake_cortex_agents(
-        self, snowflake_snowflake_cortex_agents: Optional[List[SnowflakeV1CortexAgent]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_snowflake_cortex_agents = (
-            snowflake_snowflake_cortex_agents
-        )
 
     @property
     def snowflake_pipes(self) -> Optional[List[SnowflakePipe]]:
@@ -1347,9 +1290,6 @@ class IcebergNamespace(Iceberg):
         sap_datasphere_replication_flows: Optional[
             List[SapDatasphereReplicationFlow]
         ] = Field(default=None, description="")  # relationship
-        snowflake_snowflake_cortex_search_services: Optional[
-            List[SnowflakeV1CortexSearchService]
-        ] = Field(default=None, description="")  # relationship
         sql_databases: Optional[List[Database]] = Field(
             default=None, description=""
         )  # relationship
@@ -1364,9 +1304,6 @@ class IcebergNamespace(Iceberg):
         )  # relationship
         iceberg_parent_namespace: Optional[IcebergNamespace] = Field(
             default=None, description=""
-        )  # relationship
-        snowflake_snowflake_cortex_agents: Optional[List[SnowflakeV1CortexAgent]] = (
-            Field(default=None, description="")
         )  # relationship
         snowflake_pipes: Optional[List[SnowflakePipe]] = Field(
             default=None, description=""
@@ -1421,29 +1358,19 @@ class IcebergNamespace(Iceberg):
 from .core.bigquery_routine import BigqueryRoutine  # noqa: E402, F401
 from .core.calculation_view import CalculationView  # noqa: E402, F401
 from .core.database import Database  # noqa: E402, F401
-from .core.databricks_a_i_model_context import (
-    DatabricksAIModelContext,  # noqa: E402, F401
-)
+from .core.databricks_a_i_model_context import DatabricksAIModelContext  # noqa: E402, F401
 from .core.databricks_volume import DatabricksVolume  # noqa: E402, F401
 from .core.function import Function  # noqa: E402, F401
 from .core.materialised_view import MaterialisedView  # noqa: E402, F401
 from .core.procedure import Procedure  # noqa: E402, F401
-from .core.sap_datasphere_replication_flow import (
-    SapDatasphereReplicationFlow,  # noqa: E402, F401
-)
-from .core.snowflake_a_i_model_context import (
-    SnowflakeAIModelContext,  # noqa: E402, F401
-)
+from .core.sap_datasphere_replication_flow import SapDatasphereReplicationFlow  # noqa: E402, F401
+from .core.snowflake_a_i_model_context import SnowflakeAIModelContext  # noqa: E402, F401
 from .core.snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
 from .core.snowflake_pipe import SnowflakePipe  # noqa: E402, F401
 from .core.snowflake_semantic_view import SnowflakeSemanticView  # noqa: E402, F401
 from .core.snowflake_stage import SnowflakeStage  # noqa: E402, F401
 from .core.snowflake_stream import SnowflakeStream  # noqa: E402, F401
 from .core.snowflake_tag import SnowflakeTag  # noqa: E402, F401
-from .core.snowflake_v1_cortex_agent import SnowflakeV1CortexAgent  # noqa: E402, F401
-from .core.snowflake_v1_cortex_search_service import (
-    SnowflakeV1CortexSearchService,  # noqa: E402, F401
-)
 from .core.table import Table  # noqa: E402, F401
 from .core.view import View  # noqa: E402, F401
 

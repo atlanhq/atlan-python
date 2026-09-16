@@ -1570,11 +1570,7 @@ class DynamoDBTable(Table):
 
 
 from .dynamo_d_b_attribute import DynamoDBAttribute  # noqa: E402, F401
-from .dynamo_d_b_global_secondary_index import (
-    DynamoDBGlobalSecondaryIndex,  # noqa: E402, F401
-)
-from .dynamo_d_b_local_secondary_index import (
-    DynamoDBLocalSecondaryIndex,  # noqa: E402, F401
-)
+from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex  # noqa: E402, F401
+from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex  # noqa: E402, F401
 
 DynamoDBTable.Attributes.update_forward_refs()

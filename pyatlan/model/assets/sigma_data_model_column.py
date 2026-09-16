@@ -61,12 +61,6 @@ class SigmaDataModelColumn(Sigma):
     Data type of this column as reported by Sigma (vocabulary: datetime, integer, number, text, variant). Flattened by the connector from the API's nested type.type field.
     """  # noqa: E501
 
-    SIGMA_DATA_MODEL_ELEMENT: ClassVar[RelationField] = RelationField(
-        "sigmaDataModelElement"
-    )
-    """
-    TBC
-    """
     SIGMA_DATA_MODEL: ClassVar[RelationField] = RelationField("sigmaDataModel")
     """
     TBC
@@ -77,7 +71,6 @@ class SigmaDataModelColumn(Sigma):
         "sigma_data_model_name",
         "sigma_data_model_column_formula",
         "sigma_data_model_column_data_type",
-        "sigma_data_model_element",
         "sigma_data_model",
     ]
 
@@ -148,22 +141,6 @@ class SigmaDataModelColumn(Sigma):
         )
 
     @property
-    def sigma_data_model_element(self) -> Optional[SigmaDataModelElement]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_data_model_element
-        )
-
-    @sigma_data_model_element.setter
-    def sigma_data_model_element(
-        self, sigma_data_model_element: Optional[SigmaDataModelElement]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_model_element = sigma_data_model_element
-
-    @property
     def sigma_data_model(self) -> Optional[SigmaDataModel]:
         return None if self.attributes is None else self.attributes.sigma_data_model
 
@@ -184,9 +161,6 @@ class SigmaDataModelColumn(Sigma):
         sigma_data_model_column_data_type: Optional[str] = Field(
             default=None, description=""
         )
-        sigma_data_model_element: Optional[SigmaDataModelElement] = Field(
-            default=None, description=""
-        )  # relationship
         sigma_data_model: Optional[SigmaDataModel] = Field(
             default=None, description=""
         )  # relationship
@@ -202,6 +176,5 @@ class SigmaDataModelColumn(Sigma):
 
 
 from .sigma_data_model import SigmaDataModel  # noqa: E402, F401
-from .sigma_data_model_element import SigmaDataModelElement  # noqa: E402, F401
 
 SigmaDataModelColumn.Attributes.update_forward_refs()

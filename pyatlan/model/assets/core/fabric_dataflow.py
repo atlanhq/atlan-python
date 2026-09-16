@@ -91,7 +91,5 @@ class FabricDataflow(Fabric):
     )
 
 
-from .fabric_dataflow_entity_column import (
-    FabricDataflowEntityColumn,  # noqa: E402, F401
-)
+from .fabric_dataflow_entity_column import FabricDataflowEntityColumn  # noqa: E402, F401
 from .fabric_workspace import FabricWorkspace  # noqa: E402, F401

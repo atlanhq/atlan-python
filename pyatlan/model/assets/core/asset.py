@@ -1511,6 +1511,12 @@ class Asset(Referenceable):
     """
     TBC
     """
+    KNOWLEDGE_LINKED_FILES: ClassVar[RelationField] = RelationField(
+        "knowledgeLinkedFiles"
+    )
+    """
+    TBC
+    """
     APPLICATION_FIELD: ClassVar[RelationField] = RelationField("applicationField")
     """
     TBC
@@ -1770,6 +1776,7 @@ class Asset(Referenceable):
         "user_def_relationship_from",
         "readme",
         "dq_reference_dataset_rules",
+        "knowledge_linked_files",
         "application_field",
         "data_contract_latest",
         "assigned_terms",
@@ -4754,6 +4761,20 @@ class Asset(Referenceable):
         self.attributes.dq_reference_dataset_rules = dq_reference_dataset_rules
 
     @property
+    def knowledge_linked_files(self) -> Optional[List[KnowledgeFile]]:
+        return (
+            None if self.attributes is None else self.attributes.knowledge_linked_files
+        )
+
+    @knowledge_linked_files.setter
+    def knowledge_linked_files(
+        self, knowledge_linked_files: Optional[List[KnowledgeFile]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.knowledge_linked_files = knowledge_linked_files
+
+    @property
     def application_field(self) -> Optional[ApplicationField]:
         return None if self.attributes is None else self.attributes.application_field
 
@@ -5313,6 +5334,9 @@ class Asset(Referenceable):
         dq_reference_dataset_rules: Optional[List[DataQualityRule]] = Field(
             default=None, description=""
         )  # relationship
+        knowledge_linked_files: Optional[List[KnowledgeFile]] = Field(
+            default=None, description=""
+        )  # relationship
         application_field: Optional[ApplicationField] = Field(
             default=None, description=""
         )  # relationship
@@ -5389,6 +5413,7 @@ from .data_product import DataProduct  # noqa: E402, F401
 from .data_quality_rule import DataQualityRule  # noqa: E402, F401
 from .file import File  # noqa: E402, F401
 from .g_c_p_dataplex_aspect_type import GCPDataplexAspectType  # noqa: E402, F401
+from .knowledge_file import KnowledgeFile  # noqa: E402, F401
 from .link import Link  # noqa: E402, F401
 from .m_c_incident import MCIncident  # noqa: E402, F401
 from .m_c_monitor import MCMonitor  # noqa: E402, F401

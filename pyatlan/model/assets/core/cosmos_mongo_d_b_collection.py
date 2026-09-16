@@ -518,12 +518,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     TBC
     """
-    SNOWFLAKE_TARGET_TABLE: ClassVar[RelationField] = RelationField(
-        "snowflakeTargetTable"
-    )
-    """
-    TBC
-    """
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[RelationField] = RelationField(
         "sqlInsightOutgoingJoins"
     )
@@ -669,7 +663,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "partitions",
         "sql_insight_business_questions",
         "dbt_models",
-        "snowflake_target_table",
         "sql_insight_outgoing_joins",
         "cosmos_mongo_d_b_functions",
         "mongo_d_b_database",
@@ -1770,20 +1763,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.dbt_models = dbt_models
 
     @property
-    def snowflake_target_table(self) -> Optional[SnowflakeV1CortexSearchService]:
-        return (
-            None if self.attributes is None else self.attributes.snowflake_target_table
-        )
-
-    @snowflake_target_table.setter
-    def snowflake_target_table(
-        self, snowflake_target_table: Optional[SnowflakeV1CortexSearchService]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_target_table = snowflake_target_table
-
-    @property
     def sql_insight_outgoing_joins(self) -> Optional[List[SqlInsightJoin]]:
         return (
             None
@@ -2098,9 +2077,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_target_table: Optional[SnowflakeV1CortexSearchService] = Field(
-            default=None, description=""
-        )  # relationship
         sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]] = Field(
             default=None, description=""
         )  # relationship
@@ -2162,15 +2138,8 @@ from .mongo_d_b_database import MongoDBDatabase  # noqa: E402, F401
 from .procedure import Procedure  # noqa: E402, F401
 from .query import Query  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401
-from .snowflake_semantic_logical_table import (
-    SnowflakeSemanticLogicalTable,  # noqa: E402, F401
-)
-from .snowflake_v1_cortex_search_service import (
-    SnowflakeV1CortexSearchService,  # noqa: E402, F401
-)
-from .sql_insight_business_question import (
-    SqlInsightBusinessQuestion,  # noqa: E402, F401
-)
+from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable  # noqa: E402, F401
+from .sql_insight_business_question import SqlInsightBusinessQuestion  # noqa: E402, F401
 from .sql_insight_join import SqlInsightJoin  # noqa: E402, F401
 from .table import Table  # noqa: E402, F401
 from .table_partition import TablePartition  # noqa: E402, F401

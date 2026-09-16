@@ -9,7 +9,7 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AIDatasetType
+from pyatlan.model.enums import AIDatasetType, ProcessLineageDerivation
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -201,6 +201,12 @@ class DbtColumnProcess(ColumnProcess):
     """
     Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified.
     """  # noqa: E501
+    PROCESS_DERIVATION: ClassVar[KeywordField] = KeywordField(
+        "processDerivation", "processDerivation"
+    )
+    """
+    How this lineage process was derived — statically from an asset definition, or from an operational data-processing run.
+    """  # noqa: E501
 
     FLOW_ORCHESTRATED_BY: ClassVar[RelationField] = RelationField("flowOrchestratedBy")
     """
@@ -286,6 +292,7 @@ class DbtColumnProcess(ColumnProcess):
         "additional_etl_context",
         "ai_dataset_type",
         "is_pass_through",
+        "process_derivation",
         "flow_orchestrated_by",
         "sql_procedures",
         "fabric_activities",
@@ -640,6 +647,18 @@ class DbtColumnProcess(ColumnProcess):
         self.attributes.is_pass_through = is_pass_through
 
     @property
+    def process_derivation(self) -> Optional[ProcessLineageDerivation]:
+        return None if self.attributes is None else self.attributes.process_derivation
+
+    @process_derivation.setter
+    def process_derivation(
+        self, process_derivation: Optional[ProcessLineageDerivation]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.process_derivation = process_derivation
+
+    @property
     def flow_orchestrated_by(self) -> Optional[FlowControlOperation]:
         return None if self.attributes is None else self.attributes.flow_orchestrated_by
 
@@ -810,6 +829,9 @@ class DbtColumnProcess(ColumnProcess):
         additional_etl_context: Optional[str] = Field(default=None, description="")
         ai_dataset_type: Optional[AIDatasetType] = Field(default=None, description="")
         is_pass_through: Optional[bool] = Field(default=None, description="")
+        process_derivation: Optional[ProcessLineageDerivation] = Field(
+            default=None, description=""
+        )
         flow_orchestrated_by: Optional[FlowControlOperation] = Field(
             default=None, description=""
         )  # relationship

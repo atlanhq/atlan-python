@@ -354,9 +354,7 @@ class PowerBIDataflow(PowerBI):
     )
 
 
-from .power_b_i_dataflow_entity_column import (
-    PowerBIDataflowEntityColumn,  # noqa: E402, F401
-)
+from .power_b_i_dataflow_entity_column import PowerBIDataflowEntityColumn  # noqa: E402, F401
 from .power_b_i_dataset import PowerBIDataset  # noqa: E402, F401
 from .power_b_i_datasource import PowerBIDatasource  # noqa: E402, F401
 from .power_b_i_table import PowerBITable  # noqa: E402, F401

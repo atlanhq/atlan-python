@@ -8,7 +8,12 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    NumericField,
+    RelationField,
+    TextField,
+)
 
 from .sage_maker_unified_studio_asset import SageMakerUnifiedStudioAsset
 
@@ -37,6 +42,12 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
     """
     Number of subscriptions for the published asset.
     """
+    SMUS_PUBLISHED_ASSET_FILTERS: ClassVar[TextField] = TextField(
+        "smusPublishedAssetFilters", "smusPublishedAssetFilters"
+    )
+    """
+    Asset filters configured for the published asset in SageMaker Unified Studio, as a JSON-serialized array. Each entry represents a row-level or column-level access restriction (id, name, description, effectiveRowFilter, effectiveColumnNames).
+    """  # noqa: E501
     SMUS_ASSET_SUMMARY: ClassVar[KeywordField] = KeywordField(
         "smusAssetSummary", "smusAssetSummary"
     )
@@ -123,6 +134,7 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
 
     _convenience_properties: ClassVar[List[str]] = [
         "smus_published_asset_subscriptions_count",
+        "smus_published_asset_filters",
         "smus_asset_summary",
         "smus_asset_technical_name",
         "smus_asset_type",
@@ -156,6 +168,20 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
         self.attributes.smus_published_asset_subscriptions_count = (
             smus_published_asset_subscriptions_count
         )
+
+    @property
+    def smus_published_asset_filters(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.smus_published_asset_filters
+        )
+
+    @smus_published_asset_filters.setter
+    def smus_published_asset_filters(self, smus_published_asset_filters: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.smus_published_asset_filters = smus_published_asset_filters
 
     @property
     def smus_asset_summary(self) -> Optional[str]:
@@ -320,6 +346,9 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
         smus_published_asset_subscriptions_count: Optional[int] = Field(
             default=None, description=""
         )
+        smus_published_asset_filters: Optional[str] = Field(
+            default=None, description=""
+        )
         smus_asset_summary: Optional[str] = Field(default=None, description="")
         smus_asset_technical_name: Optional[str] = Field(default=None, description="")
         smus_asset_type: Optional[str] = Field(default=None, description="")
@@ -351,11 +380,10 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
     )
 
 
-from .sage_maker_unified_studio_project import (
-    SageMakerUnifiedStudioProject,  # noqa: E402, F401
-)
+from .sage_maker_unified_studio_project import SageMakerUnifiedStudioProject  # noqa: E402, F401
 from .sage_maker_unified_studio_subscribed_asset import (
     SageMakerUnifiedStudioSubscribedAsset,
 )  # noqa: E402, F401
+
 
 SageMakerUnifiedStudioPublishedAsset.Attributes.update_forward_refs()

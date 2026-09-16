@@ -47,11 +47,3 @@
 ## DbtEntity
 
 ::: pyatlan.model.assets.dbt_entity.DbtEntity
-
-## DbtColumnProcess
-
-::: pyatlan.model.assets.dbt_column_process.DbtColumnProcess
-
-## DbtProcess
-
-::: pyatlan.model.assets.dbt_process.DbtProcess

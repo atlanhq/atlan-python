@@ -285,12 +285,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     TBC
     """
-    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[RelationField] = RelationField(
-        "snowflakeSemanticLogicalTables"
-    )
-    """
-    TBC
-    """
     COSMOS_MONGO_DB_ACCOUNT: ClassVar[RelationField] = RelationField(
         "cosmosMongoDBAccount"
     )
@@ -311,17 +305,9 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     TBC
     """
-    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
-    """
-    TBC
-    """
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[RelationField] = RelationField(
         "sqlInsightBusinessQuestions"
     )
-    """
-    TBC
-    """
-    SQL_SCHEMAS: ClassVar[RelationField] = RelationField("sqlSchemas")
     """
     TBC
     """
@@ -329,15 +315,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     TBC
     """
-    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
-    """
-    TBC
-    """
     DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
-    """
-    TBC
-    """
-    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
     """
     TBC
     """
@@ -354,6 +332,28 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     COSMOS_MONGO_DB_COLLECTIONS: ClassVar[RelationField] = RelationField(
         "cosmosMongoDBCollections"
     )
+    """
+    TBC
+    """
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[RelationField] = RelationField(
+        "snowflakeSemanticLogicalTables"
+    )
+    """
+    TBC
+    """
+    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
+    SQL_SCHEMAS: ClassVar[RelationField] = RelationField("sqlSchemas")
+    """
+    TBC
+    """
+    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
+    """
+    TBC
+    """
+    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
     """
     TBC
     """
@@ -400,21 +400,21 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         "sql_coalesce_project_name",
         "sql_share_qualified_names",
         "dbt_sources",
-        "snowflake_semantic_logical_tables",
         "cosmos_mongo_d_b_account",
         "fabric_workspace",
         "sql_dbt_models",
         "sql_insight_incoming_joins",
-        "dbt_tests",
         "sql_insight_business_questions",
-        "sql_schemas",
         "mongo_d_b_collections",
-        "sql_dbt_sources",
         "dbt_models",
-        "dbt_seed_assets",
         "sql_insight_outgoing_joins",
         "schemas",
         "cosmos_mongo_d_b_collections",
+        "snowflake_semantic_logical_tables",
+        "dbt_tests",
+        "sql_schemas",
+        "sql_dbt_sources",
+        "dbt_seed_assets",
     ]
 
     @property
@@ -954,29 +954,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         self.attributes.dbt_sources = dbt_sources
 
     @property
-    def snowflake_semantic_logical_tables(
-        self,
-    ) -> Optional[List[SnowflakeSemanticLogicalTable]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_semantic_logical_tables
-        )
-
-    @snowflake_semantic_logical_tables.setter
-    def snowflake_semantic_logical_tables(
-        self,
-        snowflake_semantic_logical_tables: Optional[
-            List[SnowflakeSemanticLogicalTable]
-        ],
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_semantic_logical_tables = (
-            snowflake_semantic_logical_tables
-        )
-
-    @property
     def cosmos_mongo_d_b_account(self) -> Optional[CosmosMongoDBAccount]:
         return (
             None
@@ -1029,16 +1006,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         self.attributes.sql_insight_incoming_joins = sql_insight_incoming_joins
 
     @property
-    def dbt_tests(self) -> Optional[List[DbtTest]]:
-        return None if self.attributes is None else self.attributes.dbt_tests
-
-    @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_tests = dbt_tests
-
-    @property
     def sql_insight_business_questions(
         self,
     ) -> Optional[List[SqlInsightBusinessQuestion]]:
@@ -1057,16 +1024,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         self.attributes.sql_insight_business_questions = sql_insight_business_questions
 
     @property
-    def sql_schemas(self) -> Optional[List[Schema]]:
-        return None if self.attributes is None else self.attributes.sql_schemas
-
-    @sql_schemas.setter
-    def sql_schemas(self, sql_schemas: Optional[List[Schema]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_schemas = sql_schemas
-
-    @property
     def mongo_d_b_collections(self) -> Optional[List[MongoDBCollection]]:
         return (
             None if self.attributes is None else self.attributes.mongo_d_b_collections
@@ -1081,16 +1038,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         self.attributes.mongo_d_b_collections = mongo_d_b_collections
 
     @property
-    def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_sources
-
-    @sql_dbt_sources.setter
-    def sql_dbt_sources(self, sql_dbt_sources: Optional[List[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_sources = sql_dbt_sources
-
-    @property
     def dbt_models(self) -> Optional[List[DbtModel]]:
         return None if self.attributes is None else self.attributes.dbt_models
 
@@ -1099,16 +1046,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
-
-    @property
-    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
-        return None if self.attributes is None else self.attributes.dbt_seed_assets
-
-    @dbt_seed_assets.setter
-    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_seed_assets = dbt_seed_assets
 
     @property
     def sql_insight_outgoing_joins(self) -> Optional[List[SqlInsightJoin]]:
@@ -1151,6 +1088,69 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cosmos_mongo_d_b_collections = cosmos_mongo_d_b_collections
+
+    @property
+    def snowflake_semantic_logical_tables(
+        self,
+    ) -> Optional[List[SnowflakeSemanticLogicalTable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_semantic_logical_tables
+        )
+
+    @snowflake_semantic_logical_tables.setter
+    def snowflake_semantic_logical_tables(
+        self,
+        snowflake_semantic_logical_tables: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_semantic_logical_tables = (
+            snowflake_semantic_logical_tables
+        )
+
+    @property
+    def dbt_tests(self) -> Optional[List[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
+    def sql_schemas(self) -> Optional[List[Schema]]:
+        return None if self.attributes is None else self.attributes.sql_schemas
+
+    @sql_schemas.setter
+    def sql_schemas(self, sql_schemas: Optional[List[Schema]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_schemas = sql_schemas
+
+    @property
+    def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_sources
+
+    @sql_dbt_sources.setter
+    def sql_dbt_sources(self, sql_dbt_sources: Optional[List[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_sources = sql_dbt_sources
+
+    @property
+    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
+        return None if self.attributes is None else self.attributes.dbt_seed_assets
+
+    @dbt_seed_assets.setter
+    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_seed_assets = dbt_seed_assets
 
     class Attributes(CosmosMongoDB.Attributes):
         cosmos_mongo_d_b_account_qualified_name: Optional[str] = Field(
@@ -1224,9 +1224,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_semantic_logical_tables: Optional[
-            List[SnowflakeSemanticLogicalTable]
-        ] = Field(default=None, description="")  # relationship
         cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount] = Field(
             default=None, description=""
         )  # relationship
@@ -1239,25 +1236,13 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         sql_insight_incoming_joins: Optional[List[SqlInsightJoin]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
-            default=None, description=""
-        )  # relationship
         sql_insight_business_questions: Optional[List[SqlInsightBusinessQuestion]] = (
             Field(default=None, description="")
-        )  # relationship
-        sql_schemas: Optional[List[Schema]] = Field(
-            default=None, description=""
         )  # relationship
         mongo_d_b_collections: Optional[List[MongoDBCollection]] = Field(
             default=None, description=""
         )  # relationship
-        sql_dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
         dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
             default=None, description=""
         )  # relationship
         sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]] = Field(
@@ -1267,6 +1252,21 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
             default=None, description=""
         )  # relationship
         cosmos_mongo_d_b_collections: Optional[List[CosmosMongoDBCollection]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_semantic_logical_tables: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ] = Field(default=None, description="")  # relationship
+        dbt_tests: Optional[List[DbtTest]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_schemas: Optional[List[Schema]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_dbt_sources: Optional[List[DbtSource]] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -1289,10 +1289,6 @@ from .dbt_test import DbtTest  # noqa: E402, F401
 from .fabric_workspace import FabricWorkspace  # noqa: E402, F401
 from .mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401
-from .snowflake_semantic_logical_table import (
-    SnowflakeSemanticLogicalTable,  # noqa: E402, F401
-)
-from .sql_insight_business_question import (
-    SqlInsightBusinessQuestion,  # noqa: E402, F401
-)
+from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable  # noqa: E402, F401
+from .sql_insight_business_question import SqlInsightBusinessQuestion  # noqa: E402, F401
 from .sql_insight_join import SqlInsightJoin  # noqa: E402, F401

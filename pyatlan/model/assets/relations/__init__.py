@@ -22,9 +22,6 @@ __PYATLAN_ASSET_RELATIONS__ = {
     "custom_related_from_entities_custom_related_to_entities": [
         "CustomRelatedFromEntitiesCustomRelatedToEntities"
     ],
-    "snowflake_semantic_logical_table_joins_snowflake_semantic_logical_table_joins": [
-        "SnowflakeSemanticLogicalTableJoinsSnowflakeSemanticLogicalTableJoins"
-    ],
 }
 
 lazy_loader = lazy.attach(__name__, submod_attrs=__PYATLAN_ASSET_RELATIONS__)

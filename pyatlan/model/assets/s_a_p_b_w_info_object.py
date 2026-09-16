@@ -268,9 +268,7 @@ class SAPBWInfoObject(SAPBW):
 
 
 from .s_a_p_b_w_a_d_s_o_field import SAPBWADSOField  # noqa: E402, F401
-from .s_a_p_b_w_composite_provider_field import (
-    SAPBWCompositeProviderField,  # noqa: E402, F401
-)
+from .s_a_p_b_w_composite_provider_field import SAPBWCompositeProviderField  # noqa: E402, F401
 from .s_a_p_b_w_data_source_field import SAPBWDataSourceField  # noqa: E402, F401
 from .s_a_p_b_w_info_area import SAPBWInfoArea  # noqa: E402, F401
 from .s_a_p_b_w_info_source_field import SAPBWInfoSourceField  # noqa: E402, F401

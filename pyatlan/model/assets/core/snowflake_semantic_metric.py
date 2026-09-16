@@ -1161,6 +1161,4 @@ class SnowflakeSemanticMetric(Snowflake):
 
 from .asset import Asset  # noqa: E402, F401
 from .column import Column  # noqa: E402, F401
-from .snowflake_semantic_logical_table import (
-    SnowflakeSemanticLogicalTable,  # noqa: E402, F401
-)
+from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable  # noqa: E402, F401

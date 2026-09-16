@@ -139,6 +139,12 @@ class AppWorkflowRun(Catalog):
     """
     Product surface of the parent workflow (marketplace, enrichment_studio, context_studio), denormalized onto the run and emitted as a metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028).
     """  # noqa: E501
+    APP_WORKFLOW_RUN_DEPLOYMENT_NAME: ClassVar[KeywordField] = KeywordField(
+        "appWorkflowRunDeploymentName", "appWorkflowRunDeploymentName"
+    )
+    """
+    SDR deployment this run executed under, denormalized from the parent workflow so a deployment's run history can be filtered directly. Without it, filtering requires two queries — resolve the deployment's workflow slugs, then match runs by parent slug — because Elasticsearch cannot join across entity types. Null for runs on Atlan-managed infrastructure (DISTR-832).
+    """  # noqa: E501
     APP_WORKFLOW_RUN_TEMPORAL_RUN_ID: ClassVar[KeywordField] = KeywordField(
         "appWorkflowRunTemporalRunId", "appWorkflowRunTemporalRunId"
     )
@@ -186,6 +192,7 @@ class AppWorkflowRun(Catalog):
         "app_workflow_run_app_workflow_version",
         "app_workflow_run_workflow_ownership",
         "app_workflow_run_source",
+        "app_workflow_run_deployment_name",
         "app_workflow_run_temporal_run_id",
         "app_workflow_run_is_test_run",
         "app_workflow_run_dag",
@@ -448,6 +455,24 @@ class AppWorkflowRun(Catalog):
         self.attributes.app_workflow_run_source = app_workflow_run_source
 
     @property
+    def app_workflow_run_deployment_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.app_workflow_run_deployment_name
+        )
+
+    @app_workflow_run_deployment_name.setter
+    def app_workflow_run_deployment_name(
+        self, app_workflow_run_deployment_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.app_workflow_run_deployment_name = (
+            app_workflow_run_deployment_name
+        )
+
+    @property
     def app_workflow_run_temporal_run_id(self) -> Optional[str]:
         return (
             None
@@ -558,6 +583,9 @@ class AppWorkflowRun(Catalog):
             Field(default=None, description="")
         )
         app_workflow_run_source: Optional[AtlanAppWorkflowSource] = Field(
+            default=None, description=""
+        )
+        app_workflow_run_deployment_name: Optional[str] = Field(
             default=None, description=""
         )
         app_workflow_run_temporal_run_id: Optional[str] = Field(

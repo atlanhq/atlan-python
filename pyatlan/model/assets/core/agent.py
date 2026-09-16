@@ -81,6 +81,12 @@ class Agent(Agentic):
     """
     TBC
     """
+    CONTEXT_SOURCE_REPOSITORY: ClassVar[RelationField] = RelationField(
+        "contextSourceRepository"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "agent_slug",
@@ -93,6 +99,7 @@ class Agent(Agentic):
         "agent_skill_names",
         "agent_skill_qualified_names",
         "agent_skills",
+        "context_source_repository",
     ]
 
     @property
@@ -201,6 +208,22 @@ class Agent(Agentic):
             self.attributes = self.Attributes()
         self.attributes.agent_skills = agent_skills
 
+    @property
+    def context_source_repository(self) -> Optional[ContextRepository]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.context_source_repository
+        )
+
+    @context_source_repository.setter
+    def context_source_repository(
+        self, context_source_repository: Optional[ContextRepository]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.context_source_repository = context_source_repository
+
     class Attributes(Agentic.Attributes):
         agent_slug: Optional[str] = Field(default=None, description="")
         agent_type: Optional[AgentType] = Field(default=None, description="")
@@ -218,6 +241,9 @@ class Agent(Agentic):
         agent_skills: Optional[List[Skill]] = Field(
             default=None, description=""
         )  # relationship
+        context_source_repository: Optional[ContextRepository] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: Agent.Attributes = Field(
         default_factory=lambda: Agent.Attributes(),
@@ -229,4 +255,5 @@ class Agent(Agentic):
     )
 
 
+from .context_repository import ContextRepository  # noqa: E402, F401
 from .skill import Skill  # noqa: E402, F401

@@ -64,6 +64,7 @@ from .database import Database
 from .databricks import Databricks
 from .databricks_a_i_model_context import DatabricksAIModelContext
 from .databricks_a_i_model_version import DatabricksAIModelVersion
+from .databricks_genie_agent import DatabricksGenieAgent
 from .databricks_metric_view import DatabricksMetricView
 from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .databricks_volume import DatabricksVolume
@@ -118,6 +119,9 @@ from .g_c_p_dataplex_aspect_type import GCPDataplexAspectType
 from .g_c_s import GCS
 from .google import Google
 from .indistinct_asset import IndistinctAsset  # noqa: F401
+from .knowledge import Knowledge
+from .knowledge_file import KnowledgeFile
+from .knowledge_folder import KnowledgeFolder
 from .link import Link
 from .m_c_incident import MCIncident
 from .m_c_monitor import MCMonitor
@@ -190,10 +194,6 @@ from .snowflake_semantic_view import SnowflakeSemanticView
 from .snowflake_stage import SnowflakeStage
 from .snowflake_stream import SnowflakeStream
 from .snowflake_tag import SnowflakeTag
-from .snowflake_v1_cortex_agent import SnowflakeV1CortexAgent
-from .snowflake_v1_cortex_agent_skill import SnowflakeV1CortexAgentSkill
-from .snowflake_v1_cortex_agent_tool import SnowflakeV1CortexAgentTool
-from .snowflake_v1_cortex_search_service import SnowflakeV1CortexSearchService
 from .soda import Soda
 from .soda_check import SodaCheck
 from .spark import Spark
@@ -209,7 +209,6 @@ from .starburst_dataset_column import StarburstDatasetColumn
 from .table import Table
 from .table_partition import TablePartition
 from .tag import Tag
-from .v1_coalesce_process import V1CoalesceProcess
 from .view import View
 
 # Update asset forward references:
@@ -233,7 +232,6 @@ Cloud.Attributes.update_forward_refs(**localns)
 FlowDatasetOperation.Attributes.update_forward_refs(**localns)
 BIProcess.Attributes.update_forward_refs(**localns)
 DbtProcess.Attributes.update_forward_refs(**localns)
-V1CoalesceProcess.Attributes.update_forward_refs(**localns)
 ColumnProcess.Attributes.update_forward_refs(**localns)
 Persona.Attributes.update_forward_refs(**localns)
 App.Attributes.update_forward_refs(**localns)
@@ -282,6 +280,7 @@ SapDatasphereReplicationFlow.Attributes.update_forward_refs(**localns)
 Context.Attributes.update_forward_refs(**localns)
 Agent.Attributes.update_forward_refs(**localns)
 Skill.Attributes.update_forward_refs(**localns)
+Knowledge.Attributes.update_forward_refs(**localns)
 Artifact.Attributes.update_forward_refs(**localns)
 DataStudio.Attributes.update_forward_refs(**localns)
 PowerBI.Attributes.update_forward_refs(**localns)
@@ -319,8 +318,6 @@ DataProduct.Attributes.update_forward_refs(**localns)
 DataMeshDataset.Attributes.update_forward_refs(**localns)
 Dremio.Attributes.update_forward_refs(**localns)
 Query.Attributes.update_forward_refs(**localns)
-SnowflakeV1CortexAgentSkill.Attributes.update_forward_refs(**localns)
-SnowflakeV1CortexAgent.Attributes.update_forward_refs(**localns)
 Schema.Attributes.update_forward_refs(**localns)
 MaterialisedView.Attributes.update_forward_refs(**localns)
 Function.Attributes.update_forward_refs(**localns)
@@ -329,16 +326,14 @@ Column.Attributes.update_forward_refs(**localns)
 Snowflake.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-Database.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
+Database.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 Table.Attributes.update_forward_refs(**localns)
 SnowflakePipe.Attributes.update_forward_refs(**localns)
 View.Attributes.update_forward_refs(**localns)
-SnowflakeV1CortexAgentTool.Attributes.update_forward_refs(**localns)
 SnowflakeStage.Attributes.update_forward_refs(**localns)
 Databricks.Attributes.update_forward_refs(**localns)
-SnowflakeV1CortexSearchService.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 SqlInsightFilter.Attributes.update_forward_refs(**localns)
 SqlInsightBusinessQuestion.Attributes.update_forward_refs(**localns)
@@ -359,6 +354,9 @@ SchemaRegistryVersion.Attributes.update_forward_refs(**localns)
 GCPDataplex.Attributes.update_forward_refs(**localns)
 ContextRepository.Attributes.update_forward_refs(**localns)
 ContextArtifact.Attributes.update_forward_refs(**localns)
+DatabricksGenieAgent.Attributes.update_forward_refs(**localns)
+KnowledgeFolder.Attributes.update_forward_refs(**localns)
+KnowledgeFile.Attributes.update_forward_refs(**localns)
 SkillArtifact.Attributes.update_forward_refs(**localns)
 PowerBIReport.Attributes.update_forward_refs(**localns)
 PowerBIDatasource.Attributes.update_forward_refs(**localns)

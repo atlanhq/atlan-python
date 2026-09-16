@@ -3222,6 +3222,11 @@ class PowerbiEndorsement(str, Enum):
     MASTER_DATA = "Master Data"
 
 
+class ProcessLineageDerivation(str, Enum):
+    STATIC = "STATIC"
+    RUNTIME = "RUNTIME"
+
+
 class QueryUsernameStrategy(str, Enum):
     CONNECTION_USERNAME = "connectionUsername"
     ATLAN_USERNAME = "atlanUsername"
