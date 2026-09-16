@@ -42,7 +42,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .fivetran_related import RelatedFivetranConnector
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -143,6 +142,8 @@ class FivetranConnector(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "FivetranConnector"
 
     fivetran_last_sync_id: Union[str, None, UnsetType] = UNSET
     """ID of the latest sync"""
@@ -402,66 +403,6 @@ class FivetranConnector(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "FivetranConnector"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this FivetranConnector instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"FivetranConnector validation failed: {errors}")
-
-    def minimize(self) -> "FivetranConnector":
-        """
-        Return a minimal copy of this FivetranConnector with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new FivetranConnector with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new FivetranConnector instance with only the minimum required fields.
-        """
-        self.validate()
-        return FivetranConnector(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFivetranConnector":
-        """
-        Create a :class:`RelatedFivetranConnector` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedFivetranConnector reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedFivetranConnector(guid=self.guid)
-        return RelatedFivetranConnector(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1041,9 +982,6 @@ def _fivetran_connector_to_nested(
         is_incomplete=fivetran_connector.is_incomplete,
         provenance_type=fivetran_connector.provenance_type,
         home_id=fivetran_connector.home_id,
-        depth=fivetran_connector.depth,
-        immediate_upstream=fivetran_connector.immediate_upstream,
-        immediate_downstream=fivetran_connector.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1088,9 +1026,6 @@ def _fivetran_connector_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_fivetran_connector_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

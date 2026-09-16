@@ -11,6 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from msgspec import UNSET
 
 from .catalog_related import RelatedSaaS
 from .referenceable_related import RelatedReferenceable
@@ -38,7 +39,8 @@ class RelatedCognite(RelatedSaaS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Cognite"
+        if self.type_name is UNSET:
+            self.type_name = "Cognite"
 
 
 class RelatedCogniteEvent(RelatedCognite):
@@ -53,7 +55,8 @@ class RelatedCogniteEvent(RelatedCognite):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CogniteEvent"
+        if self.type_name is UNSET:
+            self.type_name = "CogniteEvent"
 
 
 class RelatedCogniteFile(RelatedCognite):
@@ -68,7 +71,8 @@ class RelatedCogniteFile(RelatedCognite):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CogniteFile"
+        if self.type_name is UNSET:
+            self.type_name = "CogniteFile"
 
 
 class RelatedCogniteSequence(RelatedCognite):
@@ -83,7 +87,8 @@ class RelatedCogniteSequence(RelatedCognite):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CogniteSequence"
+        if self.type_name is UNSET:
+            self.type_name = "CogniteSequence"
 
 
 class RelatedCogniteTimeSeries(RelatedCognite):
@@ -98,7 +103,8 @@ class RelatedCogniteTimeSeries(RelatedCognite):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CogniteTimeSeries"
+        if self.type_name is UNSET:
+            self.type_name = "CogniteTimeSeries"
 
 
 class RelatedCognite3DModel(RelatedCognite):
@@ -113,7 +119,8 @@ class RelatedCognite3DModel(RelatedCognite):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Cognite3DModel"
+        if self.type_name is UNSET:
+            self.type_name = "Cognite3DModel"
 
 
 class RelatedCogniteAsset(RelatedCognite):
@@ -128,4 +135,5 @@ class RelatedCogniteAsset(RelatedCognite):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CogniteAsset"
+        if self.type_name is UNSET:
+            self.type_name = "CogniteAsset"

@@ -64,7 +64,8 @@ class RelatedAirflow(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Airflow"
+        if self.type_name is UNSET:
+            self.type_name = "Airflow"
 
 
 class RelatedAirflowDag(RelatedAirflow):
@@ -85,7 +86,8 @@ class RelatedAirflowDag(RelatedAirflow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AirflowDag"
+        if self.type_name is UNSET:
+            self.type_name = "AirflowDag"
 
 
 class RelatedAirflowTask(RelatedAirflow):
@@ -136,4 +138,5 @@ class RelatedAirflowTask(RelatedAirflow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AirflowTask"
+        if self.type_name is UNSET:
+            self.type_name = "AirflowTask"

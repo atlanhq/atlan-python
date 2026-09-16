@@ -50,12 +50,7 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .qlik_related import (
-    RelatedQlikApp,
-    RelatedQlikChart,
-    RelatedQlikColumn,
-    RelatedQlikSheet,
-)
+from .qlik_related import RelatedQlikApp, RelatedQlikChart, RelatedQlikColumn
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
@@ -119,6 +114,8 @@ class QlikSheet(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "QlikSheet"
 
     qlik_is_approved: Union[bool, None, UnsetType] = UNSET
     """Whether this is approved (true) or not (false)."""
@@ -278,76 +275,6 @@ class QlikSheet(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this QlikSheet instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.qlik_app is UNSET:
-                errors.append("qlik_app is required for creation")
-            if self.qlik_app_qualified_name is UNSET:
-                errors.append("qlik_app_qualified_name is required for creation")
-            if self.qlik_space_qualified_name is UNSET:
-                errors.append("qlik_space_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"QlikSheet validation failed: {errors}")
-
-    def minimize(self) -> "QlikSheet":
-        """
-        Return a minimal copy of this QlikSheet with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new QlikSheet with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new QlikSheet instance with only the minimum required fields.
-        """
-        self.validate()
-        return QlikSheet(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedQlikSheet":
-        """
-        Create a :class:`RelatedQlikSheet` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedQlikSheet reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedQlikSheet(guid=self.guid)
-        return RelatedQlikSheet(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -679,9 +606,6 @@ def _qlik_sheet_to_nested(qlik_sheet: QlikSheet) -> QlikSheetNested:
         is_incomplete=qlik_sheet.is_incomplete,
         provenance_type=qlik_sheet.provenance_type,
         home_id=qlik_sheet.home_id,
-        depth=qlik_sheet.depth,
-        immediate_upstream=qlik_sheet.immediate_upstream,
-        immediate_downstream=qlik_sheet.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -722,9 +646,6 @@ def _qlik_sheet_from_nested(nested: QlikSheetNested) -> QlikSheet:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_qlik_sheet_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

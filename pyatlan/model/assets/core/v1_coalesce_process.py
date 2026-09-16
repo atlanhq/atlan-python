@@ -48,7 +48,7 @@ class V1CoalesceProcess(Process):
         "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
     )
     """
-    
+
     """
     AST: ClassVar[TextField] = TextField("ast", "ast")
     """

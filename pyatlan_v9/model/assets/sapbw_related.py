@@ -67,7 +67,8 @@ class RelatedSAPBW(RelatedSAP):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBW"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBW"
 
 
 class RelatedSAPBWInfoArea(RelatedSAPBW):
@@ -82,7 +83,8 @@ class RelatedSAPBWInfoArea(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWInfoArea"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWInfoArea"
 
 
 class RelatedSAPBWInfoObject(RelatedSAPBW):
@@ -100,7 +102,8 @@ class RelatedSAPBWInfoObject(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWInfoObject"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWInfoObject"
 
 
 class RelatedSAPBWDataSource(RelatedSAPBW):
@@ -124,7 +127,8 @@ class RelatedSAPBWDataSource(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWDataSource"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWDataSource"
 
 
 class RelatedSAPBWDataSourceField(RelatedSAPBW):
@@ -139,7 +143,8 @@ class RelatedSAPBWDataSourceField(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWDataSourceField"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWDataSourceField"
 
 
 class RelatedSAPBWInfoSource(RelatedSAPBW):
@@ -154,7 +159,8 @@ class RelatedSAPBWInfoSource(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWInfoSource"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWInfoSource"
 
 
 class RelatedSAPBWInfoSourceField(RelatedSAPBW):
@@ -172,7 +178,8 @@ class RelatedSAPBWInfoSourceField(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWInfoSourceField"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWInfoSourceField"
 
 
 class RelatedSAPBWADSO(RelatedSAPBW):
@@ -193,7 +200,8 @@ class RelatedSAPBWADSO(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWADSO"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWADSO"
 
 
 class RelatedSAPBWADSOField(RelatedSAPBW):
@@ -208,7 +216,8 @@ class RelatedSAPBWADSOField(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWADSOField"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWADSOField"
 
 
 class RelatedSAPBWCompositeProvider(RelatedSAPBW):
@@ -226,7 +235,8 @@ class RelatedSAPBWCompositeProvider(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWCompositeProvider"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWCompositeProvider"
 
 
 class RelatedSAPBWCompositeProviderField(RelatedSAPBW):
@@ -241,7 +251,8 @@ class RelatedSAPBWCompositeProviderField(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWCompositeProviderField"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWCompositeProviderField"
 
 
 class RelatedSAPBWQuery(RelatedSAPBW):
@@ -259,7 +270,8 @@ class RelatedSAPBWQuery(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWQuery"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWQuery"
 
 
 class RelatedSAPBWQueryElement(RelatedSAPBW):
@@ -274,7 +286,8 @@ class RelatedSAPBWQueryElement(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWQueryElement"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWQueryElement"
 
 
 class RelatedSAPBWDTP(RelatedSAPBW):
@@ -289,7 +302,8 @@ class RelatedSAPBWDTP(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWDTP"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWDTP"
 
 
 class RelatedSAPBWTransformation(RelatedSAPBW):
@@ -307,4 +321,5 @@ class RelatedSAPBWTransformation(RelatedSAPBW):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SAPBWTransformation"
+        if self.type_name is UNSET:
+            self.type_name = "SAPBWTransformation"

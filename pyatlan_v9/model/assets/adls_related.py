@@ -45,7 +45,8 @@ class RelatedADLS(RelatedObjectStore):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ADLS"
+        if self.type_name is UNSET:
+            self.type_name = "ADLS"
 
 
 class RelatedADLSAccount(RelatedADLS):
@@ -92,7 +93,8 @@ class RelatedADLSAccount(RelatedADLS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ADLSAccount"
+        if self.type_name is UNSET:
+            self.type_name = "ADLSAccount"
 
 
 class RelatedADLSContainer(RelatedADLS):
@@ -127,7 +129,8 @@ class RelatedADLSContainer(RelatedADLS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ADLSContainer"
+        if self.type_name is UNSET:
+            self.type_name = "ADLSContainer"
 
 
 class RelatedADLSObject(RelatedADLS):
@@ -201,4 +204,5 @@ class RelatedADLSObject(RelatedADLS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ADLSObject"
+        if self.type_name is UNSET:
+            self.type_name = "ADLSObject"

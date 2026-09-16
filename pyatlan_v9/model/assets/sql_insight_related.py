@@ -39,7 +39,8 @@ class RelatedSqlInsight(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SqlInsight"
+        if self.type_name is UNSET:
+            self.type_name = "SqlInsight"
 
 
 class RelatedSqlInsightJoin(RelatedSqlInsight):
@@ -84,7 +85,8 @@ class RelatedSqlInsightJoin(RelatedSqlInsight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SqlInsightJoin"
+        if self.type_name is UNSET:
+            self.type_name = "SqlInsightJoin"
 
 
 class RelatedSqlInsightFilter(RelatedSqlInsight):
@@ -131,7 +133,8 @@ class RelatedSqlInsightFilter(RelatedSqlInsight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SqlInsightFilter"
+        if self.type_name is UNSET:
+            self.type_name = "SqlInsightFilter"
 
 
 class RelatedSqlInsightBusinessQuestion(RelatedSqlInsight):
@@ -169,4 +172,5 @@ class RelatedSqlInsightBusinessQuestion(RelatedSqlInsight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SqlInsightBusinessQuestion"
+        if self.type_name is UNSET:
+            self.type_name = "SqlInsightBusinessQuestion"
