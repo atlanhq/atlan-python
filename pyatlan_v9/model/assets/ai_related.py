@@ -74,7 +74,8 @@ class RelatedAI(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AI"
+        if self.type_name is UNSET:
+            self.type_name = "AI"
 
 
 class RelatedAIApplication(RelatedAI):
@@ -95,7 +96,8 @@ class RelatedAIApplication(RelatedAI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AIApplication"
+        if self.type_name is UNSET:
+            self.type_name = "AIApplication"
 
 
 class RelatedAIModel(RelatedAI):
@@ -121,7 +123,8 @@ class RelatedAIModel(RelatedAI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AIModel"
+        if self.type_name is UNSET:
+            self.type_name = "AIModel"
 
 
 class RelatedAIModelVersion(RelatedAI):
@@ -145,4 +148,5 @@ class RelatedAIModelVersion(RelatedAI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AIModelVersion"
+        if self.type_name is UNSET:
+            self.type_name = "AIModelVersion"

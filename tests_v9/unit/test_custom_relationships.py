@@ -11,6 +11,7 @@ These tests verify:
 import json
 from unittest.mock import patch
 
+import msgspec
 import pytest
 from msgspec import UNSET
 
@@ -1173,3 +1174,44 @@ def test_builder_with_qualified_name_ref():
     # When guid is not set, unique_attributes should be populated
     assert ref.unique_attributes is not UNSET
     assert ref.unique_attributes["qualifiedName"] == "some-term@some-glossary"
+
+
+# ---------------------------------------------------------------------------
+# Related type_name preservation on decode (AICHAT-1883)
+# ---------------------------------------------------------------------------
+
+
+def test_related_decode_preserves_wire_type_name():
+    """Decoding a Related ref keeps the concrete typeName sent over the wire."""
+    payload = b'{"typeName": "AtlasGlossaryTerm", "guid": "abc-123"}'
+    decoded = msgspec.json.decode(payload, type=RelatedAtlasGlossaryTerm)
+
+    assert decoded.type_name == "AtlasGlossaryTerm"
+    assert decoded.guid == "abc-123"
+
+
+def test_related_decode_preserves_narrower_wire_type_name():
+    """A subtype typeName decoded into a broader Related field is not clobbered."""
+    # RelatedAtlasGlossaryTerm's own default is "AtlasGlossaryTerm"; a subtype
+    # value on the wire must survive __post_init__ rather than reset to the default.
+    payload = b'{"typeName": "AtlasGlossaryTermSubtype"}'
+    decoded = msgspec.json.decode(payload, type=RelatedAtlasGlossaryTerm)
+
+    assert decoded.type_name == "AtlasGlossaryTermSubtype"
+
+
+def test_related_default_type_name_applied_on_construction():
+    """Constructing a Related ref without a type_name applies the class default."""
+    related = RelatedAtlasGlossaryTerm()
+
+    assert related.type_name == "AtlasGlossaryTerm"
+    # And it still serializes the default typeName out.
+    encoded = msgspec.json.decode(msgspec.json.encode(related))
+    assert encoded["typeName"] == "AtlasGlossaryTerm"
+
+
+def test_related_explicit_type_name_preserved_on_construction():
+    """An explicitly passed type_name is preserved through __post_init__."""
+    related = RelatedAtlasGlossaryTerm(type_name="AtlasGlossaryTermSubtype")
+
+    assert related.type_name == "AtlasGlossaryTermSubtype"

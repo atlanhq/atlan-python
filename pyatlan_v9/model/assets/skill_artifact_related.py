@@ -38,4 +38,5 @@ class RelatedSkillArtifact(RelatedArtifact):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SkillArtifact"
+        if self.type_name is UNSET:
+            self.type_name = "SkillArtifact"

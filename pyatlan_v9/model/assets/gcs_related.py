@@ -56,7 +56,8 @@ class RelatedGCS(RelatedObjectStore):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "GCS"
+        if self.type_name is UNSET:
+            self.type_name = "GCS"
 
 
 class RelatedGCSBucket(RelatedGCS):
@@ -92,7 +93,8 @@ class RelatedGCSBucket(RelatedGCS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "GCSBucket"
+        if self.type_name is UNSET:
+            self.type_name = "GCSBucket"
 
 
 class RelatedGCSObject(RelatedGCS):
@@ -156,4 +158,5 @@ class RelatedGCSObject(RelatedGCS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "GCSObject"
+        if self.type_name is UNSET:
+            self.type_name = "GCSObject"

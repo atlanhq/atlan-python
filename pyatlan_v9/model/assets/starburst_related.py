@@ -46,7 +46,8 @@ class RelatedStarburst(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Starburst"
+        if self.type_name is UNSET:
+            self.type_name = "Starburst"
 
 
 class RelatedStarburstDataset(RelatedStarburst):
@@ -70,7 +71,8 @@ class RelatedStarburstDataset(RelatedStarburst):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "StarburstDataset"
+        if self.type_name is UNSET:
+            self.type_name = "StarburstDataset"
 
 
 class RelatedStarburstDatasetColumn(RelatedStarburst):
@@ -88,4 +90,5 @@ class RelatedStarburstDatasetColumn(RelatedStarburst):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "StarburstDatasetColumn"
+        if self.type_name is UNSET:
+            self.type_name = "StarburstDatasetColumn"

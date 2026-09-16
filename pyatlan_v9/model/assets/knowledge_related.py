@@ -37,7 +37,8 @@ class RelatedKnowledge(RelatedAgentic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Knowledge"
+        if self.type_name is UNSET:
+            self.type_name = "Knowledge"
 
 
 class RelatedKnowledgeFolder(RelatedKnowledge):
@@ -55,7 +56,8 @@ class RelatedKnowledgeFolder(RelatedKnowledge):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "KnowledgeFolder"
+        if self.type_name is UNSET:
+            self.type_name = "KnowledgeFolder"
 
 
 class RelatedKnowledgeFile(RelatedKnowledge):
@@ -79,4 +81,5 @@ class RelatedKnowledgeFile(RelatedKnowledge):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "KnowledgeFile"
+        if self.type_name is UNSET:
+            self.type_name = "KnowledgeFile"
