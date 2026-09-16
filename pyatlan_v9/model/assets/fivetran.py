@@ -44,6 +44,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fivetran_related import RelatedFivetran
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -86,6 +87,7 @@ class Fivetran(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -101,6 +103,8 @@ class Fivetran(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Fivetran"
 
     fivetran_workflow_name: Union[str, None, UnsetType] = UNSET
     """Name of the atlan fivetran workflow that updated this asset"""
@@ -170,6 +174,9 @@ class Fivetran(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -411,6 +418,9 @@ class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -497,6 +507,7 @@ _FIVETRAN_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -569,9 +580,6 @@ def _fivetran_to_nested(fivetran: Fivetran) -> FivetranNested:
         is_incomplete=fivetran.is_incomplete,
         provenance_type=fivetran.provenance_type,
         home_id=fivetran.home_id,
-        depth=fivetran.depth,
-        immediate_upstream=fivetran.immediate_upstream,
-        immediate_downstream=fivetran.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -603,6 +611,7 @@ def _fivetran_from_nested(nested: FivetranNested) -> Fivetran:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -611,9 +620,6 @@ def _fivetran_from_nested(nested: FivetranNested) -> Fivetran:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_fivetran_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -669,6 +675,7 @@ Fivetran.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Fivetran.MEANINGS = RelationField("meanings")
+Fivetran.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Fivetran.MC_MONITORS = RelationField("mcMonitors")
 Fivetran.MC_INCIDENTS = RelationField("mcIncidents")
 Fivetran.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

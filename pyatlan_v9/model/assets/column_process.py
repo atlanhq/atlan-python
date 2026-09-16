@@ -53,6 +53,7 @@ from .fivetran_related import RelatedFivetranConnector
 from .flow_related import RelatedFlowControlOperation
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .power_bi_related import RelatedPowerBIDataflow
@@ -82,6 +83,7 @@ class ColumnProcess(Asset):
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
     IS_PASS_THROUGH: ClassVar[Any] = None
+    PROCESS_DERIVATION: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -100,6 +102,7 @@ class ColumnProcess(Asset):
     FLOW_ORCHESTRATED_BY: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MATILLION_COMPONENT: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -118,6 +121,8 @@ class ColumnProcess(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "ColumnProcess"
 
     code: Union[str, None, UnsetType] = UNSET
     """Code that ran within the process."""
@@ -139,6 +144,9 @@ class ColumnProcess(Asset):
 
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
 
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
@@ -197,6 +205,9 @@ class ColumnProcess(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -543,6 +554,9 @@ class ColumnProcessAttributes(AssetAttributes):
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
+
 
 class ColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     """ColumnProcess-specific relationship attributes for nested API format."""
@@ -604,6 +618,9 @@ class ColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -705,6 +722,7 @@ _COLUMN_PROCESS_REL_FIELDS: List[str] = [
     "flow_orchestrated_by",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "matillion_component",
     "mc_monitors",
     "mc_incidents",
@@ -740,6 +758,7 @@ def _populate_column_process_attrs(
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
     attrs.is_pass_through = obj.is_pass_through
+    attrs.process_derivation = obj.process_derivation
 
 
 def _extract_column_process_attrs(attrs: ColumnProcessAttributes) -> dict:
@@ -754,6 +773,7 @@ def _extract_column_process_attrs(attrs: ColumnProcessAttributes) -> dict:
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     result["is_pass_through"] = attrs.is_pass_through
+    result["process_derivation"] = attrs.process_derivation
     return result
 
 
@@ -790,9 +810,6 @@ def _column_process_to_nested(column_process: ColumnProcess) -> ColumnProcessNes
         is_incomplete=column_process.is_incomplete,
         provenance_type=column_process.provenance_type,
         home_id=column_process.home_id,
-        depth=column_process.depth,
-        immediate_upstream=column_process.immediate_upstream,
-        immediate_downstream=column_process.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -826,6 +843,7 @@ def _column_process_from_nested(nested: ColumnProcessNested) -> ColumnProcess:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -834,9 +852,6 @@ def _column_process_from_nested(nested: ColumnProcessNested) -> ColumnProcess:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_column_process_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -876,6 +891,9 @@ ColumnProcess.ADDITIONAL_ETL_CONTEXT = KeywordField(
 )
 ColumnProcess.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 ColumnProcess.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
+ColumnProcess.PROCESS_DERIVATION = KeywordField(
+    "processDerivation", "processDerivation"
+)
 ColumnProcess.ADF_ACTIVITY = RelationField("adfActivity")
 ColumnProcess.AIRFLOW_TASKS = RelationField("airflowTasks")
 ColumnProcess.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -898,6 +916,7 @@ ColumnProcess.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 ColumnProcess.MEANINGS = RelationField("meanings")
+ColumnProcess.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 ColumnProcess.MATILLION_COMPONENT = RelationField("matillionComponent")
 ColumnProcess.MC_MONITORS = RelationField("mcMonitors")
 ColumnProcess.MC_INCIDENTS = RelationField("mcIncidents")

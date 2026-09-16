@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -97,6 +98,7 @@ class SSRSFolder(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -115,6 +117,8 @@ class SSRSFolder(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SSRSFolder"
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
     """Path of the asset in SSRS."""
@@ -214,6 +218,9 @@ class SSRSFolder(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -504,6 +511,9 @@ class SSRSFolderRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -599,6 +609,7 @@ _SSRS_FOLDER_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -694,9 +705,6 @@ def _ssrs_folder_to_nested(ssrs_folder: SSRSFolder) -> SSRSFolderNested:
         is_incomplete=ssrs_folder.is_incomplete,
         provenance_type=ssrs_folder.provenance_type,
         home_id=ssrs_folder.home_id,
-        depth=ssrs_folder.depth,
-        immediate_upstream=ssrs_folder.immediate_upstream,
-        immediate_downstream=ssrs_folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -728,6 +736,7 @@ def _ssrs_folder_from_nested(nested: SSRSFolderNested) -> SSRSFolder:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -736,9 +745,6 @@ def _ssrs_folder_from_nested(nested: SSRSFolderNested) -> SSRSFolder:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_ssrs_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -810,6 +816,7 @@ SSRSFolder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SSRSFolder.MEANINGS = RelationField("meanings")
+SSRSFolder.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SSRSFolder.MC_MONITORS = RelationField("mcMonitors")
 SSRSFolder.MC_INCIDENTS = RelationField("mcIncidents")
 SSRSFolder.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

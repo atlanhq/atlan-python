@@ -54,6 +54,7 @@ from .flow_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .power_bi_related import RelatedPowerBIDataflow
@@ -97,6 +98,7 @@ class FlowDatasetOperation(Asset):
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
     IS_PASS_THROUGH: ClassVar[Any] = None
+    PROCESS_DERIVATION: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -116,6 +118,7 @@ class FlowDatasetOperation(Asset):
     FLOW_REUSABLE_UNIT: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MATILLION_COMPONENT: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -133,6 +136,8 @@ class FlowDatasetOperation(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "FlowDatasetOperation"
 
     flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
@@ -197,6 +202,9 @@ class FlowDatasetOperation(Asset):
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
+
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
 
@@ -257,6 +265,9 @@ class FlowDatasetOperation(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -516,6 +527,9 @@ class FlowDatasetOperationAttributes(AssetAttributes):
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
+
 
 class FlowDatasetOperationRelationshipAttributes(AssetRelationshipAttributes):
     """FlowDatasetOperation-specific relationship attributes for nested API format."""
@@ -580,6 +594,9 @@ class FlowDatasetOperationRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -679,6 +696,7 @@ _FLOW_DATASET_OPERATION_REL_FIELDS: List[str] = [
     "flow_reusable_unit",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "matillion_component",
     "mc_monitors",
     "mc_incidents",
@@ -727,6 +745,7 @@ def _populate_flow_dataset_operation_attrs(
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
     attrs.is_pass_through = obj.is_pass_through
+    attrs.process_derivation = obj.process_derivation
 
 
 def _extract_flow_dataset_operation_attrs(
@@ -759,6 +778,7 @@ def _extract_flow_dataset_operation_attrs(
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     result["is_pass_through"] = attrs.is_pass_through
+    result["process_derivation"] = attrs.process_derivation
     return result
 
 
@@ -799,9 +819,6 @@ def _flow_dataset_operation_to_nested(
         is_incomplete=flow_dataset_operation.is_incomplete,
         provenance_type=flow_dataset_operation.provenance_type,
         home_id=flow_dataset_operation.home_id,
-        depth=flow_dataset_operation.depth,
-        immediate_upstream=flow_dataset_operation.immediate_upstream,
-        immediate_downstream=flow_dataset_operation.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -837,6 +854,7 @@ def _flow_dataset_operation_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -845,9 +863,6 @@ def _flow_dataset_operation_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_flow_dataset_operation_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -921,6 +936,9 @@ FlowDatasetOperation.ADDITIONAL_ETL_CONTEXT = KeywordField(
 )
 FlowDatasetOperation.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 FlowDatasetOperation.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
+FlowDatasetOperation.PROCESS_DERIVATION = KeywordField(
+    "processDerivation", "processDerivation"
+)
 FlowDatasetOperation.ADF_ACTIVITY = RelationField("adfActivity")
 FlowDatasetOperation.AIRFLOW_TASKS = RelationField("airflowTasks")
 FlowDatasetOperation.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -946,6 +964,7 @@ FlowDatasetOperation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 FlowDatasetOperation.MEANINGS = RelationField("meanings")
+FlowDatasetOperation.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 FlowDatasetOperation.MATILLION_COMPONENT = RelationField("matillionComponent")
 FlowDatasetOperation.MC_MONITORS = RelationField("mcMonitors")
 FlowDatasetOperation.MC_INCIDENTS = RelationField("mcIncidents")

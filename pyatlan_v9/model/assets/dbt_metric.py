@@ -46,6 +46,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import RelatedDbtMetric, RelatedDbtModel
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -120,6 +121,7 @@ class DbtMetric(Asset):
     DBT_METRIC_FILTER_COLUMNS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -135,6 +137,8 @@ class DbtMetric(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DbtMetric"
 
     dbt_metric_filters: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Filters applied to the dbt metric."""
@@ -299,6 +303,9 @@ class DbtMetric(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -635,6 +642,9 @@ class DbtMetricRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -726,6 +736,7 @@ _DBT_METRIC_REL_FIELDS: List[str] = [
     "dbt_metric_filter_columns",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -850,9 +861,6 @@ def _dbt_metric_to_nested(dbt_metric: DbtMetric) -> DbtMetricNested:
         is_incomplete=dbt_metric.is_incomplete,
         provenance_type=dbt_metric.provenance_type,
         home_id=dbt_metric.home_id,
-        depth=dbt_metric.depth,
-        immediate_upstream=dbt_metric.immediate_upstream,
-        immediate_downstream=dbt_metric.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -884,6 +892,7 @@ def _dbt_metric_from_nested(nested: DbtMetricNested) -> DbtMetric:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -892,9 +901,6 @@ def _dbt_metric_from_nested(nested: DbtMetricNested) -> DbtMetric:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dbt_metric_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -996,6 +1002,7 @@ DbtMetric.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DbtMetric.MEANINGS = RelationField("meanings")
+DbtMetric.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DbtMetric.MC_MONITORS = RelationField("mcMonitors")
 DbtMetric.MC_INCIDENTS = RelationField("mcIncidents")
 DbtMetric.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -87,6 +87,7 @@ class KnowledgeFolder(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KNOWLEDGE_FILES: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -102,6 +103,8 @@ class KnowledgeFolder(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "KnowledgeFolder"
 
     knowledge_folder_type: Union[str, None, UnsetType] = UNSET
     """Type of this folder based on how it was created and how it is managed."""
@@ -174,6 +177,9 @@ class KnowledgeFolder(Asset):
 
     knowledge_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
     """Knowledge files contained in this folder."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -420,6 +426,9 @@ class KnowledgeFolderRelationshipAttributes(AssetRelationshipAttributes):
     knowledge_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
     """Knowledge files contained in this folder."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -509,6 +518,7 @@ _KNOWLEDGE_FOLDER_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "knowledge_files",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -585,9 +595,6 @@ def _knowledge_folder_to_nested(
         is_incomplete=knowledge_folder.is_incomplete,
         provenance_type=knowledge_folder.provenance_type,
         home_id=knowledge_folder.home_id,
-        depth=knowledge_folder.depth,
-        immediate_upstream=knowledge_folder.immediate_upstream,
-        immediate_downstream=knowledge_folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -621,6 +628,7 @@ def _knowledge_folder_from_nested(nested: KnowledgeFolderNested) -> KnowledgeFol
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -629,9 +637,6 @@ def _knowledge_folder_from_nested(nested: KnowledgeFolderNested) -> KnowledgeFol
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_knowledge_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -692,6 +697,7 @@ KnowledgeFolder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 )
 KnowledgeFolder.MEANINGS = RelationField("meanings")
 KnowledgeFolder.KNOWLEDGE_FILES = RelationField("knowledgeFiles")
+KnowledgeFolder.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 KnowledgeFolder.MC_MONITORS = RelationField("mcMonitors")
 KnowledgeFolder.MC_INCIDENTS = RelationField("mcIncidents")
 KnowledgeFolder.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

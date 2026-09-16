@@ -53,6 +53,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .namespace_related import RelatedNamespace
@@ -150,6 +151,7 @@ class Query(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -173,6 +175,8 @@ class Query(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Query"
 
     raw_query: Union[str, None, UnsetType] = UNSET
     """Deprecated. See 'longRawQuery' instead."""
@@ -390,6 +394,9 @@ class Query(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -926,6 +933,9 @@ class QueryRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1050,6 +1060,7 @@ _QUERY_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1226,9 +1237,6 @@ def _query_to_nested(query: Query) -> QueryNested:
         is_incomplete=query.is_incomplete,
         provenance_type=query.provenance_type,
         home_id=query.home_id,
-        depth=query.depth,
-        immediate_upstream=query.immediate_upstream,
-        immediate_downstream=query.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1258,6 +1266,7 @@ def _query_from_nested(nested: QueryNested) -> Query:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1266,9 +1275,6 @@ def _query_from_nested(nested: QueryNested) -> Query:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_query_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1423,6 +1429,7 @@ Query.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Query.MEANINGS = RelationField("meanings")
+Query.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Query.MC_MONITORS = RelationField("mcMonitors")
 Query.MC_INCIDENTS = RelationField("mcIncidents")
 Query.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -53,6 +53,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -100,7 +101,7 @@ class Schema(Asset):
     """
 
     TABLE_COUNT: ClassVar[Any] = None
-    SCHEMA_EXTERNAL_LOCATION: ClassVar[Any] = None
+    SQL_EXTERNAL_LOCATION: ClassVar[Any] = None
     VIEWS_COUNT: ClassVar[Any] = None
     LINKED_SCHEMA_QUALIFIED_NAME: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
@@ -162,6 +163,7 @@ class Schema(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -198,10 +200,12 @@ class Schema(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Schema"
+
     table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this schema."""
 
-    schema_external_location: Union[str, None, UnsetType] = UNSET
+    sql_external_location: Union[str, None, UnsetType] = UNSET
     """External location of this schema, for example: an S3 object location."""
 
     views_count: Union[int, None, UnsetType] = UNSET
@@ -398,6 +402,9 @@ class Schema(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -753,7 +760,7 @@ class SchemaAttributes(AssetAttributes):
     table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this schema."""
 
-    schema_external_location: Union[str, None, UnsetType] = UNSET
+    sql_external_location: Union[str, None, UnsetType] = UNSET
     """External location of this schema, for example: an S3 object location."""
 
     views_count: Union[int, None, UnsetType] = UNSET
@@ -955,6 +962,9 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1125,6 +1135,7 @@ _SCHEMA_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1167,7 +1178,7 @@ def _populate_schema__attrs(attrs: SchemaAttributes, obj: Schema) -> None:
     """Populate Schema-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.table_count = obj.table_count
-    attrs.schema_external_location = obj.schema_external_location
+    attrs.sql_external_location = obj.sql_external_location
     attrs.views_count = obj.views_count
     attrs.linked_schema_qualified_name = obj.linked_schema_qualified_name
     attrs.query_count = obj.query_count
@@ -1214,7 +1225,7 @@ def _extract_schema__attrs(attrs: SchemaAttributes) -> dict:
     """Extract all Schema attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["table_count"] = attrs.table_count
-    result["schema_external_location"] = attrs.schema_external_location
+    result["sql_external_location"] = attrs.sql_external_location
     result["views_count"] = attrs.views_count
     result["linked_schema_qualified_name"] = attrs.linked_schema_qualified_name
     result["query_count"] = attrs.query_count
@@ -1297,9 +1308,6 @@ def _schema__to_nested(schema_: Schema) -> SchemaNested:
         is_incomplete=schema_.is_incomplete,
         provenance_type=schema_.provenance_type,
         home_id=schema_.home_id,
-        depth=schema_.depth,
-        immediate_upstream=schema_.immediate_upstream,
-        immediate_downstream=schema_.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1329,6 +1337,7 @@ def _schema__from_nested(nested: SchemaNested) -> Schema:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1337,9 +1346,6 @@ def _schema__from_nested(nested: SchemaNested) -> Schema:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_schema__attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1369,8 +1375,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Schema.TABLE_COUNT = NumericField("tableCount", "tableCount")
-Schema.SCHEMA_EXTERNAL_LOCATION = KeywordField(
-    "schemaExternalLocation", "schemaExternalLocation"
+Schema.SQL_EXTERNAL_LOCATION = KeywordField(
+    "sqlExternalLocation", "sqlExternalLocation"
 )
 Schema.VIEWS_COUNT = NumericField("viewsCount", "viewsCount")
 Schema.LINKED_SCHEMA_QUALIFIED_NAME = KeywordField(
@@ -1480,6 +1486,7 @@ Schema.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Schema.MEANINGS = RelationField("meanings")
+Schema.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Schema.MC_MONITORS = RelationField("mcMonitors")
 Schema.MC_INCIDENTS = RelationField("mcIncidents")
 Schema.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

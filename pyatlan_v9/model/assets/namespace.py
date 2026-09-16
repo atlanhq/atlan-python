@@ -42,6 +42,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .namespace_related import RelatedFolder, RelatedNamespace
 from .referenceable_related import RelatedReferenceable
@@ -74,6 +75,7 @@ class Namespace(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     CHILDREN_FOLDERS: ClassVar[Any] = None
@@ -85,6 +87,8 @@ class Namespace(Asset):
     CHILDREN_QUERIES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Namespace"
 
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
@@ -128,6 +132,9 @@ class Namespace(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -333,6 +340,9 @@ class NamespaceRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -403,6 +413,7 @@ _NAMESPACE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "children_folders",
@@ -460,9 +471,6 @@ def _namespace_to_nested(namespace: Namespace) -> NamespaceNested:
         is_incomplete=namespace.is_incomplete,
         provenance_type=namespace.provenance_type,
         home_id=namespace.home_id,
-        depth=namespace.depth,
-        immediate_upstream=namespace.immediate_upstream,
-        immediate_downstream=namespace.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -494,6 +502,7 @@ def _namespace_from_nested(nested: NamespaceNested) -> Namespace:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -502,9 +511,6 @@ def _namespace_from_nested(nested: NamespaceNested) -> Namespace:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_namespace_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -542,6 +548,7 @@ Namespace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Namespace.MEANINGS = RelationField("meanings")
+Namespace.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Namespace.MC_MONITORS = RelationField("mcMonitors")
 Namespace.MC_INCIDENTS = RelationField("mcIncidents")
 Namespace.CHILDREN_FOLDERS = RelationField("childrenFolders")

@@ -45,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -94,6 +95,7 @@ class MCIncident(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITOR: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENT_ASSETS: ClassVar[Any] = None
@@ -111,6 +113,8 @@ class MCIncident(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MCIncident"
 
     mc_incident_id: Union[str, None, UnsetType] = UNSET
     """Identifier of this incident, from Monte Carlo."""
@@ -201,6 +205,9 @@ class MCIncident(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitor: Union[RelatedMCMonitor, None, UnsetType] = UNSET
     """Monitor in which this incident exists."""
@@ -481,6 +488,9 @@ class MCIncidentRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitor: Union[RelatedMCMonitor, None, UnsetType] = UNSET
     """Monitor in which this incident exists."""
 
@@ -573,6 +583,7 @@ _MC_INCIDENT_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitor",
     "mc_monitors",
     "mc_incident_assets",
@@ -659,9 +670,6 @@ def _mc_incident_to_nested(mc_incident: MCIncident) -> MCIncidentNested:
         is_incomplete=mc_incident.is_incomplete,
         provenance_type=mc_incident.provenance_type,
         home_id=mc_incident.home_id,
-        depth=mc_incident.depth,
-        immediate_upstream=mc_incident.immediate_upstream,
-        immediate_downstream=mc_incident.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -693,6 +701,7 @@ def _mc_incident_from_nested(nested: MCIncidentNested) -> MCIncident:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -701,9 +710,6 @@ def _mc_incident_from_nested(nested: MCIncidentNested) -> MCIncident:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_mc_incident_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -774,6 +780,7 @@ MCIncident.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MCIncident.MEANINGS = RelationField("meanings")
+MCIncident.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MCIncident.MC_MONITOR = RelationField("mcMonitor")
 MCIncident.MC_MONITORS = RelationField("mcMonitors")
 MCIncident.MC_INCIDENT_ASSETS = RelationField("mcIncidentAssets")

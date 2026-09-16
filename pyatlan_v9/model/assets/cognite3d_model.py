@@ -45,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -85,6 +86,7 @@ class Cognite3DModel(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -100,6 +102,8 @@ class Cognite3DModel(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Cognite3DModel"
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -163,6 +167,9 @@ class Cognite3DModel(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -410,6 +417,9 @@ class Cognite3DModelRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -499,6 +509,7 @@ _COGNITE3D_MODEL_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -567,9 +578,6 @@ def _cognite3d_model_to_nested(cognite3d_model: Cognite3DModel) -> Cognite3DMode
         is_incomplete=cognite3d_model.is_incomplete,
         provenance_type=cognite3d_model.provenance_type,
         home_id=cognite3d_model.home_id,
-        depth=cognite3d_model.depth,
-        immediate_upstream=cognite3d_model.immediate_upstream,
-        immediate_downstream=cognite3d_model.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -603,6 +611,7 @@ def _cognite3d_model_from_nested(nested: Cognite3DModelNested) -> Cognite3DModel
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -611,9 +620,6 @@ def _cognite3d_model_from_nested(nested: Cognite3DModelNested) -> Cognite3DModel
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_cognite3d_model_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -665,6 +671,7 @@ Cognite3DModel.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Cognite3DModel.MEANINGS = RelationField("meanings")
+Cognite3DModel.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Cognite3DModel.MC_MONITORS = RelationField("mcMonitors")
 Cognite3DModel.MC_INCIDENTS = RelationField("mcIncidents")
 Cognite3DModel.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -45,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -91,6 +92,7 @@ class SparkJob(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -110,6 +112,8 @@ class SparkJob(Asset):
     OUTPUTS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SPARK_ORCHESTRATED_BY_AIRFLOW_ASSETS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SparkJob"
 
     spark_app_name: Union[str, None, UnsetType] = UNSET
     """Name of the Spark app containing this Spark Job For eg. extract_raw_data"""
@@ -191,6 +195,9 @@ class SparkJob(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -470,6 +477,9 @@ class SparkJobRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -570,6 +580,7 @@ _SPARK_JOB_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -652,9 +663,6 @@ def _spark_job_to_nested(spark_job: SparkJob) -> SparkJobNested:
         is_incomplete=spark_job.is_incomplete,
         provenance_type=spark_job.provenance_type,
         home_id=spark_job.home_id,
-        depth=spark_job.depth,
-        immediate_upstream=spark_job.immediate_upstream,
-        immediate_downstream=spark_job.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -686,6 +694,7 @@ def _spark_job_from_nested(nested: SparkJobNested) -> SparkJob:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -694,9 +703,6 @@ def _spark_job_from_nested(nested: SparkJobNested) -> SparkJob:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_spark_job_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -757,6 +763,7 @@ SparkJob.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SparkJob.MEANINGS = RelationField("meanings")
+SparkJob.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SparkJob.MC_MONITORS = RelationField("mcMonitors")
 SparkJob.MC_INCIDENTS = RelationField("mcIncidents")
 SparkJob.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

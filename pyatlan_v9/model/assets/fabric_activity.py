@@ -45,6 +45,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import RelatedFabricActivity, RelatedFabricDataPipeline
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -91,6 +92,7 @@ class FabricActivity(Asset):
     FABRIC_PROCESS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -106,6 +108,8 @@ class FabricActivity(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "FabricActivity"
 
     fabric_data_pipeline_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric data pipeline that contains this asset."""
@@ -187,6 +191,9 @@ class FabricActivity(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -458,6 +465,9 @@ class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -548,6 +558,7 @@ _FABRIC_ACTIVITY_REL_FIELDS: List[str] = [
     "fabric_process",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -628,9 +639,6 @@ def _fabric_activity_to_nested(fabric_activity: FabricActivity) -> FabricActivit
         is_incomplete=fabric_activity.is_incomplete,
         provenance_type=fabric_activity.provenance_type,
         home_id=fabric_activity.home_id,
-        depth=fabric_activity.depth,
-        immediate_upstream=fabric_activity.immediate_upstream,
-        immediate_downstream=fabric_activity.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -664,6 +672,7 @@ def _fabric_activity_from_nested(nested: FabricActivityNested) -> FabricActivity
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -672,9 +681,6 @@ def _fabric_activity_from_nested(nested: FabricActivityNested) -> FabricActivity
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_fabric_activity_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -742,6 +748,7 @@ FabricActivity.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 FabricActivity.MEANINGS = RelationField("meanings")
+FabricActivity.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 FabricActivity.MC_MONITORS = RelationField("mcMonitors")
 FabricActivity.MC_INCIDENTS = RelationField("mcIncidents")
 FabricActivity.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

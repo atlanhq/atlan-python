@@ -51,6 +51,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -128,6 +129,7 @@ class DbtModel(Asset):
     DBT_MODEL_COLUMNS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -143,6 +145,8 @@ class DbtModel(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DbtModel"
 
     dbt_status: Union[str, None, UnsetType] = UNSET
     """Status of the dbt model."""
@@ -318,6 +322,9 @@ class DbtModel(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -677,6 +684,9 @@ class DbtModelRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -768,6 +778,7 @@ _DBT_MODEL_REL_FIELDS: List[str] = [
     "dbt_model_columns",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -896,9 +907,6 @@ def _dbt_model_to_nested(dbt_model: DbtModel) -> DbtModelNested:
         is_incomplete=dbt_model.is_incomplete,
         provenance_type=dbt_model.provenance_type,
         home_id=dbt_model.home_id,
-        depth=dbt_model.depth,
-        immediate_upstream=dbt_model.immediate_upstream,
-        immediate_downstream=dbt_model.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -930,6 +938,7 @@ def _dbt_model_from_nested(nested: DbtModelNested) -> DbtModel:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -938,9 +947,6 @@ def _dbt_model_from_nested(nested: DbtModelNested) -> DbtModel:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dbt_model_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1050,6 +1056,7 @@ DbtModel.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DbtModel.MEANINGS = RelationField("meanings")
+DbtModel.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DbtModel.MC_MONITORS = RelationField("mcMonitors")
 DbtModel.MC_INCIDENTS = RelationField("mcIncidents")
 DbtModel.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

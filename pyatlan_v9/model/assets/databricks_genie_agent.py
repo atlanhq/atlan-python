@@ -4,16 +4,17 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-DatabricksExternalLocation asset model with flattened inheritance.
+DatabricksGenieAgent asset model with flattened inheritance.
 
 This module provides:
-- DatabricksExternalLocation: Flat asset class (easy to use)
-- DatabricksExternalLocationAttributes: Nested attributes struct (extends AssetAttributes)
-- DatabricksExternalLocationNested: Nested API format struct
+- DatabricksGenieAgent: Flat asset class (easy to use)
+- DatabricksGenieAgentAttributes: Nested attributes struct (extends AssetAttributes)
+- DatabricksGenieAgentNested: Nested API format struct
 """
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
@@ -42,10 +43,7 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import (
-    RelatedDatabricksExternalLocation,
-    RelatedDatabricksExternalLocationPath,
-)
+from .databricks_related import RelatedDatabricksGenieAgent
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
@@ -62,6 +60,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .skill_related import RelatedSkill
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -76,13 +75,15 @@ from .sql_insight_related import (
 
 
 @register_asset
-class DatabricksExternalLocation(Asset):
+class DatabricksGenieAgent(Asset):
     """
-    Represents a Databricks External Location, a storage object for managing and accessing data files.
+    Instance of a Databricks Genie space in Atlan. A Genie space is a curated natural-language interface over a set of Databricks tables, published here as an agent asset for governance and discovery.
     """
 
-    DATABRICKS_URL: ClassVar[Any] = None
-    DATABRICKS_OWNER: ClassVar[Any] = None
+    DATABRICKS_WORKSPACE_ID: ClassVar[Any] = None
+    DATABRICKS_WAREHOUSE_ID: ClassVar[Any] = None
+    DATABRICKS_PARENT_PATH: ClassVar[Any] = None
+    DATABRICKS_ETAG: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -117,11 +118,24 @@ class DatabricksExternalLocation(Asset):
     SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
+    AGENT_SLUG: ClassVar[Any] = None
+    AGENT_TYPE: ClassVar[Any] = None
+    AGENT_STATUS: ClassVar[Any] = None
+    AGENT_SYSTEM_PROMPT: ClassVar[Any] = None
+    AGENT_LLM_CONFIG: ClassVar[Any] = None
+    AGENT_MCP_SERVERS: ClassVar[Any] = None
+    AGENT_SCHEDULES: ClassVar[Any] = None
+    AGENT_SKILL_NAMES: ClassVar[Any] = None
+    AGENT_SKILL_QUALIFIED_NAMES: ClassVar[Any] = None
+    AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
+    AGENT_SKILLS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_SOURCE_REPOSITORY: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -132,7 +146,6 @@ class DatabricksExternalLocation(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
-    DATABRICKS_EXTERNAL_LOCATION_PATHS: ClassVar[Any] = None
     DBT_MODELS: ClassVar[Any] = None
     SQL_DBT_MODELS: ClassVar[Any] = None
     DBT_TESTS: ClassVar[Any] = None
@@ -162,13 +175,19 @@ class DatabricksExternalLocation(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksExternalLocation"
+    type_name: Union[str, UnsetType] = "DatabricksGenieAgent"
 
-    databricks_url: Union[str, None, UnsetType] = UNSET
-    """URL of the external location."""
+    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the workspace containing the Genie space."""
 
-    databricks_owner: Union[str, None, UnsetType] = UNSET
-    """User or group (principal) currently owning the external location."""
+    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the SQL warehouse backing the Genie space."""
+
+    databricks_parent_path: Union[str, None, UnsetType] = UNSET
+    """Workspace folder path containing the Genie space. It is descriptive only and creates no containment or hierarchy edge."""
+
+    databricks_etag: Union[str, None, UnsetType] = UNSET
+    """Entity tag used as a change token for the Genie space. It is populated only by an enabled serialized-detail read, so it is null when that read is disabled, denied, or omitted by the source."""
 
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
@@ -274,6 +293,42 @@ class DatabricksExternalLocation(Asset):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+    agent_slug: Union[str, None, UnsetType] = UNSET
+    """URL-safe unique identifier for this agent (for example, my-data-agent)."""
+
+    agent_type: Union[str, None, UnsetType] = UNSET
+    """Origin type of this agent — system-provided or custom user-created."""
+
+    agent_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of this agent version (draft or published)."""
+
+    agent_system_prompt: Union[str, None, UnsetType] = UNSET
+    """System prompt for this agent version."""
+
+    agent_llm_config: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized LLMConfig (model, temperature, maxTokens, maxTurns, baseUrl)."""
+
+    agent_mcp_servers: Union[str, None, UnsetType] = UNSET
+    """JSON list of MCPServerConfig entries (name, url, headers, enabled)."""
+
+    agent_schedules: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized agent schedule configuration, including kickoff message, cron expression, timezone, version policy, status, and Temporal schedule identifier."""
+
+    agent_skill_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of names of the skills bound to this agent version."""
+
+    agent_skill_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of qualifiedNames of the skills bound to this agent version."""
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
+
+    agent_skills: Union[List[RelatedSkill], None, UnsetType] = UNSET
+    """Skills bound to this agent."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -288,6 +343,9 @@ class DatabricksExternalLocation(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_source_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
+    """Context repository that produced this agent."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -322,11 +380,6 @@ class DatabricksExternalLocation(Asset):
         UNSET
     )
     """Rules where this dataset is referenced."""
-
-    databricks_external_location_paths: Union[
-        List[RelatedDatabricksExternalLocationPath], None, UnsetType
-    ] = UNSET
-    """Paths contained within the external location."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """(Deprecated) Model containing the assets."""
@@ -429,15 +482,19 @@ class DatabricksExternalLocation(Asset):
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
-        self.type_name = "DatabricksExternalLocation"
+        self.type_name = "DatabricksGenieAgent"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/genie-spaces/[^/]+$"
+    )
+
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this DatabricksExternalLocation instance.
+        Dry-run validation of this DatabricksGenieAgent instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -459,39 +516,42 @@ class DatabricksExternalLocation(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
-            raise ValueError(f"DatabricksExternalLocation validation failed: {errors}")
+            raise ValueError(f"DatabricksGenieAgent validation failed: {errors}")
 
-    def minimize(self) -> "DatabricksExternalLocation":
+    def minimize(self) -> "DatabricksGenieAgent":
         """
-        Return a minimal copy of this DatabricksExternalLocation with only updater-required fields.
+        Return a minimal copy of this DatabricksGenieAgent with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DatabricksExternalLocation with only the fields needed for an update
+        returns a new DatabricksGenieAgent with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new DatabricksExternalLocation instance with only the minimum required fields.
+            A new DatabricksGenieAgent instance with only the minimum required fields.
         """
         self.validate()
-        return DatabricksExternalLocation(
-            qualified_name=self.qualified_name, name=self.name
-        )
+        return DatabricksGenieAgent(qualified_name=self.qualified_name, name=self.name)
 
-    def relate(self) -> "RelatedDatabricksExternalLocation":
+    def relate(self) -> "RelatedDatabricksGenieAgent":
         """
-        Create a :class:`RelatedDatabricksExternalLocation` reference from this instance.
+        Create a :class:`RelatedDatabricksGenieAgent` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedDatabricksExternalLocation reference to this asset.
+            A RelatedDatabricksGenieAgent reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedDatabricksExternalLocation(guid=self.guid)
-        return RelatedDatabricksExternalLocation(qualified_name=self.qualified_name)
+            return RelatedDatabricksGenieAgent(guid=self.guid)
+        return RelatedDatabricksGenieAgent(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -519,12 +579,12 @@ class DatabricksExternalLocation(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _databricks_external_location_to_nested_bytes(self, serde)
+        return _databricks_genie_agent_to_nested_bytes(self, serde)
 
     @staticmethod
     def from_json(
         json_data: str | bytes, serde: Serde | None = None
-    ) -> DatabricksExternalLocation:
+    ) -> DatabricksGenieAgent:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -533,13 +593,13 @@ class DatabricksExternalLocation(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            DatabricksExternalLocation instance
+            DatabricksGenieAgent instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _databricks_external_location_from_nested_bytes(json_data, serde)
+        return _databricks_genie_agent_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -547,14 +607,20 @@ class DatabricksExternalLocation(Asset):
 # =============================================================================
 
 
-class DatabricksExternalLocationAttributes(AssetAttributes):
-    """DatabricksExternalLocation-specific attributes for nested API format."""
+class DatabricksGenieAgentAttributes(AssetAttributes):
+    """DatabricksGenieAgent-specific attributes for nested API format."""
 
-    databricks_url: Union[str, None, UnsetType] = UNSET
-    """URL of the external location."""
+    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the workspace containing the Genie space."""
 
-    databricks_owner: Union[str, None, UnsetType] = UNSET
-    """User or group (principal) currently owning the external location."""
+    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the SQL warehouse backing the Genie space."""
+
+    databricks_parent_path: Union[str, None, UnsetType] = UNSET
+    """Workspace folder path containing the Genie space. It is descriptive only and creates no containment or hierarchy edge."""
+
+    databricks_etag: Union[str, None, UnsetType] = UNSET
+    """Entity tag used as a change token for the Genie space. It is populated only by an enabled serialized-detail read, so it is null when that read is disabled, denied, or omitted by the source."""
 
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
@@ -660,9 +726,45 @@ class DatabricksExternalLocationAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+    agent_slug: Union[str, None, UnsetType] = UNSET
+    """URL-safe unique identifier for this agent (for example, my-data-agent)."""
 
-class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttributes):
-    """DatabricksExternalLocation-specific relationship attributes for nested API format."""
+    agent_type: Union[str, None, UnsetType] = UNSET
+    """Origin type of this agent — system-provided or custom user-created."""
+
+    agent_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of this agent version (draft or published)."""
+
+    agent_system_prompt: Union[str, None, UnsetType] = UNSET
+    """System prompt for this agent version."""
+
+    agent_llm_config: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized LLMConfig (model, temperature, maxTokens, maxTurns, baseUrl)."""
+
+    agent_mcp_servers: Union[str, None, UnsetType] = UNSET
+    """JSON list of MCPServerConfig entries (name, url, headers, enabled)."""
+
+    agent_schedules: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized agent schedule configuration, including kickoff message, cron expression, timezone, version policy, status, and Temporal schedule identifier."""
+
+    agent_skill_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of names of the skills bound to this agent version."""
+
+    agent_skill_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of qualifiedNames of the skills bound to this agent version."""
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
+
+
+class DatabricksGenieAgentRelationshipAttributes(AssetRelationshipAttributes):
+    """DatabricksGenieAgent-specific relationship attributes for nested API format."""
+
+    agent_skills: Union[List[RelatedSkill], None, UnsetType] = UNSET
+    """Skills bound to this agent."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -678,6 +780,9 @@ class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttribut
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_source_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
+    """Context repository that produced this agent."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -712,11 +817,6 @@ class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttribut
         UNSET
     )
     """Rules where this dataset is referenced."""
-
-    databricks_external_location_paths: Union[
-        List[RelatedDatabricksExternalLocationPath], None, UnsetType
-    ] = UNSET
-    """Paths contained within the external location."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """(Deprecated) Model containing the assets."""
@@ -819,18 +919,18 @@ class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttribut
     """Business question insights for this SQL asset."""
 
 
-class DatabricksExternalLocationNested(AssetNested):
-    """DatabricksExternalLocation in nested API format for high-performance serialization."""
+class DatabricksGenieAgentNested(AssetNested):
+    """DatabricksGenieAgent in nested API format for high-performance serialization."""
 
-    attributes: Union[DatabricksExternalLocationAttributes, UnsetType] = UNSET
+    attributes: Union[DatabricksGenieAgentAttributes, UnsetType] = UNSET
     relationship_attributes: Union[
-        DatabricksExternalLocationRelationshipAttributes, UnsetType
+        DatabricksGenieAgentRelationshipAttributes, UnsetType
     ] = UNSET
     append_relationship_attributes: Union[
-        DatabricksExternalLocationRelationshipAttributes, UnsetType
+        DatabricksGenieAgentRelationshipAttributes, UnsetType
     ] = UNSET
     remove_relationship_attributes: Union[
-        DatabricksExternalLocationRelationshipAttributes, UnsetType
+        DatabricksGenieAgentRelationshipAttributes, UnsetType
     ] = UNSET
 
 
@@ -838,13 +938,15 @@ class DatabricksExternalLocationNested(AssetNested):
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_DATABRICKS_EXTERNAL_LOCATION_REL_FIELDS: List[str] = [
+_DATABRICKS_GENIE_AGENT_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
+    "agent_skills",
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
     "anomalo_checks",
     "application",
     "application_field",
+    "context_source_repository",
     "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -855,7 +957,6 @@ _DATABRICKS_EXTERNAL_LOCATION_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
-    "databricks_external_location_paths",
     "dbt_models",
     "sql_dbt_models",
     "dbt_tests",
@@ -887,13 +988,15 @@ _DATABRICKS_EXTERNAL_LOCATION_REL_FIELDS: List[str] = [
 ]
 
 
-def _populate_databricks_external_location_attrs(
-    attrs: DatabricksExternalLocationAttributes, obj: DatabricksExternalLocation
+def _populate_databricks_genie_agent_attrs(
+    attrs: DatabricksGenieAgentAttributes, obj: DatabricksGenieAgent
 ) -> None:
-    """Populate DatabricksExternalLocation-specific attributes on the attrs struct."""
+    """Populate DatabricksGenieAgent-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_url = obj.databricks_url
-    attrs.databricks_owner = obj.databricks_owner
+    attrs.databricks_workspace_id = obj.databricks_workspace_id
+    attrs.databricks_warehouse_id = obj.databricks_warehouse_id
+    attrs.databricks_parent_path = obj.databricks_parent_path
+    attrs.databricks_etag = obj.databricks_etag
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -932,15 +1035,28 @@ def _populate_databricks_external_location_attrs(
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+    attrs.agent_slug = obj.agent_slug
+    attrs.agent_type = obj.agent_type
+    attrs.agent_status = obj.agent_status
+    attrs.agent_system_prompt = obj.agent_system_prompt
+    attrs.agent_llm_config = obj.agent_llm_config
+    attrs.agent_mcp_servers = obj.agent_mcp_servers
+    attrs.agent_schedules = obj.agent_schedules
+    attrs.agent_skill_names = obj.agent_skill_names
+    attrs.agent_skill_qualified_names = obj.agent_skill_qualified_names
+    attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
 
 
-def _extract_databricks_external_location_attrs(
-    attrs: DatabricksExternalLocationAttributes,
+def _extract_databricks_genie_agent_attrs(
+    attrs: DatabricksGenieAgentAttributes,
 ) -> dict:
-    """Extract all DatabricksExternalLocation attributes from the attrs struct into a flat dict."""
+    """Extract all DatabricksGenieAgent attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_url"] = attrs.databricks_url
-    result["databricks_owner"] = attrs.databricks_owner
+    result["databricks_workspace_id"] = attrs.databricks_workspace_id
+    result["databricks_warehouse_id"] = attrs.databricks_warehouse_id
+    result["databricks_parent_path"] = attrs.databricks_parent_path
+    result["databricks_etag"] = attrs.databricks_etag
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -985,6 +1101,17 @@ def _extract_databricks_external_location_attrs(
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
+    result["agent_slug"] = attrs.agent_slug
+    result["agent_type"] = attrs.agent_type
+    result["agent_status"] = attrs.agent_status
+    result["agent_system_prompt"] = attrs.agent_system_prompt
+    result["agent_llm_config"] = attrs.agent_llm_config
+    result["agent_mcp_servers"] = attrs.agent_mcp_servers
+    result["agent_schedules"] = attrs.agent_schedules
+    result["agent_skill_names"] = attrs.agent_skill_names
+    result["agent_skill_qualified_names"] = attrs.agent_skill_qualified_names
+    result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     return result
 
 
@@ -993,38 +1120,38 @@ def _extract_databricks_external_location_attrs(
 # =============================================================================
 
 
-def _databricks_external_location_to_nested(
-    databricks_external_location: DatabricksExternalLocation,
-) -> DatabricksExternalLocationNested:
-    """Convert flat DatabricksExternalLocation to nested format."""
-    attrs = DatabricksExternalLocationAttributes()
-    _populate_databricks_external_location_attrs(attrs, databricks_external_location)
+def _databricks_genie_agent_to_nested(
+    databricks_genie_agent: DatabricksGenieAgent,
+) -> DatabricksGenieAgentNested:
+    """Convert flat DatabricksGenieAgent to nested format."""
+    attrs = DatabricksGenieAgentAttributes()
+    _populate_databricks_genie_agent_attrs(attrs, databricks_genie_agent)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        databricks_external_location,
-        _DATABRICKS_EXTERNAL_LOCATION_REL_FIELDS,
-        DatabricksExternalLocationRelationshipAttributes,
+        databricks_genie_agent,
+        _DATABRICKS_GENIE_AGENT_REL_FIELDS,
+        DatabricksGenieAgentRelationshipAttributes,
     )
-    return DatabricksExternalLocationNested(
-        guid=databricks_external_location.guid,
-        type_name=databricks_external_location.type_name,
-        status=databricks_external_location.status,
-        version=databricks_external_location.version,
-        create_time=databricks_external_location.create_time,
-        update_time=databricks_external_location.update_time,
-        created_by=databricks_external_location.created_by,
-        updated_by=databricks_external_location.updated_by,
-        classifications=databricks_external_location.classifications,
-        classification_names=databricks_external_location.classification_names,
-        meanings=databricks_external_location.meanings,
-        labels=databricks_external_location.labels,
-        business_attributes=databricks_external_location.business_attributes,
-        custom_attributes=databricks_external_location.custom_attributes,
-        pending_tasks=databricks_external_location.pending_tasks,
-        proxy=databricks_external_location.proxy,
-        is_incomplete=databricks_external_location.is_incomplete,
-        provenance_type=databricks_external_location.provenance_type,
-        home_id=databricks_external_location.home_id,
+    return DatabricksGenieAgentNested(
+        guid=databricks_genie_agent.guid,
+        type_name=databricks_genie_agent.type_name,
+        status=databricks_genie_agent.status,
+        version=databricks_genie_agent.version,
+        create_time=databricks_genie_agent.create_time,
+        update_time=databricks_genie_agent.update_time,
+        created_by=databricks_genie_agent.created_by,
+        updated_by=databricks_genie_agent.updated_by,
+        classifications=databricks_genie_agent.classifications,
+        classification_names=databricks_genie_agent.classification_names,
+        meanings=databricks_genie_agent.meanings,
+        labels=databricks_genie_agent.labels,
+        business_attributes=databricks_genie_agent.business_attributes,
+        custom_attributes=databricks_genie_agent.custom_attributes,
+        pending_tasks=databricks_genie_agent.pending_tasks,
+        proxy=databricks_genie_agent.proxy,
+        is_incomplete=databricks_genie_agent.is_incomplete,
+        provenance_type=databricks_genie_agent.provenance_type,
+        home_id=databricks_genie_agent.home_id,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1032,24 +1159,24 @@ def _databricks_external_location_to_nested(
     )
 
 
-def _databricks_external_location_from_nested(
-    nested: DatabricksExternalLocationNested,
-) -> DatabricksExternalLocation:
-    """Convert nested format to flat DatabricksExternalLocation."""
+def _databricks_genie_agent_from_nested(
+    nested: DatabricksGenieAgentNested,
+) -> DatabricksGenieAgent:
+    """Convert nested format to flat DatabricksGenieAgent."""
     attrs = (
         nested.attributes
         if nested.attributes is not UNSET
-        else DatabricksExternalLocationAttributes()
+        else DatabricksGenieAgentAttributes()
     )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _DATABRICKS_EXTERNAL_LOCATION_REL_FIELDS,
-        DatabricksExternalLocationRelationshipAttributes,
+        _DATABRICKS_GENIE_AGENT_REL_FIELDS,
+        DatabricksGenieAgentRelationshipAttributes,
     )
-    return DatabricksExternalLocation(
+    return DatabricksGenieAgent(
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
@@ -1069,27 +1196,25 @@ def _databricks_external_location_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        **_extract_databricks_external_location_attrs(attrs),
+        **_extract_databricks_genie_agent_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
     )
 
 
-def _databricks_external_location_to_nested_bytes(
-    databricks_external_location: DatabricksExternalLocation, serde: Serde
+def _databricks_genie_agent_to_nested_bytes(
+    databricks_genie_agent: DatabricksGenieAgent, serde: Serde
 ) -> bytes:
-    """Convert flat DatabricksExternalLocation to nested JSON bytes."""
-    return serde.encode(
-        _databricks_external_location_to_nested(databricks_external_location)
-    )
+    """Convert flat DatabricksGenieAgent to nested JSON bytes."""
+    return serde.encode(_databricks_genie_agent_to_nested(databricks_genie_agent))
 
 
-def _databricks_external_location_from_nested_bytes(
+def _databricks_genie_agent_from_nested_bytes(
     data: bytes, serde: Serde
-) -> DatabricksExternalLocation:
-    """Convert nested JSON bytes to flat DatabricksExternalLocation."""
-    nested = serde.decode(data, DatabricksExternalLocationNested)
-    return _databricks_external_location_from_nested(nested)
+) -> DatabricksGenieAgent:
+    """Convert nested JSON bytes to flat DatabricksGenieAgent."""
+    nested = serde.decode(data, DatabricksGenieAgentNested)
+    return _databricks_genie_agent_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
@@ -1101,180 +1226,187 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
 
-DatabricksExternalLocation.DATABRICKS_URL = KeywordField(
-    "databricksUrl", "databricksUrl"
+DatabricksGenieAgent.DATABRICKS_WORKSPACE_ID = KeywordField(
+    "databricksWorkspaceId", "databricksWorkspaceId"
 )
-DatabricksExternalLocation.DATABRICKS_OWNER = KeywordField(
-    "databricksOwner", "databricksOwner"
+DatabricksGenieAgent.DATABRICKS_WAREHOUSE_ID = KeywordField(
+    "databricksWarehouseId", "databricksWarehouseId"
 )
-DatabricksExternalLocation.QUERY_COUNT = NumericField("queryCount", "queryCount")
-DatabricksExternalLocation.QUERY_USER_COUNT = NumericField(
-    "queryUserCount", "queryUserCount"
+DatabricksGenieAgent.DATABRICKS_PARENT_PATH = KeywordField(
+    "databricksParentPath", "databricksParentPath"
 )
-DatabricksExternalLocation.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DatabricksExternalLocation.QUERY_COUNT_UPDATED_AT = NumericField(
+DatabricksGenieAgent.DATABRICKS_ETAG = KeywordField("databricksEtag", "databricksEtag")
+DatabricksGenieAgent.QUERY_COUNT = NumericField("queryCount", "queryCount")
+DatabricksGenieAgent.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
+DatabricksGenieAgent.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
+DatabricksGenieAgent.QUERY_COUNT_UPDATED_AT = NumericField(
     "queryCountUpdatedAt", "queryCountUpdatedAt"
 )
-DatabricksExternalLocation.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DatabricksExternalLocation.DATABASE_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.DATABASE_NAME = KeywordField("databaseName", "databaseName")
+DatabricksGenieAgent.DATABASE_QUALIFIED_NAME = KeywordField(
     "databaseQualifiedName", "databaseQualifiedName"
 )
-DatabricksExternalLocation.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DatabricksExternalLocation.SCHEMA_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
+DatabricksGenieAgent.SCHEMA_QUALIFIED_NAME = KeywordField(
     "schemaQualifiedName", "schemaQualifiedName"
 )
-DatabricksExternalLocation.TABLE_NAME = KeywordField("tableName", "tableName")
-DatabricksExternalLocation.TABLE_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.TABLE_NAME = KeywordField("tableName", "tableName")
+DatabricksGenieAgent.TABLE_QUALIFIED_NAME = KeywordField(
     "tableQualifiedName", "tableQualifiedName"
 )
-DatabricksExternalLocation.VIEW_NAME = KeywordField("viewName", "viewName")
-DatabricksExternalLocation.VIEW_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.VIEW_NAME = KeywordField("viewName", "viewName")
+DatabricksGenieAgent.VIEW_QUALIFIED_NAME = KeywordField(
     "viewQualifiedName", "viewQualifiedName"
 )
-DatabricksExternalLocation.CALCULATION_VIEW_NAME = KeywordField(
+DatabricksGenieAgent.CALCULATION_VIEW_NAME = KeywordField(
     "calculationViewName", "calculationViewName"
 )
-DatabricksExternalLocation.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
     "calculationViewQualifiedName", "calculationViewQualifiedName"
 )
-DatabricksExternalLocation.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-DatabricksExternalLocation.LAST_PROFILED_AT = NumericField(
-    "lastProfiledAt", "lastProfiledAt"
-)
-DatabricksExternalLocation.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+DatabricksGenieAgent.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
+DatabricksGenieAgent.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
+DatabricksGenieAgent.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
-DatabricksExternalLocation.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DatabricksExternalLocation.SQL_HAS_AI_INSIGHTS = BooleanField(
+DatabricksGenieAgent.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+DatabricksGenieAgent.SQL_HAS_AI_INSIGHTS = BooleanField(
     "sqlHasAiInsights", "sqlHasAiInsights"
 )
-DatabricksExternalLocation.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+DatabricksGenieAgent.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
     "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
 )
-DatabricksExternalLocation.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = (
-    NumericField(
-        "sqlAiInsightsPopularBusinessQuestionCount",
-        "sqlAiInsightsPopularBusinessQuestionCount",
-    )
+DatabricksGenieAgent.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
 )
-DatabricksExternalLocation.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+DatabricksGenieAgent.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
     "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
 )
-DatabricksExternalLocation.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+DatabricksGenieAgent.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
     "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
 )
-DatabricksExternalLocation.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+DatabricksGenieAgent.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
     "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
 )
-DatabricksExternalLocation.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
     "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
 )
-DatabricksExternalLocation.SQL_COALESCE_NODE_STATUS = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_NODE_STATUS = KeywordField(
     "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
 )
-DatabricksExternalLocation.SQL_COALESCE_LAST_RUN_AT = NumericField(
+DatabricksGenieAgent.SQL_COALESCE_LAST_RUN_AT = NumericField(
     "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
 )
-DatabricksExternalLocation.SQL_COALESCE_NODE_TYPE = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_NODE_TYPE = KeywordField(
     "sqlCoalesceNodeType", "sqlCoalesceNodeType"
 )
-DatabricksExternalLocation.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
     "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
 )
-DatabricksExternalLocation.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+DatabricksGenieAgent.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
     "sqlCoalesceEnvironmentName",
     "sqlCoalesceEnvironmentName",
     "sqlCoalesceEnvironmentName.text",
 )
-DatabricksExternalLocation.SQL_COALESCE_PROJECT_ID = KeywordField(
+DatabricksGenieAgent.SQL_COALESCE_PROJECT_ID = KeywordField(
     "sqlCoalesceProjectId", "sqlCoalesceProjectId"
 )
-DatabricksExternalLocation.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+DatabricksGenieAgent.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
     "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
 )
-DatabricksExternalLocation.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+DatabricksGenieAgent.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
     "sqlShareQualifiedNames", "sqlShareQualifiedNames"
 )
-DatabricksExternalLocation.CATALOG_DATASET_GUID = KeywordField(
+DatabricksGenieAgent.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
-DatabricksExternalLocation.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-DatabricksExternalLocation.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
+DatabricksGenieAgent.AGENT_SLUG = KeywordField("agentSlug", "agentSlug")
+DatabricksGenieAgent.AGENT_TYPE = KeywordField("agentType", "agentType")
+DatabricksGenieAgent.AGENT_STATUS = KeywordField("agentStatus", "agentStatus")
+DatabricksGenieAgent.AGENT_SYSTEM_PROMPT = TextField(
+    "agentSystemPrompt", "agentSystemPrompt"
 )
-DatabricksExternalLocation.ANOMALO_CHECKS = RelationField("anomaloChecks")
-DatabricksExternalLocation.APPLICATION = RelationField("application")
-DatabricksExternalLocation.APPLICATION_FIELD = RelationField("applicationField")
-DatabricksExternalLocation.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
-DatabricksExternalLocation.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DatabricksExternalLocation.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+DatabricksGenieAgent.AGENT_LLM_CONFIG = KeywordField("agentLlmConfig", "agentLlmConfig")
+DatabricksGenieAgent.AGENT_MCP_SERVERS = KeywordField(
+    "agentMcpServers", "agentMcpServers"
+)
+DatabricksGenieAgent.AGENT_SCHEDULES = TextField("agentSchedules", "agentSchedules")
+DatabricksGenieAgent.AGENT_SKILL_NAMES = KeywordField(
+    "agentSkillNames", "agentSkillNames"
+)
+DatabricksGenieAgent.AGENT_SKILL_QUALIFIED_NAMES = KeywordField(
+    "agentSkillQualifiedNames", "agentSkillQualifiedNames"
+)
+DatabricksGenieAgent.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+DatabricksGenieAgent.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
+DatabricksGenieAgent.AGENT_SKILLS = RelationField("agentSkills")
+DatabricksGenieAgent.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+DatabricksGenieAgent.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+DatabricksGenieAgent.ANOMALO_CHECKS = RelationField("anomaloChecks")
+DatabricksGenieAgent.APPLICATION = RelationField("application")
+DatabricksGenieAgent.APPLICATION_FIELD = RelationField("applicationField")
+DatabricksGenieAgent.CONTEXT_SOURCE_REPOSITORY = RelationField(
+    "contextSourceRepository"
+)
+DatabricksGenieAgent.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+DatabricksGenieAgent.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DatabricksGenieAgent.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
 )
-DatabricksExternalLocation.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
-DatabricksExternalLocation.INPUT_PORT_DATA_PRODUCTS = RelationField(
-    "inputPortDataProducts"
-)
-DatabricksExternalLocation.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+DatabricksGenieAgent.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+DatabricksGenieAgent.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+DatabricksGenieAgent.MODEL_IMPLEMENTED_ENTITIES = RelationField(
     "modelImplementedEntities"
 )
-DatabricksExternalLocation.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+DatabricksGenieAgent.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
     "modelImplementedAttributes"
 )
-DatabricksExternalLocation.METRICS = RelationField("metrics")
-DatabricksExternalLocation.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DatabricksExternalLocation.DQ_REFERENCE_DATASET_RULES = RelationField(
+DatabricksGenieAgent.METRICS = RelationField("metrics")
+DatabricksGenieAgent.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+DatabricksGenieAgent.DQ_REFERENCE_DATASET_RULES = RelationField(
     "dqReferenceDatasetRules"
 )
-DatabricksExternalLocation.DATABRICKS_EXTERNAL_LOCATION_PATHS = RelationField(
-    "databricksExternalLocationPaths"
-)
-DatabricksExternalLocation.DBT_MODELS = RelationField("dbtModels")
-DatabricksExternalLocation.SQL_DBT_MODELS = RelationField("sqlDbtModels")
-DatabricksExternalLocation.DBT_TESTS = RelationField("dbtTests")
-DatabricksExternalLocation.DBT_SOURCES = RelationField("dbtSources")
-DatabricksExternalLocation.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
-DatabricksExternalLocation.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-DatabricksExternalLocation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+DatabricksGenieAgent.DBT_MODELS = RelationField("dbtModels")
+DatabricksGenieAgent.SQL_DBT_MODELS = RelationField("sqlDbtModels")
+DatabricksGenieAgent.DBT_TESTS = RelationField("dbtTests")
+DatabricksGenieAgent.DBT_SOURCES = RelationField("dbtSources")
+DatabricksGenieAgent.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
+DatabricksGenieAgent.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+DatabricksGenieAgent.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
-DatabricksExternalLocation.MEANINGS = RelationField("meanings")
-DatabricksExternalLocation.KNOWLEDGE_LINKED_FILES = RelationField(
-    "knowledgeLinkedFiles"
-)
-DatabricksExternalLocation.MC_MONITORS = RelationField("mcMonitors")
-DatabricksExternalLocation.MC_INCIDENTS = RelationField("mcIncidents")
-DatabricksExternalLocation.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-DatabricksExternalLocation.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-DatabricksExternalLocation.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-DatabricksExternalLocation.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-DatabricksExternalLocation.USER_DEF_RELATIONSHIP_TO = RelationField(
-    "userDefRelationshipTo"
-)
-DatabricksExternalLocation.USER_DEF_RELATIONSHIP_FROM = RelationField(
+DatabricksGenieAgent.MEANINGS = RelationField("meanings")
+DatabricksGenieAgent.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+DatabricksGenieAgent.MC_MONITORS = RelationField("mcMonitors")
+DatabricksGenieAgent.MC_INCIDENTS = RelationField("mcIncidents")
+DatabricksGenieAgent.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+DatabricksGenieAgent.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+DatabricksGenieAgent.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+DatabricksGenieAgent.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+DatabricksGenieAgent.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+DatabricksGenieAgent.USER_DEF_RELATIONSHIP_FROM = RelationField(
     "userDefRelationshipFrom"
 )
-DatabricksExternalLocation.FILES = RelationField("files")
-DatabricksExternalLocation.LINKS = RelationField("links")
-DatabricksExternalLocation.README = RelationField("readme")
-DatabricksExternalLocation.SCHEMA_REGISTRY_SUBJECTS = RelationField(
-    "schemaRegistrySubjects"
-)
-DatabricksExternalLocation.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+DatabricksGenieAgent.FILES = RelationField("files")
+DatabricksGenieAgent.LINKS = RelationField("links")
+DatabricksGenieAgent.README = RelationField("readme")
+DatabricksGenieAgent.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+DatabricksGenieAgent.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
     "snowflakeSemanticLogicalTables"
 )
-DatabricksExternalLocation.SODA_CHECKS = RelationField("sodaChecks")
-DatabricksExternalLocation.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-DatabricksExternalLocation.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-DatabricksExternalLocation.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
+DatabricksGenieAgent.SODA_CHECKS = RelationField("sodaChecks")
+DatabricksGenieAgent.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+DatabricksGenieAgent.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+DatabricksGenieAgent.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
     "sqlInsightOutgoingJoins"
 )
-DatabricksExternalLocation.SQL_INSIGHT_INCOMING_JOINS = RelationField(
+DatabricksGenieAgent.SQL_INSIGHT_INCOMING_JOINS = RelationField(
     "sqlInsightIncomingJoins"
 )
-DatabricksExternalLocation.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+DatabricksGenieAgent.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
     "sqlInsightBusinessQuestions"
 )

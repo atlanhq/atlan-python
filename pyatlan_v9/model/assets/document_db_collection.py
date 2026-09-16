@@ -53,6 +53,7 @@ from .dbt_related import (
 from .document_db_related import RelatedDocumentDBCollection, RelatedDocumentDBDatabase
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -184,6 +185,7 @@ class DocumentDBCollection(Asset):
     DOCUMENT_DB_DATABASE: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -209,6 +211,8 @@ class DocumentDBCollection(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DocumentDBCollection"
 
     document_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="documentDBCollectionSubtype"
@@ -541,6 +545,9 @@ class DocumentDBCollection(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -1147,6 +1154,9 @@ class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1280,6 +1290,7 @@ _DOCUMENT_DB_COLLECTION_REL_FIELDS: List[str] = [
     "document_db_database",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1554,9 +1565,6 @@ def _document_db_collection_to_nested(
         is_incomplete=document_db_collection.is_incomplete,
         provenance_type=document_db_collection.provenance_type,
         home_id=document_db_collection.home_id,
-        depth=document_db_collection.depth,
-        immediate_upstream=document_db_collection.immediate_upstream,
-        immediate_downstream=document_db_collection.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1592,6 +1600,7 @@ def _document_db_collection_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1600,9 +1609,6 @@ def _document_db_collection_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_document_db_collection_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1854,6 +1860,7 @@ DocumentDBCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DocumentDBCollection.MEANINGS = RelationField("meanings")
+DocumentDBCollection.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DocumentDBCollection.MC_MONITORS = RelationField("mcMonitors")
 DocumentDBCollection.MC_INCIDENTS = RelationField("mcIncidents")
 DocumentDBCollection.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

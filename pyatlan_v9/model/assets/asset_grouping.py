@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -83,6 +84,7 @@ class AssetGrouping(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -98,6 +100,8 @@ class AssetGrouping(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "AssetGrouping"
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -158,6 +162,9 @@ class AssetGrouping(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -390,6 +397,9 @@ class AssetGroupingRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -478,6 +488,7 @@ _ASSET_GROUPING_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -544,9 +555,6 @@ def _asset_grouping_to_nested(asset_grouping: AssetGrouping) -> AssetGroupingNes
         is_incomplete=asset_grouping.is_incomplete,
         provenance_type=asset_grouping.provenance_type,
         home_id=asset_grouping.home_id,
-        depth=asset_grouping.depth,
-        immediate_upstream=asset_grouping.immediate_upstream,
-        immediate_downstream=asset_grouping.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -580,6 +588,7 @@ def _asset_grouping_from_nested(nested: AssetGroupingNested) -> AssetGrouping:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -588,9 +597,6 @@ def _asset_grouping_from_nested(nested: AssetGroupingNested) -> AssetGrouping:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_asset_grouping_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -639,6 +645,7 @@ AssetGrouping.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 AssetGrouping.MEANINGS = RelationField("meanings")
+AssetGrouping.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 AssetGrouping.MC_MONITORS = RelationField("mcMonitors")
 AssetGrouping.MC_INCIDENTS = RelationField("mcIncidents")
 AssetGrouping.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

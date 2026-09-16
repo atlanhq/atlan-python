@@ -97,6 +97,8 @@ class KnowledgeFile(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KNOWLEDGE_FOLDERS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_ASSETS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -113,6 +115,8 @@ class KnowledgeFile(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "KnowledgeFile"
 
     knowledge_content_hash: Union[str, None, UnsetType] = UNSET
     """SHA-256 hex digest of file content, used for deduplication."""
@@ -212,6 +216,12 @@ class KnowledgeFile(Asset):
 
     knowledge_folders: Union[List[RelatedKnowledgeFolder], None, UnsetType] = UNSET
     """Knowledge folders in which this file exists."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
+    knowledge_linked_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
+    """Assets this knowledge file is linked to."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -489,6 +499,12 @@ class KnowledgeFileRelationshipAttributes(AssetRelationshipAttributes):
     knowledge_folders: Union[List[RelatedKnowledgeFolder], None, UnsetType] = UNSET
     """Knowledge folders in which this file exists."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
+    knowledge_linked_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
+    """Assets this knowledge file is linked to."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -581,6 +597,8 @@ _KNOWLEDGE_FILE_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "knowledge_folders",
+    "knowledge_linked_files",
+    "knowledge_linked_assets",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -672,9 +690,6 @@ def _knowledge_file_to_nested(knowledge_file: KnowledgeFile) -> KnowledgeFileNes
         is_incomplete=knowledge_file.is_incomplete,
         provenance_type=knowledge_file.provenance_type,
         home_id=knowledge_file.home_id,
-        depth=knowledge_file.depth,
-        immediate_upstream=knowledge_file.immediate_upstream,
-        immediate_downstream=knowledge_file.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -708,6 +723,7 @@ def _knowledge_file_from_nested(nested: KnowledgeFileNested) -> KnowledgeFile:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -716,9 +732,6 @@ def _knowledge_file_from_nested(nested: KnowledgeFileNested) -> KnowledgeFile:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_knowledge_file_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -791,6 +804,8 @@ KnowledgeFile.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 )
 KnowledgeFile.MEANINGS = RelationField("meanings")
 KnowledgeFile.KNOWLEDGE_FOLDERS = RelationField("knowledgeFolders")
+KnowledgeFile.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+KnowledgeFile.KNOWLEDGE_LINKED_ASSETS = RelationField("knowledgeLinkedAssets")
 KnowledgeFile.MC_MONITORS = RelationField("mcMonitors")
 KnowledgeFile.MC_INCIDENTS = RelationField("mcIncidents")
 KnowledgeFile.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -97,6 +98,7 @@ class SAPBWDTP(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -114,6 +116,8 @@ class SAPBWDTP(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SAPBWDTP"
 
     sap_bw_object_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of the object in SAP BW such as active, inactive, or modified (e.g. RSDAREA.OBJSTAT, RSKSNEW.OBJSTAT)."""
@@ -213,6 +217,9 @@ class SAPBWDTP(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -492,6 +499,9 @@ class SAPBWDTPRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -586,6 +596,7 @@ _SAPBWDTP_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -680,9 +691,6 @@ def _sapbwdtp_to_nested(sapbwdtp: SAPBWDTP) -> SAPBWDTPNested:
         is_incomplete=sapbwdtp.is_incomplete,
         provenance_type=sapbwdtp.provenance_type,
         home_id=sapbwdtp.home_id,
-        depth=sapbwdtp.depth,
-        immediate_upstream=sapbwdtp.immediate_upstream,
-        immediate_downstream=sapbwdtp.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -714,6 +722,7 @@ def _sapbwdtp_from_nested(nested: SAPBWDTPNested) -> SAPBWDTP:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -722,9 +731,6 @@ def _sapbwdtp_from_nested(nested: SAPBWDTPNested) -> SAPBWDTP:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sapbwdtp_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -790,6 +796,7 @@ SAPBWDTP.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SAPBWDTP.MEANINGS = RelationField("meanings")
+SAPBWDTP.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SAPBWDTP.MC_MONITORS = RelationField("mcMonitors")
 SAPBWDTP.MC_INCIDENTS = RelationField("mcIncidents")
 SAPBWDTP.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -95,6 +96,7 @@ class SigmaPage(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -112,6 +114,8 @@ class SigmaPage(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SigmaPage"
 
     sigma_data_element_count: Union[int, None, UnsetType] = UNSET
     """Number of data elements on this page."""
@@ -193,6 +197,9 @@ class SigmaPage(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -468,6 +475,9 @@ class SigmaPageRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -560,6 +570,7 @@ _SIGMA_PAGE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -642,9 +653,6 @@ def _sigma_page_to_nested(sigma_page: SigmaPage) -> SigmaPageNested:
         is_incomplete=sigma_page.is_incomplete,
         provenance_type=sigma_page.provenance_type,
         home_id=sigma_page.home_id,
-        depth=sigma_page.depth,
-        immediate_upstream=sigma_page.immediate_upstream,
-        immediate_downstream=sigma_page.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -676,6 +684,7 @@ def _sigma_page_from_nested(nested: SigmaPageNested) -> SigmaPage:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -684,9 +693,6 @@ def _sigma_page_from_nested(nested: SigmaPageNested) -> SigmaPage:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sigma_page_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -757,6 +763,7 @@ SigmaPage.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SigmaPage.MEANINGS = RelationField("meanings")
+SigmaPage.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SigmaPage.MC_MONITORS = RelationField("mcMonitors")
 SigmaPage.MC_INCIDENTS = RelationField("mcIncidents")
 SigmaPage.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

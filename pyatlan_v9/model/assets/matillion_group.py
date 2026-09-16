@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .matillion_related import RelatedMatillionGroup, RelatedMatillionProject
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -85,6 +86,7 @@ class MatillionGroup(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MATILLION_PROJECTS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -101,6 +103,8 @@ class MatillionGroup(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MatillionGroup"
 
     matillion_project_count: Union[int, None, UnsetType] = UNSET
     """Number of projects within the group."""
@@ -167,6 +171,9 @@ class MatillionGroup(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_projects: Union[List[RelatedMatillionProject], None, UnsetType] = UNSET
     """Matillion projects that exist within this group."""
@@ -408,6 +415,9 @@ class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     matillion_projects: Union[List[RelatedMatillionProject], None, UnsetType] = UNSET
     """Matillion projects that exist within this group."""
 
@@ -499,6 +509,7 @@ _MATILLION_GROUP_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "matillion_projects",
     "mc_monitors",
     "mc_incidents",
@@ -572,9 +583,6 @@ def _matillion_group_to_nested(matillion_group: MatillionGroup) -> MatillionGrou
         is_incomplete=matillion_group.is_incomplete,
         provenance_type=matillion_group.provenance_type,
         home_id=matillion_group.home_id,
-        depth=matillion_group.depth,
-        immediate_upstream=matillion_group.immediate_upstream,
-        immediate_downstream=matillion_group.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -608,6 +616,7 @@ def _matillion_group_from_nested(nested: MatillionGroupNested) -> MatillionGroup
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -616,9 +625,6 @@ def _matillion_group_from_nested(nested: MatillionGroupNested) -> MatillionGroup
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_matillion_group_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -677,6 +683,7 @@ MatillionGroup.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MatillionGroup.MEANINGS = RelationField("meanings")
+MatillionGroup.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MatillionGroup.MATILLION_PROJECTS = RelationField("matillionProjects")
 MatillionGroup.MC_MONITORS = RelationField("mcMonitors")
 MatillionGroup.MC_INCIDENTS = RelationField("mcIncidents")

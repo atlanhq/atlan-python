@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -99,6 +100,7 @@ class SapErpComponent(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -123,6 +125,8 @@ class SapErpComponent(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SapErpComponent"
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
@@ -204,6 +208,9 @@ class SapErpComponent(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -492,6 +499,9 @@ class SapErpComponentRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -613,6 +623,7 @@ _SAP_ERP_COMPONENT_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -706,9 +717,6 @@ def _sap_erp_component_to_nested(
         is_incomplete=sap_erp_component.is_incomplete,
         provenance_type=sap_erp_component.provenance_type,
         home_id=sap_erp_component.home_id,
-        depth=sap_erp_component.depth,
-        immediate_upstream=sap_erp_component.immediate_upstream,
-        immediate_downstream=sap_erp_component.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -742,6 +750,7 @@ def _sap_erp_component_from_nested(nested: SapErpComponentNested) -> SapErpCompo
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -750,9 +759,6 @@ def _sap_erp_component_from_nested(nested: SapErpComponentNested) -> SapErpCompo
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_component_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -818,6 +824,7 @@ SapErpComponent.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SapErpComponent.MEANINGS = RelationField("meanings")
+SapErpComponent.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SapErpComponent.MC_MONITORS = RelationField("mcMonitors")
 SapErpComponent.MC_INCIDENTS = RelationField("mcIncidents")
 SapErpComponent.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

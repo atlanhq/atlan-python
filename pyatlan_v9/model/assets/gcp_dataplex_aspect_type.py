@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -98,6 +99,7 @@ class GCPDataplexAspectType(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_ENTRIES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -113,6 +115,8 @@ class GCPDataplexAspectType(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "GCPDataplexAspectType"
 
     gcp_dataplex_aspect_type_resource_name: Union[str, None, UnsetType] = UNSET
     """Full GCP resource name of this Aspect Type (e.g. projects/{project}/locations/{location}/aspectTypes/{id}). Used to match against assetGCPDataplexAspectType on BigQuery entry assets."""
@@ -218,6 +222,9 @@ class GCPDataplexAspectType(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -497,6 +504,9 @@ class GCPDataplexAspectTypeRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -586,6 +596,7 @@ _GCP_DATAPLEX_ASPECT_TYPE_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_entries",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -696,9 +707,6 @@ def _gcp_dataplex_aspect_type_to_nested(
         is_incomplete=gcp_dataplex_aspect_type.is_incomplete,
         provenance_type=gcp_dataplex_aspect_type.provenance_type,
         home_id=gcp_dataplex_aspect_type.home_id,
-        depth=gcp_dataplex_aspect_type.depth,
-        immediate_upstream=gcp_dataplex_aspect_type.immediate_upstream,
-        immediate_downstream=gcp_dataplex_aspect_type.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -734,6 +742,7 @@ def _gcp_dataplex_aspect_type_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -742,9 +751,6 @@ def _gcp_dataplex_aspect_type_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_gcp_dataplex_aspect_type_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -847,6 +853,7 @@ GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField
     "gcpDataplexAspectTypeMetadataEntities"
 )
 GCPDataplexAspectType.MEANINGS = RelationField("meanings")
+GCPDataplexAspectType.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 GCPDataplexAspectType.MC_MONITORS = RelationField("mcMonitors")
 GCPDataplexAspectType.MC_INCIDENTS = RelationField("mcIncidents")
 GCPDataplexAspectType.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

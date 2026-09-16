@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDB
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -85,6 +86,7 @@ class MongoDB(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -100,6 +102,8 @@ class MongoDB(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MongoDB"
 
     no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="noSQLSchemaDefinition"
@@ -165,6 +169,9 @@ class MongoDB(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -402,6 +409,9 @@ class MongoDBRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -488,6 +498,7 @@ _MONGO_DB_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -554,9 +565,6 @@ def _mongo_db_to_nested(mongo_db: MongoDB) -> MongoDBNested:
         is_incomplete=mongo_db.is_incomplete,
         provenance_type=mongo_db.provenance_type,
         home_id=mongo_db.home_id,
-        depth=mongo_db.depth,
-        immediate_upstream=mongo_db.immediate_upstream,
-        immediate_downstream=mongo_db.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -586,6 +594,7 @@ def _mongo_db_from_nested(nested: MongoDBNested) -> MongoDB:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -594,9 +603,6 @@ def _mongo_db_from_nested(nested: MongoDBNested) -> MongoDB:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_mongo_db_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -642,6 +648,7 @@ MongoDB.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MongoDB.MEANINGS = RelationField("meanings")
+MongoDB.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MongoDB.MC_MONITORS = RelationField("mcMonitors")
 MongoDB.MC_INCIDENTS = RelationField("mcIncidents")
 MongoDB.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -47,6 +47,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -89,6 +90,7 @@ class BusinessPolicy(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -98,6 +100,8 @@ class BusinessPolicy(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "BusinessPolicy"
 
     business_policy_type: Union[str, None, UnsetType] = UNSET
     """Type of business policy"""
@@ -185,6 +189,9 @@ class BusinessPolicy(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -426,6 +433,9 @@ class BusinessPolicyRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -494,6 +504,7 @@ _BUSINESS_POLICY_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -578,9 +589,6 @@ def _business_policy_to_nested(business_policy: BusinessPolicy) -> BusinessPolic
         is_incomplete=business_policy.is_incomplete,
         provenance_type=business_policy.provenance_type,
         home_id=business_policy.home_id,
-        depth=business_policy.depth,
-        immediate_upstream=business_policy.immediate_upstream,
-        immediate_downstream=business_policy.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -614,6 +622,7 @@ def _business_policy_from_nested(nested: BusinessPolicyNested) -> BusinessPolicy
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -622,9 +631,6 @@ def _business_policy_from_nested(nested: BusinessPolicyNested) -> BusinessPolicy
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_business_policy_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -704,6 +710,7 @@ BusinessPolicy.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 BusinessPolicy.MEANINGS = RelationField("meanings")
+BusinessPolicy.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 BusinessPolicy.MC_MONITORS = RelationField("mcMonitors")
 BusinessPolicy.MC_INCIDENTS = RelationField("mcIncidents")
 BusinessPolicy.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

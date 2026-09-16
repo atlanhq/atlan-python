@@ -46,6 +46,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gcs_related import RelatedGCSBucket, RelatedGCSObject
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -108,6 +109,7 @@ class GCSBucket(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     GCS_OBJECTS: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -123,6 +125,8 @@ class GCSBucket(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "GCSBucket"
 
     gcs_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects within the bucket."""
@@ -252,6 +256,9 @@ class GCSBucket(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -608,6 +615,9 @@ class GCSBucketRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -695,6 +705,7 @@ _GCS_BUCKET_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "gcs_objects",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -805,9 +816,6 @@ def _gcs_bucket_to_nested(gcs_bucket: GCSBucket) -> GCSBucketNested:
         is_incomplete=gcs_bucket.is_incomplete,
         provenance_type=gcs_bucket.provenance_type,
         home_id=gcs_bucket.home_id,
-        depth=gcs_bucket.depth,
-        immediate_upstream=gcs_bucket.immediate_upstream,
-        immediate_downstream=gcs_bucket.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -839,6 +847,7 @@ def _gcs_bucket_from_nested(nested: GCSBucketNested) -> GCSBucket:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -847,9 +856,6 @@ def _gcs_bucket_from_nested(nested: GCSBucketNested) -> GCSBucket:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_gcs_bucket_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -947,6 +953,7 @@ GCSBucket.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 )
 GCSBucket.GCS_OBJECTS = RelationField("gcsObjects")
 GCSBucket.MEANINGS = RelationField("meanings")
+GCSBucket.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 GCSBucket.MC_MONITORS = RelationField("mcMonitors")
 GCSBucket.MC_INCIDENTS = RelationField("mcIncidents")
 GCSBucket.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -52,6 +52,7 @@ from .fabric_related import RelatedFabricWorkspace
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .iceberg_related import RelatedIcebergCatalog
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -147,6 +148,7 @@ class IcebergCatalog(Asset):
     FABRIC_WORKSPACE: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -168,6 +170,8 @@ class IcebergCatalog(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "IcebergCatalog"
 
     iceberg_catalog_type: Union[str, None, UnsetType] = UNSET
     """Type of the Iceberg catalog (e.g., 'hadoop', 'hive', 'nessie', 'rest')."""
@@ -382,6 +386,9 @@ class IcebergCatalog(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -794,6 +801,9 @@ class IcebergCatalogRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -915,6 +925,7 @@ _ICEBERG_CATALOG_REL_FIELDS: List[str] = [
     "fabric_workspace",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1093,9 +1104,6 @@ def _iceberg_catalog_to_nested(iceberg_catalog: IcebergCatalog) -> IcebergCatalo
         is_incomplete=iceberg_catalog.is_incomplete,
         provenance_type=iceberg_catalog.provenance_type,
         home_id=iceberg_catalog.home_id,
-        depth=iceberg_catalog.depth,
-        immediate_upstream=iceberg_catalog.immediate_upstream,
-        immediate_downstream=iceberg_catalog.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1129,6 +1137,7 @@ def _iceberg_catalog_from_nested(nested: IcebergCatalogNested) -> IcebergCatalog
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1137,9 +1146,6 @@ def _iceberg_catalog_from_nested(nested: IcebergCatalogNested) -> IcebergCatalog
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_iceberg_catalog_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1307,6 +1313,7 @@ IcebergCatalog.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 IcebergCatalog.MEANINGS = RelationField("meanings")
+IcebergCatalog.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 IcebergCatalog.MC_MONITORS = RelationField("mcMonitors")
 IcebergCatalog.MC_INCIDENTS = RelationField("mcIncidents")
 IcebergCatalog.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

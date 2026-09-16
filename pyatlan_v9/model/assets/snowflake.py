@@ -50,6 +50,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -133,6 +134,7 @@ class Snowflake(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -152,6 +154,8 @@ class Snowflake(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Snowflake"
 
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
@@ -333,6 +337,9 @@ class Snowflake(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -706,6 +713,9 @@ class SnowflakeRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -818,6 +828,7 @@ _SNOWFLAKE_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -966,9 +977,6 @@ def _snowflake_to_nested(snowflake: Snowflake) -> SnowflakeNested:
         is_incomplete=snowflake.is_incomplete,
         provenance_type=snowflake.provenance_type,
         home_id=snowflake.home_id,
-        depth=snowflake.depth,
-        immediate_upstream=snowflake.immediate_upstream,
-        immediate_downstream=snowflake.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1000,6 +1008,7 @@ def _snowflake_from_nested(nested: SnowflakeNested) -> Snowflake:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1008,9 +1017,6 @@ def _snowflake_from_nested(nested: SnowflakeNested) -> Snowflake:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_snowflake_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1145,6 +1151,7 @@ Snowflake.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Snowflake.MEANINGS = RelationField("meanings")
+Snowflake.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Snowflake.MC_MONITORS = RelationField("mcMonitors")
 Snowflake.MC_INCIDENTS = RelationField("mcIncidents")
 Snowflake.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

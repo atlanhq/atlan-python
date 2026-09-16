@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -91,6 +92,7 @@ class Airflow(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -107,6 +109,8 @@ class Airflow(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SPARK_ORCHESTRATED_ASSETS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Airflow"
 
     airflow_tags: Union[List[str], None, UnsetType] = UNSET
     """Tags assigned to the asset in Airflow."""
@@ -194,6 +198,9 @@ class Airflow(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -456,6 +463,9 @@ class AirflowRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -545,6 +555,7 @@ _AIRFLOW_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -628,9 +639,6 @@ def _airflow_to_nested(airflow: Airflow) -> AirflowNested:
         is_incomplete=airflow.is_incomplete,
         provenance_type=airflow.provenance_type,
         home_id=airflow.home_id,
-        depth=airflow.depth,
-        immediate_upstream=airflow.immediate_upstream,
-        immediate_downstream=airflow.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -660,6 +668,7 @@ def _airflow_from_nested(nested: AirflowNested) -> Airflow:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -668,9 +677,6 @@ def _airflow_from_nested(nested: AirflowNested) -> Airflow:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_airflow_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -734,6 +740,7 @@ Airflow.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Airflow.MEANINGS = RelationField("meanings")
+Airflow.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Airflow.MC_MONITORS = RelationField("mcMonitors")
 Airflow.MC_INCIDENTS = RelationField("mcIncidents")
 Airflow.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

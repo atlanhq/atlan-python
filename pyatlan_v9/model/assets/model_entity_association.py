@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import (
     RelatedModelAttribute,
     RelatedModelEntity,
@@ -113,6 +114,7 @@ class ModelEntityAssociation(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -128,6 +130,8 @@ class ModelEntityAssociation(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "ModelEntityAssociation"
 
     model_entity_association_cardinality: Union[str, None, UnsetType] = UNSET
     """(Deprecated) Cardinality of the data entity association."""
@@ -267,6 +271,9 @@ class ModelEntityAssociation(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -365,6 +372,8 @@ class ModelEntityAssociation(Asset):
                 errors.append("model_entity_name is required for creation")
             if self.model_entity_qualified_name is UNSET:
                 errors.append("model_entity_qualified_name is required for creation")
+            if self.model_entity_association_from is UNSET:
+                errors.append("model_entity_association_from is required for creation")
         if errors:
             raise ValueError(f"ModelEntityAssociation validation failed: {errors}")
 
@@ -598,6 +607,9 @@ class ModelEntityAssociationRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -688,6 +700,7 @@ _MODEL_ENTITY_ASSOCIATION_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -844,9 +857,6 @@ def _model_entity_association_to_nested(
         is_incomplete=model_entity_association.is_incomplete,
         provenance_type=model_entity_association.provenance_type,
         home_id=model_entity_association.home_id,
-        depth=model_entity_association.depth,
-        immediate_upstream=model_entity_association.immediate_upstream,
-        immediate_downstream=model_entity_association.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -882,6 +892,7 @@ def _model_entity_association_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -890,9 +901,6 @@ def _model_entity_association_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_model_entity_association_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1034,6 +1042,7 @@ ModelEntityAssociation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationFiel
     "gcpDataplexAspectTypeMetadataEntities"
 )
 ModelEntityAssociation.MEANINGS = RelationField("meanings")
+ModelEntityAssociation.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 ModelEntityAssociation.MC_MONITORS = RelationField("mcMonitors")
 ModelEntityAssociation.MC_INCIDENTS = RelationField("mcIncidents")
 ModelEntityAssociation.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

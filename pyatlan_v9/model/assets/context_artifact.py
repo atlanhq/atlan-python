@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -95,6 +96,7 @@ class ContextArtifact(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -110,6 +112,8 @@ class ContextArtifact(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "ContextArtifact"
 
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the context repository to which this asset belongs."""
@@ -206,6 +210,9 @@ class ContextArtifact(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -494,6 +501,9 @@ class ContextArtifactRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -583,6 +593,7 @@ _CONTEXT_ARTIFACT_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -677,9 +688,6 @@ def _context_artifact_to_nested(
         is_incomplete=context_artifact.is_incomplete,
         provenance_type=context_artifact.provenance_type,
         home_id=context_artifact.home_id,
-        depth=context_artifact.depth,
-        immediate_upstream=context_artifact.immediate_upstream,
-        immediate_downstream=context_artifact.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -713,6 +721,7 @@ def _context_artifact_from_nested(nested: ContextArtifactNested) -> ContextArtif
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -721,9 +730,6 @@ def _context_artifact_from_nested(nested: ContextArtifactNested) -> ContextArtif
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_context_artifact_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -795,6 +801,7 @@ ContextArtifact.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 ContextArtifact.MEANINGS = RelationField("meanings")
+ContextArtifact.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 ContextArtifact.MC_MONITORS = RelationField("mcMonitors")
 ContextArtifact.MC_INCIDENTS = RelationField("mcIncidents")
 ContextArtifact.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

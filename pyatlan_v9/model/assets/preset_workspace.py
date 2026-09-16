@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -97,6 +98,7 @@ class PresetWorkspace(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -113,6 +115,8 @@ class PresetWorkspace(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "PresetWorkspace"
 
     preset_workspace_public_dashboards_allowed: Union[bool, None, UnsetType] = UNSET
     """"""
@@ -212,6 +216,9 @@ class PresetWorkspace(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -517,6 +524,9 @@ class PresetWorkspaceRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -608,6 +618,7 @@ _PRESET_WORKSPACE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -713,9 +724,6 @@ def _preset_workspace_to_nested(
         is_incomplete=preset_workspace.is_incomplete,
         provenance_type=preset_workspace.provenance_type,
         home_id=preset_workspace.home_id,
-        depth=preset_workspace.depth,
-        immediate_upstream=preset_workspace.immediate_upstream,
-        immediate_downstream=preset_workspace.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -749,6 +757,7 @@ def _preset_workspace_from_nested(nested: PresetWorkspaceNested) -> PresetWorksp
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -757,9 +766,6 @@ def _preset_workspace_from_nested(nested: PresetWorkspaceNested) -> PresetWorksp
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_preset_workspace_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -859,6 +865,7 @@ PresetWorkspace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 PresetWorkspace.MEANINGS = RelationField("meanings")
+PresetWorkspace.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 PresetWorkspace.MC_MONITORS = RelationField("mcMonitors")
 PresetWorkspace.MC_INCIDENTS = RelationField("mcIncidents")
 PresetWorkspace.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

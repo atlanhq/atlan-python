@@ -11,6 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+
 from .catalog_related import RelatedSaaS
 from .referenceable_related import RelatedReferenceable
 

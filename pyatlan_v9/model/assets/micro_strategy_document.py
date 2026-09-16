@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .micro_strategy_related import (
     RelatedMicroStrategyColumn,
     RelatedMicroStrategyDocument,
@@ -98,6 +99,7 @@ class MicroStrategyDocument(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MICRO_STRATEGY_PROJECT: ClassVar[Any] = None
     MICRO_STRATEGY_COLUMNS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -115,6 +117,8 @@ class MicroStrategyDocument(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MicroStrategyDocument"
 
     micro_strategy_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project in which this asset exists."""
@@ -205,6 +209,9 @@ class MicroStrategyDocument(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     micro_strategy_project: Union[RelatedMicroStrategyProject, None, UnsetType] = UNSET
     """Project in which this document exists."""
@@ -495,6 +502,9 @@ class MicroStrategyDocumentRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     micro_strategy_project: Union[RelatedMicroStrategyProject, None, UnsetType] = UNSET
     """Project in which this document exists."""
 
@@ -591,6 +601,7 @@ _MICRO_STRATEGY_DOCUMENT_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "micro_strategy_project",
     "micro_strategy_columns",
     "mc_monitors",
@@ -695,9 +706,6 @@ def _micro_strategy_document_to_nested(
         is_incomplete=micro_strategy_document.is_incomplete,
         provenance_type=micro_strategy_document.provenance_type,
         home_id=micro_strategy_document.home_id,
-        depth=micro_strategy_document.depth,
-        immediate_upstream=micro_strategy_document.immediate_upstream,
-        immediate_downstream=micro_strategy_document.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -733,6 +741,7 @@ def _micro_strategy_document_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -741,9 +750,6 @@ def _micro_strategy_document_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_micro_strategy_document_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -848,6 +854,7 @@ MicroStrategyDocument.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MicroStrategyDocument.MEANINGS = RelationField("meanings")
+MicroStrategyDocument.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MicroStrategyDocument.MICRO_STRATEGY_PROJECT = RelationField("microStrategyProject")
 MicroStrategyDocument.MICRO_STRATEGY_COLUMNS = RelationField("microStrategyColumns")
 MicroStrategyDocument.MC_MONITORS = RelationField("mcMonitors")

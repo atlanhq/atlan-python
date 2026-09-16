@@ -49,6 +49,7 @@ from .fivetran_related import RelatedFivetranConnector
 from .flow_related import RelatedFlowControlOperation
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .matillion_related import RelatedMatillionComponent
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -90,6 +91,7 @@ class SAPColumnProcess(Asset):
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
     IS_PASS_THROUGH: ClassVar[Any] = None
+    PROCESS_DERIVATION: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -112,6 +114,7 @@ class SAPColumnProcess(Asset):
     FLOW_ORCHESTRATED_BY: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MATILLION_COMPONENT: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -137,6 +140,8 @@ class SAPColumnProcess(Asset):
     SPARK_JOBS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SAPColumnProcess"
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
@@ -182,6 +187,9 @@ class SAPColumnProcess(Asset):
 
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
 
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
@@ -254,6 +262,9 @@ class SAPColumnProcess(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -503,6 +514,9 @@ class SAPColumnProcessAttributes(AssetAttributes):
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
+    process_derivation: Union[str, None, UnsetType] = UNSET
+    """How this lineage process was derived — statically from an asset definition, or from an operational data-processing run."""
+
 
 class SAPColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     """SAPColumnProcess-specific relationship attributes for nested API format."""
@@ -578,6 +592,9 @@ class SAPColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     matillion_component: Union[RelatedMatillionComponent, None, UnsetType] = UNSET
     """Matillion component that contains the logic for this lineage process."""
@@ -706,6 +723,7 @@ _SAP_COLUMN_PROCESS_REL_FIELDS: List[str] = [
     "flow_orchestrated_by",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "matillion_component",
     "mc_monitors",
     "mc_incidents",
@@ -756,6 +774,7 @@ def _populate_sap_column_process_attrs(
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
     attrs.is_pass_through = obj.is_pass_through
+    attrs.process_derivation = obj.process_derivation
 
 
 def _extract_sap_column_process_attrs(attrs: SAPColumnProcessAttributes) -> dict:
@@ -778,6 +797,7 @@ def _extract_sap_column_process_attrs(attrs: SAPColumnProcessAttributes) -> dict
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     result["is_pass_through"] = attrs.is_pass_through
+    result["process_derivation"] = attrs.process_derivation
     return result
 
 
@@ -818,9 +838,6 @@ def _sap_column_process_to_nested(
         is_incomplete=sap_column_process.is_incomplete,
         provenance_type=sap_column_process.provenance_type,
         home_id=sap_column_process.home_id,
-        depth=sap_column_process.depth,
-        immediate_upstream=sap_column_process.immediate_upstream,
-        immediate_downstream=sap_column_process.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -854,6 +871,7 @@ def _sap_column_process_from_nested(nested: SAPColumnProcessNested) -> SAPColumn
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -862,9 +880,6 @@ def _sap_column_process_from_nested(nested: SAPColumnProcessNested) -> SAPColumn
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_column_process_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -921,6 +936,9 @@ SAPColumnProcess.ADDITIONAL_ETL_CONTEXT = KeywordField(
 )
 SAPColumnProcess.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 SAPColumnProcess.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
+SAPColumnProcess.PROCESS_DERIVATION = KeywordField(
+    "processDerivation", "processDerivation"
+)
 SAPColumnProcess.ADF_ACTIVITY = RelationField("adfActivity")
 SAPColumnProcess.AIRFLOW_TASKS = RelationField("airflowTasks")
 SAPColumnProcess.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -949,6 +967,7 @@ SAPColumnProcess.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 SAPColumnProcess.MEANINGS = RelationField("meanings")
+SAPColumnProcess.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SAPColumnProcess.MATILLION_COMPONENT = RelationField("matillionComponent")
 SAPColumnProcess.MC_MONITORS = RelationField("mcMonitors")
 SAPColumnProcess.MC_INCIDENTS = RelationField("mcIncidents")

@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .metabase_related import (
     RelatedMetabaseCollection,
     RelatedMetabaseDashboard,
@@ -94,6 +95,7 @@ class MetabaseCollection(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     METABASE_DASHBOARDS: ClassVar[Any] = None
     METABASE_QUESTIONS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -111,6 +113,8 @@ class MetabaseCollection(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MetabaseCollection"
 
     metabase_slug: Union[str, None, UnsetType] = UNSET
     """"""
@@ -189,6 +193,9 @@ class MetabaseCollection(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     metabase_dashboards: Union[List[RelatedMetabaseDashboard], None, UnsetType] = UNSET
     """Dashboards that exist within this collection."""
@@ -477,6 +484,9 @@ class MetabaseCollectionRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     metabase_dashboards: Union[List[RelatedMetabaseDashboard], None, UnsetType] = UNSET
     """Dashboards that exist within this collection."""
 
@@ -571,6 +581,7 @@ _METABASE_COLLECTION_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "metabase_dashboards",
     "metabase_questions",
     "mc_monitors",
@@ -657,9 +668,6 @@ def _metabase_collection_to_nested(
         is_incomplete=metabase_collection.is_incomplete,
         provenance_type=metabase_collection.provenance_type,
         home_id=metabase_collection.home_id,
-        depth=metabase_collection.depth,
-        immediate_upstream=metabase_collection.immediate_upstream,
-        immediate_downstream=metabase_collection.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -695,6 +703,7 @@ def _metabase_collection_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -703,9 +712,6 @@ def _metabase_collection_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_metabase_collection_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -783,6 +789,7 @@ MetabaseCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MetabaseCollection.MEANINGS = RelationField("meanings")
+MetabaseCollection.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MetabaseCollection.METABASE_DASHBOARDS = RelationField("metabaseDashboards")
 MetabaseCollection.METABASE_QUESTIONS = RelationField("metabaseQuestions")
 MetabaseCollection.MC_MONITORS = RelationField("mcMonitors")

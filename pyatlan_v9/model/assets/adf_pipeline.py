@@ -50,6 +50,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -98,6 +99,7 @@ class AdfPipeline(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -113,6 +115,8 @@ class AdfPipeline(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "AdfPipeline"
 
     adf_pipeline_activity_count: Union[int, None, UnsetType] = UNSET
     """Defines the count of activities in the pipline."""
@@ -200,6 +204,9 @@ class AdfPipeline(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -459,6 +466,9 @@ class AdfPipelineRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -549,6 +559,7 @@ _ADF_PIPELINE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -625,9 +636,6 @@ def _adf_pipeline_to_nested(adf_pipeline: AdfPipeline) -> AdfPipelineNested:
         is_incomplete=adf_pipeline.is_incomplete,
         provenance_type=adf_pipeline.provenance_type,
         home_id=adf_pipeline.home_id,
-        depth=adf_pipeline.depth,
-        immediate_upstream=adf_pipeline.immediate_upstream,
-        immediate_downstream=adf_pipeline.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -659,6 +667,7 @@ def _adf_pipeline_from_nested(nested: AdfPipelineNested) -> AdfPipeline:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -667,9 +676,6 @@ def _adf_pipeline_from_nested(nested: AdfPipelineNested) -> AdfPipeline:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_adf_pipeline_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -735,6 +741,7 @@ AdfPipeline.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 AdfPipeline.MEANINGS = RelationField("meanings")
+AdfPipeline.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 AdfPipeline.MC_MONITORS = RelationField("mcMonitors")
 AdfPipeline.MC_INCIDENTS = RelationField("mcIncidents")
 AdfPipeline.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

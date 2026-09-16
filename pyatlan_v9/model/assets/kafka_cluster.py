@@ -45,6 +45,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .kafka_related import RelatedKafkaCluster, RelatedKafkaTopic
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -93,6 +94,7 @@ class KafkaCluster(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KAFKA_TOPICS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -108,6 +110,8 @@ class KafkaCluster(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "KafkaCluster"
 
     kafka_topic_count: Union[int, None, UnsetType] = UNSET
     """Number of topics in this cluster."""
@@ -195,6 +199,9 @@ class KafkaCluster(Asset):
 
     kafka_topics: Union[List[RelatedKafkaTopic], None, UnsetType] = UNSET
     """Topics contained within this Kafka cluster."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -461,6 +468,9 @@ class KafkaClusterRelationshipAttributes(AssetRelationshipAttributes):
     kafka_topics: Union[List[RelatedKafkaTopic], None, UnsetType] = UNSET
     """Topics contained within this Kafka cluster."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -550,6 +560,7 @@ _KAFKA_CLUSTER_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "kafka_topics",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -632,9 +643,6 @@ def _kafka_cluster_to_nested(kafka_cluster: KafkaCluster) -> KafkaClusterNested:
         is_incomplete=kafka_cluster.is_incomplete,
         provenance_type=kafka_cluster.provenance_type,
         home_id=kafka_cluster.home_id,
-        depth=kafka_cluster.depth,
-        immediate_upstream=kafka_cluster.immediate_upstream,
-        immediate_downstream=kafka_cluster.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -668,6 +676,7 @@ def _kafka_cluster_from_nested(nested: KafkaClusterNested) -> KafkaCluster:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -676,9 +685,6 @@ def _kafka_cluster_from_nested(nested: KafkaClusterNested) -> KafkaCluster:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_kafka_cluster_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -751,6 +757,7 @@ KafkaCluster.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 )
 KafkaCluster.MEANINGS = RelationField("meanings")
 KafkaCluster.KAFKA_TOPICS = RelationField("kafkaTopics")
+KafkaCluster.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 KafkaCluster.MC_MONITORS = RelationField("mcMonitors")
 KafkaCluster.MC_INCIDENTS = RelationField("mcIncidents")
 KafkaCluster.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

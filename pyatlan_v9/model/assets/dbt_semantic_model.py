@@ -44,6 +44,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import RelatedDbtSemanticModel
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -107,6 +108,7 @@ class DbtSemanticModel(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -125,6 +127,8 @@ class DbtSemanticModel(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DbtSemanticModel"
 
     dbt_alias: Union[str, None, UnsetType] = UNSET
     """Alias of this asset in dbt."""
@@ -242,6 +246,9 @@ class DbtSemanticModel(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -542,6 +549,9 @@ class DbtSemanticModelRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -639,6 +649,7 @@ _DBT_SEMANTIC_MODEL_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -750,9 +761,6 @@ def _dbt_semantic_model_to_nested(
         is_incomplete=dbt_semantic_model.is_incomplete,
         provenance_type=dbt_semantic_model.provenance_type,
         home_id=dbt_semantic_model.home_id,
-        depth=dbt_semantic_model.depth,
-        immediate_upstream=dbt_semantic_model.immediate_upstream,
-        immediate_downstream=dbt_semantic_model.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -786,6 +794,7 @@ def _dbt_semantic_model_from_nested(nested: DbtSemanticModelNested) -> DbtSemant
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -794,9 +803,6 @@ def _dbt_semantic_model_from_nested(nested: DbtSemanticModelNested) -> DbtSemant
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dbt_semantic_model_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -884,6 +890,7 @@ DbtSemanticModel.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DbtSemanticModel.MEANINGS = RelationField("meanings")
+DbtSemanticModel.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DbtSemanticModel.MC_MONITORS = RelationField("mcMonitors")
 DbtSemanticModel.MC_INCIDENTS = RelationField("mcIncidents")
 DbtSemanticModel.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

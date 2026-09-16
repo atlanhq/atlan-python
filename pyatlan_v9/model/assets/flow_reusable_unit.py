@@ -47,6 +47,7 @@ from .flow_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -96,6 +97,7 @@ class FlowReusableUnit(Asset):
     FLOW_DATASETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -105,6 +107,8 @@ class FlowReusableUnit(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "FlowReusableUnit"
 
     flow_dataset_count: Union[int, None, UnsetType] = UNSET
     """Count of the number of ephemeral datasets contained within this reusable unit."""
@@ -205,6 +209,9 @@ class FlowReusableUnit(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -461,6 +468,9 @@ class FlowReusableUnitRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -530,6 +540,7 @@ _FLOW_REUSABLE_UNIT_REL_FIELDS: List[str] = [
     "flow_datasets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -626,9 +637,6 @@ def _flow_reusable_unit_to_nested(
         is_incomplete=flow_reusable_unit.is_incomplete,
         provenance_type=flow_reusable_unit.provenance_type,
         home_id=flow_reusable_unit.home_id,
-        depth=flow_reusable_unit.depth,
-        immediate_upstream=flow_reusable_unit.immediate_upstream,
-        immediate_downstream=flow_reusable_unit.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -662,6 +670,7 @@ def _flow_reusable_unit_from_nested(nested: FlowReusableUnitNested) -> FlowReusa
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -670,9 +679,6 @@ def _flow_reusable_unit_from_nested(nested: FlowReusableUnitNested) -> FlowReusa
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_flow_reusable_unit_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -760,6 +766,7 @@ FlowReusableUnit.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 FlowReusableUnit.MEANINGS = RelationField("meanings")
+FlowReusableUnit.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 FlowReusableUnit.MC_MONITORS = RelationField("mcMonitors")
 FlowReusableUnit.MC_INCIDENTS = RelationField("mcIncidents")
 FlowReusableUnit.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

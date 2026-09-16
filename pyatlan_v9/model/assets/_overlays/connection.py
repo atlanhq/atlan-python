@@ -1,6 +1,6 @@
 # STDLIB_IMPORT: from typing import TYPE_CHECKING, List, Optional
 # IMPORT: from pyatlan.model.enums import AtlanConnectorType
-# INTERNAL_IMPORT: from pyatlan.model.assets.connection import _validate_connector_type_value
+# IMPORT: from pyatlan.model.assets.connection import _validate_connector_type_value
 # INTERNAL_IMPORT: from pyatlan.utils import init_guid, validate_required_fields
 
     @classmethod

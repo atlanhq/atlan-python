@@ -45,6 +45,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .kafka_related import RelatedKafkaField, RelatedKafkaTopic
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -101,6 +102,7 @@ class KafkaField(Asset):
     KAFKA_TOPIC: ClassVar[Any] = None
     KAFKA_NESTED_FIELDS: ClassVar[Any] = None
     KAFKA_PARENT_FIELD: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -116,6 +118,8 @@ class KafkaField(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "KafkaField"
 
     kafka_field_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of this field as defined in the schema, for example: string, int, record."""
@@ -227,6 +231,9 @@ class KafkaField(Asset):
 
     kafka_parent_field: Union[RelatedKafkaField, None, UnsetType] = UNSET
     """Parent KafkaField containing this nested field."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -526,6 +533,9 @@ class KafkaFieldRelationshipAttributes(AssetRelationshipAttributes):
     kafka_parent_field: Union[RelatedKafkaField, None, UnsetType] = UNSET
     """Parent KafkaField containing this nested field."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -615,6 +625,7 @@ _KAFKA_FIELD_REL_FIELDS: List[str] = [
     "kafka_topic",
     "kafka_nested_fields",
     "kafka_parent_field",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -709,9 +720,6 @@ def _kafka_field_to_nested(kafka_field: KafkaField) -> KafkaFieldNested:
         is_incomplete=kafka_field.is_incomplete,
         provenance_type=kafka_field.provenance_type,
         home_id=kafka_field.home_id,
-        depth=kafka_field.depth,
-        immediate_upstream=kafka_field.immediate_upstream,
-        immediate_downstream=kafka_field.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -743,6 +751,7 @@ def _kafka_field_from_nested(nested: KafkaFieldNested) -> KafkaField:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -751,9 +760,6 @@ def _kafka_field_from_nested(nested: KafkaFieldNested) -> KafkaField:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_kafka_field_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -848,6 +854,7 @@ KafkaField.MEANINGS = RelationField("meanings")
 KafkaField.KAFKA_TOPIC = RelationField("kafkaTopic")
 KafkaField.KAFKA_NESTED_FIELDS = RelationField("kafkaNestedFields")
 KafkaField.KAFKA_PARENT_FIELD = RelationField("kafkaParentField")
+KafkaField.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 KafkaField.MC_MONITORS = RelationField("mcMonitors")
 KafkaField.MC_INCIDENTS = RelationField("mcIncidents")
 KafkaField.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

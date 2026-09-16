@@ -52,6 +52,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -148,6 +149,7 @@ class MaterialisedView(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -169,6 +171,8 @@ class MaterialisedView(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MaterialisedView"
 
     refresh_mode: Union[str, None, UnsetType] = UNSET
     """Refresh mode for this materialized view."""
@@ -386,6 +390,9 @@ class MaterialisedView(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -923,6 +930,9 @@ class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1043,6 +1053,7 @@ _MATERIALISED_VIEW_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1223,9 +1234,6 @@ def _materialised_view_to_nested(
         is_incomplete=materialised_view.is_incomplete,
         provenance_type=materialised_view.provenance_type,
         home_id=materialised_view.home_id,
-        depth=materialised_view.depth,
-        immediate_upstream=materialised_view.immediate_upstream,
-        immediate_downstream=materialised_view.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1259,6 +1267,7 @@ def _materialised_view_from_nested(nested: MaterialisedViewNested) -> Materialis
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1267,9 +1276,6 @@ def _materialised_view_from_nested(nested: MaterialisedViewNested) -> Materialis
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_materialised_view_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1428,6 +1434,7 @@ MaterialisedView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MaterialisedView.MEANINGS = RelationField("meanings")
+MaterialisedView.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MaterialisedView.MC_MONITORS = RelationField("mcMonitors")
 MaterialisedView.MC_INCIDENTS = RelationField("mcIncidents")
 MaterialisedView.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

@@ -43,6 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -80,6 +81,7 @@ class AuthService(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -89,6 +91,8 @@ class AuthService(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "AuthService"
 
     abac_service: Union[str, None, UnsetType] = UNSET
     """TBC"""
@@ -153,6 +157,9 @@ class AuthService(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -371,6 +378,9 @@ class AuthServiceRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -436,6 +446,7 @@ _AUTH_SERVICE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -506,9 +517,6 @@ def _auth_service_to_nested(auth_service: AuthService) -> AuthServiceNested:
         is_incomplete=auth_service.is_incomplete,
         provenance_type=auth_service.provenance_type,
         home_id=auth_service.home_id,
-        depth=auth_service.depth,
-        immediate_upstream=auth_service.immediate_upstream,
-        immediate_downstream=auth_service.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -540,6 +548,7 @@ def _auth_service_from_nested(nested: AuthServiceNested) -> AuthService:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -548,9 +557,6 @@ def _auth_service_from_nested(nested: AuthServiceNested) -> AuthService:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_auth_service_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -606,6 +612,7 @@ AuthService.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 AuthService.MEANINGS = RelationField("meanings")
+AuthService.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 AuthService.MC_MONITORS = RelationField("mcMonitors")
 AuthService.MC_INCIDENTS = RelationField("mcIncidents")
 AuthService.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

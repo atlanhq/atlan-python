@@ -49,6 +49,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -100,6 +101,7 @@ class AIModel(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -115,6 +117,8 @@ class AIModel(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "AIModel"
 
     ai_model_datasets_dsl: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="aiModelDatasetsDSL"
@@ -227,6 +231,9 @@ class AIModel(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -605,6 +612,9 @@ class AIModelRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -693,6 +703,7 @@ _AI_MODEL_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -787,9 +798,6 @@ def _ai_model_to_nested(ai_model: AIModel) -> AIModelNested:
         is_incomplete=ai_model.is_incomplete,
         provenance_type=ai_model.provenance_type,
         home_id=ai_model.home_id,
-        depth=ai_model.depth,
-        immediate_upstream=ai_model.immediate_upstream,
-        immediate_downstream=ai_model.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -819,6 +827,7 @@ def _ai_model_from_nested(nested: AIModelNested) -> AIModel:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -827,9 +836,6 @@ def _ai_model_from_nested(nested: AIModelNested) -> AIModel:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_ai_model_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -899,6 +905,7 @@ AIModel.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 AIModel.MEANINGS = RelationField("meanings")
+AIModel.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 AIModel.MC_MONITORS = RelationField("mcMonitors")
 AIModel.MC_INCIDENTS = RelationField("mcIncidents")
 AIModel.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

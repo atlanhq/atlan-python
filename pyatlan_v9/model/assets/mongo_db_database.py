@@ -51,6 +51,7 @@ from .dbt_related import (
 from .fabric_related import RelatedFabricWorkspace
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection, RelatedMongoDBDatabase
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -142,6 +143,7 @@ class MongoDBDatabase(Asset):
     FABRIC_WORKSPACE: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MONGO_DB_COLLECTIONS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -164,6 +166,8 @@ class MongoDBDatabase(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MongoDBDatabase"
 
     mongo_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBDatabaseCollectionCount"
@@ -367,6 +371,9 @@ class MongoDBDatabase(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mongo_db_collections: Union[List[RelatedMongoDBCollection], None, UnsetType] = (
         msgspec.field(default=UNSET, name="mongoDBCollections")
@@ -775,6 +782,9 @@ class MongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mongo_db_collections: Union[List[RelatedMongoDBCollection], None, UnsetType] = (
         msgspec.field(default=UNSET, name="mongoDBCollections")
     )
@@ -901,6 +911,7 @@ _MONGO_DB_DATABASE_REL_FIELDS: List[str] = [
     "fabric_workspace",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mongo_db_collections",
     "mc_monitors",
     "mc_incidents",
@@ -1070,9 +1081,6 @@ def _mongo_db_database_to_nested(
         is_incomplete=mongo_db_database.is_incomplete,
         provenance_type=mongo_db_database.provenance_type,
         home_id=mongo_db_database.home_id,
-        depth=mongo_db_database.depth,
-        immediate_upstream=mongo_db_database.immediate_upstream,
-        immediate_downstream=mongo_db_database.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1106,6 +1114,7 @@ def _mongo_db_database_from_nested(nested: MongoDBDatabaseNested) -> MongoDBData
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1114,9 +1123,6 @@ def _mongo_db_database_from_nested(nested: MongoDBDatabaseNested) -> MongoDBData
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_mongo_db_database_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1275,6 +1281,7 @@ MongoDBDatabase.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 MongoDBDatabase.MEANINGS = RelationField("meanings")
+MongoDBDatabase.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MongoDBDatabase.MONGO_DB_COLLECTIONS = RelationField("mongoDBCollections")
 MongoDBDatabase.MC_MONITORS = RelationField("mcMonitors")
 MongoDBDatabase.MC_INCIDENTS = RelationField("mcIncidents")

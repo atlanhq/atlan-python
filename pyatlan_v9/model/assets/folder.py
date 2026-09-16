@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .namespace_related import RelatedFolder, RelatedNamespace
 from .referenceable_related import RelatedReferenceable
@@ -78,6 +79,7 @@ class Folder(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     CHILDREN_FOLDERS: ClassVar[Any] = None
@@ -90,6 +92,8 @@ class Folder(Asset):
     CHILDREN_QUERIES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Folder"
 
     parent_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent folder or collection in which this folder exists."""
@@ -139,6 +143,9 @@ class Folder(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -405,6 +412,9 @@ class FolderRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -478,6 +488,7 @@ _FOLDER_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "children_folders",
@@ -541,9 +552,6 @@ def _folder_to_nested(folder: Folder) -> FolderNested:
         is_incomplete=folder.is_incomplete,
         provenance_type=folder.provenance_type,
         home_id=folder.home_id,
-        depth=folder.depth,
-        immediate_upstream=folder.immediate_upstream,
-        immediate_downstream=folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -573,6 +581,7 @@ def _folder_from_nested(nested: FolderNested) -> Folder:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -581,9 +590,6 @@ def _folder_from_nested(nested: FolderNested) -> Folder:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -630,6 +636,7 @@ Folder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Folder.MEANINGS = RelationField("meanings")
+Folder.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Folder.MC_MONITORS = RelationField("mcMonitors")
 Folder.MC_INCIDENTS = RelationField("mcIncidents")
 Folder.CHILDREN_FOLDERS = RelationField("childrenFolders")

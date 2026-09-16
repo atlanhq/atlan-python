@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .model_related import (
     RelatedModelAttribute,
     RelatedModelDataModel,
@@ -105,6 +106,7 @@ class ModelVersion(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -120,6 +122,8 @@ class ModelVersion(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "ModelVersion"
 
     model_version_entity_count: Union[int, None, UnsetType] = UNSET
     """Number of entities in the version."""
@@ -231,6 +235,9 @@ class ModelVersion(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -526,6 +533,9 @@ class ModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -616,6 +626,7 @@ _MODEL_VERSION_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -716,9 +727,6 @@ def _model_version_to_nested(model_version: ModelVersion) -> ModelVersionNested:
         is_incomplete=model_version.is_incomplete,
         provenance_type=model_version.provenance_type,
         home_id=model_version.home_id,
-        depth=model_version.depth,
-        immediate_upstream=model_version.immediate_upstream,
-        immediate_downstream=model_version.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -752,6 +760,7 @@ def _model_version_from_nested(nested: ModelVersionNested) -> ModelVersion:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -760,9 +769,6 @@ def _model_version_from_nested(nested: ModelVersionNested) -> ModelVersion:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_model_version_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -855,6 +861,7 @@ ModelVersion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 ModelVersion.MEANINGS = RelationField("meanings")
+ModelVersion.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 ModelVersion.MC_MONITORS = RelationField("mcMonitors")
 ModelVersion.MC_INCIDENTS = RelationField("mcIncidents")
 ModelVersion.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
