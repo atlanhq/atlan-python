@@ -69,10 +69,10 @@ from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
-    KnowledgeFile,
     Connection,
     DataDomain,
     DataProduct,
+    KnowledgeFile,
     Persona,
     Purpose,
 )

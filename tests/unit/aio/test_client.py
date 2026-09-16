@@ -3177,3 +3177,69 @@ async def test_manage_knowledge_files_saves_refs_with_semantic(method, semantic)
     assert saved.qualified_name == "table_qn"
     assert [r.guid for r in saved.knowledge_linked_files] == ["kf-1"]
     assert saved.knowledge_linked_files[0].semantic == semantic
+
+
+@pytest.mark.asyncio
+async def test_append_knowledge_files_both_identifiers_raises_error():
+    client = AsyncAtlanClient()
+    with pytest.raises(
+        InvalidRequestError,
+        match="ATLAN-PYTHON-400-042 Only qualified_name or guid should be provided but not both.",
+    ):
+        await client.asset.append_knowledge_files(
+            asset_type=Table,
+            files=[KnowledgeFile.ref_by_guid("kf-1")],
+            guid="123",
+            qualified_name="default/abc",
+        )
+
+
+@patch("pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
+@pytest.mark.asyncio
+async def test_append_knowledge_files_asset_not_found(mock_aexecute):
+    mock_results = AsyncMock()
+    mock_results.current_page = Mock(return_value=[])
+    mock_aexecute.return_value = mock_results
+    client = AsyncAtlanClient()
+    with pytest.raises(
+        NotFoundError,
+        match="ATLAN-PYTHON-404-001 Asset with GUID missing does not exist.",
+    ):
+        await client.asset.append_knowledge_files(
+            asset_type=Table, files=[KnowledgeFile.ref_by_guid("kf-1")], guid="missing"
+        )
+
+
+@pytest.mark.asyncio
+async def test_replace_knowledge_files_with_qualified_name_ref_and_empty_list():
+    table = Table()
+    table.name = "table-test"
+    table.qualified_name = "table_qn"
+
+    with patch(
+        "pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+    ) as mock_aexecute:
+        with patch(
+            "pyatlan.client.aio.asset.AsyncAssetClient.save", new_callable=AsyncMock
+        ) as mock_save:
+            mock_results = AsyncMock()
+            mock_results.current_page = Mock(return_value=[table])
+            mock_aexecute.return_value = mock_results
+            mock_save.return_value = Mock(assets_updated=Mock(return_value=[]))
+
+            client = AsyncAtlanClient()
+            await client.asset.replace_knowledge_files(
+                asset_type=Table,
+                files=[KnowledgeFile.ref_by_qualified_name("kf/2")],
+                qualified_name="table_qn",
+            )
+            saved = mock_save.call_args.kwargs["entity"]
+            assert saved.knowledge_linked_files[0].unique_attributes == {
+                "qualifiedName": "kf/2"
+            }
+            assert saved.knowledge_linked_files[0].semantic == SaveSemantic.REPLACE
+
+            asset = await client.asset.replace_knowledge_files(
+                asset_type=Table, files=[], guid="123"
+            )
+            assert asset.knowledge_linked_files == []

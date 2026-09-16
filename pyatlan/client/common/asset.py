@@ -1581,6 +1581,30 @@ class ManageTerms:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
 
     @staticmethod
+    def process_refs_with_semantic(
+        refs: List[A], ref_cls: Type[A], semantic: SaveSemantic
+    ) -> List[A]:
+        """
+        Rebuild asset references (by guid, else qualified_name) carrying the save semantic.
+
+        :param refs: assets to reference, each identified by guid or qualified_name
+        :param ref_cls: asset class used to build the references
+        :param semantic: save semantic to apply
+        :returns: list of references; entries with neither identifier are dropped
+        """
+        processed: List[A] = []
+        for ref in refs:
+            if ref.guid:
+                processed.append(ref_cls.ref_by_guid(guid=ref.guid, semantic=semantic))
+            elif ref.qualified_name:
+                processed.append(
+                    ref_cls.ref_by_qualified_name(
+                        qualified_name=ref.qualified_name, semantic=semantic
+                    )
+                )
+        return processed
+
+    @staticmethod
     def process_terms_with_semantic(
         terms: List[AtlasGlossaryTerm], semantic: SaveSemantic
     ) -> List[AtlasGlossaryTerm]:
@@ -1591,19 +1615,9 @@ class ManageTerms:
         :param semantic: save semantic to apply
         :returns: processed terms list
         """
-        processed_terms = []
-        for term in terms:
-            if hasattr(term, "guid") and term.guid:
-                processed_terms.append(
-                    AtlasGlossaryTerm.ref_by_guid(guid=term.guid, semantic=semantic)
-                )
-            elif hasattr(term, "qualified_name") and term.qualified_name:
-                processed_terms.append(
-                    AtlasGlossaryTerm.ref_by_qualified_name(
-                        qualified_name=term.qualified_name, semantic=semantic
-                    )
-                )
-        return processed_terms
+        return ManageTerms.process_refs_with_semantic(
+            terms, AtlasGlossaryTerm, semantic
+        )
 
     @staticmethod
     def process_save_response(response, asset_type: Type[A], updated_asset: A) -> A:
@@ -1634,19 +1648,7 @@ class ManageKnowledgeFiles(ManageTerms):
         :param semantic: save semantic to apply
         :returns: list of KnowledgeFile references
         """
-        processed = []
-        for file in files:
-            if file.guid:
-                processed.append(
-                    KnowledgeFile.ref_by_guid(guid=file.guid, semantic=semantic)
-                )
-            elif file.qualified_name:
-                processed.append(
-                    KnowledgeFile.ref_by_qualified_name(
-                        qualified_name=file.qualified_name, semantic=semantic
-                    )
-                )
-        return processed
+        return ManageTerms.process_refs_with_semantic(files, KnowledgeFile, semantic)
 
 
 class SearchForAssetWithName:
