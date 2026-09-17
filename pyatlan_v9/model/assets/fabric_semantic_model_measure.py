@@ -4,27 +4,21 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-FabricSemanticModelTable asset model with flattened inheritance.
+FabricSemanticModelMeasure asset model with flattened inheritance.
 
 This module provides:
-- FabricSemanticModelTable: Flat asset class (easy to use)
-- FabricSemanticModelTableAttributes: Nested attributes struct (extends AssetAttributes)
-- FabricSemanticModelTableNested: Nested API format struct
+- FabricSemanticModelMeasure: Flat asset class (easy to use)
+- FabricSemanticModelMeasureAttributes: Nested attributes struct (extends AssetAttributes)
+- FabricSemanticModelMeasureNested: Nested API format struct
 """
 
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,12 +36,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .fabric_related import (
-    RelatedFabricSemanticModel,
-    RelatedFabricSemanticModelMeasure,
-    RelatedFabricSemanticModelTable,
-    RelatedFabricSemanticModelTableColumn,
-)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -60,19 +48,30 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .fabric_related import RelatedFabricSemanticModelMeasure, RelatedFabricSemanticModelTable, RelatedFabricSemanticModelTableColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
 
-
 @register_asset
-class FabricSemanticModelTable(Asset):
+class FabricSemanticModelMeasure(Asset):
     """
-    Instance of a Microsoft Fabric semantic model table in Atlan.
+    Instance of a Microsoft Fabric semantic model measure in Atlan. Measures define DAX calculations within a semantic model table.
     """
 
     FABRIC_SEMANTIC_MODEL_QUALIFIED_NAME: ClassVar[Any] = None
+    FABRIC_SEMANTIC_MODEL_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
+    FABRIC_SEMANTIC_MODEL_TABLE_NAME: ClassVar[Any] = None
+    FABRIC_MEASURE_EXPRESSION: ClassVar[Any] = None
+    FABRIC_FORMAT_STRING: ClassVar[Any] = None
+    FABRIC_DISPLAY_FOLDER: ClassVar[Any] = None
+    FABRIC_IS_HIDDEN: ClassVar[Any] = None
+    FABRIC_IS_EXTERNAL_MEASURE: ClassVar[Any] = None
     FABRIC_COLUMN_COUNT: ClassVar[Any] = None
     FABRIC_DATA_TYPE: ClassVar[Any] = None
     FABRIC_ORDINAL: ClassVar[Any] = None
@@ -92,9 +91,8 @@ class FabricSemanticModelTable(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
-    FABRIC_SEMANTIC_MODEL: ClassVar[Any] = None
+    FABRIC_SEMANTIC_MODEL_TABLE: ClassVar[Any] = None
     FABRIC_SEMANTIC_MODEL_TABLE_COLUMNS: ClassVar[Any] = None
-    FABRIC_SEMANTIC_MODEL_MEASURES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
@@ -116,6 +114,27 @@ class FabricSemanticModelTable(Asset):
 
     fabric_semantic_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric semantic model that contains this asset."""
+
+    fabric_semantic_model_table_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Fabric semantic model table that contains this asset."""
+
+    fabric_semantic_model_table_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Fabric semantic model table that contains this asset."""
+
+    fabric_measure_expression: Union[str, None, UnsetType] = UNSET
+    """DAX expression for this measure."""
+
+    fabric_format_string: Union[str, None, UnsetType] = UNSET
+    """Format string applied to the values of this measure."""
+
+    fabric_display_folder: Union[str, None, UnsetType] = UNSET
+    """Display folder in which this measure is grouped within its table."""
+
+    fabric_is_hidden: Union[bool, None, UnsetType] = UNSET
+    """Whether this measure is hidden in the semantic model (true) or visible (false)."""
+
+    fabric_is_external_measure: Union[bool, None, UnsetType] = UNSET
+    """Whether this measure is an external measure (true) or defined within the semantic model (false)."""
 
     fabric_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this asset."""
@@ -162,9 +181,7 @@ class FabricSemanticModelTable(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -173,27 +190,16 @@ class FabricSemanticModelTable(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    fabric_semantic_model: Union[RelatedFabricSemanticModel, None, UnsetType] = UNSET
-    """Semantic model containing the table."""
+    fabric_semantic_model_table: Union[RelatedFabricSemanticModelTable, None, UnsetType] = UNSET
+    """Semantic model table containing the measure."""
 
-    fabric_semantic_model_table_columns: Union[
-        List[RelatedFabricSemanticModelTableColumn], None, UnsetType
-    ] = UNSET
-    """Individual semantic model table columns contained in the semantic model table."""
+    fabric_semantic_model_table_columns: Union[List[RelatedFabricSemanticModelTableColumn], None, UnsetType] = UNSET
+    """Semantic model table columns referenced by the DAX expression of this measure."""
 
-    fabric_semantic_model_measures: Union[
-        List[RelatedFabricSemanticModelMeasure], None, UnsetType
-    ] = UNSET
-    """Individual semantic model measures contained in the semantic model table."""
-
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -223,9 +229,7 @@ class FabricSemanticModelTable(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -237,9 +241,7 @@ class FabricSemanticModelTable(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -252,19 +254,19 @@ class FabricSemanticModelTable(Asset):
     """"""
 
     def __post_init__(self) -> None:
-        self.type_name = "FabricSemanticModelTable"
+        self.type_name = "FabricSemanticModelMeasure"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+$"
+        r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
 
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this FabricSemanticModelTable instance.
+        Dry-run validation of this FabricSemanticModelMeasure instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -294,45 +296,45 @@ class FabricSemanticModelTable(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.fabric_semantic_model is UNSET:
-                errors.append("fabric_semantic_model is required for creation")
+            if self.fabric_semantic_model_table is UNSET:
+                errors.append("fabric_semantic_model_table is required for creation")
+            if self.fabric_semantic_model_table_name is UNSET:
+                errors.append("fabric_semantic_model_table_name is required for creation")
+            if self.fabric_semantic_model_table_qualified_name is UNSET:
+                errors.append("fabric_semantic_model_table_qualified_name is required for creation")
             if self.fabric_semantic_model_qualified_name is UNSET:
-                errors.append(
-                    "fabric_semantic_model_qualified_name is required for creation"
-                )
+                errors.append("fabric_semantic_model_qualified_name is required for creation")
         if errors:
-            raise ValueError(f"FabricSemanticModelTable validation failed: {errors}")
+            raise ValueError(f"FabricSemanticModelMeasure validation failed: {errors}")
 
-    def minimize(self) -> "FabricSemanticModelTable":
+    def minimize(self) -> "FabricSemanticModelMeasure":
         """
-        Return a minimal copy of this FabricSemanticModelTable with only updater-required fields.
+        Return a minimal copy of this FabricSemanticModelMeasure with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new FabricSemanticModelTable with only the fields needed for an update
+        returns a new FabricSemanticModelMeasure with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new FabricSemanticModelTable instance with only the minimum required fields.
+            A new FabricSemanticModelMeasure instance with only the minimum required fields.
         """
         self.validate()
-        return FabricSemanticModelTable(
-            qualified_name=self.qualified_name, name=self.name
-        )
+        return FabricSemanticModelMeasure(qualified_name=self.qualified_name, name=self.name)
 
-    def relate(self) -> "RelatedFabricSemanticModelTable":
+    def relate(self) -> "RelatedFabricSemanticModelMeasure":
         """
-        Create a :class:`RelatedFabricSemanticModelTable` reference from this instance.
+        Create a :class:`RelatedFabricSemanticModelMeasure` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedFabricSemanticModelTable reference to this asset.
+            A RelatedFabricSemanticModelMeasure reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedFabricSemanticModelTable(guid=self.guid)
-        return RelatedFabricSemanticModelTable(qualified_name=self.qualified_name)
+            return RelatedFabricSemanticModelMeasure(guid=self.guid)
+        return RelatedFabricSemanticModelMeasure(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -360,12 +362,10 @@ class FabricSemanticModelTable(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _fabric_semantic_model_table_to_nested_bytes(self, serde)
+        return _fabric_semantic_model_measure_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> FabricSemanticModelTable:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> FabricSemanticModelMeasure:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -374,25 +374,45 @@ class FabricSemanticModelTable(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            FabricSemanticModelTable instance
+            FabricSemanticModelMeasure instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _fabric_semantic_model_table_from_nested_bytes(json_data, serde)
+        return _fabric_semantic_model_measure_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
-class FabricSemanticModelTableAttributes(AssetAttributes):
-    """FabricSemanticModelTable-specific attributes for nested API format."""
+class FabricSemanticModelMeasureAttributes(AssetAttributes):
+    """FabricSemanticModelMeasure-specific attributes for nested API format."""
 
     fabric_semantic_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric semantic model that contains this asset."""
+
+    fabric_semantic_model_table_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Fabric semantic model table that contains this asset."""
+
+    fabric_semantic_model_table_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Fabric semantic model table that contains this asset."""
+
+    fabric_measure_expression: Union[str, None, UnsetType] = UNSET
+    """DAX expression for this measure."""
+
+    fabric_format_string: Union[str, None, UnsetType] = UNSET
+    """Format string applied to the values of this measure."""
+
+    fabric_display_folder: Union[str, None, UnsetType] = UNSET
+    """Display folder in which this measure is grouped within its table."""
+
+    fabric_is_hidden: Union[bool, None, UnsetType] = UNSET
+    """Whether this measure is hidden in the semantic model (true) or visible (false)."""
+
+    fabric_is_external_measure: Union[bool, None, UnsetType] = UNSET
+    """Whether this measure is an external measure (true) or defined within the semantic model (false)."""
 
     fabric_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this asset."""
@@ -406,9 +426,8 @@ class FabricSemanticModelTableAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
-class FabricSemanticModelTableRelationshipAttributes(AssetRelationshipAttributes):
-    """FabricSemanticModelTable-specific relationship attributes for nested API format."""
+class FabricSemanticModelMeasureRelationshipAttributes(AssetRelationshipAttributes):
+    """FabricSemanticModelMeasure-specific relationship attributes for nested API format."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -443,9 +462,7 @@ class FabricSemanticModelTableRelationshipAttributes(AssetRelationshipAttributes
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -454,27 +471,16 @@ class FabricSemanticModelTableRelationshipAttributes(AssetRelationshipAttributes
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    fabric_semantic_model: Union[RelatedFabricSemanticModel, None, UnsetType] = UNSET
-    """Semantic model containing the table."""
+    fabric_semantic_model_table: Union[RelatedFabricSemanticModelTable, None, UnsetType] = UNSET
+    """Semantic model table containing the measure."""
 
-    fabric_semantic_model_table_columns: Union[
-        List[RelatedFabricSemanticModelTableColumn], None, UnsetType
-    ] = UNSET
-    """Individual semantic model table columns contained in the semantic model table."""
+    fabric_semantic_model_table_columns: Union[List[RelatedFabricSemanticModelTableColumn], None, UnsetType] = UNSET
+    """Semantic model table columns referenced by the DAX expression of this measure."""
 
-    fabric_semantic_model_measures: Union[
-        List[RelatedFabricSemanticModelMeasure], None, UnsetType
-    ] = UNSET
-    """Individual semantic model measures contained in the semantic model table."""
-
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -504,9 +510,7 @@ class FabricSemanticModelTableRelationshipAttributes(AssetRelationshipAttributes
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -518,9 +522,7 @@ class FabricSemanticModelTableRelationshipAttributes(AssetRelationshipAttributes
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -532,27 +534,19 @@ class FabricSemanticModelTableRelationshipAttributes(AssetRelationshipAttributes
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+class FabricSemanticModelMeasureNested(AssetNested):
+    """FabricSemanticModelMeasure in nested API format for high-performance serialization."""
 
-class FabricSemanticModelTableNested(AssetNested):
-    """FabricSemanticModelTable in nested API format for high-performance serialization."""
-
-    attributes: Union[FabricSemanticModelTableAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        FabricSemanticModelTableRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        FabricSemanticModelTableRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        FabricSemanticModelTableRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    attributes: Union[FabricSemanticModelMeasureAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[FabricSemanticModelMeasureRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[FabricSemanticModelMeasureRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[FabricSemanticModelMeasureRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_FABRIC_SEMANTIC_MODEL_TABLE_REL_FIELDS: List[str] = [
+_FABRIC_SEMANTIC_MODEL_MEASURE_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
@@ -569,9 +563,8 @@ _FABRIC_SEMANTIC_MODEL_TABLE_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
-    "fabric_semantic_model",
+    "fabric_semantic_model_table",
     "fabric_semantic_model_table_columns",
-    "fabric_semantic_model_measures",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "knowledge_linked_files",
@@ -592,101 +585,93 @@ _FABRIC_SEMANTIC_MODEL_TABLE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_fabric_semantic_model_table_attrs(
-    attrs: FabricSemanticModelTableAttributes, obj: FabricSemanticModelTable
-) -> None:
-    """Populate FabricSemanticModelTable-specific attributes on the attrs struct."""
+def _populate_fabric_semantic_model_measure_attrs(attrs: FabricSemanticModelMeasureAttributes, obj: FabricSemanticModelMeasure) -> None:
+    """Populate FabricSemanticModelMeasure-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.fabric_semantic_model_qualified_name = (
-        obj.fabric_semantic_model_qualified_name
-    )
+    attrs.fabric_semantic_model_qualified_name = obj.fabric_semantic_model_qualified_name
+    attrs.fabric_semantic_model_table_qualified_name = obj.fabric_semantic_model_table_qualified_name
+    attrs.fabric_semantic_model_table_name = obj.fabric_semantic_model_table_name
+    attrs.fabric_measure_expression = obj.fabric_measure_expression
+    attrs.fabric_format_string = obj.fabric_format_string
+    attrs.fabric_display_folder = obj.fabric_display_folder
+    attrs.fabric_is_hidden = obj.fabric_is_hidden
+    attrs.fabric_is_external_measure = obj.fabric_is_external_measure
     attrs.fabric_column_count = obj.fabric_column_count
     attrs.fabric_data_type = obj.fabric_data_type
     attrs.fabric_ordinal = obj.fabric_ordinal
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
-def _extract_fabric_semantic_model_table_attrs(
-    attrs: FabricSemanticModelTableAttributes,
-) -> dict:
-    """Extract all FabricSemanticModelTable attributes from the attrs struct into a flat dict."""
+def _extract_fabric_semantic_model_measure_attrs(attrs: FabricSemanticModelMeasureAttributes) -> dict:
+    """Extract all FabricSemanticModelMeasure attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["fabric_semantic_model_qualified_name"] = (
-        attrs.fabric_semantic_model_qualified_name
-    )
+    result["fabric_semantic_model_qualified_name"] = attrs.fabric_semantic_model_qualified_name
+    result["fabric_semantic_model_table_qualified_name"] = attrs.fabric_semantic_model_table_qualified_name
+    result["fabric_semantic_model_table_name"] = attrs.fabric_semantic_model_table_name
+    result["fabric_measure_expression"] = attrs.fabric_measure_expression
+    result["fabric_format_string"] = attrs.fabric_format_string
+    result["fabric_display_folder"] = attrs.fabric_display_folder
+    result["fabric_is_hidden"] = attrs.fabric_is_hidden
+    result["fabric_is_external_measure"] = attrs.fabric_is_external_measure
     result["fabric_column_count"] = attrs.fabric_column_count
     result["fabric_data_type"] = attrs.fabric_data_type
     result["fabric_ordinal"] = attrs.fabric_ordinal
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _fabric_semantic_model_table_to_nested(
-    fabric_semantic_model_table: FabricSemanticModelTable,
-) -> FabricSemanticModelTableNested:
-    """Convert flat FabricSemanticModelTable to nested format."""
-    attrs = FabricSemanticModelTableAttributes()
-    _populate_fabric_semantic_model_table_attrs(attrs, fabric_semantic_model_table)
+def _fabric_semantic_model_measure_to_nested(fabric_semantic_model_measure: FabricSemanticModelMeasure) -> FabricSemanticModelMeasureNested:
+    """Convert flat FabricSemanticModelMeasure to nested format."""
+    attrs = FabricSemanticModelMeasureAttributes()
+    _populate_fabric_semantic_model_measure_attrs(attrs, fabric_semantic_model_measure)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        fabric_semantic_model_table,
-        _FABRIC_SEMANTIC_MODEL_TABLE_REL_FIELDS,
-        FabricSemanticModelTableRelationshipAttributes,
+        fabric_semantic_model_measure, _FABRIC_SEMANTIC_MODEL_MEASURE_REL_FIELDS, FabricSemanticModelMeasureRelationshipAttributes
     )
-    return FabricSemanticModelTableNested(
-        guid=fabric_semantic_model_table.guid,
-        type_name=fabric_semantic_model_table.type_name,
-        status=fabric_semantic_model_table.status,
-        version=fabric_semantic_model_table.version,
-        create_time=fabric_semantic_model_table.create_time,
-        update_time=fabric_semantic_model_table.update_time,
-        created_by=fabric_semantic_model_table.created_by,
-        updated_by=fabric_semantic_model_table.updated_by,
-        classifications=fabric_semantic_model_table.classifications,
-        classification_names=fabric_semantic_model_table.classification_names,
-        meanings=fabric_semantic_model_table.meanings,
-        labels=fabric_semantic_model_table.labels,
-        business_attributes=fabric_semantic_model_table.business_attributes,
-        custom_attributes=fabric_semantic_model_table.custom_attributes,
-        pending_tasks=fabric_semantic_model_table.pending_tasks,
-        proxy=fabric_semantic_model_table.proxy,
-        is_incomplete=fabric_semantic_model_table.is_incomplete,
-        provenance_type=fabric_semantic_model_table.provenance_type,
-        home_id=fabric_semantic_model_table.home_id,
-        depth=fabric_semantic_model_table.depth,
-        immediate_upstream=fabric_semantic_model_table.immediate_upstream,
-        immediate_downstream=fabric_semantic_model_table.immediate_downstream,
+    return FabricSemanticModelMeasureNested(
+        guid=fabric_semantic_model_measure.guid,
+        type_name=fabric_semantic_model_measure.type_name,
+        status=fabric_semantic_model_measure.status,
+        version=fabric_semantic_model_measure.version,
+        create_time=fabric_semantic_model_measure.create_time,
+        update_time=fabric_semantic_model_measure.update_time,
+        created_by=fabric_semantic_model_measure.created_by,
+        updated_by=fabric_semantic_model_measure.updated_by,
+        classifications=fabric_semantic_model_measure.classifications,
+        classification_names=fabric_semantic_model_measure.classification_names,
+        meanings=fabric_semantic_model_measure.meanings,
+        labels=fabric_semantic_model_measure.labels,
+        business_attributes=fabric_semantic_model_measure.business_attributes,
+        custom_attributes=fabric_semantic_model_measure.custom_attributes,
+        pending_tasks=fabric_semantic_model_measure.pending_tasks,
+        proxy=fabric_semantic_model_measure.proxy,
+        is_incomplete=fabric_semantic_model_measure.is_incomplete,
+        provenance_type=fabric_semantic_model_measure.provenance_type,
+        home_id=fabric_semantic_model_measure.home_id,
+        depth=fabric_semantic_model_measure.depth,
+        immediate_upstream=fabric_semantic_model_measure.immediate_upstream,
+        immediate_downstream=fabric_semantic_model_measure.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _fabric_semantic_model_table_from_nested(
-    nested: FabricSemanticModelTableNested,
-) -> FabricSemanticModelTable:
-    """Convert nested format to flat FabricSemanticModelTable."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else FabricSemanticModelTableAttributes()
-    )
+def _fabric_semantic_model_measure_from_nested(nested: FabricSemanticModelMeasureNested) -> FabricSemanticModelMeasure:
+    """Convert nested format to flat FabricSemanticModelMeasure."""
+    attrs = nested.attributes if nested.attributes is not UNSET else FabricSemanticModelMeasureAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _FABRIC_SEMANTIC_MODEL_TABLE_REL_FIELDS,
-        FabricSemanticModelTableRelationshipAttributes,
+        _FABRIC_SEMANTIC_MODEL_MEASURE_REL_FIELDS,
+        FabricSemanticModelMeasureRelationshipAttributes
     )
-    return FabricSemanticModelTable(
+    return FabricSemanticModelMeasure(
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
@@ -709,110 +694,76 @@ def _fabric_semantic_model_table_from_nested(
         depth=nested.depth,
         immediate_upstream=nested.immediate_upstream,
         immediate_downstream=nested.immediate_downstream,
-        **_extract_fabric_semantic_model_table_attrs(attrs),
+        **_extract_fabric_semantic_model_measure_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
     )
 
-
-def _fabric_semantic_model_table_to_nested_bytes(
-    fabric_semantic_model_table: FabricSemanticModelTable, serde: Serde
-) -> bytes:
-    """Convert flat FabricSemanticModelTable to nested JSON bytes."""
-    return serde.encode(
-        _fabric_semantic_model_table_to_nested(fabric_semantic_model_table)
-    )
+def _fabric_semantic_model_measure_to_nested_bytes(fabric_semantic_model_measure: FabricSemanticModelMeasure, serde: Serde) -> bytes:
+    """Convert flat FabricSemanticModelMeasure to nested JSON bytes."""
+    return serde.encode(_fabric_semantic_model_measure_to_nested(fabric_semantic_model_measure))
 
 
-def _fabric_semantic_model_table_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> FabricSemanticModelTable:
-    """Convert nested JSON bytes to flat FabricSemanticModelTable."""
-    nested = serde.decode(data, FabricSemanticModelTableNested)
-    return _fabric_semantic_model_table_from_nested(nested)
-
+def _fabric_semantic_model_measure_from_nested_bytes(data: bytes, serde: Serde) -> FabricSemanticModelMeasure:
+    """Convert nested JSON bytes to flat FabricSemanticModelMeasure."""
+    nested = serde.decode(data, FabricSemanticModelMeasureNested)
+    return _fabric_semantic_model_measure_from_nested(nested)
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
     KeywordField,
     NumericField,
     RelationField,
+    TextField,
 )
 
-FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL_QUALIFIED_NAME = KeywordField(
-    "fabricSemanticModelQualifiedName", "fabricSemanticModelQualifiedName"
-)
-FabricSemanticModelTable.FABRIC_COLUMN_COUNT = NumericField(
-    "fabricColumnCount", "fabricColumnCount"
-)
-FabricSemanticModelTable.FABRIC_DATA_TYPE = KeywordField(
-    "fabricDataType", "fabricDataType"
-)
-FabricSemanticModelTable.FABRIC_ORDINAL = NumericField("fabricOrdinal", "fabricOrdinal")
-FabricSemanticModelTable.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
-FabricSemanticModelTable.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-FabricSemanticModelTable.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
-FabricSemanticModelTable.ANOMALO_CHECKS = RelationField("anomaloChecks")
-FabricSemanticModelTable.APPLICATION = RelationField("application")
-FabricSemanticModelTable.APPLICATION_FIELD = RelationField("applicationField")
-FabricSemanticModelTable.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
-FabricSemanticModelTable.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-FabricSemanticModelTable.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
-FabricSemanticModelTable.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
-FabricSemanticModelTable.INPUT_PORT_DATA_PRODUCTS = RelationField(
-    "inputPortDataProducts"
-)
-FabricSemanticModelTable.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-FabricSemanticModelTable.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
-FabricSemanticModelTable.METRICS = RelationField("metrics")
-FabricSemanticModelTable.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-FabricSemanticModelTable.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
-FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL = RelationField("fabricSemanticModel")
-FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL_TABLE_COLUMNS = RelationField(
-    "fabricSemanticModelTableColumns"
-)
-FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL_MEASURES = RelationField(
-    "fabricSemanticModelMeasures"
-)
-FabricSemanticModelTable.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
-FabricSemanticModelTable.MEANINGS = RelationField("meanings")
-FabricSemanticModelTable.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
-FabricSemanticModelTable.MC_MONITORS = RelationField("mcMonitors")
-FabricSemanticModelTable.MC_INCIDENTS = RelationField("mcIncidents")
-FabricSemanticModelTable.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-FabricSemanticModelTable.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-FabricSemanticModelTable.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-FabricSemanticModelTable.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-FabricSemanticModelTable.USER_DEF_RELATIONSHIP_TO = RelationField(
-    "userDefRelationshipTo"
-)
-FabricSemanticModelTable.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
-FabricSemanticModelTable.FILES = RelationField("files")
-FabricSemanticModelTable.LINKS = RelationField("links")
-FabricSemanticModelTable.README = RelationField("readme")
-FabricSemanticModelTable.SCHEMA_REGISTRY_SUBJECTS = RelationField(
-    "schemaRegistrySubjects"
-)
-FabricSemanticModelTable.SODA_CHECKS = RelationField("sodaChecks")
-FabricSemanticModelTable.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-FabricSemanticModelTable.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+FabricSemanticModelMeasure.FABRIC_SEMANTIC_MODEL_QUALIFIED_NAME = KeywordField("fabricSemanticModelQualifiedName", "fabricSemanticModelQualifiedName")
+FabricSemanticModelMeasure.FABRIC_SEMANTIC_MODEL_TABLE_QUALIFIED_NAME = KeywordField("fabricSemanticModelTableQualifiedName", "fabricSemanticModelTableQualifiedName")
+FabricSemanticModelMeasure.FABRIC_SEMANTIC_MODEL_TABLE_NAME = KeywordField("fabricSemanticModelTableName", "fabricSemanticModelTableName")
+FabricSemanticModelMeasure.FABRIC_MEASURE_EXPRESSION = TextField("fabricMeasureExpression", "fabricMeasureExpression")
+FabricSemanticModelMeasure.FABRIC_FORMAT_STRING = KeywordField("fabricFormatString", "fabricFormatString")
+FabricSemanticModelMeasure.FABRIC_DISPLAY_FOLDER = KeywordField("fabricDisplayFolder", "fabricDisplayFolder")
+FabricSemanticModelMeasure.FABRIC_IS_HIDDEN = BooleanField("fabricIsHidden", "fabricIsHidden")
+FabricSemanticModelMeasure.FABRIC_IS_EXTERNAL_MEASURE = BooleanField("fabricIsExternalMeasure", "fabricIsExternalMeasure")
+FabricSemanticModelMeasure.FABRIC_COLUMN_COUNT = NumericField("fabricColumnCount", "fabricColumnCount")
+FabricSemanticModelMeasure.FABRIC_DATA_TYPE = KeywordField("fabricDataType", "fabricDataType")
+FabricSemanticModelMeasure.FABRIC_ORDINAL = NumericField("fabricOrdinal", "fabricOrdinal")
+FabricSemanticModelMeasure.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+FabricSemanticModelMeasure.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+FabricSemanticModelMeasure.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+FabricSemanticModelMeasure.ANOMALO_CHECKS = RelationField("anomaloChecks")
+FabricSemanticModelMeasure.APPLICATION = RelationField("application")
+FabricSemanticModelMeasure.APPLICATION_FIELD = RelationField("applicationField")
+FabricSemanticModelMeasure.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+FabricSemanticModelMeasure.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+FabricSemanticModelMeasure.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+FabricSemanticModelMeasure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+FabricSemanticModelMeasure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+FabricSemanticModelMeasure.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+FabricSemanticModelMeasure.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+FabricSemanticModelMeasure.METRICS = RelationField("metrics")
+FabricSemanticModelMeasure.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+FabricSemanticModelMeasure.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+FabricSemanticModelMeasure.FABRIC_SEMANTIC_MODEL_TABLE = RelationField("fabricSemanticModelTable")
+FabricSemanticModelMeasure.FABRIC_SEMANTIC_MODEL_TABLE_COLUMNS = RelationField("fabricSemanticModelTableColumns")
+FabricSemanticModelMeasure.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+FabricSemanticModelMeasure.MEANINGS = RelationField("meanings")
+FabricSemanticModelMeasure.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+FabricSemanticModelMeasure.MC_MONITORS = RelationField("mcMonitors")
+FabricSemanticModelMeasure.MC_INCIDENTS = RelationField("mcIncidents")
+FabricSemanticModelMeasure.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+FabricSemanticModelMeasure.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+FabricSemanticModelMeasure.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+FabricSemanticModelMeasure.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+FabricSemanticModelMeasure.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+FabricSemanticModelMeasure.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+FabricSemanticModelMeasure.FILES = RelationField("files")
+FabricSemanticModelMeasure.LINKS = RelationField("links")
+FabricSemanticModelMeasure.README = RelationField("readme")
+FabricSemanticModelMeasure.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+FabricSemanticModelMeasure.SODA_CHECKS = RelationField("sodaChecks")
+FabricSemanticModelMeasure.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+FabricSemanticModelMeasure.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
