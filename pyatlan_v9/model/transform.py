@@ -199,9 +199,11 @@ def to_atlas_format(asset: Asset) -> dict[str, Any]:
         # Remove meanings from data so it doesn't get added again below
         data.pop("meanings")
 
+    # Keep explicitly-set nulls: msgspec already dropped UNSET fields when
+    # encoding above, so any None still in `data` is a value the caller set
+    # deliberately (e.g. asset.description = None to clear it in Atlas).
+    # Filtering None here would silently discard those clears (AICHAT-1884).
     for key, value in data.items():
-        if value is None:
-            continue
         if key in top_level_keys:
             result[key] = value
         else:

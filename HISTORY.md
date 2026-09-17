@@ -1,3 +1,9 @@
+## 11.2.1 (Unreleased)
+
+### Experimental: pyatlan_v9
+
+- **`to_atlas_format` preserves explicitly-set nulls**: Clearing an attribute with `asset.description = None` now emits a JSON null instead of being silently dropped, so the clear reaches Atlas. `UNSET` fields stay absent, as before. This changes `to_atlas_format` output for every caller.
+
 ## 11.2.0 (September 16, 2026)
 
 ### New Features
