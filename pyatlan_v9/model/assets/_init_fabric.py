@@ -25,6 +25,7 @@ from .fabric_related import (
     RelatedFabricPage,
     RelatedFabricReport,
     RelatedFabricSemanticModel,
+    RelatedFabricSemanticModelMeasure,
     RelatedFabricSemanticModelTable,
     RelatedFabricSemanticModelTableColumn,
     RelatedFabricVisual,
@@ -32,6 +33,7 @@ from .fabric_related import (
 )
 from .fabric_report import FabricReport
 from .fabric_semantic_model import FabricSemanticModel
+from .fabric_semantic_model_measure import FabricSemanticModelMeasure
 from .fabric_semantic_model_table import FabricSemanticModelTable
 from .fabric_semantic_model_table_column import FabricSemanticModelTableColumn
 from .fabric_visual import FabricVisual
@@ -47,6 +49,7 @@ __all__ = [
     "FabricPage",
     "FabricReport",
     "FabricSemanticModel",
+    "FabricSemanticModelMeasure",
     "FabricSemanticModelTable",
     "FabricSemanticModelTableColumn",
     "FabricVisual",
@@ -60,6 +63,7 @@ __all__ = [
     "RelatedFabricPage",
     "RelatedFabricReport",
     "RelatedFabricSemanticModel",
+    "RelatedFabricSemanticModelMeasure",
     "RelatedFabricSemanticModelTable",
     "RelatedFabricSemanticModelTableColumn",
     "RelatedFabricVisual",
