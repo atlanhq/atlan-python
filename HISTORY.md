@@ -1,4 +1,8 @@
-## 11.2.1 (Unreleased)
+## 11.3.0 (September 17, 2026)
+
+### New Features
+
+- **Link knowledge files to assets**: `AssetClient` (sync and async) gains `append_knowledge_files`, `replace_knowledge_files` and `remove_knowledge_files`, so a `KnowledgeFile` can be linked to any asset the same way glossary terms are — append and remove are idempotent, and replace sends the full set (`[]` unlinks every file).
 
 ### Experimental: pyatlan_v9
 
