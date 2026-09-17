@@ -41,6 +41,7 @@ from pyatlan.client.common import (
     GetHierarchy,
     GetLineageList,
     ManageCustomMetadata,
+    ManageKnowledgeFiles,
     ManageTerms,
     ModifyAtlanTags,
     PurgeByGuid,
@@ -71,6 +72,7 @@ from pyatlan.model.assets import (
     Connection,
     DataDomain,
     DataProduct,
+    KnowledgeFile,
     Persona,
     Purpose,
 )
@@ -1422,6 +1424,137 @@ class AsyncAssetClient:
         # Process results using async shared logic
         return await SearchForAssetWithName.process_async_search_results(
             results, name, asset_type, allow_multiple
+        )
+
+    async def _manage_knowledge_files(
+        self,
+        asset_type: Type[A],
+        files: List[KnowledgeFile],
+        save_semantic: SaveSemantic,
+        guid: Optional[str] = None,
+        qualified_name: Optional[str] = None,
+    ) -> A:
+        """
+        Async shared method for linking knowledge files to an asset.
+
+        :param asset_type: type of the asset
+        :param files: list of knowledge files to link
+        :param save_semantic: semantic for saving (APPEND, REPLACE, REMOVE)
+        :param guid: unique identifier (GUID) of the asset
+        :param qualified_name: qualified name of the asset
+        :returns: the updated asset
+        """
+        ManageKnowledgeFiles.validate_guid_and_qualified_name(guid, qualified_name)
+
+        if guid:
+            search_query = ManageKnowledgeFiles.build_fluent_search_by_guid(
+                asset_type, guid
+            )
+        else:
+            if qualified_name is None:
+                raise ValueError(
+                    "qualified_name cannot be None when guid is not provided"
+                )
+            search_query = ManageKnowledgeFiles.build_fluent_search_by_qualified_name(
+                asset_type, qualified_name
+            )
+
+        results = await search_query.execute_async(client=self._client)  # type: ignore[arg-type]
+        first_result = ManageKnowledgeFiles.validate_search_results(
+            results, asset_type, guid, qualified_name
+        )
+
+        updated_asset = asset_type.updater(
+            qualified_name=first_result.qualified_name, name=first_result.name
+        )
+        updated_asset.knowledge_linked_files = (
+            ManageKnowledgeFiles.process_files_with_semantic(files, save_semantic)
+        )
+
+        response = await self.save(entity=updated_asset)
+        return ManageKnowledgeFiles.process_save_response(
+            response, asset_type, updated_asset
+        )
+
+    @validate_arguments
+    async def append_knowledge_files(
+        self,
+        asset_type: Type[A],
+        files: List[KnowledgeFile],
+        guid: Optional[str] = None,
+        qualified_name: Optional[str] = None,
+    ) -> A:
+        """
+        Link additional knowledge files to an asset, without replacing the files already linked.
+        Note: this operation makes two API calls — one to retrieve the asset, and a second to
+        append the files. (At least one of the GUID or qualified_name must be supplied, but
+        both are not necessary.)
+
+        :param asset_type: type of the asset
+        :param files: the knowledge files to link, as references by GUID or qualified_name
+        :param guid: unique identifier (GUID) of the asset to which to link the files
+        :param qualified_name: the qualified_name of the asset to which to link the files
+        :returns: the asset that was updated (note that it will NOT contain details of the linked files)
+        """
+        return await self._manage_knowledge_files(
+            asset_type=asset_type,
+            files=files,
+            save_semantic=SaveSemantic.APPEND,
+            guid=guid,
+            qualified_name=qualified_name,
+        )
+
+    @validate_arguments
+    async def replace_knowledge_files(
+        self,
+        asset_type: Type[A],
+        files: List[KnowledgeFile],
+        guid: Optional[str] = None,
+        qualified_name: Optional[str] = None,
+    ) -> A:
+        """
+        Replace the knowledge files linked to an asset.
+        (At least one of the GUID or qualified_name must be supplied, but both are not necessary.)
+
+        :param asset_type: type of the asset
+        :param files: the knowledge files to link, or an empty list to unlink every file from the asset
+        :param guid: unique identifier (GUID) of the asset on which to replace the files
+        :param qualified_name: the qualified_name of the asset on which to replace the files
+        :returns: the asset that was updated (note that it will NOT contain details of the linked files)
+        """
+        return await self._manage_knowledge_files(
+            asset_type=asset_type,
+            files=files,
+            save_semantic=SaveSemantic.REPLACE,
+            guid=guid,
+            qualified_name=qualified_name,
+        )
+
+    @validate_arguments
+    async def remove_knowledge_files(
+        self,
+        asset_type: Type[A],
+        files: List[KnowledgeFile],
+        guid: Optional[str] = None,
+        qualified_name: Optional[str] = None,
+    ) -> A:
+        """
+        Unlink knowledge files from an asset, leaving any other linked files in place.
+        Note: this operation makes two API calls — one to retrieve the asset, and a second to
+        remove the files.
+
+        :param asset_type: type of the asset
+        :param files: the knowledge files to unlink (references by GUID unlink most efficiently)
+        :param guid: unique identifier (GUID) of the asset from which to unlink the files
+        :param qualified_name: the qualified_name of the asset from which to unlink the files
+        :returns: the asset that was updated (note that it will NOT contain details of the remaining files)
+        """
+        return await self._manage_knowledge_files(
+            asset_type=asset_type,
+            files=files,
+            save_semantic=SaveSemantic.REMOVE,
+            guid=guid,
+            qualified_name=qualified_name,
         )
 
     @validate_arguments
