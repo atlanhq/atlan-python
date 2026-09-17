@@ -376,7 +376,7 @@ class Connection(Asset, type_name="Connection"):
         "connectionDbtEnvironments", "connectionDbtEnvironments"
     )
     """
-    
+
     """
     CONNECTION_SSO_CREDENTIAL_GUID: ClassVar[KeywordField] = KeywordField(
         "connectionSSOCredentialGuid", "connectionSSOCredentialGuid"
@@ -406,13 +406,13 @@ class Connection(Asset, type_name="Connection"):
         "vectorEmbeddingsEnabled", "vectorEmbeddingsEnabled"
     )
     """
-    
+
     """
     VECTOR_EMBEDDINGS_UPDATED_AT: ClassVar[NumericField] = NumericField(
         "vectorEmbeddingsUpdatedAt", "vectorEmbeddingsUpdatedAt"
     )
     """
-    
+
     """
     CONNECTION_SOURCE_ACCOUNT_IDENTIFIER: ClassVar[KeywordField] = KeywordField(
         "connectionSourceAccountIdentifier", "connectionSourceAccountIdentifier"

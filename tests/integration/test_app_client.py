@@ -21,11 +21,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import AtlanError
-from pyatlan.model.app import (
-    AppInfo,
-    AppInputContract,
-    AppResponse,
-)
+from pyatlan.model.app import AppInfo, AppInputContract, AppResponse
 from pyatlan.model.apps import BigqueryCrawler, BigqueryCrawlerInputs
 from tests.integration.client import TestId
 
