@@ -29,6 +29,7 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Connection,
     Database,
+    KnowledgeFile,
     DataContract,
     Schema,
     Table,
@@ -156,6 +157,24 @@ async def term(
     assert result
     yield result
     await delete_asset_async(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
+
+
+@pytest_asyncio.fixture(scope="module")
+async def knowledge_file(
+    client: AsyncAtlanClient,
+) -> AsyncGenerator[KnowledgeFile, None]:
+    # KnowledgeFile has no creator(); a bare save is enough for a link target.
+    kf = KnowledgeFile(
+        attributes=KnowledgeFile.Attributes(
+            name=f"{MODULE_NAME}.md",
+            qualified_name=f"default/knowledge/{MODULE_NAME}",
+        )
+    )
+    response = await client.asset.save(kf)
+    result = response.assets_created(KnowledgeFile)[0]
+    assert result
+    yield result
+    await delete_asset_async(client, guid=result.guid, asset_type=KnowledgeFile)
 
 
 @dataclass()
@@ -575,6 +594,122 @@ async def test_remove_terms_with_same_qn(
         asset_type=Schema,
         terms=[AtlasGlossaryTerm.ref_by_guid(term1.guid)],
     )
+
+
+@pytest_asyncio.fixture()
+async def fresh_database(
+    client: AsyncAtlanClient, connection: Connection
+) -> AsyncGenerator[Database, None]:
+    # Function-scoped like the sync module: each link test starts from an unlinked asset.
+    db = Database.creator(
+        name=TestId.make_unique("kf_db"),
+        connection_qualified_name=connection.qualified_name,
+    )
+    response = await client.asset.save(db)
+    result = response.assets_created(Database)[0]
+    yield result
+    await delete_asset_async(client, guid=result.guid, asset_type=Database)
+
+
+def _active_linked_files(asset: Asset) -> List[KnowledgeFile]:
+    # Atlas keeps an unlinked relationship with status DELETED; only ACTIVE ones count.
+    return [
+        f
+        for f in (asset.knowledge_linked_files or [])
+        if f.relationship_status != "DELETED"
+    ]
+
+
+async def test_append_knowledge_files_with_guid(
+    client: AsyncAtlanClient,
+    knowledge_file: KnowledgeFile,
+    fresh_database: Database,
+):
+    time.sleep(5)
+    assert (
+        fresh_database := await client.asset.append_knowledge_files(
+            guid=fresh_database.guid, asset_type=Database, files=[knowledge_file]
+        )
+    )
+    fresh_database = await client.asset.get_by_guid(
+        guid=fresh_database.guid, asset_type=Database, ignore_relationships=False
+    )
+    linked = _active_linked_files(fresh_database)
+    assert len(linked) == 1
+    assert linked[0].guid == knowledge_file.guid
+    # Inverse end of the relationship is populated too.
+    file = await client.asset.get_by_guid(
+        guid=knowledge_file.guid, asset_type=KnowledgeFile, ignore_relationships=False
+    )
+    linked_assets = [
+        a
+        for a in (file.knowledge_linked_assets or [])
+        if a.relationship_status != "DELETED"
+    ]
+    assert fresh_database.guid in {a.guid for a in linked_assets}
+
+
+async def test_append_knowledge_files_with_qualified_name(
+    client: AsyncAtlanClient,
+    knowledge_file: KnowledgeFile,
+    fresh_database: Database,
+):
+    time.sleep(5)
+    assert (
+        fresh_database := await client.asset.append_knowledge_files(
+            qualified_name=fresh_database.qualified_name,
+            asset_type=Database,
+            files=[KnowledgeFile.ref_by_guid(guid=knowledge_file.guid)],
+        )
+    )
+    fresh_database = await client.asset.get_by_guid(
+        guid=fresh_database.guid, asset_type=Database, ignore_relationships=False
+    )
+    linked = _active_linked_files(fresh_database)
+    assert len(linked) == 1
+    assert linked[0].guid == knowledge_file.guid
+
+
+async def test_replace_knowledge_files_with_empty_list_unlinks_all(
+    client: AsyncAtlanClient,
+    knowledge_file: KnowledgeFile,
+    fresh_database: Database,
+):
+    time.sleep(5)
+    assert await client.asset.append_knowledge_files(
+        guid=fresh_database.guid, asset_type=Database, files=[knowledge_file]
+    )
+    assert (
+        fresh_database := await client.asset.replace_knowledge_files(
+            guid=fresh_database.guid, asset_type=Database, files=[]
+        )
+    )
+    fresh_database = await client.asset.get_by_guid(
+        guid=fresh_database.guid, asset_type=Database, ignore_relationships=False
+    )
+    assert not _active_linked_files(fresh_database)
+
+
+async def test_remove_knowledge_files(
+    client: AsyncAtlanClient,
+    knowledge_file: KnowledgeFile,
+    fresh_database: Database,
+):
+    time.sleep(5)
+    assert await client.asset.append_knowledge_files(
+        guid=fresh_database.guid, asset_type=Database, files=[knowledge_file]
+    )
+    assert (
+        fresh_database := await client.asset.remove_knowledge_files(
+            qualified_name=fresh_database.qualified_name,
+            asset_type=Database,
+            files=[KnowledgeFile.ref_by_guid(guid=knowledge_file.guid)],
+        )
+    )
+    fresh_database = await client.asset.get_by_guid(
+        guid=fresh_database.guid, asset_type=Database, ignore_relationships=False
+    )
+    assert not _active_linked_files(fresh_database)
 
 
 async def test_find_connections_by_name(client: AsyncAtlanClient):

@@ -26,6 +26,7 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Connection,
     Database,
+    KnowledgeFile,
     Schema,
     Table,
 )
@@ -178,6 +179,22 @@ def schema_with_db_qn(
     sch = result.assets_created(asset_type=Schema)[0]
     yield sch
     delete_asset(client, guid=sch.guid, asset_type=Schema)
+
+
+@pytest.fixture(scope="module")
+def knowledge_file(client: AtlanClient) -> Generator[KnowledgeFile, None, None]:
+    # KnowledgeFile has no creator(); a bare save is enough for a link target.
+    kf = KnowledgeFile(
+        attributes=KnowledgeFile.Attributes(
+            name=f"{MODULE_NAME}.md",
+            qualified_name=f"default/knowledge/{MODULE_NAME}",
+        )
+    )
+    response = client.asset.save(kf)
+    result = response.assets_created(KnowledgeFile)[0]
+    assert result
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=KnowledgeFile)
 
 
 @pytest.fixture()
@@ -539,6 +556,107 @@ def test_remove_terms_with_same_qn(
             terms=[AtlasGlossaryTerm.ref_by_guid(term1.guid)],
         )
     )
+
+
+def _active_linked_files(asset: Asset) -> List[KnowledgeFile]:
+    # Atlas keeps an unlinked relationship with status DELETED; only ACTIVE ones count.
+    return [
+        f
+        for f in (asset.knowledge_linked_files or [])
+        if f.relationship_status != "DELETED"
+    ]
+
+
+def test_append_knowledge_files_with_guid(
+    client: AtlanClient,
+    knowledge_file: KnowledgeFile,
+    database: Database,
+):
+    time.sleep(5)
+    assert (
+        database := client.asset.append_knowledge_files(
+            guid=database.guid, asset_type=Database, files=[knowledge_file]
+        )
+    )
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
+    linked = _active_linked_files(database)
+    assert len(linked) == 1
+    assert linked[0].guid == knowledge_file.guid
+    # Inverse end of the relationship is populated too.
+    file = client.asset.get_by_guid(
+        guid=knowledge_file.guid, asset_type=KnowledgeFile, ignore_relationships=False
+    )
+    linked_assets = [
+        a
+        for a in (file.knowledge_linked_assets or [])
+        if a.relationship_status != "DELETED"
+    ]
+    assert database.guid in {a.guid for a in linked_assets}
+
+
+def test_append_knowledge_files_with_qualified_name(
+    client: AtlanClient,
+    knowledge_file: KnowledgeFile,
+    database: Database,
+):
+    time.sleep(5)
+    assert (
+        database := client.asset.append_knowledge_files(
+            qualified_name=database.qualified_name,
+            asset_type=Database,
+            files=[KnowledgeFile.ref_by_guid(guid=knowledge_file.guid)],
+        )
+    )
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
+    linked = _active_linked_files(database)
+    assert len(linked) == 1
+    assert linked[0].guid == knowledge_file.guid
+
+
+def test_replace_knowledge_files_with_empty_list_unlinks_all(
+    client: AtlanClient,
+    knowledge_file: KnowledgeFile,
+    database: Database,
+):
+    time.sleep(5)
+    assert client.asset.append_knowledge_files(
+        guid=database.guid, asset_type=Database, files=[knowledge_file]
+    )
+    assert (
+        database := client.asset.replace_knowledge_files(
+            guid=database.guid, asset_type=Database, files=[]
+        )
+    )
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
+    assert not _active_linked_files(database)
+
+
+def test_remove_knowledge_files(
+    client: AtlanClient,
+    knowledge_file: KnowledgeFile,
+    database: Database,
+):
+    time.sleep(5)
+    assert client.asset.append_knowledge_files(
+        guid=database.guid, asset_type=Database, files=[knowledge_file]
+    )
+    assert (
+        database := client.asset.remove_knowledge_files(
+            qualified_name=database.qualified_name,
+            asset_type=Database,
+            files=[KnowledgeFile.ref_by_guid(guid=knowledge_file.guid)],
+        )
+    )
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
+    assert not _active_linked_files(database)
 
 
 def test_find_connections_by_name(client: AtlanClient):
