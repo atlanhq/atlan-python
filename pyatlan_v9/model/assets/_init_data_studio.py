@@ -8,9 +8,12 @@ DataStudio module exports.
 This module provides convenient imports for all DataStudio types and their Related variants.
 """
 
+from .data_studio_related import (
+    RelatedDataStudio,
+    RelatedDataStudioAsset,
+)
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset
-from .data_studio_related import RelatedDataStudio, RelatedDataStudioAsset
 
 __all__ = [
     "DataStudio",

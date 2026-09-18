@@ -8,16 +8,16 @@ Unstructured module exports.
 This module provides convenient imports for all Unstructured types and their Related variants.
 """
 
-from .unstructured import Unstructured
-from .unstructured_container import UnstructuredContainer
-from .unstructured_folder import UnstructuredFolder
-from .unstructured_object import UnstructuredObject
 from .unstructured_related import (
     RelatedUnstructured,
     RelatedUnstructuredContainer,
     RelatedUnstructuredFolder,
     RelatedUnstructuredObject,
 )
+from .unstructured import Unstructured
+from .unstructured_container import UnstructuredContainer
+from .unstructured_folder import UnstructuredFolder
+from .unstructured_object import UnstructuredObject
 
 __all__ = [
     "RelatedUnstructured",

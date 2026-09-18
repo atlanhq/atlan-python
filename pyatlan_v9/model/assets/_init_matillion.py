@@ -8,11 +8,6 @@ Matillion module exports.
 This module provides convenient imports for all Matillion types and their Related variants.
 """
 
-from .matillion import Matillion
-from .matillion_component import MatillionComponent
-from .matillion_group import MatillionGroup
-from .matillion_job import MatillionJob
-from .matillion_project import MatillionProject
 from .matillion_related import (
     RelatedMatillion,
     RelatedMatillionComponent,
@@ -20,6 +15,11 @@ from .matillion_related import (
     RelatedMatillionJob,
     RelatedMatillionProject,
 )
+from .matillion import Matillion
+from .matillion_component import MatillionComponent
+from .matillion_group import MatillionGroup
+from .matillion_job import MatillionJob
+from .matillion_project import MatillionProject
 
 __all__ = [
     "Matillion",

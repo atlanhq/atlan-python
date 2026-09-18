@@ -8,8 +8,8 @@ Skill module exports.
 This module provides convenient imports for all Skill types and their Related variants.
 """
 
-from .skill import Skill
 from .skill_related import RelatedSkill
+from .skill import Skill
 
 __all__ = [
     "RelatedSkill",

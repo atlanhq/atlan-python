@@ -8,11 +8,6 @@ API module exports.
 This module provides convenient imports for all API types and their Related variants.
 """
 
-from .api import API
-from .api_field import APIField
-from .api_object import APIObject
-from .api_path import APIPath
-from .api_query import APIQuery
 from .api_related import (
     RelatedAPI,
     RelatedAPIField,
@@ -21,6 +16,11 @@ from .api_related import (
     RelatedAPIQuery,
     RelatedAPISpec,
 )
+from .api import API
+from .api_field import APIField
+from .api_object import APIObject
+from .api_path import APIPath
+from .api_query import APIQuery
 from .api_spec import APISpec
 
 __all__ = [

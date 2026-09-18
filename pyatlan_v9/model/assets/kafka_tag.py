@@ -4,20 +4,22 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-Task asset model with flattened inheritance.
+KafkaTag asset model with flattened inheritance.
 
 This module provides:
-- Task: Flat asset class (easy to use)
-- TaskAttributes: Nested attributes struct (extends AssetAttributes)
-- TaskNested: Nested API format struct
+- KafkaTag: Flat asset class (easy to use)
+- KafkaTagAttributes: Nested attributes struct (extends AssetAttributes)
+- KafkaTagNested: Nested API format struct
 """
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -36,11 +38,15 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
+from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
+from .partial_related import RelatedPartialField, RelatedPartialObject
+from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from .spark_related import RelatedSparkJob
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -48,7 +54,7 @@ from pyatlan_v9.model.conversion_utils import (
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .task_related import RelatedTask
+from .kafka_related import RelatedKafkaTag
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -56,25 +62,18 @@ from .task_related import RelatedTask
 
 
 @register_asset
-class Task(Asset):
+class KafkaTag(Asset):
     """
-    Instance of a Task for user in Atlan.
+    Instance of a Confluent Stream Catalog tag in Atlan.
     """
 
-    TASK_RECIPIENT: ClassVar[Any] = None
-    TASK_TYPE: ClassVar[Any] = None
-    TASK_REQUESTOR: ClassVar[Any] = None
-    TASK_IS_READ: ClassVar[Any] = None
-    TASK_REQUESTOR_COMMENT: ClassVar[Any] = None
-    TASK_RELATED_ASSET_GUID: ClassVar[Any] = None
-    TASK_PROPOSALS: ClassVar[Any] = None
-    TASK_EXPIRES_AT: ClassVar[Any] = None
-    TASK_ACTIONS: ClassVar[Any] = None
-    TASK_EXECUTION_COMMENT: ClassVar[Any] = None
-    TASK_EXECUTION_ACTION: ClassVar[Any] = None
-    TASK_INTEGRATION_CONFIG: ClassVar[Any] = None
-    TASK_CREATED_BY: ClassVar[Any] = None
-    TASK_UPDATED_BY: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
+    TAG_ID: ClassVar[Any] = None
+    TAG_ATTRIBUTES: ClassVar[Any] = None
+    TAG_ALLOWED_VALUES: ClassVar[Any] = None
+    MAPPED_CLASSIFICATION_NAME: ClassVar[Any] = None
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
+    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
@@ -83,6 +82,8 @@ class Task(Asset):
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
+    MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
+    MODEL_IMPLEMENTED_ATTRIBUTES: ClassVar[Any] = None
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
@@ -91,6 +92,10 @@ class Task(Asset):
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
+    PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
+    PARTIAL_CHILD_OBJECTS: ClassVar[Any] = None
+    INPUT_TO_PROCESSES: ClassVar[Any] = None
+    OUTPUT_FROM_PROCESSES: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_FROM: ClassVar[Any] = None
     FILES: ClassVar[Any] = None
@@ -98,48 +103,29 @@ class Task(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+    INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
+    OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    task_recipient: Union[str, None, UnsetType] = UNSET
-    """Recipient of the task."""
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
-    task_type: Union[str, None, UnsetType] = UNSET
-    """Type of task."""
+    tag_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the tag in the source system."""
 
-    task_requestor: Union[str, None, UnsetType] = UNSET
-    """Requestor of the task."""
+    tag_attributes: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Attributes associated with the tag in the source system."""
 
-    task_is_read: Union[bool, None, UnsetType] = UNSET
-    """Flag to make task read/unread."""
+    tag_allowed_values: Union[List[str], None, UnsetType] = UNSET
+    """Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying."""
 
-    task_requestor_comment: Union[str, None, UnsetType] = UNSET
-    """Comment of requestor for the task."""
+    mapped_classification_name: Union[str, None, UnsetType] = UNSET
+    """Name of the classification in Atlan that is mapped to this tag."""
 
-    task_related_asset_guid: Union[str, None, UnsetType] = UNSET
-    """Unique identifier of the asset to preview."""
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
+    """Tasks to which this asset provides input."""
 
-    task_proposals: Union[str, None, UnsetType] = UNSET
-    """Contains the payload that is proposed to the task."""
-
-    task_expires_at: Union[int, None, UnsetType] = UNSET
-    """Time (epoch) at which the task expires."""
-
-    task_actions: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
-    """List of actions associated with this task."""
-
-    task_execution_comment: Union[str, None, UnsetType] = UNSET
-    """Comment for the action executed by user."""
-
-    task_execution_action: Union[str, None, UnsetType] = UNSET
-    """Action executed by the recipient."""
-
-    task_integration_config: Union[str, None, UnsetType] = UNSET
-    """Contains external integration config for the task."""
-
-    task_created_by: Union[str, None, UnsetType] = UNSET
-    """Username of the user who created this task."""
-
-    task_updated_by: Union[str, None, UnsetType] = UNSET
-    """Username of the user who updated this task."""
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
+    """Tasks from which this asset is output."""
 
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
@@ -164,6 +150,14 @@ class Task(Asset):
 
     input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
+
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    """Entities implemented by this asset."""
+
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
+    """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
@@ -193,6 +187,18 @@ class Task(Asset):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
+    """Partial fields contained in the asset."""
+
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
+    """Partial objects contained in the asset."""
+
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes to which this asset provides input."""
+
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes from which this asset is produced as output."""
+
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
@@ -218,16 +224,24 @@ class Task(Asset):
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
     def __post_init__(self) -> None:
-        self.type_name = "Task"
+        self.type_name = "KafkaTag"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/tag/[^/]+$")
+
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this Task instance.
+        Dry-run validation of this KafkaTag instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -249,37 +263,49 @@ class Task(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.tag_id is UNSET:
+                errors.append("tag_id is required for creation")
+            if self.tag_allowed_values is UNSET:
+                errors.append("tag_allowed_values is required for creation")
+            if self.mapped_classification_name is UNSET:
+                errors.append("mapped_classification_name is required for creation")
         if errors:
-            raise ValueError(f"Task validation failed: {errors}")
+            raise ValueError(f"KafkaTag validation failed: {errors}")
 
-    def minimize(self) -> "Task":
+    def minimize(self) -> "KafkaTag":
         """
-        Return a minimal copy of this Task with only updater-required fields.
+        Return a minimal copy of this KafkaTag with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Task with only the fields needed for an update
+        returns a new KafkaTag with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new Task instance with only the minimum required fields.
+            A new KafkaTag instance with only the minimum required fields.
         """
         self.validate()
-        return Task(qualified_name=self.qualified_name, name=self.name)
+        return KafkaTag(qualified_name=self.qualified_name, name=self.name)
 
-    def relate(self) -> "RelatedTask":
+    def relate(self) -> "RelatedKafkaTag":
         """
-        Create a :class:`RelatedTask` reference from this instance.
+        Create a :class:`RelatedKafkaTag` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedTask reference to this asset.
+            A RelatedKafkaTag reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedTask(guid=self.guid)
-        return RelatedTask(qualified_name=self.qualified_name)
+            return RelatedKafkaTag(guid=self.guid)
+        return RelatedKafkaTag(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -307,10 +333,10 @@ class Task(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _task_to_nested_bytes(self, serde)
+        return _kafka_tag_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> Task:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> KafkaTag:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -319,13 +345,13 @@ class Task(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            Task instance
+            KafkaTag instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _task_from_nested_bytes(json_data, serde)
+        return _kafka_tag_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -333,54 +359,33 @@ class Task(Asset):
 # =============================================================================
 
 
-class TaskAttributes(AssetAttributes):
-    """Task-specific attributes for nested API format."""
+class KafkaTagAttributes(AssetAttributes):
+    """KafkaTag-specific attributes for nested API format."""
 
-    task_recipient: Union[str, None, UnsetType] = UNSET
-    """Recipient of the task."""
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
-    task_type: Union[str, None, UnsetType] = UNSET
-    """Type of task."""
+    tag_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the tag in the source system."""
 
-    task_requestor: Union[str, None, UnsetType] = UNSET
-    """Requestor of the task."""
+    tag_attributes: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Attributes associated with the tag in the source system."""
 
-    task_is_read: Union[bool, None, UnsetType] = UNSET
-    """Flag to make task read/unread."""
+    tag_allowed_values: Union[List[str], None, UnsetType] = UNSET
+    """Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying."""
 
-    task_requestor_comment: Union[str, None, UnsetType] = UNSET
-    """Comment of requestor for the task."""
-
-    task_related_asset_guid: Union[str, None, UnsetType] = UNSET
-    """Unique identifier of the asset to preview."""
-
-    task_proposals: Union[str, None, UnsetType] = UNSET
-    """Contains the payload that is proposed to the task."""
-
-    task_expires_at: Union[int, None, UnsetType] = UNSET
-    """Time (epoch) at which the task expires."""
-
-    task_actions: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
-    """List of actions associated with this task."""
-
-    task_execution_comment: Union[str, None, UnsetType] = UNSET
-    """Comment for the action executed by user."""
-
-    task_execution_action: Union[str, None, UnsetType] = UNSET
-    """Action executed by the recipient."""
-
-    task_integration_config: Union[str, None, UnsetType] = UNSET
-    """Contains external integration config for the task."""
-
-    task_created_by: Union[str, None, UnsetType] = UNSET
-    """Username of the user who created this task."""
-
-    task_updated_by: Union[str, None, UnsetType] = UNSET
-    """Username of the user who updated this task."""
+    mapped_classification_name: Union[str, None, UnsetType] = UNSET
+    """Name of the classification in Atlan that is mapped to this tag."""
 
 
-class TaskRelationshipAttributes(AssetRelationshipAttributes):
-    """Task-specific relationship attributes for nested API format."""
+class KafkaTagRelationshipAttributes(AssetRelationshipAttributes):
+    """KafkaTag-specific relationship attributes for nested API format."""
+
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
+    """Tasks to which this asset provides input."""
+
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
+    """Tasks from which this asset is output."""
 
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
@@ -405,6 +410,14 @@ class TaskRelationshipAttributes(AssetRelationshipAttributes):
 
     input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
+
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    """Entities implemented by this asset."""
+
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
+    """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
@@ -434,6 +447,18 @@ class TaskRelationshipAttributes(AssetRelationshipAttributes):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
+    """Partial fields contained in the asset."""
+
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
+    """Partial objects contained in the asset."""
+
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes to which this asset provides input."""
+
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes from which this asset is produced as output."""
+
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
@@ -459,22 +484,34 @@ class TaskRelationshipAttributes(AssetRelationshipAttributes):
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
 
-class TaskNested(AssetNested):
-    """Task in nested API format for high-performance serialization."""
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
 
-    attributes: Union[TaskAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[TaskRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[TaskRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[TaskRelationshipAttributes, UnsetType] = UNSET
+
+class KafkaTagNested(AssetNested):
+    """KafkaTag in nested API format for high-performance serialization."""
+
+    attributes: Union[KafkaTagAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[KafkaTagRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[KafkaTagRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[KafkaTagRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_TASK_REL_FIELDS: List[str] = [
+_KAFKA_TAG_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
+    "input_to_airflow_tasks",
+    "output_from_airflow_tasks",
     "anomalo_checks",
     "application",
     "application_field",
@@ -483,6 +520,8 @@ _TASK_REL_FIELDS: List[str] = [
     "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
+    "model_implemented_entities",
+    "model_implemented_attributes",
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
@@ -491,6 +530,10 @@ _TASK_REL_FIELDS: List[str] = [
     "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
+    "partial_child_fields",
+    "partial_child_objects",
+    "input_to_processes",
+    "output_from_processes",
     "user_def_relationship_to",
     "user_def_relationship_from",
     "files",
@@ -498,45 +541,29 @@ _TASK_REL_FIELDS: List[str] = [
     "readme",
     "schema_registry_subjects",
     "soda_checks",
+    "input_to_spark_jobs",
+    "output_from_spark_jobs",
 ]
 
 
-def _populate_task_attrs(attrs: TaskAttributes, obj: Task) -> None:
-    """Populate Task-specific attributes on the attrs struct."""
+def _populate_kafka_tag_attrs(attrs: KafkaTagAttributes, obj: KafkaTag) -> None:
+    """Populate KafkaTag-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.task_recipient = obj.task_recipient
-    attrs.task_type = obj.task_type
-    attrs.task_requestor = obj.task_requestor
-    attrs.task_is_read = obj.task_is_read
-    attrs.task_requestor_comment = obj.task_requestor_comment
-    attrs.task_related_asset_guid = obj.task_related_asset_guid
-    attrs.task_proposals = obj.task_proposals
-    attrs.task_expires_at = obj.task_expires_at
-    attrs.task_actions = obj.task_actions
-    attrs.task_execution_comment = obj.task_execution_comment
-    attrs.task_execution_action = obj.task_execution_action
-    attrs.task_integration_config = obj.task_integration_config
-    attrs.task_created_by = obj.task_created_by
-    attrs.task_updated_by = obj.task_updated_by
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+    attrs.tag_id = obj.tag_id
+    attrs.tag_attributes = obj.tag_attributes
+    attrs.tag_allowed_values = obj.tag_allowed_values
+    attrs.mapped_classification_name = obj.mapped_classification_name
 
 
-def _extract_task_attrs(attrs: TaskAttributes) -> dict:
-    """Extract all Task attributes from the attrs struct into a flat dict."""
+def _extract_kafka_tag_attrs(attrs: KafkaTagAttributes) -> dict:
+    """Extract all KafkaTag attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["task_recipient"] = attrs.task_recipient
-    result["task_type"] = attrs.task_type
-    result["task_requestor"] = attrs.task_requestor
-    result["task_is_read"] = attrs.task_is_read
-    result["task_requestor_comment"] = attrs.task_requestor_comment
-    result["task_related_asset_guid"] = attrs.task_related_asset_guid
-    result["task_proposals"] = attrs.task_proposals
-    result["task_expires_at"] = attrs.task_expires_at
-    result["task_actions"] = attrs.task_actions
-    result["task_execution_comment"] = attrs.task_execution_comment
-    result["task_execution_action"] = attrs.task_execution_action
-    result["task_integration_config"] = attrs.task_integration_config
-    result["task_created_by"] = attrs.task_created_by
-    result["task_updated_by"] = attrs.task_updated_by
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
+    result["tag_id"] = attrs.tag_id
+    result["tag_attributes"] = attrs.tag_attributes
+    result["tag_allowed_values"] = attrs.tag_allowed_values
+    result["mapped_classification_name"] = attrs.mapped_classification_name
     return result
 
 
@@ -545,37 +572,37 @@ def _extract_task_attrs(attrs: TaskAttributes) -> dict:
 # =============================================================================
 
 
-def _task_to_nested(task: Task) -> TaskNested:
-    """Convert flat Task to nested format."""
-    attrs = TaskAttributes()
-    _populate_task_attrs(attrs, task)
+def _kafka_tag_to_nested(kafka_tag: KafkaTag) -> KafkaTagNested:
+    """Convert flat KafkaTag to nested format."""
+    attrs = KafkaTagAttributes()
+    _populate_kafka_tag_attrs(attrs, kafka_tag)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        task, _TASK_REL_FIELDS, TaskRelationshipAttributes
+        kafka_tag, _KAFKA_TAG_REL_FIELDS, KafkaTagRelationshipAttributes
     )
-    return TaskNested(
-        guid=task.guid,
-        type_name=task.type_name,
-        status=task.status,
-        version=task.version,
-        create_time=task.create_time,
-        update_time=task.update_time,
-        created_by=task.created_by,
-        updated_by=task.updated_by,
-        classifications=task.classifications,
-        classification_names=task.classification_names,
-        meanings=task.meanings,
-        labels=task.labels,
-        business_attributes=task.business_attributes,
-        custom_attributes=task.custom_attributes,
-        pending_tasks=task.pending_tasks,
-        proxy=task.proxy,
-        is_incomplete=task.is_incomplete,
-        provenance_type=task.provenance_type,
-        home_id=task.home_id,
-        depth=task.depth,
-        immediate_upstream=task.immediate_upstream,
-        immediate_downstream=task.immediate_downstream,
+    return KafkaTagNested(
+        guid=kafka_tag.guid,
+        type_name=kafka_tag.type_name,
+        status=kafka_tag.status,
+        version=kafka_tag.version,
+        create_time=kafka_tag.create_time,
+        update_time=kafka_tag.update_time,
+        created_by=kafka_tag.created_by,
+        updated_by=kafka_tag.updated_by,
+        classifications=kafka_tag.classifications,
+        classification_names=kafka_tag.classification_names,
+        meanings=kafka_tag.meanings,
+        labels=kafka_tag.labels,
+        business_attributes=kafka_tag.business_attributes,
+        custom_attributes=kafka_tag.custom_attributes,
+        pending_tasks=kafka_tag.pending_tasks,
+        proxy=kafka_tag.proxy,
+        is_incomplete=kafka_tag.is_incomplete,
+        provenance_type=kafka_tag.provenance_type,
+        home_id=kafka_tag.home_id,
+        depth=kafka_tag.depth,
+        immediate_upstream=kafka_tag.immediate_upstream,
+        immediate_downstream=kafka_tag.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -583,18 +610,20 @@ def _task_to_nested(task: Task) -> TaskNested:
     )
 
 
-def _task_from_nested(nested: TaskNested) -> Task:
-    """Convert nested format to flat Task."""
-    attrs = nested.attributes if nested.attributes is not UNSET else TaskAttributes()
+def _kafka_tag_from_nested(nested: KafkaTagNested) -> KafkaTag:
+    """Convert nested format to flat KafkaTag."""
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else KafkaTagAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _TASK_REL_FIELDS,
-        TaskRelationshipAttributes,
+        _KAFKA_TAG_REL_FIELDS,
+        KafkaTagRelationshipAttributes,
     )
-    return Task(
+    return KafkaTag(
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
@@ -617,77 +646,73 @@ def _task_from_nested(nested: TaskNested) -> Task:
         depth=nested.depth,
         immediate_upstream=nested.immediate_upstream,
         immediate_downstream=nested.immediate_downstream,
-        **_extract_task_attrs(attrs),
+        **_extract_kafka_tag_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
     )
 
 
-def _task_to_nested_bytes(task: Task, serde: Serde) -> bytes:
-    """Convert flat Task to nested JSON bytes."""
-    return serde.encode(_task_to_nested(task))
+def _kafka_tag_to_nested_bytes(kafka_tag: KafkaTag, serde: Serde) -> bytes:
+    """Convert flat KafkaTag to nested JSON bytes."""
+    return serde.encode(_kafka_tag_to_nested(kafka_tag))
 
 
-def _task_from_nested_bytes(data: bytes, serde: Serde) -> Task:
-    """Convert nested JSON bytes to flat Task."""
-    nested = serde.decode(data, TaskNested)
-    return _task_from_nested(nested)
+def _kafka_tag_from_nested_bytes(data: bytes, serde: Serde) -> KafkaTag:
+    """Convert nested JSON bytes to flat KafkaTag."""
+    nested = serde.decode(data, KafkaTagNested)
+    return _kafka_tag_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    BooleanField,
     KeywordField,
-    NumericField,
+    KeywordTextField,
     RelationField,
 )
 
-Task.TASK_RECIPIENT = KeywordField("taskRecipient", "taskRecipient")
-Task.TASK_TYPE = KeywordField("taskType", "taskType")
-Task.TASK_REQUESTOR = KeywordField("taskRequestor", "taskRequestor")
-Task.TASK_IS_READ = BooleanField("taskIsRead", "taskIsRead")
-Task.TASK_REQUESTOR_COMMENT = KeywordField(
-    "taskRequestorComment", "taskRequestorComment"
+KafkaTag.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+KafkaTag.TAG_ID = KeywordField("tagId", "tagId")
+KafkaTag.TAG_ATTRIBUTES = KeywordField("tagAttributes", "tagAttributes")
+KafkaTag.TAG_ALLOWED_VALUES = KeywordTextField(
+    "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
 )
-Task.TASK_RELATED_ASSET_GUID = KeywordField(
-    "taskRelatedAssetGuid", "taskRelatedAssetGuid"
+KafkaTag.MAPPED_CLASSIFICATION_NAME = KeywordField(
+    "mappedClassificationName", "mappedClassificationName"
 )
-Task.TASK_PROPOSALS = KeywordField("taskProposals", "taskProposals")
-Task.TASK_EXPIRES_AT = NumericField("taskExpiresAt", "taskExpiresAt")
-Task.TASK_ACTIONS = KeywordField("taskActions", "taskActions")
-Task.TASK_EXECUTION_COMMENT = KeywordField(
-    "taskExecutionComment", "taskExecutionComment"
-)
-Task.TASK_EXECUTION_ACTION = KeywordField("taskExecutionAction", "taskExecutionAction")
-Task.TASK_INTEGRATION_CONFIG = KeywordField(
-    "taskIntegrationConfig", "taskIntegrationConfig"
-)
-Task.TASK_CREATED_BY = KeywordField("taskCreatedBy", "taskCreatedBy")
-Task.TASK_UPDATED_BY = KeywordField("taskUpdatedBy", "taskUpdatedBy")
-Task.ANOMALO_CHECKS = RelationField("anomaloChecks")
-Task.APPLICATION = RelationField("application")
-Task.APPLICATION_FIELD = RelationField("applicationField")
-Task.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
-Task.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-Task.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-Task.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-Task.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-Task.METRICS = RelationField("metrics")
-Task.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-Task.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Task.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+KafkaTag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+KafkaTag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+KafkaTag.ANOMALO_CHECKS = RelationField("anomaloChecks")
+KafkaTag.APPLICATION = RelationField("application")
+KafkaTag.APPLICATION_FIELD = RelationField("applicationField")
+KafkaTag.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+KafkaTag.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+KafkaTag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+KafkaTag.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+KafkaTag.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+KafkaTag.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+KafkaTag.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+KafkaTag.METRICS = RelationField("metrics")
+KafkaTag.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+KafkaTag.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+KafkaTag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
-Task.MEANINGS = RelationField("meanings")
-Task.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
-Task.MC_MONITORS = RelationField("mcMonitors")
-Task.MC_INCIDENTS = RelationField("mcIncidents")
-Task.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-Task.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
-Task.FILES = RelationField("files")
-Task.LINKS = RelationField("links")
-Task.README = RelationField("readme")
-Task.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-Task.SODA_CHECKS = RelationField("sodaChecks")
+KafkaTag.MEANINGS = RelationField("meanings")
+KafkaTag.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+KafkaTag.MC_MONITORS = RelationField("mcMonitors")
+KafkaTag.MC_INCIDENTS = RelationField("mcIncidents")
+KafkaTag.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+KafkaTag.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+KafkaTag.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+KafkaTag.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+KafkaTag.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+KafkaTag.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+KafkaTag.FILES = RelationField("files")
+KafkaTag.LINKS = RelationField("links")
+KafkaTag.README = RelationField("readme")
+KafkaTag.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+KafkaTag.SODA_CHECKS = RelationField("sodaChecks")
+KafkaTag.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+KafkaTag.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

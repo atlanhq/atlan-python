@@ -8,9 +8,12 @@ Soda module exports.
 This module provides convenient imports for all Soda types and their Related variants.
 """
 
+from .soda_related import (
+    RelatedSoda,
+    RelatedSodaCheck,
+)
 from .soda import Soda
 from .soda_check import SodaCheck
-from .soda_related import RelatedSoda, RelatedSodaCheck
 
 __all__ = [
     "RelatedSoda",

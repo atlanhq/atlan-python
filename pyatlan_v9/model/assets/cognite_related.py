@@ -11,6 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+
 from msgspec import UNSET
 
 from .catalog_related import RelatedSaaS

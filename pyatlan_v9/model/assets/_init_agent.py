@@ -8,8 +8,8 @@ Agent module exports.
 This module provides convenient imports for all Agent types and their Related variants.
 """
 
-from .agent import Agent
 from .agent_related import RelatedAgent
+from .agent import Agent
 
 __all__ = [
     "Agent",

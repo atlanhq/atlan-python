@@ -48,7 +48,6 @@ from .gtc_related import (
     RelatedAtlasGlossaryCategory,
     RelatedAtlasGlossaryTerm,
 )
-from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -73,6 +72,7 @@ class AtlasGlossaryTerm(Asset):
     USAGE: ClassVar[Any] = None
     ADDITIONAL_ATTRIBUTES: ClassVar[Any] = None
     TERM_TYPE: ClassVar[Any] = None
+    ANCHOR: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
@@ -87,7 +87,6 @@ class AtlasGlossaryTerm(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     ASSIGNED_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
-    ANCHOR: ClassVar[Any] = None
     CATEGORIES: ClassVar[Any] = None
     SEE_ALSO: ClassVar[Any] = None
     SYNONYMS: ClassVar[Any] = None
@@ -102,7 +101,6 @@ class AtlasGlossaryTerm(Asset):
     IS_A: ClassVar[Any] = None
     VALID_VALUES_FOR: ClassVar[Any] = None
     VALID_VALUES: ClassVar[Any] = None
-    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -133,6 +131,9 @@ class AtlasGlossaryTerm(Asset):
 
     term_type: Union[str, None, UnsetType] = UNSET
     """"""
+
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    """Glossary in which this term is contained."""
 
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
@@ -180,9 +181,6 @@ class AtlasGlossaryTerm(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
-    """Glossary in which this term is contained."""
-
     categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
     """Categories within which this term is organized."""
 
@@ -224,9 +222,6 @@ class AtlasGlossaryTerm(Asset):
 
     valid_values: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Valid values for this term."""
-
-    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
-    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -553,6 +548,9 @@ class AtlasGlossaryTermAttributes(AssetAttributes):
     term_type: Union[str, None, UnsetType] = UNSET
     """"""
 
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    """Glossary in which this term is contained."""
+
 
 class AtlasGlossaryTermRelationshipAttributes(AssetRelationshipAttributes):
     """AtlasGlossaryTerm-specific relationship attributes for nested API format."""
@@ -603,9 +601,6 @@ class AtlasGlossaryTermRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
-    """Glossary in which this term is contained."""
-
     categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
     """Categories within which this term is organized."""
 
@@ -647,9 +642,6 @@ class AtlasGlossaryTermRelationshipAttributes(AssetRelationshipAttributes):
 
     valid_values: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Valid values for this term."""
-
-    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
-    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -718,7 +710,6 @@ _ATLAS_GLOSSARY_TERM_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "assigned_entities",
     "meanings",
-    "anchor",
     "categories",
     "see_also",
     "synonyms",
@@ -733,7 +724,6 @@ _ATLAS_GLOSSARY_TERM_REL_FIELDS: List[str] = [
     "is_a",
     "valid_values_for",
     "valid_values",
-    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -758,6 +748,7 @@ def _populate_atlas_glossary_term_attrs(
     attrs.usage = obj.usage
     attrs.additional_attributes = obj.additional_attributes
     attrs.term_type = obj.term_type
+    attrs.anchor = obj.anchor
 
 
 def _extract_atlas_glossary_term_attrs(attrs: AtlasGlossaryTermAttributes) -> dict:
@@ -770,6 +761,7 @@ def _extract_atlas_glossary_term_attrs(attrs: AtlasGlossaryTermAttributes) -> di
     result["usage"] = attrs.usage
     result["additional_attributes"] = attrs.additional_attributes
     result["term_type"] = attrs.term_type
+    result["anchor"] = attrs.anchor
     return result
 
 
@@ -848,7 +840,6 @@ def _atlas_glossary_term_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -897,6 +888,7 @@ AtlasGlossaryTerm.ADDITIONAL_ATTRIBUTES = KeywordField(
     "additionalAttributes", "additionalAttributes"
 )
 AtlasGlossaryTerm.TERM_TYPE = KeywordField("termType", "termType")
+AtlasGlossaryTerm.ANCHOR = KeywordField("anchor", "anchor")
 AtlasGlossaryTerm.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AtlasGlossaryTerm.APPLICATION = RelationField("application")
 AtlasGlossaryTerm.APPLICATION_FIELD = RelationField("applicationField")
@@ -915,7 +907,6 @@ AtlasGlossaryTerm.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 )
 AtlasGlossaryTerm.ASSIGNED_ENTITIES = RelationField("assignedEntities")
 AtlasGlossaryTerm.MEANINGS = RelationField("meanings")
-AtlasGlossaryTerm.ANCHOR = RelationField("anchor")
 AtlasGlossaryTerm.CATEGORIES = RelationField("categories")
 AtlasGlossaryTerm.SEE_ALSO = RelationField("seeAlso")
 AtlasGlossaryTerm.SYNONYMS = RelationField("synonyms")
@@ -930,7 +921,6 @@ AtlasGlossaryTerm.CLASSIFIES = RelationField("classifies")
 AtlasGlossaryTerm.IS_A = RelationField("isA")
 AtlasGlossaryTerm.VALID_VALUES_FOR = RelationField("validValuesFor")
 AtlasGlossaryTerm.VALID_VALUES = RelationField("validValues")
-AtlasGlossaryTerm.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 AtlasGlossaryTerm.MC_MONITORS = RelationField("mcMonitors")
 AtlasGlossaryTerm.MC_INCIDENTS = RelationField("mcIncidents")
 AtlasGlossaryTerm.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

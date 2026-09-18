@@ -48,7 +48,6 @@ from .gtc_related import (
     RelatedAtlasGlossaryCategory,
     RelatedAtlasGlossaryTerm,
 )
-from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -87,7 +86,6 @@ class AtlasGlossary(Asset):
     MEANINGS: ClassVar[Any] = None
     TERMS: ClassVar[Any] = None
     CATEGORIES: ClassVar[Any] = None
-    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -164,9 +162,6 @@ class AtlasGlossary(Asset):
 
     categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
     """Categories contained within this glossary."""
-
-    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
-    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -429,9 +424,6 @@ class AtlasGlossaryRelationshipAttributes(AssetRelationshipAttributes):
     categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
     """Categories contained within this glossary."""
 
-    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
-    """Knowledge files linked to this asset."""
-
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -500,7 +492,6 @@ _ATLAS_GLOSSARY_REL_FIELDS: List[str] = [
     "meanings",
     "terms",
     "categories",
-    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -607,7 +598,6 @@ def _atlas_glossary_from_nested(nested: AtlasGlossaryNested) -> AtlasGlossary:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -670,7 +660,6 @@ AtlasGlossary.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 AtlasGlossary.MEANINGS = RelationField("meanings")
 AtlasGlossary.TERMS = RelationField("terms")
 AtlasGlossary.CATEGORIES = RelationField("categories")
-AtlasGlossary.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 AtlasGlossary.MC_MONITORS = RelationField("mcMonitors")
 AtlasGlossary.MC_INCIDENTS = RelationField("mcIncidents")
 AtlasGlossary.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

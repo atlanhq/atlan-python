@@ -8,7 +8,6 @@ Asset module exports.
 This module provides convenient imports for all Asset types and their Related variants.
 """
 
-from .asset import Asset
 from .asset_related import (
     RelatedAsset,
     RelatedDataSet,
@@ -16,6 +15,7 @@ from .asset_related import (
     RelatedInfrastructure,
     RelatedProcessExecution,
 )
+from .asset import Asset
 from .data_set import DataSet
 from .incident import Incident
 from .infrastructure import Infrastructure

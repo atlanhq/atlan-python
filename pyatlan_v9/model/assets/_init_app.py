@@ -8,8 +8,12 @@ App module exports.
 This module provides convenient imports for all App types and their Related variants.
 """
 
+from .app_related import (
+    RelatedApp,
+    RelatedApplication,
+    RelatedApplicationField,
+)
 from .app import App
-from .app_related import RelatedApp, RelatedApplication, RelatedApplicationField
 from .application import Application
 from .application_field import ApplicationField
 

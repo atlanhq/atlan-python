@@ -8,8 +8,11 @@ Workflow module exports.
 This module provides convenient imports for all Workflow types and their Related variants.
 """
 
+from .workflow_related import (
+    RelatedWorkflow,
+    RelatedWorkflowRun,
+)
 from .workflow import Workflow
-from .workflow_related import RelatedWorkflow, RelatedWorkflowRun
 
 __all__ = [
     "RelatedWorkflow",
