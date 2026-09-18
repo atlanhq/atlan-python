@@ -8,13 +8,13 @@ Context module exports.
 This module provides convenient imports for all Context types and their Related variants.
 """
 
+from .context import Context
+from .context_artifact import ContextArtifact
 from .context_related import (
     RelatedContext,
     RelatedContextArtifact,
     RelatedContextRepository,
 )
-from .context import Context
-from .context_artifact import ContextArtifact
 from .context_repository import ContextRepository
 
 __all__ = [

@@ -8,13 +8,13 @@ BusinessPolicy module exports.
 This module provides convenient imports for all BusinessPolicy types and their Related variants.
 """
 
+from .business_policy import BusinessPolicy
 from .business_policy_related import (
     RelatedBusinessPolicy,
     RelatedBusinessPolicyException,
     RelatedBusinessPolicyIncident,
     RelatedBusinessPolicyLog,
 )
-from .business_policy import BusinessPolicy
 
 __all__ = [
     "BusinessPolicy",

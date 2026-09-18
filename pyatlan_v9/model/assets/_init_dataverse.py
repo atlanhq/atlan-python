@@ -8,14 +8,14 @@ Dataverse module exports.
 This module provides convenient imports for all Dataverse types and their Related variants.
 """
 
+from .dataverse import Dataverse
+from .dataverse_attribute import DataverseAttribute
+from .dataverse_entity import DataverseEntity
 from .dataverse_related import (
     RelatedDataverse,
     RelatedDataverseAttribute,
     RelatedDataverseEntity,
 )
-from .dataverse import Dataverse
-from .dataverse_attribute import DataverseAttribute
-from .dataverse_entity import DataverseEntity
 
 __all__ = [
     "Dataverse",

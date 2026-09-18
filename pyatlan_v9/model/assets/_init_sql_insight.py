@@ -8,16 +8,16 @@ SqlInsight module exports.
 This module provides convenient imports for all SqlInsight types and their Related variants.
 """
 
+from .sql_insight import SqlInsight
+from .sql_insight_business_question import SqlInsightBusinessQuestion
+from .sql_insight_filter import SqlInsightFilter
+from .sql_insight_join import SqlInsightJoin
 from .sql_insight_related import (
     RelatedSqlInsight,
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightFilter,
     RelatedSqlInsightJoin,
 )
-from .sql_insight import SqlInsight
-from .sql_insight_business_question import SqlInsightBusinessQuestion
-from .sql_insight_filter import SqlInsightFilter
-from .sql_insight_join import SqlInsightJoin
 
 __all__ = [
     "RelatedSqlInsight",
