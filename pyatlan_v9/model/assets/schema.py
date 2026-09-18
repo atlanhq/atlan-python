@@ -101,7 +101,7 @@ class Schema(Asset):
     """
 
     TABLE_COUNT: ClassVar[Any] = None
-    SQL_EXTERNAL_LOCATION: ClassVar[Any] = None
+    SCHEMA_EXTERNAL_LOCATION: ClassVar[Any] = None
     VIEWS_COUNT: ClassVar[Any] = None
     LINKED_SCHEMA_QUALIFIED_NAME: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
@@ -203,7 +203,7 @@ class Schema(Asset):
     table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this schema."""
 
-    sql_external_location: Union[str, None, UnsetType] = UNSET
+    schema_external_location: Union[str, None, UnsetType] = UNSET
     """External location of this schema, for example: an S3 object location."""
 
     views_count: Union[int, None, UnsetType] = UNSET
@@ -758,7 +758,7 @@ class SchemaAttributes(AssetAttributes):
     table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this schema."""
 
-    sql_external_location: Union[str, None, UnsetType] = UNSET
+    schema_external_location: Union[str, None, UnsetType] = UNSET
     """External location of this schema, for example: an S3 object location."""
 
     views_count: Union[int, None, UnsetType] = UNSET
@@ -1176,7 +1176,7 @@ def _populate_schema__attrs(attrs: SchemaAttributes, obj: Schema) -> None:
     """Populate Schema-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.table_count = obj.table_count
-    attrs.sql_external_location = obj.sql_external_location
+    attrs.schema_external_location = obj.schema_external_location
     attrs.views_count = obj.views_count
     attrs.linked_schema_qualified_name = obj.linked_schema_qualified_name
     attrs.query_count = obj.query_count
@@ -1223,7 +1223,7 @@ def _extract_schema__attrs(attrs: SchemaAttributes) -> dict:
     """Extract all Schema attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["table_count"] = attrs.table_count
-    result["sql_external_location"] = attrs.sql_external_location
+    result["schema_external_location"] = attrs.schema_external_location
     result["views_count"] = attrs.views_count
     result["linked_schema_qualified_name"] = attrs.linked_schema_qualified_name
     result["query_count"] = attrs.query_count
@@ -1379,8 +1379,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Schema.TABLE_COUNT = NumericField("tableCount", "tableCount")
-Schema.SQL_EXTERNAL_LOCATION = KeywordField(
-    "sqlExternalLocation", "sqlExternalLocation"
+Schema.SCHEMA_EXTERNAL_LOCATION = KeywordField(
+    "schemaExternalLocation", "schemaExternalLocation"
 )
 Schema.VIEWS_COUNT = NumericField("viewsCount", "viewsCount")
 Schema.LINKED_SCHEMA_QUALIFIED_NAME = KeywordField(
