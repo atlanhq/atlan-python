@@ -1,3 +1,9 @@
+## 11.4.0 (September 18, 2026)
+
+### New Features
+
+- **Latest asset models (pydantic + `pyatlan_v9`)**: Regenerated the pydantic (`pyatlan.model.assets`) and experimental `pyatlan_v9` (msgspec) asset models from the latest Atlan typedefs. Adds new asset types — SAP Analytics Cloud (models, stories, folders, columns), `KafkaTag`, and `FabricSemanticModelMeasure` — plus the latest attributes across existing connectors.
+
 ## 11.3.0 (September 17, 2026)
 
 ### New Features
