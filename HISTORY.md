@@ -1,3 +1,13 @@
+## 11.4.0 (September 18, 2026)
+
+### New Features
+
+- **Latest asset models (pydantic + `pyatlan_v9`)**: Regenerated the pydantic (`pyatlan.model.assets`) and experimental `pyatlan_v9` (msgspec) asset models from the latest Atlan typedefs. Adds new asset types — SAP Analytics Cloud (models, stories, folders, columns), `KafkaTag`, and `FabricSemanticModelMeasure` — plus the latest attributes across existing connectors.
+
+### Experimental: pyatlan_v9
+
+- **Restored correct attribute names (upgrade strongly recommended for `pyatlan_v9` users)**: 11.2.0 and 11.3.0 regenerated `pyatlan_v9` with ~696 attribute wire-names that do not exist in Atlas — for example `sqlDepthLevel` / `sqlAverage` / `sqlMedian` instead of `columnDepthLevel` / `columnAverage` / `columnMedian` — because the model generator ignored the per-type name prefix. Reads, writes and searches against those names failed silently (Atlas dropped the attribute; searches returned empty rather than erroring). This release regenerates `pyatlan_v9` from the corrected generator, restoring every attribute to its real Atlas name. Anyone on 11.2.0 or 11.3.0 using `pyatlan_v9` should upgrade.
+
 ## 11.3.0 (September 17, 2026)
 
 ### New Features
