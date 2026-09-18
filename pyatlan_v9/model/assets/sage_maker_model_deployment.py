@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -52,10 +45,17 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sage_maker_related import RelatedSageMakerModel, RelatedSageMakerModelDeployment
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .sage_maker_related import RelatedSageMakerModel, RelatedSageMakerModelDeployment
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -68,10 +68,10 @@ class SageMakerModelDeployment(Asset):
     Instance of a SageMaker Endpoint in Atlan. Represents deployed models that can serve real-time inference requests.
     """
 
-    SAGE_MAKER_STATUS: ClassVar[Any] = None
-    SAGE_MAKER_ENDPOINT_CONFIG_NAME: ClassVar[Any] = None
-    SAGE_MAKER_MODEL_NAME: ClassVar[Any] = None
-    SAGE_MAKER_MODEL_QUALIFIED_NAME: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_DEPLOYMENT_STATUS: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_DEPLOYMENT_ENDPOINT_CONFIG_NAME: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_DEPLOYMENT_MODEL_NAME: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_DEPLOYMENT_MODEL_QUALIFIED_NAME: ClassVar[Any] = None
     SAGE_MAKER_S3_URI: ClassVar[Any] = None
     ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
@@ -126,16 +126,20 @@ class SageMakerModelDeployment(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_status: Union[str, None, UnsetType] = UNSET
     """Current status of the endpoint (e.g., InService, OutOfService, Creating, Failed)."""
 
-    sage_maker_endpoint_config_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_endpoint_config_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Name of the endpoint configuration used by this deployment."""
 
-    sage_maker_model_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_model_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent Model."""
 
-    sage_maker_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_model_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Qualified name of the parent Model."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -366,12 +370,6 @@ class SageMakerModelDeployment(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.sage_maker_model is UNSET:
                 errors.append("sage_maker_model is required for creation")
-            if self.sage_maker_model_name is UNSET:
-                errors.append("sage_maker_model_name is required for creation")
-            if self.sage_maker_model_qualified_name is UNSET:
-                errors.append(
-                    "sage_maker_model_qualified_name is required for creation"
-                )
         if errors:
             raise ValueError(f"SageMakerModelDeployment validation failed: {errors}")
 
@@ -463,16 +461,20 @@ class SageMakerModelDeployment(Asset):
 class SageMakerModelDeploymentAttributes(AssetAttributes):
     """SageMakerModelDeployment-specific attributes for nested API format."""
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_status: Union[str, None, UnsetType] = UNSET
     """Current status of the endpoint (e.g., InService, OutOfService, Creating, Failed)."""
 
-    sage_maker_endpoint_config_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_endpoint_config_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Name of the endpoint configuration used by this deployment."""
 
-    sage_maker_model_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_model_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent Model."""
 
-    sage_maker_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_model_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Qualified name of the parent Model."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -726,10 +728,16 @@ def _populate_sage_maker_model_deployment_attrs(
 ) -> None:
     """Populate SageMakerModelDeployment-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sage_maker_status = obj.sage_maker_status
-    attrs.sage_maker_endpoint_config_name = obj.sage_maker_endpoint_config_name
-    attrs.sage_maker_model_name = obj.sage_maker_model_name
-    attrs.sage_maker_model_qualified_name = obj.sage_maker_model_qualified_name
+    attrs.sage_maker_model_deployment_status = obj.sage_maker_model_deployment_status
+    attrs.sage_maker_model_deployment_endpoint_config_name = (
+        obj.sage_maker_model_deployment_endpoint_config_name
+    )
+    attrs.sage_maker_model_deployment_model_name = (
+        obj.sage_maker_model_deployment_model_name
+    )
+    attrs.sage_maker_model_deployment_model_qualified_name = (
+        obj.sage_maker_model_deployment_model_qualified_name
+    )
     attrs.sage_maker_s3_uri = obj.sage_maker_s3_uri
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
@@ -760,10 +768,18 @@ def _extract_sage_maker_model_deployment_attrs(
 ) -> dict:
     """Extract all SageMakerModelDeployment attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sage_maker_status"] = attrs.sage_maker_status
-    result["sage_maker_endpoint_config_name"] = attrs.sage_maker_endpoint_config_name
-    result["sage_maker_model_name"] = attrs.sage_maker_model_name
-    result["sage_maker_model_qualified_name"] = attrs.sage_maker_model_qualified_name
+    result["sage_maker_model_deployment_status"] = (
+        attrs.sage_maker_model_deployment_status
+    )
+    result["sage_maker_model_deployment_endpoint_config_name"] = (
+        attrs.sage_maker_model_deployment_endpoint_config_name
+    )
+    result["sage_maker_model_deployment_model_name"] = (
+        attrs.sage_maker_model_deployment_model_name
+    )
+    result["sage_maker_model_deployment_model_qualified_name"] = (
+        attrs.sage_maker_model_deployment_model_qualified_name
+    )
     result["sage_maker_s3_uri"] = attrs.sage_maker_s3_uri
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
@@ -911,17 +927,23 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SageMakerModelDeployment.SAGE_MAKER_STATUS = KeywordField(
-    "sageMakerStatus", "sageMakerStatus"
+SageMakerModelDeployment.SAGE_MAKER_MODEL_DEPLOYMENT_STATUS = KeywordField(
+    "sageMakerModelDeploymentStatus", "sageMakerModelDeploymentStatus"
 )
-SageMakerModelDeployment.SAGE_MAKER_ENDPOINT_CONFIG_NAME = KeywordField(
-    "sageMakerEndpointConfigName", "sageMakerEndpointConfigName"
+SageMakerModelDeployment.SAGE_MAKER_MODEL_DEPLOYMENT_ENDPOINT_CONFIG_NAME = (
+    KeywordField(
+        "sageMakerModelDeploymentEndpointConfigName",
+        "sageMakerModelDeploymentEndpointConfigName",
+    )
 )
-SageMakerModelDeployment.SAGE_MAKER_MODEL_NAME = KeywordField(
-    "sageMakerModelName", "sageMakerModelName"
+SageMakerModelDeployment.SAGE_MAKER_MODEL_DEPLOYMENT_MODEL_NAME = KeywordField(
+    "sageMakerModelDeploymentModelName", "sageMakerModelDeploymentModelName"
 )
-SageMakerModelDeployment.SAGE_MAKER_MODEL_QUALIFIED_NAME = KeywordField(
-    "sageMakerModelQualifiedName", "sageMakerModelQualifiedName"
+SageMakerModelDeployment.SAGE_MAKER_MODEL_DEPLOYMENT_MODEL_QUALIFIED_NAME = (
+    KeywordField(
+        "sageMakerModelDeploymentModelQualifiedName",
+        "sageMakerModelDeploymentModelQualifiedName",
+    )
 )
 SageMakerModelDeployment.SAGE_MAKER_S3_URI = KeywordField(
     "sageMakerS3Uri", "sageMakerS3Uri"

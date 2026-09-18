@@ -8,10 +8,6 @@ Cassandra module exports.
 This module provides convenient imports for all Cassandra types and their Related variants.
 """
 
-from .cassandra import Cassandra
-from .cassandra_column import CassandraColumn
-from .cassandra_index import CassandraIndex
-from .cassandra_keyspace import CassandraKeyspace
 from .cassandra_related import (
     RelatedCassandra,
     RelatedCassandraColumn,
@@ -20,6 +16,10 @@ from .cassandra_related import (
     RelatedCassandraTable,
     RelatedCassandraView,
 )
+from .cassandra import Cassandra
+from .cassandra_column import CassandraColumn
+from .cassandra_index import CassandraIndex
+from .cassandra_keyspace import CassandraKeyspace
 from .cassandra_table import CassandraTable
 from .cassandra_view import CassandraView
 

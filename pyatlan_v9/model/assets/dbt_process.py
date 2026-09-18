@@ -19,13 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .adf_related import RelatedAdfActivity
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -39,12 +32,12 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .bigquery_related import RelatedBigqueryRoutine
 from .catalog_related import RelatedCatalog
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtProcess
 from .fabric_related import RelatedFabricActivity
 from .fivetran_related import RelatedFivetranConnector
 from .flow_related import RelatedFlowControlOperation
@@ -63,6 +56,14 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .dbt_related import RelatedDbtProcess
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -112,6 +113,7 @@ class DbtProcess(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    BIGQUERY_ROUTINES: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -262,6 +264,9 @@ class DbtProcess(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines used by this process."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -625,6 +630,9 @@ class DbtProcessRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines used by this process."""
+
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
@@ -781,6 +789,7 @@ _DBT_PROCESS_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "bigquery_routines",
     "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -1063,6 +1072,7 @@ DbtProcess.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DbtProcess.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DbtProcess.APPLICATION = RelationField("application")
 DbtProcess.APPLICATION_FIELD = RelationField("applicationField")
+DbtProcess.BIGQUERY_ROUTINES = RelationField("bigqueryRoutines")
 DbtProcess.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 DbtProcess.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 DbtProcess.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")

@@ -19,15 +19,8 @@ from typing import Any, ClassVar, Dict, List, Set, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
-from .asset_related import RelatedIncident
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -49,6 +42,13 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+
+from .asset_related import RelatedIncident
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -60,7 +60,7 @@ class Incident(Referenceable):
     Base class for Incident assets.
     """
 
-    ASSET_SEVERITY: ClassVar[Any] = None
+    INCIDENT_SEVERITY: ClassVar[Any] = None
     NAME: ClassVar[Any] = None
     DISPLAY_NAME: ClassVar[Any] = None
     DESCRIPTION: ClassVar[Any] = None
@@ -286,7 +286,7 @@ class Incident(Referenceable):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    asset_severity: Union[str, None, UnsetType] = UNSET
+    incident_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
 
     name: Union[str, None, UnsetType] = UNSET
@@ -1197,7 +1197,7 @@ class Incident(Referenceable):
 class IncidentAttributes(ReferenceableAttributes):
     """Incident-specific attributes for nested API format."""
 
-    asset_severity: Union[str, None, UnsetType] = UNSET
+    incident_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
 
     name: Union[str, None, UnsetType] = UNSET
@@ -2043,7 +2043,7 @@ _INCIDENT_REL_FIELDS: List[str] = [
 def _populate_incident_attrs(attrs: IncidentAttributes, obj: Incident) -> None:
     """Populate Incident-specific attributes on the attrs struct."""
     _populate_referenceable_attrs(attrs, obj)
-    attrs.asset_severity = obj.asset_severity
+    attrs.incident_severity = obj.incident_severity
     attrs.name = obj.name
     attrs.display_name = obj.display_name
     attrs.description = obj.description
@@ -2304,7 +2304,7 @@ def _populate_incident_attrs(attrs: IncidentAttributes, obj: Incident) -> None:
 def _extract_incident_attrs(attrs: IncidentAttributes) -> dict:
     """Extract all Incident attributes from the attrs struct into a flat dict."""
     result = _extract_referenceable_attrs(attrs)
-    result["asset_severity"] = attrs.asset_severity
+    result["incident_severity"] = attrs.incident_severity
     result["name"] = attrs.name
     result["display_name"] = attrs.display_name
     result["description"] = attrs.description
@@ -2710,7 +2710,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-Incident.ASSET_SEVERITY = KeywordField("assetSeverity", "assetSeverity")
+Incident.INCIDENT_SEVERITY = KeywordField("incidentSeverity", "incidentSeverity")
 Incident.NAME = KeywordField("name", "name")
 Incident.DISPLAY_NAME = KeywordField("displayName", "displayName")
 Incident.DESCRIPTION = KeywordField("description", "description")

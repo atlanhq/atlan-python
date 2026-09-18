@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -39,7 +32,6 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .context_related import RelatedContextRepository
-from .cube_related import RelatedCubeDimension, RelatedCubeField, RelatedCubeHierarchy
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -55,6 +47,14 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .cube_related import RelatedCubeField, RelatedCubeHierarchy
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -100,7 +100,6 @@ class CubeField(Asset):
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
-    CUBE_DIMENSIONS: ClassVar[Any] = None
     CUBE_HIERARCHY: ClassVar[Any] = None
     CUBE_NESTED_FIELDS: ClassVar[Any] = None
     CUBE_PARENT_FIELD: ClassVar[Any] = None
@@ -222,9 +221,6 @@ class CubeField(Asset):
 
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
-
-    cube_dimensions: Union[List[RelatedCubeDimension], None, UnsetType] = UNSET
-    """Individual dimensions contained in the cube."""
 
     cube_hierarchy: Union[RelatedCubeHierarchy, None, UnsetType] = UNSET
     """Hierarchy containing the field."""
@@ -531,9 +527,6 @@ class CubeFieldRelationshipAttributes(AssetRelationshipAttributes):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    cube_dimensions: Union[List[RelatedCubeDimension], None, UnsetType] = UNSET
-    """Individual dimensions contained in the cube."""
-
     cube_hierarchy: Union[RelatedCubeHierarchy, None, UnsetType] = UNSET
     """Hierarchy containing the field."""
 
@@ -626,7 +619,6 @@ _CUBE_FIELD_REL_FIELDS: List[str] = [
     "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
-    "cube_dimensions",
     "cube_hierarchy",
     "cube_nested_fields",
     "cube_parent_field",
@@ -844,7 +836,6 @@ CubeField.MEANINGS = RelationField("meanings")
 CubeField.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 CubeField.MC_MONITORS = RelationField("mcMonitors")
 CubeField.MC_INCIDENTS = RelationField("mcIncidents")
-CubeField.CUBE_DIMENSIONS = RelationField("cubeDimensions")
 CubeField.CUBE_HIERARCHY = RelationField("cubeHierarchy")
 CubeField.CUBE_NESTED_FIELDS = RelationField("cubeNestedFields")
 CubeField.CUBE_PARENT_FIELD = RelationField("cubeParentField")

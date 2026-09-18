@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .ai_related import RelatedAIModel
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -53,14 +46,21 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .schema_registry_related import RelatedSchemaRegistrySubject
+from .soda_related import RelatedSodaCheck
+from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .sage_maker_related import (
     RelatedSageMakerModel,
     RelatedSageMakerModelDeployment,
     RelatedSageMakerModelGroup,
 )
-from .schema_registry_related import RelatedSchemaRegistrySubject
-from .soda_related import RelatedSodaCheck
-from .spark_related import RelatedSparkJob
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -73,12 +73,12 @@ class SageMakerModel(Asset):
     Instance of a SageMaker ML Model in Atlan. Represents trained machine learning models that can be deployed for inference.
     """
 
-    SAGE_MAKER_CONTAINER_IMAGE: ClassVar[Any] = None
-    SAGE_MAKER_EXECUTION_ROLE_ARN: ClassVar[Any] = None
-    SAGE_MAKER_MODEL_GROUP_NAME: ClassVar[Any] = None
-    SAGE_MAKER_MODEL_GROUP_QUALIFIED_NAME: ClassVar[Any] = None
-    SAGE_MAKER_VERSION: ClassVar[Any] = None
-    SAGE_MAKER_STATUS: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_CONTAINER_IMAGE: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_EXECUTION_ROLE_ARN: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_MODEL_GROUP_NAME: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_MODEL_GROUP_QUALIFIED_NAME: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_VERSION: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_STATUS: ClassVar[Any] = None
     SAGE_MAKER_S3_URI: ClassVar[Any] = None
     ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
@@ -138,22 +138,22 @@ class SageMakerModel(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sage_maker_container_image: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_container_image: Union[str, None, UnsetType] = UNSET
     """Docker container image used for the model."""
 
-    sage_maker_execution_role_arn: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_execution_role_arn: Union[str, None, UnsetType] = UNSET
     """ARN of the IAM role used by the model for accessing AWS resources."""
 
-    sage_maker_model_group_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_model_group_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent Model Group."""
 
-    sage_maker_model_group_qualified_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_model_group_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent Model Group."""
 
-    sage_maker_version: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_version: Union[str, None, UnsetType] = UNSET
     """Version of the SageMaker Model Package."""
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_status: Union[str, None, UnsetType] = UNSET
     """Status of the SageMaker Model Package (ACTIVE or INACTIVE)."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -399,12 +399,6 @@ class SageMakerModel(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.sage_maker_model_group is UNSET:
                 errors.append("sage_maker_model_group is required for creation")
-            if self.sage_maker_model_group_name is UNSET:
-                errors.append("sage_maker_model_group_name is required for creation")
-            if self.sage_maker_model_group_qualified_name is UNSET:
-                errors.append(
-                    "sage_maker_model_group_qualified_name is required for creation"
-                )
         if errors:
             raise ValueError(f"SageMakerModel validation failed: {errors}")
 
@@ -492,22 +486,22 @@ class SageMakerModel(Asset):
 class SageMakerModelAttributes(AssetAttributes):
     """SageMakerModel-specific attributes for nested API format."""
 
-    sage_maker_container_image: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_container_image: Union[str, None, UnsetType] = UNSET
     """Docker container image used for the model."""
 
-    sage_maker_execution_role_arn: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_execution_role_arn: Union[str, None, UnsetType] = UNSET
     """ARN of the IAM role used by the model for accessing AWS resources."""
 
-    sage_maker_model_group_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_model_group_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent Model Group."""
 
-    sage_maker_model_group_qualified_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_model_group_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent Model Group."""
 
-    sage_maker_version: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_version: Union[str, None, UnsetType] = UNSET
     """Version of the SageMaker Model Package."""
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_status: Union[str, None, UnsetType] = UNSET
     """Status of the SageMaker Model Package (ACTIVE or INACTIVE)."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -780,14 +774,14 @@ def _populate_sage_maker_model_attrs(
 ) -> None:
     """Populate SageMakerModel-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sage_maker_container_image = obj.sage_maker_container_image
-    attrs.sage_maker_execution_role_arn = obj.sage_maker_execution_role_arn
-    attrs.sage_maker_model_group_name = obj.sage_maker_model_group_name
-    attrs.sage_maker_model_group_qualified_name = (
-        obj.sage_maker_model_group_qualified_name
+    attrs.sage_maker_model_container_image = obj.sage_maker_model_container_image
+    attrs.sage_maker_model_execution_role_arn = obj.sage_maker_model_execution_role_arn
+    attrs.sage_maker_model_model_group_name = obj.sage_maker_model_model_group_name
+    attrs.sage_maker_model_model_group_qualified_name = (
+        obj.sage_maker_model_model_group_qualified_name
     )
-    attrs.sage_maker_version = obj.sage_maker_version
-    attrs.sage_maker_status = obj.sage_maker_status
+    attrs.sage_maker_model_version = obj.sage_maker_model_version
+    attrs.sage_maker_model_status = obj.sage_maker_model_status
     attrs.sage_maker_s3_uri = obj.sage_maker_s3_uri
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
@@ -819,14 +813,18 @@ def _populate_sage_maker_model_attrs(
 def _extract_sage_maker_model_attrs(attrs: SageMakerModelAttributes) -> dict:
     """Extract all SageMakerModel attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sage_maker_container_image"] = attrs.sage_maker_container_image
-    result["sage_maker_execution_role_arn"] = attrs.sage_maker_execution_role_arn
-    result["sage_maker_model_group_name"] = attrs.sage_maker_model_group_name
-    result["sage_maker_model_group_qualified_name"] = (
-        attrs.sage_maker_model_group_qualified_name
+    result["sage_maker_model_container_image"] = attrs.sage_maker_model_container_image
+    result["sage_maker_model_execution_role_arn"] = (
+        attrs.sage_maker_model_execution_role_arn
     )
-    result["sage_maker_version"] = attrs.sage_maker_version
-    result["sage_maker_status"] = attrs.sage_maker_status
+    result["sage_maker_model_model_group_name"] = (
+        attrs.sage_maker_model_model_group_name
+    )
+    result["sage_maker_model_model_group_qualified_name"] = (
+        attrs.sage_maker_model_model_group_qualified_name
+    )
+    result["sage_maker_model_version"] = attrs.sage_maker_model_version
+    result["sage_maker_model_status"] = attrs.sage_maker_model_status
     result["sage_maker_s3_uri"] = attrs.sage_maker_s3_uri
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
@@ -971,20 +969,24 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SageMakerModel.SAGE_MAKER_CONTAINER_IMAGE = KeywordField(
-    "sageMakerContainerImage", "sageMakerContainerImage"
+SageMakerModel.SAGE_MAKER_MODEL_CONTAINER_IMAGE = KeywordField(
+    "sageMakerModelContainerImage", "sageMakerModelContainerImage"
 )
-SageMakerModel.SAGE_MAKER_EXECUTION_ROLE_ARN = KeywordField(
-    "sageMakerExecutionRoleArn", "sageMakerExecutionRoleArn"
+SageMakerModel.SAGE_MAKER_MODEL_EXECUTION_ROLE_ARN = KeywordField(
+    "sageMakerModelExecutionRoleArn", "sageMakerModelExecutionRoleArn"
 )
-SageMakerModel.SAGE_MAKER_MODEL_GROUP_NAME = KeywordField(
-    "sageMakerModelGroupName", "sageMakerModelGroupName"
+SageMakerModel.SAGE_MAKER_MODEL_MODEL_GROUP_NAME = KeywordField(
+    "sageMakerModelModelGroupName", "sageMakerModelModelGroupName"
 )
-SageMakerModel.SAGE_MAKER_MODEL_GROUP_QUALIFIED_NAME = KeywordField(
-    "sageMakerModelGroupQualifiedName", "sageMakerModelGroupQualifiedName"
+SageMakerModel.SAGE_MAKER_MODEL_MODEL_GROUP_QUALIFIED_NAME = KeywordField(
+    "sageMakerModelModelGroupQualifiedName", "sageMakerModelModelGroupQualifiedName"
 )
-SageMakerModel.SAGE_MAKER_VERSION = KeywordField("sageMakerVersion", "sageMakerVersion")
-SageMakerModel.SAGE_MAKER_STATUS = KeywordField("sageMakerStatus", "sageMakerStatus")
+SageMakerModel.SAGE_MAKER_MODEL_VERSION = KeywordField(
+    "sageMakerModelVersion", "sageMakerModelVersion"
+)
+SageMakerModel.SAGE_MAKER_MODEL_STATUS = KeywordField(
+    "sageMakerModelStatus", "sageMakerModelStatus"
+)
 SageMakerModel.SAGE_MAKER_S3_URI = KeywordField("sageMakerS3Uri", "sageMakerS3Uri")
 SageMakerModel.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
     "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"

@@ -546,5 +546,4 @@ from .sage_maker_unified_studio_published_asset import (
     SageMakerUnifiedStudioPublishedAsset,
 )  # noqa: E402, F401
 
-
 SageMakerUnifiedStudioSubscribedAsset.Attributes.update_forward_refs()

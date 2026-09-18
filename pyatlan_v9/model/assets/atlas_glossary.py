@@ -19,14 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid
-
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -43,16 +35,25 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
-from .gtc_related import (
-    RelatedAtlasGlossary,
-    RelatedAtlasGlossaryCategory,
-    RelatedAtlasGlossaryTerm,
-)
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid
+
+from .gtc_related import (
+    RelatedAtlasGlossary,
+    RelatedAtlasGlossaryCategory,
+    RelatedAtlasGlossaryTerm,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -86,6 +87,7 @@ class AtlasGlossary(Asset):
     MEANINGS: ClassVar[Any] = None
     TERMS: ClassVar[Any] = None
     CATEGORIES: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -162,6 +164,9 @@ class AtlasGlossary(Asset):
 
     categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
     """Categories contained within this glossary."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -424,6 +429,9 @@ class AtlasGlossaryRelationshipAttributes(AssetRelationshipAttributes):
     categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
     """Categories contained within this glossary."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -492,6 +500,7 @@ _ATLAS_GLOSSARY_REL_FIELDS: List[str] = [
     "meanings",
     "terms",
     "categories",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -587,32 +596,36 @@ def _atlas_glossary_from_nested(nested: AtlasGlossaryNested) -> AtlasGlossary:
         _ATLAS_GLOSSARY_REL_FIELDS,
         AtlasGlossaryRelationshipAttributes,
     )
-    return AtlasGlossary(
-        guid=nested.guid,
-        type_name=nested.type_name,
-        status=nested.status,
-        version=nested.version,
-        create_time=nested.create_time,
-        update_time=nested.update_time,
-        created_by=nested.created_by,
-        updated_by=nested.updated_by,
-        classifications=nested.classifications,
-        classification_names=nested.classification_names,
-        labels=nested.labels,
-        business_attributes=nested.business_attributes,
-        custom_attributes=nested.custom_attributes,
-        pending_tasks=nested.pending_tasks,
-        proxy=nested.proxy,
-        is_incomplete=nested.is_incomplete,
-        provenance_type=nested.provenance_type,
-        home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
-        **_extract_atlas_glossary_attrs(attrs),
-        # Merged relationship attributes
-        **merged_rels,
-    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_atlas_glossary_attrs(attrs))
+    kwargs.update(merged_rels)
+    return AtlasGlossary(**kwargs)
 
 
 def _atlas_glossary_to_nested_bytes(
@@ -631,7 +644,10 @@ def _atlas_glossary_from_nested_bytes(data: bytes, serde: Serde) -> AtlasGlossar
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
 AtlasGlossary.SHORT_DESCRIPTION = KeywordField("shortDescription", "shortDescription")
 AtlasGlossary.LONG_DESCRIPTION = KeywordField("longDescription", "longDescription")
@@ -660,6 +676,7 @@ AtlasGlossary.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
 AtlasGlossary.MEANINGS = RelationField("meanings")
 AtlasGlossary.TERMS = RelationField("terms")
 AtlasGlossary.CATEGORIES = RelationField("categories")
+AtlasGlossary.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 AtlasGlossary.MC_MONITORS = RelationField("mcMonitors")
 AtlasGlossary.MC_INCIDENTS = RelationField("mcIncidents")
 AtlasGlossary.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

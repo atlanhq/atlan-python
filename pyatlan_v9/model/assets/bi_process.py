@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .adf_related import RelatedAdfActivity
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -39,6 +32,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .bigquery_related import RelatedBigqueryRoutine
 from .catalog_related import RelatedCatalog
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
@@ -53,13 +47,20 @@ from .knowledge_related import RelatedKnowledgeFile
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .power_bi_related import RelatedPowerBIDataflow
-from .process_related import RelatedBIProcess, RelatedColumnProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .process_related import RelatedBIProcess, RelatedColumnProcess
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -85,6 +86,7 @@ class BIProcess(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    BIGQUERY_ROUTINES: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -155,6 +157,9 @@ class BIProcess(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines used by this process."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -420,6 +425,9 @@ class BIProcessRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines used by this process."""
+
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
@@ -548,6 +556,7 @@ _BI_PROCESS_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "bigquery_routines",
     "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -735,6 +744,7 @@ BIProcess.AIRFLOW_TASKS = RelationField("airflowTasks")
 BIProcess.ANOMALO_CHECKS = RelationField("anomaloChecks")
 BIProcess.APPLICATION = RelationField("application")
 BIProcess.APPLICATION_FIELD = RelationField("applicationField")
+BIProcess.BIGQUERY_ROUTINES = RelationField("bigqueryRoutines")
 BIProcess.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 BIProcess.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 BIProcess.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")

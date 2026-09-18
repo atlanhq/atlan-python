@@ -19,13 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -54,6 +47,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .ssrs_related import RelatedSSRSDataSet, RelatedSSRSFolder, RelatedSSRSReport
 
 # =============================================================================
@@ -67,10 +67,10 @@ class SSRSReport(Asset):
     Instance of an SSRS report in Atlan.
     """
 
-    SSRS_SIZE: ClassVar[Any] = None
-    SSRS_PARAMETERS: ClassVar[Any] = None
-    SSRS_DATA_SET_COUNT: ClassVar[Any] = None
-    SSRS_DATA_SOURCE_COUNT: ClassVar[Any] = None
+    SSRS_REPORT_SIZE: ClassVar[Any] = None
+    SSRS_REPORT_PARAMETERS: ClassVar[Any] = None
+    SSRS_REPORT_DATA_SET_COUNT: ClassVar[Any] = None
+    SSRS_REPORT_DATA_SOURCE_COUNT: ClassVar[Any] = None
     SSRS_PATH: ClassVar[Any] = None
     SSRS_USED_IN_REPORTS: ClassVar[Any] = None
     SSRS_HIDDEN: ClassVar[Any] = None
@@ -123,16 +123,16 @@ class SSRSReport(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    ssrs_size: Union[int, None, UnsetType] = UNSET
+    ssrs_report_size: Union[int, None, UnsetType] = UNSET
     """Size of the report."""
 
-    ssrs_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_report_parameters: Union[str, None, UnsetType] = UNSET
     """Parameters for the report."""
 
-    ssrs_data_set_count: Union[int, None, UnsetType] = UNSET
+    ssrs_report_data_set_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets in this report."""
 
-    ssrs_data_source_count: Union[int, None, UnsetType] = UNSET
+    ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -430,16 +430,16 @@ class SSRSReport(Asset):
 class SSRSReportAttributes(AssetAttributes):
     """SSRSReport-specific attributes for nested API format."""
 
-    ssrs_size: Union[int, None, UnsetType] = UNSET
+    ssrs_report_size: Union[int, None, UnsetType] = UNSET
     """Size of the report."""
 
-    ssrs_parameters: Union[str, None, UnsetType] = UNSET
+    ssrs_report_parameters: Union[str, None, UnsetType] = UNSET
     """Parameters for the report."""
 
-    ssrs_data_set_count: Union[int, None, UnsetType] = UNSET
+    ssrs_report_data_set_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets in this report."""
 
-    ssrs_data_source_count: Union[int, None, UnsetType] = UNSET
+    ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
@@ -672,10 +672,10 @@ _SSRS_REPORT_REL_FIELDS: List[str] = [
 def _populate_ssrs_report_attrs(attrs: SSRSReportAttributes, obj: SSRSReport) -> None:
     """Populate SSRSReport-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.ssrs_size = obj.ssrs_size
-    attrs.ssrs_parameters = obj.ssrs_parameters
-    attrs.ssrs_data_set_count = obj.ssrs_data_set_count
-    attrs.ssrs_data_source_count = obj.ssrs_data_source_count
+    attrs.ssrs_report_size = obj.ssrs_report_size
+    attrs.ssrs_report_parameters = obj.ssrs_report_parameters
+    attrs.ssrs_report_data_set_count = obj.ssrs_report_data_set_count
+    attrs.ssrs_report_data_source_count = obj.ssrs_report_data_source_count
     attrs.ssrs_path = obj.ssrs_path
     attrs.ssrs_used_in_reports = obj.ssrs_used_in_reports
     attrs.ssrs_hidden = obj.ssrs_hidden
@@ -695,10 +695,10 @@ def _populate_ssrs_report_attrs(attrs: SSRSReportAttributes, obj: SSRSReport) ->
 def _extract_ssrs_report_attrs(attrs: SSRSReportAttributes) -> dict:
     """Extract all SSRSReport attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["ssrs_size"] = attrs.ssrs_size
-    result["ssrs_parameters"] = attrs.ssrs_parameters
-    result["ssrs_data_set_count"] = attrs.ssrs_data_set_count
-    result["ssrs_data_source_count"] = attrs.ssrs_data_source_count
+    result["ssrs_report_size"] = attrs.ssrs_report_size
+    result["ssrs_report_parameters"] = attrs.ssrs_report_parameters
+    result["ssrs_report_data_set_count"] = attrs.ssrs_report_data_set_count
+    result["ssrs_report_data_source_count"] = attrs.ssrs_report_data_source_count
     result["ssrs_path"] = attrs.ssrs_path
     result["ssrs_used_in_reports"] = attrs.ssrs_used_in_reports
     result["ssrs_hidden"] = attrs.ssrs_hidden
@@ -824,11 +824,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SSRSReport.SSRS_SIZE = NumericField("ssrsSize", "ssrsSize")
-SSRSReport.SSRS_PARAMETERS = KeywordField("ssrsParameters", "ssrsParameters")
-SSRSReport.SSRS_DATA_SET_COUNT = NumericField("ssrsDataSetCount", "ssrsDataSetCount")
-SSRSReport.SSRS_DATA_SOURCE_COUNT = NumericField(
-    "ssrsDataSourceCount", "ssrsDataSourceCount"
+SSRSReport.SSRS_REPORT_SIZE = NumericField("ssrsReportSize", "ssrsReportSize")
+SSRSReport.SSRS_REPORT_PARAMETERS = KeywordField(
+    "ssrsReportParameters", "ssrsReportParameters"
+)
+SSRSReport.SSRS_REPORT_DATA_SET_COUNT = NumericField(
+    "ssrsReportDataSetCount", "ssrsReportDataSetCount"
+)
+SSRSReport.SSRS_REPORT_DATA_SOURCE_COUNT = NumericField(
+    "ssrsReportDataSourceCount", "ssrsReportDataSourceCount"
 )
 SSRSReport.SSRS_PATH = KeywordField("ssrsPath", "ssrsPath")
 SSRSReport.SSRS_USED_IN_REPORTS = BooleanField("ssrsUsedInReports", "ssrsUsedInReports")

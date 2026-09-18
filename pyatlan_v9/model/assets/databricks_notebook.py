@@ -19,13 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -42,7 +35,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import RelatedDatabricksNotebook
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
@@ -66,6 +58,14 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .databricks_related import RelatedDatabricksNotebook
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -78,8 +78,8 @@ class DatabricksNotebook(Asset):
     Base class for all databricks notebook assets.
     """
 
-    DATABRICKS_PATH: ClassVar[Any] = None
-    DATABRICKS_WORKSPACE_ID: ClassVar[Any] = None
+    DATABRICKS_NOTEBOOK_PATH: ClassVar[Any] = None
+    DATABRICKS_NOTEBOOK_WORKSPACE_ID: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -158,10 +158,10 @@ class DatabricksNotebook(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_path: Union[str, None, UnsetType] = UNSET
     """Path of the notebook."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_workspace_id: Union[str, None, UnsetType] = UNSET
     """Workspace Id of the notebook."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -537,10 +537,10 @@ class DatabricksNotebook(Asset):
 class DatabricksNotebookAttributes(AssetAttributes):
     """DatabricksNotebook-specific attributes for nested API format."""
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_path: Union[str, None, UnsetType] = UNSET
     """Path of the notebook."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_workspace_id: Union[str, None, UnsetType] = UNSET
     """Workspace Id of the notebook."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -873,8 +873,8 @@ def _populate_databricks_notebook_attrs(
 ) -> None:
     """Populate DatabricksNotebook-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_path = obj.databricks_path
-    attrs.databricks_workspace_id = obj.databricks_workspace_id
+    attrs.databricks_notebook_path = obj.databricks_notebook_path
+    attrs.databricks_notebook_workspace_id = obj.databricks_notebook_workspace_id
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -918,8 +918,8 @@ def _populate_databricks_notebook_attrs(
 def _extract_databricks_notebook_attrs(attrs: DatabricksNotebookAttributes) -> dict:
     """Extract all DatabricksNotebook attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_path"] = attrs.databricks_path
-    result["databricks_workspace_id"] = attrs.databricks_workspace_id
+    result["databricks_notebook_path"] = attrs.databricks_notebook_path
+    result["databricks_notebook_workspace_id"] = attrs.databricks_notebook_workspace_id
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1086,9 +1086,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksNotebook.DATABRICKS_PATH = KeywordField("databricksPath", "databricksPath")
-DatabricksNotebook.DATABRICKS_WORKSPACE_ID = KeywordField(
-    "databricksWorkspaceId", "databricksWorkspaceId"
+DatabricksNotebook.DATABRICKS_NOTEBOOK_PATH = KeywordField(
+    "databricksNotebookPath", "databricksNotebookPath"
+)
+DatabricksNotebook.DATABRICKS_NOTEBOOK_WORKSPACE_ID = KeywordField(
+    "databricksNotebookWorkspaceId", "databricksNotebookWorkspaceId"
 )
 DatabricksNotebook.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksNotebook.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")

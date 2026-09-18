@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -39,6 +32,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .bigquery_related import RelatedBigqueryRoutine
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -52,7 +46,6 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .iceberg_related import RelatedIcebergNamespace
 from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -87,6 +80,14 @@ from .sql_related import (
     RelatedTable,
     RelatedView,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .iceberg_related import RelatedIcebergNamespace
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -144,6 +145,7 @@ class IcebergNamespace(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    BIGQUERY_ROUTINES: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -339,6 +341,9 @@ class IcebergNamespace(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines that exist within this schema."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -817,6 +822,9 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines that exist within this schema."""
+
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
@@ -1050,6 +1058,7 @@ _ICEBERG_NAMESPACE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "bigquery_routines",
     "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -1441,6 +1450,7 @@ IcebergNamespace.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTas
 IcebergNamespace.ANOMALO_CHECKS = RelationField("anomaloChecks")
 IcebergNamespace.APPLICATION = RelationField("application")
 IcebergNamespace.APPLICATION_FIELD = RelationField("applicationField")
+IcebergNamespace.BIGQUERY_ROUTINES = RelationField("bigqueryRoutines")
 IcebergNamespace.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 IcebergNamespace.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 IcebergNamespace.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(

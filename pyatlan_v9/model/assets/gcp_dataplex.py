@@ -18,14 +18,6 @@ from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -41,18 +33,21 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .gcp_dataplex_related import RelatedGCPDataplex, RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
-from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
-from .partial_related import RelatedPartialField, RelatedPartialObject
-from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .gcp_dataplex_related import RelatedGCPDataplex, RelatedGCPDataplexAspectType
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -65,7 +60,6 @@ class GCPDataplex(Asset):
     Base class for GCP Dataplex Aspect Type assets.
     """
 
-    CATALOG_DATASET_GUID: ClassVar[Any] = None
     GOOGLE_SERVICE: ClassVar[Any] = None
     GOOGLE_PROJECT_NAME: ClassVar[Any] = None
     GOOGLE_PROJECT_ID: ClassVar[Any] = None
@@ -75,8 +69,6 @@ class GCPDataplex(Asset):
     GOOGLE_LABELS: ClassVar[Any] = None
     GOOGLE_TAGS: ClassVar[Any] = None
     CLOUD_UNIFORM_RESOURCE_NAME: ClassVar[Any] = None
-    INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
-    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
@@ -85,8 +77,6 @@ class GCPDataplex(Asset):
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
-    MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
-    MODEL_IMPLEMENTED_ATTRIBUTES: ClassVar[Any] = None
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
@@ -95,10 +85,6 @@ class GCPDataplex(Asset):
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
-    PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
-    PARTIAL_CHILD_OBJECTS: ClassVar[Any] = None
-    INPUT_TO_PROCESSES: ClassVar[Any] = None
-    OUTPUT_FROM_PROCESSES: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_FROM: ClassVar[Any] = None
     FILES: ClassVar[Any] = None
@@ -106,11 +92,6 @@ class GCPDataplex(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
-    INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
-    OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
-
-    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
-    """Unique identifier of the dataset this asset belongs to."""
 
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
@@ -139,12 +120,6 @@ class GCPDataplex(Asset):
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
-    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
-    """Tasks to which this asset provides input."""
-
-    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
-    """Tasks from which this asset is output."""
-
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
@@ -168,14 +143,6 @@ class GCPDataplex(Asset):
 
     input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
-
-    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
-    """Entities implemented by this asset."""
-
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
-    """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
@@ -205,18 +172,6 @@ class GCPDataplex(Asset):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
-    """Partial fields contained in the asset."""
-
-    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
-    """Partial objects contained in the asset."""
-
-    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
-    """Processes to which this asset provides input."""
-
-    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
-    """Processes from which this asset is produced as output."""
-
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
@@ -240,12 +195,6 @@ class GCPDataplex(Asset):
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
-    """"""
-
-    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
-    """"""
-
-    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -366,9 +315,6 @@ class GCPDataplex(Asset):
 class GCPDataplexAttributes(AssetAttributes):
     """GCPDataplex-specific attributes for nested API format."""
 
-    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
-    """Unique identifier of the dataset this asset belongs to."""
-
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 
@@ -400,12 +346,6 @@ class GCPDataplexAttributes(AssetAttributes):
 class GCPDataplexRelationshipAttributes(AssetRelationshipAttributes):
     """GCPDataplex-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
-    """Tasks to which this asset provides input."""
-
-    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
-    """Tasks from which this asset is output."""
-
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
@@ -429,14 +369,6 @@ class GCPDataplexRelationshipAttributes(AssetRelationshipAttributes):
 
     input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
-
-    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
-    """Entities implemented by this asset."""
-
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
-    """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
@@ -466,18 +398,6 @@ class GCPDataplexRelationshipAttributes(AssetRelationshipAttributes):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
-    """Partial fields contained in the asset."""
-
-    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
-    """Partial objects contained in the asset."""
-
-    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
-    """Processes to which this asset provides input."""
-
-    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
-    """Processes from which this asset is produced as output."""
-
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
@@ -503,12 +423,6 @@ class GCPDataplexRelationshipAttributes(AssetRelationshipAttributes):
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
-    """"""
-
-    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
-    """"""
-
 
 class GCPDataplexNested(AssetNested):
     """GCPDataplex in nested API format for high-performance serialization."""
@@ -529,8 +443,6 @@ class GCPDataplexNested(AssetNested):
 
 _GCP_DATAPLEX_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
-    "input_to_airflow_tasks",
-    "output_from_airflow_tasks",
     "anomalo_checks",
     "application",
     "application_field",
@@ -539,8 +451,6 @@ _GCP_DATAPLEX_REL_FIELDS: List[str] = [
     "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
-    "model_implemented_entities",
-    "model_implemented_attributes",
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
@@ -549,10 +459,6 @@ _GCP_DATAPLEX_REL_FIELDS: List[str] = [
     "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
-    "partial_child_fields",
-    "partial_child_objects",
-    "input_to_processes",
-    "output_from_processes",
     "user_def_relationship_to",
     "user_def_relationship_from",
     "files",
@@ -560,8 +466,6 @@ _GCP_DATAPLEX_REL_FIELDS: List[str] = [
     "readme",
     "schema_registry_subjects",
     "soda_checks",
-    "input_to_spark_jobs",
-    "output_from_spark_jobs",
 ]
 
 
@@ -570,7 +474,6 @@ def _populate_gcp_dataplex_attrs(
 ) -> None:
     """Populate GCPDataplex-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.google_service = obj.google_service
     attrs.google_project_name = obj.google_project_name
     attrs.google_project_id = obj.google_project_id
@@ -585,7 +488,6 @@ def _populate_gcp_dataplex_attrs(
 def _extract_gcp_dataplex_attrs(attrs: GCPDataplexAttributes) -> dict:
     """Extract all GCPDataplex attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["google_service"] = attrs.google_service
     result["google_project_name"] = attrs.google_project_name
     result["google_project_id"] = attrs.google_project_id
@@ -704,9 +606,6 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-GCPDataplex.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
 GCPDataplex.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
 GCPDataplex.GOOGLE_PROJECT_NAME = KeywordTextField(
     "googleProjectName", "googleProjectName", "googleProjectName.text"
@@ -726,8 +625,6 @@ GCPDataplex.GOOGLE_TAGS = KeywordField("googleTags", "googleTags")
 GCPDataplex.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
     "cloudUniformResourceName", "cloudUniformResourceName"
 )
-GCPDataplex.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-GCPDataplex.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 GCPDataplex.ANOMALO_CHECKS = RelationField("anomaloChecks")
 GCPDataplex.APPLICATION = RelationField("application")
 GCPDataplex.APPLICATION_FIELD = RelationField("applicationField")
@@ -738,8 +635,6 @@ GCPDataplex.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
 )
 GCPDataplex.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 GCPDataplex.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-GCPDataplex.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-GCPDataplex.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 GCPDataplex.METRICS = RelationField("metrics")
 GCPDataplex.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 GCPDataplex.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
@@ -750,10 +645,6 @@ GCPDataplex.MEANINGS = RelationField("meanings")
 GCPDataplex.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 GCPDataplex.MC_MONITORS = RelationField("mcMonitors")
 GCPDataplex.MC_INCIDENTS = RelationField("mcIncidents")
-GCPDataplex.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-GCPDataplex.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-GCPDataplex.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-GCPDataplex.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 GCPDataplex.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
 GCPDataplex.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 GCPDataplex.FILES = RelationField("files")
@@ -761,5 +652,3 @@ GCPDataplex.LINKS = RelationField("links")
 GCPDataplex.README = RelationField("readme")
 GCPDataplex.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 GCPDataplex.SODA_CHECKS = RelationField("sodaChecks")
-GCPDataplex.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-GCPDataplex.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

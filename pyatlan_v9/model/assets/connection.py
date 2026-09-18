@@ -15,20 +15,11 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Optional, Union
+from typing import Any, ClassVar, Dict, List, Union
+from typing import Optional
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan.model.assets.connection import _validate_connector_type_value
-from pyatlan.model.enums import AtlanConnectorType
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -41,7 +32,6 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .connection_related import RelatedConnection
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -55,6 +45,17 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan.model.assets.connection import _validate_connector_type_value
+from pyatlan.model.enums import AtlanConnectorType
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .connection_related import RelatedConnection
 
 # =============================================================================
 # FLAT ASSET CLASS

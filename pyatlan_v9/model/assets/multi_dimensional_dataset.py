@@ -18,13 +18,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -38,7 +31,6 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .context_related import RelatedContextRepository
-from .cube_related import RelatedCubeDimension, RelatedMultiDimensionalDataset
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -54,6 +46,14 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .cube_related import RelatedMultiDimensionalDataset
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -93,7 +93,6 @@ class MultiDimensionalDataset(Asset):
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
-    CUBE_DIMENSIONS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
     PARTIAL_CHILD_OBJECTS: ClassVar[Any] = None
     INPUT_TO_PROCESSES: ClassVar[Any] = None
@@ -194,9 +193,6 @@ class MultiDimensionalDataset(Asset):
 
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
-
-    cube_dimensions: Union[List[RelatedCubeDimension], None, UnsetType] = UNSET
-    """Individual dimensions contained in the cube."""
 
     partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
@@ -454,9 +450,6 @@ class MultiDimensionalDatasetRelationshipAttributes(AssetRelationshipAttributes)
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    cube_dimensions: Union[List[RelatedCubeDimension], None, UnsetType] = UNSET
-    """Individual dimensions contained in the cube."""
-
     partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
@@ -542,7 +535,6 @@ _MULTI_DIMENSIONAL_DATASET_REL_FIELDS: List[str] = [
     "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
-    "cube_dimensions",
     "partial_child_fields",
     "partial_child_objects",
     "input_to_processes",
@@ -762,7 +754,6 @@ MultiDimensionalDataset.MEANINGS = RelationField("meanings")
 MultiDimensionalDataset.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 MultiDimensionalDataset.MC_MONITORS = RelationField("mcMonitors")
 MultiDimensionalDataset.MC_INCIDENTS = RelationField("mcIncidents")
-MultiDimensionalDataset.CUBE_DIMENSIONS = RelationField("cubeDimensions")
 MultiDimensionalDataset.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
 MultiDimensionalDataset.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 MultiDimensionalDataset.INPUT_TO_PROCESSES = RelationField("inputToProcesses")

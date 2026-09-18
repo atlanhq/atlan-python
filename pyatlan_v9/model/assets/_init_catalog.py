@@ -8,8 +8,6 @@ Catalog module exports.
 This module provides convenient imports for all Catalog types and their Related variants.
 """
 
-from .bi import BI
-from .catalog import Catalog
 from .catalog_related import (
     RelatedBI,
     RelatedCatalog,
@@ -19,6 +17,8 @@ from .catalog_related import (
     RelatedObjectStore,
     RelatedSaaS,
 )
+from .catalog import Catalog
+from .bi import BI
 from .event_store import EventStore
 from .insight import Insight
 from .no_sql import NoSQL

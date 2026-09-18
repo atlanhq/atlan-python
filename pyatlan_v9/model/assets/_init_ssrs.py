@@ -8,10 +8,6 @@ SSRS module exports.
 This module provides convenient imports for all SSRS types and their Related variants.
 """
 
-from .ssrs import SSRS
-from .ssrs_data_set import SSRSDataSet
-from .ssrs_field import SSRSField
-from .ssrs_folder import SSRSFolder
 from .ssrs_related import (
     RelatedSSRS,
     RelatedSSRSDataSet,
@@ -19,6 +15,10 @@ from .ssrs_related import (
     RelatedSSRSFolder,
     RelatedSSRSReport,
 )
+from .ssrs import SSRS
+from .ssrs_data_set import SSRSDataSet
+from .ssrs_field import SSRSField
+from .ssrs_folder import SSRSFolder
 from .ssrs_report import SSRSReport
 
 __all__ = [

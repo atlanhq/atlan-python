@@ -20,14 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -40,6 +32,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .bigquery_related import RelatedBigqueryRoutine
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -78,6 +71,14 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
 from .sql_related import (
     RelatedCalculationView,
     RelatedDatabase,
@@ -101,7 +102,7 @@ class Schema(Asset):
     """
 
     TABLE_COUNT: ClassVar[Any] = None
-    SQL_EXTERNAL_LOCATION: ClassVar[Any] = None
+    SCHEMA_EXTERNAL_LOCATION: ClassVar[Any] = None
     VIEWS_COUNT: ClassVar[Any] = None
     LINKED_SCHEMA_QUALIFIED_NAME: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
@@ -143,6 +144,7 @@ class Schema(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    BIGQUERY_ROUTINES: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -203,7 +205,7 @@ class Schema(Asset):
     table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this schema."""
 
-    sql_external_location: Union[str, None, UnsetType] = UNSET
+    schema_external_location: Union[str, None, UnsetType] = UNSET
     """External location of this schema, for example: an S3 object location."""
 
     views_count: Union[int, None, UnsetType] = UNSET
@@ -330,6 +332,9 @@ class Schema(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines that exist within this schema."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -758,7 +763,7 @@ class SchemaAttributes(AssetAttributes):
     table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this schema."""
 
-    sql_external_location: Union[str, None, UnsetType] = UNSET
+    schema_external_location: Union[str, None, UnsetType] = UNSET
     """External location of this schema, for example: an S3 object location."""
 
     views_count: Union[int, None, UnsetType] = UNSET
@@ -889,6 +894,9 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines that exist within this schema."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -1113,6 +1121,7 @@ _SCHEMA_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "bigquery_routines",
     "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -1176,7 +1185,7 @@ def _populate_schema__attrs(attrs: SchemaAttributes, obj: Schema) -> None:
     """Populate Schema-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.table_count = obj.table_count
-    attrs.sql_external_location = obj.sql_external_location
+    attrs.schema_external_location = obj.schema_external_location
     attrs.views_count = obj.views_count
     attrs.linked_schema_qualified_name = obj.linked_schema_qualified_name
     attrs.query_count = obj.query_count
@@ -1223,7 +1232,7 @@ def _extract_schema__attrs(attrs: SchemaAttributes) -> dict:
     """Extract all Schema attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["table_count"] = attrs.table_count
-    result["sql_external_location"] = attrs.sql_external_location
+    result["schema_external_location"] = attrs.schema_external_location
     result["views_count"] = attrs.views_count
     result["linked_schema_qualified_name"] = attrs.linked_schema_qualified_name
     result["query_count"] = attrs.query_count
@@ -1379,8 +1388,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Schema.TABLE_COUNT = NumericField("tableCount", "tableCount")
-Schema.SQL_EXTERNAL_LOCATION = KeywordField(
-    "sqlExternalLocation", "sqlExternalLocation"
+Schema.SCHEMA_EXTERNAL_LOCATION = KeywordField(
+    "schemaExternalLocation", "schemaExternalLocation"
 )
 Schema.VIEWS_COUNT = NumericField("viewsCount", "viewsCount")
 Schema.LINKED_SCHEMA_QUALIFIED_NAME = KeywordField(
@@ -1468,6 +1477,7 @@ Schema.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Schema.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Schema.APPLICATION = RelationField("application")
 Schema.APPLICATION_FIELD = RelationField("applicationField")
+Schema.BIGQUERY_ROUTINES = RelationField("bigqueryRoutines")
 Schema.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 Schema.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 Schema.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")

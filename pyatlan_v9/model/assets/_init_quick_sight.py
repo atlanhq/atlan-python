@@ -8,14 +8,6 @@ QuickSight module exports.
 This module provides convenient imports for all QuickSight types and their Related variants.
 """
 
-from .quick_sight import QuickSight
-from .quick_sight_analysis import QuickSightAnalysis
-from .quick_sight_analysis_visual import QuickSightAnalysisVisual
-from .quick_sight_dashboard import QuickSightDashboard
-from .quick_sight_dashboard_visual import QuickSightDashboardVisual
-from .quick_sight_dataset import QuickSightDataset
-from .quick_sight_dataset_field import QuickSightDatasetField
-from .quick_sight_folder import QuickSightFolder
 from .quick_sight_related import (
     RelatedQuickSight,
     RelatedQuickSightAnalysis,
@@ -26,6 +18,14 @@ from .quick_sight_related import (
     RelatedQuickSightDatasetField,
     RelatedQuickSightFolder,
 )
+from .quick_sight import QuickSight
+from .quick_sight_analysis import QuickSightAnalysis
+from .quick_sight_analysis_visual import QuickSightAnalysisVisual
+from .quick_sight_dashboard import QuickSightDashboard
+from .quick_sight_dashboard_visual import QuickSightDashboardVisual
+from .quick_sight_dataset import QuickSightDataset
+from .quick_sight_dataset_field import QuickSightDatasetField
+from .quick_sight_folder import QuickSightFolder
 
 __all__ = [
     "QuickSight",

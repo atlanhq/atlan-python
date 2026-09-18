@@ -19,14 +19,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -50,16 +42,24 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .quick_sight_related import (
-    RelatedQuickSightAnalysis,
-    RelatedQuickSightAnalysisVisual,
-    RelatedQuickSightFolder,
-)
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .quick_sight_related import (
+    RelatedQuickSightAnalysis,
+    RelatedQuickSightAnalysisVisual,
+    RelatedQuickSightFolder,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -72,7 +72,7 @@ class QuickSightAnalysis(Asset):
     Instance of a QuickSight analysis in Atlan. In QuickSight, you analyze and visualize your data in analyses, which can be published as a dashboard to share with others.
     """
 
-    QUICK_SIGHT_STATUS: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_STATUS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[Any] = None
@@ -116,7 +116,7 @@ class QuickSightAnalysis(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_status: Union[str, None, UnsetType] = UNSET
+    quick_sight_analysis_status: Union[str, None, UnsetType] = UNSET
     """Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc."""
 
     quick_sight_analysis_calculated_fields: Union[List[str], None, UnsetType] = UNSET
@@ -430,7 +430,7 @@ class QuickSightAnalysis(Asset):
 class QuickSightAnalysisAttributes(AssetAttributes):
     """QuickSightAnalysis-specific attributes for nested API format."""
 
-    quick_sight_status: Union[str, None, UnsetType] = UNSET
+    quick_sight_analysis_status: Union[str, None, UnsetType] = UNSET
     """Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc."""
 
     quick_sight_analysis_calculated_fields: Union[List[str], None, UnsetType] = UNSET
@@ -644,7 +644,7 @@ def _populate_quick_sight_analysis_attrs(
 ) -> None:
     """Populate QuickSightAnalysis-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_status = obj.quick_sight_status
+    attrs.quick_sight_analysis_status = obj.quick_sight_analysis_status
     attrs.quick_sight_analysis_calculated_fields = (
         obj.quick_sight_analysis_calculated_fields
     )
@@ -661,7 +661,7 @@ def _populate_quick_sight_analysis_attrs(
 def _extract_quick_sight_analysis_attrs(attrs: QuickSightAnalysisAttributes) -> dict:
     """Extract all QuickSightAnalysis attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_status"] = attrs.quick_sight_status
+    result["quick_sight_analysis_status"] = attrs.quick_sight_analysis_status
     result["quick_sight_analysis_calculated_fields"] = (
         attrs.quick_sight_analysis_calculated_fields
     )
@@ -795,8 +795,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightAnalysis.QUICK_SIGHT_STATUS = KeywordField(
-    "quickSightStatus", "quickSightStatus"
+QuickSightAnalysis.QUICK_SIGHT_ANALYSIS_STATUS = KeywordField(
+    "quickSightAnalysisStatus", "quickSightAnalysisStatus"
 )
 QuickSightAnalysis.QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS = KeywordField(
     "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"

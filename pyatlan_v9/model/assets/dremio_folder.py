@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -49,13 +42,6 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
-from .dremio_related import (
-    RelatedDremioFolder,
-    RelatedDremioPhysicalDataset,
-    RelatedDremioSource,
-    RelatedDremioSpace,
-    RelatedDremioVirtualDataset,
-)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -72,6 +58,20 @@ from .spark_related import RelatedSparkJob
 from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .dremio_related import (
+    RelatedDremioFolder,
+    RelatedDremioPhysicalDataset,
+    RelatedDremioSource,
+    RelatedDremioSpace,
+    RelatedDremioVirtualDataset,
 )
 
 # =============================================================================

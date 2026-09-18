@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -37,15 +30,6 @@ from .asset import (
     AssetRelationshipAttributes,
     _extract_asset_attrs,
     _populate_asset_attrs,
-)
-from .cognos_related import (
-    RelatedCognosColumn,
-    RelatedCognosDashboard,
-    RelatedCognosDataset,
-    RelatedCognosExploration,
-    RelatedCognosFile,
-    RelatedCognosModule,
-    RelatedCognosPackage,
 )
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
@@ -63,6 +47,22 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .cognos_related import (
+    RelatedCognosColumn,
+    RelatedCognosDashboard,
+    RelatedCognosDataset,
+    RelatedCognosExploration,
+    RelatedCognosFile,
+    RelatedCognosModule,
+    RelatedCognosPackage,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -75,9 +75,9 @@ class CognosColumn(Asset):
     Instance of a Cognos column in Atlan.
     """
 
-    COGNOS_DATATYPE: ClassVar[Any] = None
-    COGNOS_NULLABLE: ClassVar[Any] = None
-    COGNOS_REGULAR_AGGREGATE: ClassVar[Any] = None
+    COGNOS_COLUMN_DATATYPE: ClassVar[Any] = None
+    COGNOS_COLUMN_NULLABLE: ClassVar[Any] = None
+    COGNOS_COLUMN_REGULAR_AGGREGATE: ClassVar[Any] = None
     COGNOS_ID: ClassVar[Any] = None
     COGNOS_PATH: ClassVar[Any] = None
     COGNOS_PARENT_NAME: ClassVar[Any] = None
@@ -128,13 +128,13 @@ class CognosColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    cognos_datatype: Union[str, None, UnsetType] = UNSET
+    cognos_column_datatype: Union[str, None, UnsetType] = UNSET
     """Data type of the CognosColumn."""
 
-    cognos_nullable: Union[str, None, UnsetType] = UNSET
+    cognos_column_nullable: Union[str, None, UnsetType] = UNSET
     """Whether the CognosColumn is nullable."""
 
-    cognos_regular_aggregate: Union[str, None, UnsetType] = UNSET
+    cognos_column_regular_aggregate: Union[str, None, UnsetType] = UNSET
     """How data should be summarized when aggregated across different dimensions or groupings."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -426,13 +426,13 @@ class CognosColumn(Asset):
 class CognosColumnAttributes(AssetAttributes):
     """CognosColumn-specific attributes for nested API format."""
 
-    cognos_datatype: Union[str, None, UnsetType] = UNSET
+    cognos_column_datatype: Union[str, None, UnsetType] = UNSET
     """Data type of the CognosColumn."""
 
-    cognos_nullable: Union[str, None, UnsetType] = UNSET
+    cognos_column_nullable: Union[str, None, UnsetType] = UNSET
     """Whether the CognosColumn is nullable."""
 
-    cognos_regular_aggregate: Union[str, None, UnsetType] = UNSET
+    cognos_column_regular_aggregate: Union[str, None, UnsetType] = UNSET
     """How data should be summarized when aggregated across different dimensions or groupings."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -665,9 +665,9 @@ def _populate_cognos_column_attrs(
 ) -> None:
     """Populate CognosColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.cognos_datatype = obj.cognos_datatype
-    attrs.cognos_nullable = obj.cognos_nullable
-    attrs.cognos_regular_aggregate = obj.cognos_regular_aggregate
+    attrs.cognos_column_datatype = obj.cognos_column_datatype
+    attrs.cognos_column_nullable = obj.cognos_column_nullable
+    attrs.cognos_column_regular_aggregate = obj.cognos_column_regular_aggregate
     attrs.cognos_id = obj.cognos_id
     attrs.cognos_path = obj.cognos_path
     attrs.cognos_parent_name = obj.cognos_parent_name
@@ -683,9 +683,9 @@ def _populate_cognos_column_attrs(
 def _extract_cognos_column_attrs(attrs: CognosColumnAttributes) -> dict:
     """Extract all CognosColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cognos_datatype"] = attrs.cognos_datatype
-    result["cognos_nullable"] = attrs.cognos_nullable
-    result["cognos_regular_aggregate"] = attrs.cognos_regular_aggregate
+    result["cognos_column_datatype"] = attrs.cognos_column_datatype
+    result["cognos_column_nullable"] = attrs.cognos_column_nullable
+    result["cognos_column_regular_aggregate"] = attrs.cognos_column_regular_aggregate
     result["cognos_id"] = attrs.cognos_id
     result["cognos_path"] = attrs.cognos_path
     result["cognos_parent_name"] = attrs.cognos_parent_name
@@ -807,10 +807,14 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CognosColumn.COGNOS_DATATYPE = KeywordField("cognosDatatype", "cognosDatatype")
-CognosColumn.COGNOS_NULLABLE = KeywordField("cognosNullable", "cognosNullable")
-CognosColumn.COGNOS_REGULAR_AGGREGATE = KeywordField(
-    "cognosRegularAggregate", "cognosRegularAggregate"
+CognosColumn.COGNOS_COLUMN_DATATYPE = KeywordField(
+    "cognosColumnDatatype", "cognosColumnDatatype"
+)
+CognosColumn.COGNOS_COLUMN_NULLABLE = KeywordField(
+    "cognosColumnNullable", "cognosColumnNullable"
+)
+CognosColumn.COGNOS_COLUMN_REGULAR_AGGREGATE = KeywordField(
+    "cognosColumnRegularAggregate", "cognosColumnRegularAggregate"
 )
 CognosColumn.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosColumn.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")

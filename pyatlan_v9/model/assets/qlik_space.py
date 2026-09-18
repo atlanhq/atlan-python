@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -49,12 +42,19 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .qlik_related import RelatedQlikApp, RelatedQlikDataset, RelatedQlikSpace
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .qlik_related import RelatedQlikApp, RelatedQlikDataset, RelatedQlikSpace
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -67,7 +67,7 @@ class QlikSpace(Asset):
     Instance of a Qlik space in Atlan.
     """
 
-    QLIK_TYPE: ClassVar[Any] = None
+    QLIK_SPACE_TYPE: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -113,7 +113,7 @@ class QlikSpace(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    qlik_type: Union[str, None, UnsetType] = UNSET
+    qlik_space_type: Union[str, None, UnsetType] = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -376,7 +376,7 @@ class QlikSpace(Asset):
 class QlikSpaceAttributes(AssetAttributes):
     """QlikSpace-specific attributes for nested API format."""
 
-    qlik_type: Union[str, None, UnsetType] = UNSET
+    qlik_space_type: Union[str, None, UnsetType] = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -586,7 +586,7 @@ _QLIK_SPACE_REL_FIELDS: List[str] = [
 def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> None:
     """Populate QlikSpace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.qlik_type = obj.qlik_type
+    attrs.qlik_space_type = obj.qlik_space_type
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -601,7 +601,7 @@ def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> No
 def _extract_qlik_space_attrs(attrs: QlikSpaceAttributes) -> dict:
     """Extract all QlikSpace attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["qlik_type"] = attrs.qlik_type
+    result["qlik_space_type"] = attrs.qlik_space_type
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -720,7 +720,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QlikSpace.QLIK_TYPE = KeywordField("qlikType", "qlikType")
+QlikSpace.QLIK_SPACE_TYPE = KeywordField("qlikSpaceType", "qlikSpaceType")
 QlikSpace.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikSpace.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikSpace.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")

@@ -14,17 +14,11 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,7 +32,6 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .bigquery_related import RelatedBigqueryRoutine
 from .context_related import RelatedContextRepository
 from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
 from .data_contract_related import RelatedDataContract
@@ -68,6 +61,14 @@ from .sql_insight_related import (
     RelatedSqlInsightJoin,
 )
 from .sql_related import RelatedSchema
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .bigquery_related import RelatedBigqueryRoutine
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -80,11 +81,11 @@ class BigqueryRoutine(Asset):
     Instance of a bigquery routine in atlan. Can be a stored procedure, udf, or tvf.
     """
 
-    BIGQUERY_TYPE: ClassVar[Any] = None
-    BIGQUERY_ARGUMENTS: ClassVar[Any] = None
-    BIGQUERY_RETURN_TYPE: ClassVar[Any] = None
-    BIGQUERY_SECURITY_TYPE: ClassVar[Any] = None
-    BIGQUERY_DDL: ClassVar[Any] = None
+    BIGQUERY_ROUTINE_TYPE: ClassVar[Any] = None
+    BIGQUERY_ROUTINE_ARGUMENTS: ClassVar[Any] = None
+    BIGQUERY_ROUTINE_RETURN_TYPE: ClassVar[Any] = None
+    BIGQUERY_ROUTINE_SECURITY_TYPE: ClassVar[Any] = None
+    BIGQUERY_ROUTINE_DDL: ClassVar[Any] = None
     DEFINITION: ClassVar[Any] = None
     SQL_LANGUAGE: ClassVar[Any] = None
     SQL_RUNTIME_VERSION: ClassVar[Any] = None
@@ -136,6 +137,8 @@ class BigqueryRoutine(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    BIGQUERY_PROCESSES: ClassVar[Any] = None
+    BIGQUERY_ATLAN_SCHEMA: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     COSMOS_MONGO_DB_COLLECTION: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
@@ -178,19 +181,19 @@ class BigqueryRoutine(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    bigquery_type: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_arguments: Union[List[str], None, UnsetType] = UNSET
+    bigquery_routine_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_return_type: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_return_type: Union[str, None, UnsetType] = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_security_type: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_security_type: Union[str, None, UnsetType] = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_ddl: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_ddl: Union[str, None, UnsetType] = UNSET
     """The ddl statement used to create the bigquery routine."""
 
     definition: Union[str, None, UnsetType] = UNSET
@@ -348,6 +351,12 @@ class BigqueryRoutine(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    bigquery_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes that utilize this routine."""
+
+    bigquery_atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
+    """Schema in which this routine exists."""
+
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
@@ -500,6 +509,10 @@ class BigqueryRoutine(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+/[^/]+$"
+    )
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this BigqueryRoutine instance.
@@ -524,7 +537,24 @@ class BigqueryRoutine(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.atlan_schema is UNSET:
+                errors.append("atlan_schema is required for creation")
+            if self.schema_name is UNSET:
+                errors.append("schema_name is required for creation")
+            if self.schema_qualified_name is UNSET:
+                errors.append("schema_qualified_name is required for creation")
+            if self.database_name is UNSET:
+                errors.append("database_name is required for creation")
+            if self.database_qualified_name is UNSET:
+                errors.append("database_qualified_name is required for creation")
             if self.definition is UNSET:
                 errors.append("definition is required for creation")
         if errors:
@@ -616,19 +646,19 @@ class BigqueryRoutine(Asset):
 class BigqueryRoutineAttributes(AssetAttributes):
     """BigqueryRoutine-specific attributes for nested API format."""
 
-    bigquery_type: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_arguments: Union[List[str], None, UnsetType] = UNSET
+    bigquery_routine_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_return_type: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_return_type: Union[str, None, UnsetType] = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_security_type: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_security_type: Union[str, None, UnsetType] = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_ddl: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_ddl: Union[str, None, UnsetType] = UNSET
     """The ddl statement used to create the bigquery routine."""
 
     definition: Union[str, None, UnsetType] = UNSET
@@ -789,6 +819,12 @@ class BigqueryRoutineRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    bigquery_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes that utilize this routine."""
+
+    bigquery_atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
+    """Schema in which this routine exists."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -962,6 +998,8 @@ _BIGQUERY_ROUTINE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "bigquery_processes",
+    "bigquery_atlan_schema",
     "context_repositories",
     "cosmos_mongo_db_collection",
     "data_contract_latest",
@@ -1011,11 +1049,11 @@ def _populate_bigquery_routine_attrs(
 ) -> None:
     """Populate BigqueryRoutine-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.bigquery_type = obj.bigquery_type
-    attrs.bigquery_arguments = obj.bigquery_arguments
-    attrs.bigquery_return_type = obj.bigquery_return_type
-    attrs.bigquery_security_type = obj.bigquery_security_type
-    attrs.bigquery_ddl = obj.bigquery_ddl
+    attrs.bigquery_routine_type = obj.bigquery_routine_type
+    attrs.bigquery_routine_arguments = obj.bigquery_routine_arguments
+    attrs.bigquery_routine_return_type = obj.bigquery_routine_return_type
+    attrs.bigquery_routine_security_type = obj.bigquery_routine_security_type
+    attrs.bigquery_routine_ddl = obj.bigquery_routine_ddl
     attrs.definition = obj.definition
     attrs.sql_language = obj.sql_language
     attrs.sql_runtime_version = obj.sql_runtime_version
@@ -1071,11 +1109,11 @@ def _populate_bigquery_routine_attrs(
 def _extract_bigquery_routine_attrs(attrs: BigqueryRoutineAttributes) -> dict:
     """Extract all BigqueryRoutine attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["bigquery_type"] = attrs.bigquery_type
-    result["bigquery_arguments"] = attrs.bigquery_arguments
-    result["bigquery_return_type"] = attrs.bigquery_return_type
-    result["bigquery_security_type"] = attrs.bigquery_security_type
-    result["bigquery_ddl"] = attrs.bigquery_ddl
+    result["bigquery_routine_type"] = attrs.bigquery_routine_type
+    result["bigquery_routine_arguments"] = attrs.bigquery_routine_arguments
+    result["bigquery_routine_return_type"] = attrs.bigquery_routine_return_type
+    result["bigquery_routine_security_type"] = attrs.bigquery_routine_security_type
+    result["bigquery_routine_ddl"] = attrs.bigquery_routine_ddl
     result["definition"] = attrs.definition
     result["sql_language"] = attrs.sql_language
     result["sql_runtime_version"] = attrs.sql_runtime_version
@@ -1250,17 +1288,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-BigqueryRoutine.BIGQUERY_TYPE = KeywordField("bigqueryType", "bigqueryType")
-BigqueryRoutine.BIGQUERY_ARGUMENTS = KeywordField(
-    "bigqueryArguments", "bigqueryArguments"
+BigqueryRoutine.BIGQUERY_ROUTINE_TYPE = KeywordField(
+    "bigqueryRoutineType", "bigqueryRoutineType"
 )
-BigqueryRoutine.BIGQUERY_RETURN_TYPE = KeywordField(
-    "bigqueryReturnType", "bigqueryReturnType"
+BigqueryRoutine.BIGQUERY_ROUTINE_ARGUMENTS = KeywordField(
+    "bigqueryRoutineArguments", "bigqueryRoutineArguments"
 )
-BigqueryRoutine.BIGQUERY_SECURITY_TYPE = KeywordField(
-    "bigquerySecurityType", "bigquerySecurityType"
+BigqueryRoutine.BIGQUERY_ROUTINE_RETURN_TYPE = KeywordField(
+    "bigqueryRoutineReturnType", "bigqueryRoutineReturnType"
 )
-BigqueryRoutine.BIGQUERY_DDL = KeywordField("bigqueryDdl", "bigqueryDdl")
+BigqueryRoutine.BIGQUERY_ROUTINE_SECURITY_TYPE = KeywordField(
+    "bigqueryRoutineSecurityType", "bigqueryRoutineSecurityType"
+)
+BigqueryRoutine.BIGQUERY_ROUTINE_DDL = KeywordField(
+    "bigqueryRoutineDdl", "bigqueryRoutineDdl"
+)
 BigqueryRoutine.DEFINITION = KeywordField("definition", "definition")
 BigqueryRoutine.SQL_LANGUAGE = KeywordTextField(
     "sqlLanguage", "sqlLanguage", "sqlLanguage.text"
@@ -1375,6 +1417,8 @@ BigqueryRoutine.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTask
 BigqueryRoutine.ANOMALO_CHECKS = RelationField("anomaloChecks")
 BigqueryRoutine.APPLICATION = RelationField("application")
 BigqueryRoutine.APPLICATION_FIELD = RelationField("applicationField")
+BigqueryRoutine.BIGQUERY_PROCESSES = RelationField("bigqueryProcesses")
+BigqueryRoutine.BIGQUERY_ATLAN_SCHEMA = RelationField("bigqueryAtlanSchema")
 BigqueryRoutine.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 BigqueryRoutine.COSMOS_MONGO_DB_COLLECTION = RelationField("cosmosMongoDBCollection")
 BigqueryRoutine.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")

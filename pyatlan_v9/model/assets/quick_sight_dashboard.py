@@ -19,14 +19,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -50,16 +42,24 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .quick_sight_related import (
-    RelatedQuickSightDashboard,
-    RelatedQuickSightDashboardVisual,
-    RelatedQuickSightFolder,
-)
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .quick_sight_related import (
+    RelatedQuickSightDashboard,
+    RelatedQuickSightDashboardVisual,
+    RelatedQuickSightFolder,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -72,8 +72,8 @@ class QuickSightDashboard(Asset):
     Instance of a QuickSight dashboard in Atlan. These are reports in QuickSight, created from analyses.
     """
 
-    QUICK_SIGHT_PUBLISHED_VERSION_NUMBER: ClassVar[Any] = None
-    QUICK_SIGHT_LAST_PUBLISHED_TIME: ClassVar[Any] = None
+    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[Any] = None
+    QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
@@ -114,10 +114,10 @@ class QuickSightDashboard(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_published_version_number: Union[int, None, UnsetType] = UNSET
+    quick_sight_dashboard_published_version_number: Union[int, None, UnsetType] = UNSET
     """Version number of the published dashboard."""
 
-    quick_sight_last_published_time: Union[int, None, UnsetType] = UNSET
+    quick_sight_dashboard_last_published_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this dashboard was last published, in milliseconds."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -429,10 +429,10 @@ class QuickSightDashboard(Asset):
 class QuickSightDashboardAttributes(AssetAttributes):
     """QuickSightDashboard-specific attributes for nested API format."""
 
-    quick_sight_published_version_number: Union[int, None, UnsetType] = UNSET
+    quick_sight_dashboard_published_version_number: Union[int, None, UnsetType] = UNSET
     """Version number of the published dashboard."""
 
-    quick_sight_last_published_time: Union[int, None, UnsetType] = UNSET
+    quick_sight_dashboard_last_published_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this dashboard was last published, in milliseconds."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -635,10 +635,12 @@ def _populate_quick_sight_dashboard_attrs(
 ) -> None:
     """Populate QuickSightDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_published_version_number = (
-        obj.quick_sight_published_version_number
+    attrs.quick_sight_dashboard_published_version_number = (
+        obj.quick_sight_dashboard_published_version_number
     )
-    attrs.quick_sight_last_published_time = obj.quick_sight_last_published_time
+    attrs.quick_sight_dashboard_last_published_time = (
+        obj.quick_sight_dashboard_last_published_time
+    )
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
@@ -648,10 +650,12 @@ def _populate_quick_sight_dashboard_attrs(
 def _extract_quick_sight_dashboard_attrs(attrs: QuickSightDashboardAttributes) -> dict:
     """Extract all QuickSightDashboard attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_published_version_number"] = (
-        attrs.quick_sight_published_version_number
+    result["quick_sight_dashboard_published_version_number"] = (
+        attrs.quick_sight_dashboard_published_version_number
     )
-    result["quick_sight_last_published_time"] = attrs.quick_sight_last_published_time
+    result["quick_sight_dashboard_last_published_time"] = (
+        attrs.quick_sight_dashboard_last_published_time
+    )
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
@@ -777,11 +781,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightDashboard.QUICK_SIGHT_PUBLISHED_VERSION_NUMBER = NumericField(
-    "quickSightPublishedVersionNumber", "quickSightPublishedVersionNumber"
+QuickSightDashboard.QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER = NumericField(
+    "quickSightDashboardPublishedVersionNumber",
+    "quickSightDashboardPublishedVersionNumber",
 )
-QuickSightDashboard.QUICK_SIGHT_LAST_PUBLISHED_TIME = NumericField(
-    "quickSightLastPublishedTime", "quickSightLastPublishedTime"
+QuickSightDashboard.QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME = NumericField(
+    "quickSightDashboardLastPublishedTime", "quickSightDashboardLastPublishedTime"
 )
 QuickSightDashboard.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
 QuickSightDashboard.QUICK_SIGHT_SHEET_ID = KeywordField(

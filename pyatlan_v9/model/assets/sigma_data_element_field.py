@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -52,9 +45,16 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .sigma_related import RelatedSigmaDataElement, RelatedSigmaDataElementField
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .sigma_related import RelatedSigmaDataElement, RelatedSigmaDataElementField
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -67,7 +67,7 @@ class SigmaDataElementField(Asset):
     Instance of a Sigma data element field in Atlan.
     """
 
-    SIGMA_IS_HIDDEN: ClassVar[Any] = None
+    SIGMA_DATA_ELEMENT_FIELD_IS_HIDDEN: ClassVar[Any] = None
     SIGMA_DATA_ELEMENT_FIELD_FORMULA: ClassVar[Any] = None
     SIGMA_WORKBOOK_QUALIFIED_NAME: ClassVar[Any] = None
     SIGMA_WORKBOOK_NAME: ClassVar[Any] = None
@@ -111,7 +111,7 @@ class SigmaDataElementField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sigma_is_hidden: Union[bool, None, UnsetType] = UNSET
+    sigma_data_element_field_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this field is hidden (true) or not (false)."""
 
     sigma_data_element_field_formula: Union[str, None, UnsetType] = UNSET
@@ -398,7 +398,7 @@ class SigmaDataElementField(Asset):
 class SigmaDataElementFieldAttributes(AssetAttributes):
     """SigmaDataElementField-specific attributes for nested API format."""
 
-    sigma_is_hidden: Union[bool, None, UnsetType] = UNSET
+    sigma_data_element_field_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this field is hidden (true) or not (false)."""
 
     sigma_data_element_field_formula: Union[str, None, UnsetType] = UNSET
@@ -605,7 +605,7 @@ def _populate_sigma_data_element_field_attrs(
 ) -> None:
     """Populate SigmaDataElementField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sigma_is_hidden = obj.sigma_is_hidden
+    attrs.sigma_data_element_field_is_hidden = obj.sigma_data_element_field_is_hidden
     attrs.sigma_data_element_field_formula = obj.sigma_data_element_field_formula
     attrs.sigma_workbook_qualified_name = obj.sigma_workbook_qualified_name
     attrs.sigma_workbook_name = obj.sigma_workbook_name
@@ -621,7 +621,9 @@ def _extract_sigma_data_element_field_attrs(
 ) -> dict:
     """Extract all SigmaDataElementField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sigma_is_hidden"] = attrs.sigma_is_hidden
+    result["sigma_data_element_field_is_hidden"] = (
+        attrs.sigma_data_element_field_is_hidden
+    )
     result["sigma_data_element_field_formula"] = attrs.sigma_data_element_field_formula
     result["sigma_workbook_qualified_name"] = attrs.sigma_workbook_qualified_name
     result["sigma_workbook_name"] = attrs.sigma_workbook_name
@@ -753,7 +755,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SigmaDataElementField.SIGMA_IS_HIDDEN = BooleanField("sigmaIsHidden", "sigmaIsHidden")
+SigmaDataElementField.SIGMA_DATA_ELEMENT_FIELD_IS_HIDDEN = BooleanField(
+    "sigmaDataElementFieldIsHidden", "sigmaDataElementFieldIsHidden"
+)
 SigmaDataElementField.SIGMA_DATA_ELEMENT_FIELD_FORMULA = KeywordField(
     "sigmaDataElementFieldFormula", "sigmaDataElementFieldFormula"
 )

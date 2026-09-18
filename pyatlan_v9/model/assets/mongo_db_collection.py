@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -53,7 +46,6 @@ from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
-from .mongo_db_related import RelatedMongoDBCollection, RelatedMongoDBDatabase
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
@@ -74,6 +66,14 @@ from .sql_related import (
     RelatedTable,
     RelatedTablePartition,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .mongo_db_related import RelatedMongoDBCollection, RelatedMongoDBDatabase
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -87,16 +87,16 @@ class MongoDBCollection(Asset):
     """
 
     MONGO_DB_COLLECTION_SUBTYPE: ClassVar[Any] = None
-    MONGO_DB_IS_CAPPED: ClassVar[Any] = None
+    MONGO_DB_COLLECTION_IS_CAPPED: ClassVar[Any] = None
     MONGO_DB_COLLECTION_TIME_FIELD: ClassVar[Any] = None
-    MONGO_DB_TIME_GRANULARITY: ClassVar[Any] = None
-    MONGO_DB_EXPIRE_AFTER_SECONDS: ClassVar[Any] = None
-    MONGO_DB_MAXIMUM_DOCUMENT_COUNT: ClassVar[Any] = None
-    MONGO_DB_MAX_SIZE: ClassVar[Any] = None
-    MONGO_DB_NUM_ORPHAN_DOCS: ClassVar[Any] = None
-    MONGO_DB_NUM_INDEXES: ClassVar[Any] = None
-    MONGO_DB_TOTAL_INDEX_SIZE: ClassVar[Any] = None
-    MONGO_DB_AVERAGE_OBJECT_SIZE: ClassVar[Any] = None
+    MONGO_DB_COLLECTION_TIME_GRANULARITY: ClassVar[Any] = None
+    MONGO_DB_COLLECTION_EXPIRE_AFTER_SECONDS: ClassVar[Any] = None
+    MONGO_DB_COLLECTION_MAXIMUM_DOCUMENT_COUNT: ClassVar[Any] = None
+    MONGO_DB_COLLECTION_MAX_SIZE: ClassVar[Any] = None
+    MONGO_DB_COLLECTION_NUM_ORPHAN_DOCS: ClassVar[Any] = None
+    MONGO_DB_COLLECTION_NUM_INDEXES: ClassVar[Any] = None
+    MONGO_DB_COLLECTION_TOTAL_INDEX_SIZE: ClassVar[Any] = None
+    MONGO_DB_COLLECTION_AVERAGE_OBJECT_SIZE: ClassVar[Any] = None
     MONGO_DB_COLLECTION_SCHEMA_DEFINITION: ClassVar[Any] = None
     NO_SQL_SCHEMA_DEFINITION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
@@ -217,8 +217,8 @@ class MongoDBCollection(Asset):
     )
     """Subtype of a MongoDB collection, for example: Capped, Time Series, etc."""
 
-    mongo_db_is_capped: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBIsCapped"
+    mongo_db_collection_is_capped: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionIsCapped"
     )
     """Whether the collection is capped (true) or not (false)."""
 
@@ -227,43 +227,43 @@ class MongoDBCollection(Asset):
     )
     """Name of the field containing the date in each time series document."""
 
-    mongo_db_time_granularity: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTimeGranularity"
+    mongo_db_collection_time_granularity: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionTimeGranularity"
     )
     """Closest match to the time span between consecutive incoming measurements."""
 
-    mongo_db_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBExpireAfterSeconds"
+    mongo_db_collection_expire_after_seconds: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollectionExpireAfterSeconds")
     )
     """Seconds after which documents in a time series collection or clustered collection expire."""
 
-    mongo_db_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaximumDocumentCount"
+    mongo_db_collection_maximum_document_count: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollectionMaximumDocumentCount")
     )
     """Maximum number of documents allowed in a capped collection."""
 
-    mongo_db_max_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaxSize"
+    mongo_db_collection_max_size: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionMaxSize"
     )
     """Maximum size allowed in a capped collection."""
 
-    mongo_db_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumOrphanDocs"
+    mongo_db_collection_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionNumOrphanDocs"
     )
     """Number of orphaned documents in the collection."""
 
-    mongo_db_num_indexes: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumIndexes"
+    mongo_db_collection_num_indexes: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionNumIndexes"
     )
     """Number of indexes on the collection."""
 
-    mongo_db_total_index_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTotalIndexSize"
+    mongo_db_collection_total_index_size: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionTotalIndexSize"
     )
     """Total size of all indexes."""
 
-    mongo_db_average_object_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBAverageObjectSize"
+    mongo_db_collection_average_object_size: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollectionAverageObjectSize")
     )
     """Average size of an object in the collection."""
 
@@ -780,8 +780,8 @@ class MongoDBCollectionAttributes(AssetAttributes):
     )
     """Subtype of a MongoDB collection, for example: Capped, Time Series, etc."""
 
-    mongo_db_is_capped: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBIsCapped"
+    mongo_db_collection_is_capped: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionIsCapped"
     )
     """Whether the collection is capped (true) or not (false)."""
 
@@ -790,43 +790,43 @@ class MongoDBCollectionAttributes(AssetAttributes):
     )
     """Name of the field containing the date in each time series document."""
 
-    mongo_db_time_granularity: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTimeGranularity"
+    mongo_db_collection_time_granularity: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionTimeGranularity"
     )
     """Closest match to the time span between consecutive incoming measurements."""
 
-    mongo_db_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBExpireAfterSeconds"
+    mongo_db_collection_expire_after_seconds: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollectionExpireAfterSeconds")
     )
     """Seconds after which documents in a time series collection or clustered collection expire."""
 
-    mongo_db_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaximumDocumentCount"
+    mongo_db_collection_maximum_document_count: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollectionMaximumDocumentCount")
     )
     """Maximum number of documents allowed in a capped collection."""
 
-    mongo_db_max_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaxSize"
+    mongo_db_collection_max_size: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionMaxSize"
     )
     """Maximum size allowed in a capped collection."""
 
-    mongo_db_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumOrphanDocs"
+    mongo_db_collection_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionNumOrphanDocs"
     )
     """Number of orphaned documents in the collection."""
 
-    mongo_db_num_indexes: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumIndexes"
+    mongo_db_collection_num_indexes: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionNumIndexes"
     )
     """Number of indexes on the collection."""
 
-    mongo_db_total_index_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTotalIndexSize"
+    mongo_db_collection_total_index_size: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionTotalIndexSize"
     )
     """Total size of all indexes."""
 
-    mongo_db_average_object_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBAverageObjectSize"
+    mongo_db_collection_average_object_size: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollectionAverageObjectSize")
     )
     """Average size of an object in the collection."""
 
@@ -1288,16 +1288,26 @@ def _populate_mongo_db_collection_attrs(
     """Populate MongoDBCollection-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.mongo_db_collection_subtype = obj.mongo_db_collection_subtype
-    attrs.mongo_db_is_capped = obj.mongo_db_is_capped
+    attrs.mongo_db_collection_is_capped = obj.mongo_db_collection_is_capped
     attrs.mongo_db_collection_time_field = obj.mongo_db_collection_time_field
-    attrs.mongo_db_time_granularity = obj.mongo_db_time_granularity
-    attrs.mongo_db_expire_after_seconds = obj.mongo_db_expire_after_seconds
-    attrs.mongo_db_maximum_document_count = obj.mongo_db_maximum_document_count
-    attrs.mongo_db_max_size = obj.mongo_db_max_size
-    attrs.mongo_db_num_orphan_docs = obj.mongo_db_num_orphan_docs
-    attrs.mongo_db_num_indexes = obj.mongo_db_num_indexes
-    attrs.mongo_db_total_index_size = obj.mongo_db_total_index_size
-    attrs.mongo_db_average_object_size = obj.mongo_db_average_object_size
+    attrs.mongo_db_collection_time_granularity = (
+        obj.mongo_db_collection_time_granularity
+    )
+    attrs.mongo_db_collection_expire_after_seconds = (
+        obj.mongo_db_collection_expire_after_seconds
+    )
+    attrs.mongo_db_collection_maximum_document_count = (
+        obj.mongo_db_collection_maximum_document_count
+    )
+    attrs.mongo_db_collection_max_size = obj.mongo_db_collection_max_size
+    attrs.mongo_db_collection_num_orphan_docs = obj.mongo_db_collection_num_orphan_docs
+    attrs.mongo_db_collection_num_indexes = obj.mongo_db_collection_num_indexes
+    attrs.mongo_db_collection_total_index_size = (
+        obj.mongo_db_collection_total_index_size
+    )
+    attrs.mongo_db_collection_average_object_size = (
+        obj.mongo_db_collection_average_object_size
+    )
     attrs.mongo_db_collection_schema_definition = (
         obj.mongo_db_collection_schema_definition
     )
@@ -1373,16 +1383,28 @@ def _extract_mongo_db_collection_attrs(attrs: MongoDBCollectionAttributes) -> di
     """Extract all MongoDBCollection attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["mongo_db_collection_subtype"] = attrs.mongo_db_collection_subtype
-    result["mongo_db_is_capped"] = attrs.mongo_db_is_capped
+    result["mongo_db_collection_is_capped"] = attrs.mongo_db_collection_is_capped
     result["mongo_db_collection_time_field"] = attrs.mongo_db_collection_time_field
-    result["mongo_db_time_granularity"] = attrs.mongo_db_time_granularity
-    result["mongo_db_expire_after_seconds"] = attrs.mongo_db_expire_after_seconds
-    result["mongo_db_maximum_document_count"] = attrs.mongo_db_maximum_document_count
-    result["mongo_db_max_size"] = attrs.mongo_db_max_size
-    result["mongo_db_num_orphan_docs"] = attrs.mongo_db_num_orphan_docs
-    result["mongo_db_num_indexes"] = attrs.mongo_db_num_indexes
-    result["mongo_db_total_index_size"] = attrs.mongo_db_total_index_size
-    result["mongo_db_average_object_size"] = attrs.mongo_db_average_object_size
+    result["mongo_db_collection_time_granularity"] = (
+        attrs.mongo_db_collection_time_granularity
+    )
+    result["mongo_db_collection_expire_after_seconds"] = (
+        attrs.mongo_db_collection_expire_after_seconds
+    )
+    result["mongo_db_collection_maximum_document_count"] = (
+        attrs.mongo_db_collection_maximum_document_count
+    )
+    result["mongo_db_collection_max_size"] = attrs.mongo_db_collection_max_size
+    result["mongo_db_collection_num_orphan_docs"] = (
+        attrs.mongo_db_collection_num_orphan_docs
+    )
+    result["mongo_db_collection_num_indexes"] = attrs.mongo_db_collection_num_indexes
+    result["mongo_db_collection_total_index_size"] = (
+        attrs.mongo_db_collection_total_index_size
+    )
+    result["mongo_db_collection_average_object_size"] = (
+        attrs.mongo_db_collection_average_object_size
+    )
     result["mongo_db_collection_schema_definition"] = (
         attrs.mongo_db_collection_schema_definition
     )
@@ -1585,33 +1607,35 @@ MongoDBCollection.MONGO_DB_COLLECTION_SUBTYPE = KeywordTextField(
     "mongoDBCollectionSubtype",
     "mongoDBCollectionSubtype.text",
 )
-MongoDBCollection.MONGO_DB_IS_CAPPED = BooleanField(
-    "mongoDBIsCapped", "mongoDBIsCapped"
+MongoDBCollection.MONGO_DB_COLLECTION_IS_CAPPED = BooleanField(
+    "mongoDBCollectionIsCapped", "mongoDBCollectionIsCapped"
 )
 MongoDBCollection.MONGO_DB_COLLECTION_TIME_FIELD = KeywordField(
     "mongoDBCollectionTimeField", "mongoDBCollectionTimeField"
 )
-MongoDBCollection.MONGO_DB_TIME_GRANULARITY = KeywordField(
-    "mongoDBTimeGranularity", "mongoDBTimeGranularity"
+MongoDBCollection.MONGO_DB_COLLECTION_TIME_GRANULARITY = KeywordField(
+    "mongoDBCollectionTimeGranularity", "mongoDBCollectionTimeGranularity"
 )
-MongoDBCollection.MONGO_DB_EXPIRE_AFTER_SECONDS = NumericField(
-    "mongoDBExpireAfterSeconds", "mongoDBExpireAfterSeconds"
+MongoDBCollection.MONGO_DB_COLLECTION_EXPIRE_AFTER_SECONDS = NumericField(
+    "mongoDBCollectionExpireAfterSeconds", "mongoDBCollectionExpireAfterSeconds"
 )
-MongoDBCollection.MONGO_DB_MAXIMUM_DOCUMENT_COUNT = NumericField(
-    "mongoDBMaximumDocumentCount", "mongoDBMaximumDocumentCount"
+MongoDBCollection.MONGO_DB_COLLECTION_MAXIMUM_DOCUMENT_COUNT = NumericField(
+    "mongoDBCollectionMaximumDocumentCount", "mongoDBCollectionMaximumDocumentCount"
 )
-MongoDBCollection.MONGO_DB_MAX_SIZE = NumericField("mongoDBMaxSize", "mongoDBMaxSize")
-MongoDBCollection.MONGO_DB_NUM_ORPHAN_DOCS = NumericField(
-    "mongoDBNumOrphanDocs", "mongoDBNumOrphanDocs"
+MongoDBCollection.MONGO_DB_COLLECTION_MAX_SIZE = NumericField(
+    "mongoDBCollectionMaxSize", "mongoDBCollectionMaxSize"
 )
-MongoDBCollection.MONGO_DB_NUM_INDEXES = NumericField(
-    "mongoDBNumIndexes", "mongoDBNumIndexes"
+MongoDBCollection.MONGO_DB_COLLECTION_NUM_ORPHAN_DOCS = NumericField(
+    "mongoDBCollectionNumOrphanDocs", "mongoDBCollectionNumOrphanDocs"
 )
-MongoDBCollection.MONGO_DB_TOTAL_INDEX_SIZE = NumericField(
-    "mongoDBTotalIndexSize", "mongoDBTotalIndexSize"
+MongoDBCollection.MONGO_DB_COLLECTION_NUM_INDEXES = NumericField(
+    "mongoDBCollectionNumIndexes", "mongoDBCollectionNumIndexes"
 )
-MongoDBCollection.MONGO_DB_AVERAGE_OBJECT_SIZE = NumericField(
-    "mongoDBAverageObjectSize", "mongoDBAverageObjectSize"
+MongoDBCollection.MONGO_DB_COLLECTION_TOTAL_INDEX_SIZE = NumericField(
+    "mongoDBCollectionTotalIndexSize", "mongoDBCollectionTotalIndexSize"
+)
+MongoDBCollection.MONGO_DB_COLLECTION_AVERAGE_OBJECT_SIZE = NumericField(
+    "mongoDBCollectionAverageObjectSize", "mongoDBCollectionAverageObjectSize"
 )
 MongoDBCollection.MONGO_DB_COLLECTION_SCHEMA_DEFINITION = KeywordField(
     "mongoDBCollectionSchemaDefinition", "mongoDBCollectionSchemaDefinition"

@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -42,10 +35,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .fabric_related import (
-    RelatedFabricSemanticModelTable,
-    RelatedFabricSemanticModelTableColumn,
-)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -58,6 +47,18 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .fabric_related import (
+    RelatedFabricSemanticModelMeasure,
+    RelatedFabricSemanticModelTable,
+    RelatedFabricSemanticModelTableColumn,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -92,6 +93,7 @@ class FabricSemanticModelTableColumn(Asset):
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     FABRIC_SEMANTIC_MODEL_TABLE: ClassVar[Any] = None
+    FABRIC_SEMANTIC_MODEL_MEASURES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
@@ -182,6 +184,11 @@ class FabricSemanticModelTableColumn(Asset):
         RelatedFabricSemanticModelTable, None, UnsetType
     ] = UNSET
     """Semantic model table containing the column."""
+
+    fabric_semantic_model_measures: Union[
+        List[RelatedFabricSemanticModelMeasure], None, UnsetType
+    ] = UNSET
+    """Semantic model measures whose DAX expressions reference this column."""
 
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
@@ -465,6 +472,11 @@ class FabricSemanticModelTableColumnRelationshipAttributes(AssetRelationshipAttr
     ] = UNSET
     """Semantic model table containing the column."""
 
+    fabric_semantic_model_measures: Union[
+        List[RelatedFabricSemanticModelMeasure], None, UnsetType
+    ] = UNSET
+    """Semantic model measures whose DAX expressions reference this column."""
+
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
     ] = UNSET
@@ -563,6 +575,7 @@ _FABRIC_SEMANTIC_MODEL_TABLE_COLUMN_REL_FIELDS: List[str] = [
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
     "fabric_semantic_model_table",
+    "fabric_semantic_model_measures",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "knowledge_linked_files",
@@ -797,6 +810,9 @@ FabricSemanticModelTableColumn.DQ_REFERENCE_DATASET_RULES = RelationField(
 )
 FabricSemanticModelTableColumn.FABRIC_SEMANTIC_MODEL_TABLE = RelationField(
     "fabricSemanticModelTable"
+)
+FabricSemanticModelTableColumn.FABRIC_SEMANTIC_MODEL_MEASURES = RelationField(
+    "fabricSemanticModelMeasures"
 )
 FabricSemanticModelTableColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = (
     RelationField("gcpDataplexAspectTypeMetadataEntities")

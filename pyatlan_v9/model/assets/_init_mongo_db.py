@@ -8,14 +8,14 @@ MongoDB module exports.
 This module provides convenient imports for all MongoDB types and their Related variants.
 """
 
-from .mongo_db import MongoDB
-from .mongo_db_collection import MongoDBCollection
-from .mongo_db_database import MongoDBDatabase
 from .mongo_db_related import (
     RelatedMongoDB,
     RelatedMongoDBCollection,
     RelatedMongoDBDatabase,
 )
+from .mongo_db import MongoDB
+from .mongo_db_collection import MongoDBCollection
+from .mongo_db_database import MongoDBDatabase
 
 __all__ = [
     "MongoDB",

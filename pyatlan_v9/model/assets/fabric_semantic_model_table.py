@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -42,11 +35,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .fabric_related import (
-    RelatedFabricSemanticModel,
-    RelatedFabricSemanticModelTable,
-    RelatedFabricSemanticModelTableColumn,
-)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -59,6 +47,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .fabric_related import (
+    RelatedFabricSemanticModel,
+    RelatedFabricSemanticModelMeasure,
+    RelatedFabricSemanticModelTable,
+    RelatedFabricSemanticModelTableColumn,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -93,6 +94,7 @@ class FabricSemanticModelTable(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     FABRIC_SEMANTIC_MODEL: ClassVar[Any] = None
     FABRIC_SEMANTIC_MODEL_TABLE_COLUMNS: ClassVar[Any] = None
+    FABRIC_SEMANTIC_MODEL_MEASURES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
@@ -183,6 +185,11 @@ class FabricSemanticModelTable(Asset):
         List[RelatedFabricSemanticModelTableColumn], None, UnsetType
     ] = UNSET
     """Individual semantic model table columns contained in the semantic model table."""
+
+    fabric_semantic_model_measures: Union[
+        List[RelatedFabricSemanticModelMeasure], None, UnsetType
+    ] = UNSET
+    """Individual semantic model measures contained in the semantic model table."""
 
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
@@ -460,6 +467,11 @@ class FabricSemanticModelTableRelationshipAttributes(AssetRelationshipAttributes
     ] = UNSET
     """Individual semantic model table columns contained in the semantic model table."""
 
+    fabric_semantic_model_measures: Union[
+        List[RelatedFabricSemanticModelMeasure], None, UnsetType
+    ] = UNSET
+    """Individual semantic model measures contained in the semantic model table."""
+
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
     ] = UNSET
@@ -559,6 +571,7 @@ _FABRIC_SEMANTIC_MODEL_TABLE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "fabric_semantic_model",
     "fabric_semantic_model_table_columns",
+    "fabric_semantic_model_measures",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "knowledge_linked_files",
@@ -773,6 +786,9 @@ FabricSemanticModelTable.DQ_REFERENCE_DATASET_RULES = RelationField(
 FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL = RelationField("fabricSemanticModel")
 FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL_TABLE_COLUMNS = RelationField(
     "fabricSemanticModelTableColumns"
+)
+FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL_MEASURES = RelationField(
+    "fabricSemanticModelMeasures"
 )
 FabricSemanticModelTable.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"

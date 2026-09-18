@@ -18,13 +18,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -51,9 +44,16 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .sigma_related import RelatedSigmaDataset, RelatedSigmaDatasetColumn
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .sigma_related import RelatedSigmaDataset, RelatedSigmaDatasetColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -66,7 +66,7 @@ class SigmaDataset(Asset):
     Instance of a Sigma dataset in Atlan.
     """
 
-    SIGMA_COLUMN_COUNT: ClassVar[Any] = None
+    SIGMA_DATASET_COLUMN_COUNT: ClassVar[Any] = None
     SIGMA_WORKBOOK_QUALIFIED_NAME: ClassVar[Any] = None
     SIGMA_WORKBOOK_NAME: ClassVar[Any] = None
     SIGMA_PAGE_QUALIFIED_NAME: ClassVar[Any] = None
@@ -109,7 +109,7 @@ class SigmaDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sigma_column_count: Union[int, None, UnsetType] = UNSET
+    sigma_dataset_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this dataset."""
 
     sigma_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -365,7 +365,7 @@ class SigmaDataset(Asset):
 class SigmaDatasetAttributes(AssetAttributes):
     """SigmaDataset-specific attributes for nested API format."""
 
-    sigma_column_count: Union[int, None, UnsetType] = UNSET
+    sigma_dataset_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this dataset."""
 
     sigma_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -571,7 +571,7 @@ def _populate_sigma_dataset_attrs(
 ) -> None:
     """Populate SigmaDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sigma_column_count = obj.sigma_column_count
+    attrs.sigma_dataset_column_count = obj.sigma_dataset_column_count
     attrs.sigma_workbook_qualified_name = obj.sigma_workbook_qualified_name
     attrs.sigma_workbook_name = obj.sigma_workbook_name
     attrs.sigma_page_qualified_name = obj.sigma_page_qualified_name
@@ -584,7 +584,7 @@ def _populate_sigma_dataset_attrs(
 def _extract_sigma_dataset_attrs(attrs: SigmaDatasetAttributes) -> dict:
     """Extract all SigmaDataset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sigma_column_count"] = attrs.sigma_column_count
+    result["sigma_dataset_column_count"] = attrs.sigma_dataset_column_count
     result["sigma_workbook_qualified_name"] = attrs.sigma_workbook_qualified_name
     result["sigma_workbook_name"] = attrs.sigma_workbook_name
     result["sigma_page_qualified_name"] = attrs.sigma_page_qualified_name
@@ -705,7 +705,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SigmaDataset.SIGMA_COLUMN_COUNT = NumericField("sigmaColumnCount", "sigmaColumnCount")
+SigmaDataset.SIGMA_DATASET_COLUMN_COUNT = NumericField(
+    "sigmaDatasetColumnCount", "sigmaDatasetColumnCount"
+)
 SigmaDataset.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField(
     "sigmaWorkbookQualifiedName",
     "sigmaWorkbookQualifiedName",

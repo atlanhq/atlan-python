@@ -8,14 +8,14 @@ Starburst module exports.
 This module provides convenient imports for all Starburst types and their Related variants.
 """
 
-from .starburst import Starburst
-from .starburst_dataset import StarburstDataset
-from .starburst_dataset_column import StarburstDatasetColumn
 from .starburst_related import (
     RelatedStarburst,
     RelatedStarburstDataset,
     RelatedStarburstDatasetColumn,
 )
+from .starburst import Starburst
+from .starburst_dataset import StarburstDataset
+from .starburst_dataset_column import StarburstDatasetColumn
 
 __all__ = [
     "RelatedStarburst",

@@ -19,13 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -42,7 +35,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import RelatedDatabricksMetricView
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
@@ -67,6 +59,14 @@ from .sql_insight_related import (
     RelatedSqlInsightJoin,
 )
 from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .databricks_related import RelatedDatabricksMetricView
 
 # =============================================================================
 # FLAT ASSET CLASS

@@ -20,13 +20,6 @@ from typing import Any, ClassVar, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -50,17 +43,24 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
+from .referenceable_related import RelatedReferenceable
+from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .schema_registry_related import RelatedSchemaRegistrySubject
+from .soda_related import RelatedSodaCheck
+from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .qlik_related import (
     RelatedQlikApp,
     RelatedQlikChart,
     RelatedQlikColumn,
     RelatedQlikSheet,
 )
-from .referenceable_related import RelatedReferenceable
-from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .schema_registry_related import RelatedSchemaRegistrySubject
-from .soda_related import RelatedSodaCheck
-from .spark_related import RelatedSparkJob
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -73,7 +73,7 @@ class QlikSheet(Asset):
     Instance of a Qlik sheet in Atlan.
     """
 
-    QLIK_IS_APPROVED: ClassVar[Any] = None
+    QLIK_SHEET_IS_APPROVED: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -120,7 +120,7 @@ class QlikSheet(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    qlik_is_approved: Union[bool, None, UnsetType] = UNSET
+    qlik_sheet_is_approved: Union[bool, None, UnsetType] = UNSET
     """Whether this is approved (true) or not (false)."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -404,7 +404,7 @@ class QlikSheet(Asset):
 class QlikSheetAttributes(AssetAttributes):
     """QlikSheet-specific attributes for nested API format."""
 
-    qlik_is_approved: Union[bool, None, UnsetType] = UNSET
+    qlik_sheet_is_approved: Union[bool, None, UnsetType] = UNSET
     """Whether this is approved (true) or not (false)."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -618,7 +618,7 @@ _QLIK_SHEET_REL_FIELDS: List[str] = [
 def _populate_qlik_sheet_attrs(attrs: QlikSheetAttributes, obj: QlikSheet) -> None:
     """Populate QlikSheet-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.qlik_is_approved = obj.qlik_is_approved
+    attrs.qlik_sheet_is_approved = obj.qlik_sheet_is_approved
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -633,7 +633,7 @@ def _populate_qlik_sheet_attrs(attrs: QlikSheetAttributes, obj: QlikSheet) -> No
 def _extract_qlik_sheet_attrs(attrs: QlikSheetAttributes) -> dict:
     """Extract all QlikSheet attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["qlik_is_approved"] = attrs.qlik_is_approved
+    result["qlik_sheet_is_approved"] = attrs.qlik_sheet_is_approved
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -752,7 +752,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QlikSheet.QLIK_IS_APPROVED = BooleanField("qlikIsApproved", "qlikIsApproved")
+QlikSheet.QLIK_SHEET_IS_APPROVED = BooleanField(
+    "qlikSheetIsApproved", "qlikSheetIsApproved"
+)
 QlikSheet.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikSheet.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikSheet.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")

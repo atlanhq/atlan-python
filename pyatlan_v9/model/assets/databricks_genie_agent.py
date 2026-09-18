@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -43,7 +36,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import RelatedDatabricksGenieAgent
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
@@ -68,6 +60,14 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .databricks_related import RelatedDatabricksGenieAgent
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -80,10 +80,10 @@ class DatabricksGenieAgent(Asset):
     Instance of a Databricks Genie space in Atlan. A Genie space is a curated natural-language interface over a set of Databricks tables, published here as an agent asset for governance and discovery.
     """
 
-    DATABRICKS_WORKSPACE_ID: ClassVar[Any] = None
-    DATABRICKS_WAREHOUSE_ID: ClassVar[Any] = None
-    DATABRICKS_PARENT_PATH: ClassVar[Any] = None
-    DATABRICKS_ETAG: ClassVar[Any] = None
+    DATABRICKS_GENIE_AGENT_WORKSPACE_ID: ClassVar[Any] = None
+    DATABRICKS_GENIE_AGENT_WAREHOUSE_ID: ClassVar[Any] = None
+    DATABRICKS_GENIE_AGENT_PARENT_PATH: ClassVar[Any] = None
+    DATABRICKS_GENIE_AGENT_ETAG: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -175,16 +175,16 @@ class DatabricksGenieAgent(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_workspace_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the workspace containing the Genie space."""
 
-    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_warehouse_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the SQL warehouse backing the Genie space."""
 
-    databricks_parent_path: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_parent_path: Union[str, None, UnsetType] = UNSET
     """Workspace folder path containing the Genie space. It is descriptive only and creates no containment or hierarchy edge."""
 
-    databricks_etag: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_etag: Union[str, None, UnsetType] = UNSET
     """Entity tag used as a change token for the Genie space. It is populated only by an enabled serialized-detail read, so it is null when that read is disabled, denied, or omitted by the source."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -608,16 +608,16 @@ class DatabricksGenieAgent(Asset):
 class DatabricksGenieAgentAttributes(AssetAttributes):
     """DatabricksGenieAgent-specific attributes for nested API format."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_workspace_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the workspace containing the Genie space."""
 
-    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_warehouse_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the SQL warehouse backing the Genie space."""
 
-    databricks_parent_path: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_parent_path: Union[str, None, UnsetType] = UNSET
     """Workspace folder path containing the Genie space. It is descriptive only and creates no containment or hierarchy edge."""
 
-    databricks_etag: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_etag: Union[str, None, UnsetType] = UNSET
     """Entity tag used as a change token for the Genie space. It is populated only by an enabled serialized-detail read, so it is null when that read is disabled, denied, or omitted by the source."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -991,10 +991,10 @@ def _populate_databricks_genie_agent_attrs(
 ) -> None:
     """Populate DatabricksGenieAgent-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_workspace_id = obj.databricks_workspace_id
-    attrs.databricks_warehouse_id = obj.databricks_warehouse_id
-    attrs.databricks_parent_path = obj.databricks_parent_path
-    attrs.databricks_etag = obj.databricks_etag
+    attrs.databricks_genie_agent_workspace_id = obj.databricks_genie_agent_workspace_id
+    attrs.databricks_genie_agent_warehouse_id = obj.databricks_genie_agent_warehouse_id
+    attrs.databricks_genie_agent_parent_path = obj.databricks_genie_agent_parent_path
+    attrs.databricks_genie_agent_etag = obj.databricks_genie_agent_etag
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1051,10 +1051,16 @@ def _extract_databricks_genie_agent_attrs(
 ) -> dict:
     """Extract all DatabricksGenieAgent attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_workspace_id"] = attrs.databricks_workspace_id
-    result["databricks_warehouse_id"] = attrs.databricks_warehouse_id
-    result["databricks_parent_path"] = attrs.databricks_parent_path
-    result["databricks_etag"] = attrs.databricks_etag
+    result["databricks_genie_agent_workspace_id"] = (
+        attrs.databricks_genie_agent_workspace_id
+    )
+    result["databricks_genie_agent_warehouse_id"] = (
+        attrs.databricks_genie_agent_warehouse_id
+    )
+    result["databricks_genie_agent_parent_path"] = (
+        attrs.databricks_genie_agent_parent_path
+    )
+    result["databricks_genie_agent_etag"] = attrs.databricks_genie_agent_etag
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1233,16 +1239,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-DatabricksGenieAgent.DATABRICKS_WORKSPACE_ID = KeywordField(
-    "databricksWorkspaceId", "databricksWorkspaceId"
+DatabricksGenieAgent.DATABRICKS_GENIE_AGENT_WORKSPACE_ID = KeywordField(
+    "databricksGenieAgentWorkspaceId", "databricksGenieAgentWorkspaceId"
 )
-DatabricksGenieAgent.DATABRICKS_WAREHOUSE_ID = KeywordField(
-    "databricksWarehouseId", "databricksWarehouseId"
+DatabricksGenieAgent.DATABRICKS_GENIE_AGENT_WAREHOUSE_ID = KeywordField(
+    "databricksGenieAgentWarehouseId", "databricksGenieAgentWarehouseId"
 )
-DatabricksGenieAgent.DATABRICKS_PARENT_PATH = KeywordField(
-    "databricksParentPath", "databricksParentPath"
+DatabricksGenieAgent.DATABRICKS_GENIE_AGENT_PARENT_PATH = KeywordField(
+    "databricksGenieAgentParentPath", "databricksGenieAgentParentPath"
 )
-DatabricksGenieAgent.DATABRICKS_ETAG = KeywordField("databricksEtag", "databricksEtag")
+DatabricksGenieAgent.DATABRICKS_GENIE_AGENT_ETAG = KeywordField(
+    "databricksGenieAgentEtag", "databricksGenieAgentEtag"
+)
 DatabricksGenieAgent.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksGenieAgent.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DatabricksGenieAgent.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")

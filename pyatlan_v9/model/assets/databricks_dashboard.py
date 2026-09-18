@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -43,7 +36,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import RelatedDatabricksDashboard
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
@@ -67,6 +59,14 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .databricks_related import RelatedDatabricksDashboard
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -79,12 +79,12 @@ class DatabricksDashboard(Asset):
     Instance of a Databricks AI/BI dashboard in Atlan.
     """
 
-    DATABRICKS_PATH: ClassVar[Any] = None
-    DATABRICKS_WORKSPACE_ID: ClassVar[Any] = None
-    DATABRICKS_WAREHOUSE_ID: ClassVar[Any] = None
-    DATABRICKS_ETAG: ClassVar[Any] = None
-    DATABRICKS_IS_GENIE_SPACE_ENABLED: ClassVar[Any] = None
-    DATABRICKS_LIFECYCLE_STATE: ClassVar[Any] = None
+    DATABRICKS_DASHBOARD_PATH: ClassVar[Any] = None
+    DATABRICKS_DASHBOARD_WORKSPACE_ID: ClassVar[Any] = None
+    DATABRICKS_DASHBOARD_WAREHOUSE_ID: ClassVar[Any] = None
+    DATABRICKS_DASHBOARD_ETAG: ClassVar[Any] = None
+    DATABRICKS_DASHBOARD_IS_GENIE_SPACE_ENABLED: ClassVar[Any] = None
+    DATABRICKS_DASHBOARD_LIFECYCLE_STATE: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -163,22 +163,22 @@ class DatabricksDashboard(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_path: Union[str, None, UnsetType] = UNSET
     """Workspace path of the dashboard asset, including its file name. The parent folder path can be derived by dropping the last path segment."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_workspace_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the workspace containing the dashboard."""
 
-    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_warehouse_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the SQL warehouse backing the dashboard."""
 
-    databricks_etag: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_etag: Union[str, None, UnsetType] = UNSET
     """Entity tag used as a change token for the dashboard."""
 
-    databricks_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
+    databricks_dashboard_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether a Genie space is enabled for the dashboard."""
 
-    databricks_lifecycle_state: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_lifecycle_state: Union[str, None, UnsetType] = UNSET
     """Lifecycle state of the dashboard."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -563,22 +563,22 @@ class DatabricksDashboard(Asset):
 class DatabricksDashboardAttributes(AssetAttributes):
     """DatabricksDashboard-specific attributes for nested API format."""
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_path: Union[str, None, UnsetType] = UNSET
     """Workspace path of the dashboard asset, including its file name. The parent folder path can be derived by dropping the last path segment."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_workspace_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the workspace containing the dashboard."""
 
-    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_warehouse_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the SQL warehouse backing the dashboard."""
 
-    databricks_etag: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_etag: Union[str, None, UnsetType] = UNSET
     """Entity tag used as a change token for the dashboard."""
 
-    databricks_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
+    databricks_dashboard_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether a Genie space is enabled for the dashboard."""
 
-    databricks_lifecycle_state: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_lifecycle_state: Union[str, None, UnsetType] = UNSET
     """Lifecycle state of the dashboard."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -911,12 +911,16 @@ def _populate_databricks_dashboard_attrs(
 ) -> None:
     """Populate DatabricksDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_path = obj.databricks_path
-    attrs.databricks_workspace_id = obj.databricks_workspace_id
-    attrs.databricks_warehouse_id = obj.databricks_warehouse_id
-    attrs.databricks_etag = obj.databricks_etag
-    attrs.databricks_is_genie_space_enabled = obj.databricks_is_genie_space_enabled
-    attrs.databricks_lifecycle_state = obj.databricks_lifecycle_state
+    attrs.databricks_dashboard_path = obj.databricks_dashboard_path
+    attrs.databricks_dashboard_workspace_id = obj.databricks_dashboard_workspace_id
+    attrs.databricks_dashboard_warehouse_id = obj.databricks_dashboard_warehouse_id
+    attrs.databricks_dashboard_etag = obj.databricks_dashboard_etag
+    attrs.databricks_dashboard_is_genie_space_enabled = (
+        obj.databricks_dashboard_is_genie_space_enabled
+    )
+    attrs.databricks_dashboard_lifecycle_state = (
+        obj.databricks_dashboard_lifecycle_state
+    )
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -960,14 +964,20 @@ def _populate_databricks_dashboard_attrs(
 def _extract_databricks_dashboard_attrs(attrs: DatabricksDashboardAttributes) -> dict:
     """Extract all DatabricksDashboard attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_path"] = attrs.databricks_path
-    result["databricks_workspace_id"] = attrs.databricks_workspace_id
-    result["databricks_warehouse_id"] = attrs.databricks_warehouse_id
-    result["databricks_etag"] = attrs.databricks_etag
-    result["databricks_is_genie_space_enabled"] = (
-        attrs.databricks_is_genie_space_enabled
+    result["databricks_dashboard_path"] = attrs.databricks_dashboard_path
+    result["databricks_dashboard_workspace_id"] = (
+        attrs.databricks_dashboard_workspace_id
     )
-    result["databricks_lifecycle_state"] = attrs.databricks_lifecycle_state
+    result["databricks_dashboard_warehouse_id"] = (
+        attrs.databricks_dashboard_warehouse_id
+    )
+    result["databricks_dashboard_etag"] = attrs.databricks_dashboard_etag
+    result["databricks_dashboard_is_genie_space_enabled"] = (
+        attrs.databricks_dashboard_is_genie_space_enabled
+    )
+    result["databricks_dashboard_lifecycle_state"] = (
+        attrs.databricks_dashboard_lifecycle_state
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1134,19 +1144,23 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksDashboard.DATABRICKS_PATH = KeywordField("databricksPath", "databricksPath")
-DatabricksDashboard.DATABRICKS_WORKSPACE_ID = KeywordField(
-    "databricksWorkspaceId", "databricksWorkspaceId"
+DatabricksDashboard.DATABRICKS_DASHBOARD_PATH = KeywordField(
+    "databricksDashboardPath", "databricksDashboardPath"
 )
-DatabricksDashboard.DATABRICKS_WAREHOUSE_ID = KeywordField(
-    "databricksWarehouseId", "databricksWarehouseId"
+DatabricksDashboard.DATABRICKS_DASHBOARD_WORKSPACE_ID = KeywordField(
+    "databricksDashboardWorkspaceId", "databricksDashboardWorkspaceId"
 )
-DatabricksDashboard.DATABRICKS_ETAG = KeywordField("databricksEtag", "databricksEtag")
-DatabricksDashboard.DATABRICKS_IS_GENIE_SPACE_ENABLED = BooleanField(
-    "databricksIsGenieSpaceEnabled", "databricksIsGenieSpaceEnabled"
+DatabricksDashboard.DATABRICKS_DASHBOARD_WAREHOUSE_ID = KeywordField(
+    "databricksDashboardWarehouseId", "databricksDashboardWarehouseId"
 )
-DatabricksDashboard.DATABRICKS_LIFECYCLE_STATE = KeywordField(
-    "databricksLifecycleState", "databricksLifecycleState"
+DatabricksDashboard.DATABRICKS_DASHBOARD_ETAG = KeywordField(
+    "databricksDashboardEtag", "databricksDashboardEtag"
+)
+DatabricksDashboard.DATABRICKS_DASHBOARD_IS_GENIE_SPACE_ENABLED = BooleanField(
+    "databricksDashboardIsGenieSpaceEnabled", "databricksDashboardIsGenieSpaceEnabled"
+)
+DatabricksDashboard.DATABRICKS_DASHBOARD_LIFECYCLE_STATE = KeywordField(
+    "databricksDashboardLifecycleState", "databricksDashboardLifecycleState"
 )
 DatabricksDashboard.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksDashboard.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")

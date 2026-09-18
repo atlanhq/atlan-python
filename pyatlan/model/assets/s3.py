@@ -38,7 +38,7 @@ class S3(ObjectStore):
     """  # noqa: E501
     S3ENCRYPTION: ClassVar[KeywordField] = KeywordField("s3Encryption", "s3Encryption")
     """
-    
+
     """
     S3PARENT_PREFIX_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName"

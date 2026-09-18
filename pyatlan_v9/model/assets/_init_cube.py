@@ -8,10 +8,6 @@ Cube module exports.
 This module provides convenient imports for all Cube types and their Related variants.
 """
 
-from .cube import Cube
-from .cube_dimension import CubeDimension
-from .cube_field import CubeField
-from .cube_hierarchy import CubeHierarchy
 from .cube_related import (
     RelatedCube,
     RelatedCubeDimension,
@@ -20,6 +16,10 @@ from .cube_related import (
     RelatedMultiDimensionalDataset,
 )
 from .multi_dimensional_dataset import MultiDimensionalDataset
+from .cube import Cube
+from .cube_dimension import CubeDimension
+from .cube_field import CubeField
+from .cube_hierarchy import CubeHierarchy
 
 __all__ = [
     "Cube",

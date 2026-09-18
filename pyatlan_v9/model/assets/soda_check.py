@@ -18,13 +18,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -52,9 +45,16 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .soda_related import RelatedSodaCheck
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -67,12 +67,12 @@ class SodaCheck(Asset):
     Instance of a Soda check in Atlan.
     """
 
-    SODA_ID: ClassVar[Any] = None
-    SODA_EVALUATION_STATUS: ClassVar[Any] = None
+    SODA_CHECK_ID: ClassVar[Any] = None
+    SODA_CHECK_EVALUATION_STATUS: ClassVar[Any] = None
     SODA_CHECK_DEFINITION: ClassVar[Any] = None
-    SODA_LAST_SCAN_AT: ClassVar[Any] = None
-    SODA_INCIDENT_COUNT: ClassVar[Any] = None
-    SODA_LINKED_ASSET_QUALIFIED_NAME: ClassVar[Any] = None
+    SODA_CHECK_LAST_SCAN_AT: ClassVar[Any] = None
+    SODA_CHECK_INCIDENT_COUNT: ClassVar[Any] = None
+    SODA_CHECK_LINKED_ASSET_QUALIFIED_NAME: ClassVar[Any] = None
     DQ_IS_PART_OF_CONTRACT: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -111,22 +111,22 @@ class SodaCheck(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    soda_id: Union[str, None, UnsetType] = UNSET
+    soda_check_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the check in Soda."""
 
-    soda_evaluation_status: Union[str, None, UnsetType] = UNSET
+    soda_check_evaluation_status: Union[str, None, UnsetType] = UNSET
     """Status of the check in Soda."""
 
     soda_check_definition: Union[str, None, UnsetType] = UNSET
     """Definition of the check in Soda."""
 
-    soda_last_scan_at: Union[int, None, UnsetType] = UNSET
+    soda_check_last_scan_at: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_incident_count: Union[int, None, UnsetType] = UNSET
+    soda_check_incident_count: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
+    soda_check_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
     """QualifiedName of the asset associated with the check."""
 
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
@@ -368,22 +368,22 @@ class SodaCheck(Asset):
 class SodaCheckAttributes(AssetAttributes):
     """SodaCheck-specific attributes for nested API format."""
 
-    soda_id: Union[str, None, UnsetType] = UNSET
+    soda_check_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the check in Soda."""
 
-    soda_evaluation_status: Union[str, None, UnsetType] = UNSET
+    soda_check_evaluation_status: Union[str, None, UnsetType] = UNSET
     """Status of the check in Soda."""
 
     soda_check_definition: Union[str, None, UnsetType] = UNSET
     """Definition of the check in Soda."""
 
-    soda_last_scan_at: Union[int, None, UnsetType] = UNSET
+    soda_check_last_scan_at: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_incident_count: Union[int, None, UnsetType] = UNSET
+    soda_check_incident_count: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
+    soda_check_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
     """QualifiedName of the asset associated with the check."""
 
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
@@ -572,12 +572,14 @@ _SODA_CHECK_REL_FIELDS: List[str] = [
 def _populate_soda_check_attrs(attrs: SodaCheckAttributes, obj: SodaCheck) -> None:
     """Populate SodaCheck-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.soda_id = obj.soda_id
-    attrs.soda_evaluation_status = obj.soda_evaluation_status
+    attrs.soda_check_id = obj.soda_check_id
+    attrs.soda_check_evaluation_status = obj.soda_check_evaluation_status
     attrs.soda_check_definition = obj.soda_check_definition
-    attrs.soda_last_scan_at = obj.soda_last_scan_at
-    attrs.soda_incident_count = obj.soda_incident_count
-    attrs.soda_linked_asset_qualified_name = obj.soda_linked_asset_qualified_name
+    attrs.soda_check_last_scan_at = obj.soda_check_last_scan_at
+    attrs.soda_check_incident_count = obj.soda_check_incident_count
+    attrs.soda_check_linked_asset_qualified_name = (
+        obj.soda_check_linked_asset_qualified_name
+    )
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
@@ -585,12 +587,14 @@ def _populate_soda_check_attrs(attrs: SodaCheckAttributes, obj: SodaCheck) -> No
 def _extract_soda_check_attrs(attrs: SodaCheckAttributes) -> dict:
     """Extract all SodaCheck attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["soda_id"] = attrs.soda_id
-    result["soda_evaluation_status"] = attrs.soda_evaluation_status
+    result["soda_check_id"] = attrs.soda_check_id
+    result["soda_check_evaluation_status"] = attrs.soda_check_evaluation_status
     result["soda_check_definition"] = attrs.soda_check_definition
-    result["soda_last_scan_at"] = attrs.soda_last_scan_at
-    result["soda_incident_count"] = attrs.soda_incident_count
-    result["soda_linked_asset_qualified_name"] = attrs.soda_linked_asset_qualified_name
+    result["soda_check_last_scan_at"] = attrs.soda_check_last_scan_at
+    result["soda_check_incident_count"] = attrs.soda_check_incident_count
+    result["soda_check_linked_asset_qualified_name"] = (
+        attrs.soda_check_linked_asset_qualified_name
+    )
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
@@ -702,17 +706,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SodaCheck.SODA_ID = KeywordField("sodaId", "sodaId")
-SodaCheck.SODA_EVALUATION_STATUS = KeywordField(
-    "sodaEvaluationStatus", "sodaEvaluationStatus"
+SodaCheck.SODA_CHECK_ID = KeywordField("sodaCheckId", "sodaCheckId")
+SodaCheck.SODA_CHECK_EVALUATION_STATUS = KeywordField(
+    "sodaCheckEvaluationStatus", "sodaCheckEvaluationStatus"
 )
 SodaCheck.SODA_CHECK_DEFINITION = KeywordField(
     "sodaCheckDefinition", "sodaCheckDefinition"
 )
-SodaCheck.SODA_LAST_SCAN_AT = NumericField("sodaLastScanAt", "sodaLastScanAt")
-SodaCheck.SODA_INCIDENT_COUNT = NumericField("sodaIncidentCount", "sodaIncidentCount")
-SodaCheck.SODA_LINKED_ASSET_QUALIFIED_NAME = KeywordField(
-    "sodaLinkedAssetQualifiedName", "sodaLinkedAssetQualifiedName"
+SodaCheck.SODA_CHECK_LAST_SCAN_AT = NumericField(
+    "sodaCheckLastScanAt", "sodaCheckLastScanAt"
+)
+SodaCheck.SODA_CHECK_INCIDENT_COUNT = NumericField(
+    "sodaCheckIncidentCount", "sodaCheckIncidentCount"
+)
+SodaCheck.SODA_CHECK_LINKED_ASSET_QUALIFIED_NAME = KeywordField(
+    "sodaCheckLinkedAssetQualifiedName", "sodaCheckLinkedAssetQualifiedName"
 )
 SodaCheck.DQ_IS_PART_OF_CONTRACT = BooleanField(
     "dqIsPartOfContract", "dqIsPartOfContract"

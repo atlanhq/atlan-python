@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -59,16 +52,23 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import (
-    RelatedSnowflakeListing,
-    RelatedSnowflakeSemanticLogicalTable,
-    RelatedSnowflakeShare,
-)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .snowflake_related import (
+    RelatedSnowflakeListing,
+    RelatedSnowflakeSemanticLogicalTable,
+    RelatedSnowflakeShare,
 )
 
 # =============================================================================
@@ -82,11 +82,11 @@ class SnowflakeShare(Asset):
     Instance of a Snowflake share in Atlan.
     """
 
-    SNOWFLAKE_KIND: ClassVar[Any] = None
-    SNOWFLAKE_OWNER_ACCOUNT: ClassVar[Any] = None
-    SNOWFLAKE_TARGET_ACCOUNTS: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_GLOBAL_NAME: ClassVar[Any] = None
-    SNOWFLAKE_SECURE_OBJECT: ClassVar[Any] = None
+    SNOWFLAKE_SHARE_KIND: ClassVar[Any] = None
+    SNOWFLAKE_SHARE_OWNER_ACCOUNT: ClassVar[Any] = None
+    SNOWFLAKE_SHARE_TARGET_ACCOUNTS: ClassVar[Any] = None
+    SNOWFLAKE_SHARE_LISTING_GLOBAL_NAME: ClassVar[Any] = None
+    SNOWFLAKE_SHARE_SECURE_OBJECT: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -166,19 +166,19 @@ class SnowflakeShare(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    snowflake_kind: Union[str, None, UnsetType] = UNSET
+    snowflake_share_kind: Union[str, None, UnsetType] = UNSET
     """Direction of the share (inbound or outbound)."""
 
-    snowflake_owner_account: Union[str, None, UnsetType] = UNSET
+    snowflake_share_owner_account: Union[str, None, UnsetType] = UNSET
     """Account that owns the share. Drives the share qualified name."""
 
-    snowflake_target_accounts: Union[List[str], None, UnsetType] = UNSET
+    snowflake_share_target_accounts: Union[List[str], None, UnsetType] = UNSET
     """Consumer accounts targeted by the share."""
 
-    snowflake_listing_global_name: Union[str, None, UnsetType] = UNSET
+    snowflake_share_listing_global_name: Union[str, None, UnsetType] = UNSET
     """Global name of the listing this share is bound to."""
 
-    snowflake_secure_object: Union[bool, None, UnsetType] = UNSET
+    snowflake_share_secure_object: Union[bool, None, UnsetType] = UNSET
     """Whether only secure objects are allowed in this share (true) or not (false)."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -569,19 +569,19 @@ class SnowflakeShare(Asset):
 class SnowflakeShareAttributes(AssetAttributes):
     """SnowflakeShare-specific attributes for nested API format."""
 
-    snowflake_kind: Union[str, None, UnsetType] = UNSET
+    snowflake_share_kind: Union[str, None, UnsetType] = UNSET
     """Direction of the share (inbound or outbound)."""
 
-    snowflake_owner_account: Union[str, None, UnsetType] = UNSET
+    snowflake_share_owner_account: Union[str, None, UnsetType] = UNSET
     """Account that owns the share. Drives the share qualified name."""
 
-    snowflake_target_accounts: Union[List[str], None, UnsetType] = UNSET
+    snowflake_share_target_accounts: Union[List[str], None, UnsetType] = UNSET
     """Consumer accounts targeted by the share."""
 
-    snowflake_listing_global_name: Union[str, None, UnsetType] = UNSET
+    snowflake_share_listing_global_name: Union[str, None, UnsetType] = UNSET
     """Global name of the listing this share is bound to."""
 
-    snowflake_secure_object: Union[bool, None, UnsetType] = UNSET
+    snowflake_share_secure_object: Union[bool, None, UnsetType] = UNSET
     """Whether only secure objects are allowed in this share (true) or not (false)."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -918,11 +918,11 @@ def _populate_snowflake_share_attrs(
 ) -> None:
     """Populate SnowflakeShare-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.snowflake_kind = obj.snowflake_kind
-    attrs.snowflake_owner_account = obj.snowflake_owner_account
-    attrs.snowflake_target_accounts = obj.snowflake_target_accounts
-    attrs.snowflake_listing_global_name = obj.snowflake_listing_global_name
-    attrs.snowflake_secure_object = obj.snowflake_secure_object
+    attrs.snowflake_share_kind = obj.snowflake_share_kind
+    attrs.snowflake_share_owner_account = obj.snowflake_share_owner_account
+    attrs.snowflake_share_target_accounts = obj.snowflake_share_target_accounts
+    attrs.snowflake_share_listing_global_name = obj.snowflake_share_listing_global_name
+    attrs.snowflake_share_secure_object = obj.snowflake_share_secure_object
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -966,11 +966,13 @@ def _populate_snowflake_share_attrs(
 def _extract_snowflake_share_attrs(attrs: SnowflakeShareAttributes) -> dict:
     """Extract all SnowflakeShare attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["snowflake_kind"] = attrs.snowflake_kind
-    result["snowflake_owner_account"] = attrs.snowflake_owner_account
-    result["snowflake_target_accounts"] = attrs.snowflake_target_accounts
-    result["snowflake_listing_global_name"] = attrs.snowflake_listing_global_name
-    result["snowflake_secure_object"] = attrs.snowflake_secure_object
+    result["snowflake_share_kind"] = attrs.snowflake_share_kind
+    result["snowflake_share_owner_account"] = attrs.snowflake_share_owner_account
+    result["snowflake_share_target_accounts"] = attrs.snowflake_share_target_accounts
+    result["snowflake_share_listing_global_name"] = (
+        attrs.snowflake_share_listing_global_name
+    )
+    result["snowflake_share_secure_object"] = attrs.snowflake_share_secure_object
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1131,18 +1133,20 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SnowflakeShare.SNOWFLAKE_KIND = KeywordField("snowflakeKind", "snowflakeKind")
-SnowflakeShare.SNOWFLAKE_OWNER_ACCOUNT = KeywordField(
-    "snowflakeOwnerAccount", "snowflakeOwnerAccount"
+SnowflakeShare.SNOWFLAKE_SHARE_KIND = KeywordField(
+    "snowflakeShareKind", "snowflakeShareKind"
 )
-SnowflakeShare.SNOWFLAKE_TARGET_ACCOUNTS = KeywordField(
-    "snowflakeTargetAccounts", "snowflakeTargetAccounts"
+SnowflakeShare.SNOWFLAKE_SHARE_OWNER_ACCOUNT = KeywordField(
+    "snowflakeShareOwnerAccount", "snowflakeShareOwnerAccount"
 )
-SnowflakeShare.SNOWFLAKE_LISTING_GLOBAL_NAME = KeywordField(
-    "snowflakeListingGlobalName", "snowflakeListingGlobalName"
+SnowflakeShare.SNOWFLAKE_SHARE_TARGET_ACCOUNTS = KeywordField(
+    "snowflakeShareTargetAccounts", "snowflakeShareTargetAccounts"
 )
-SnowflakeShare.SNOWFLAKE_SECURE_OBJECT = BooleanField(
-    "snowflakeSecureObject", "snowflakeSecureObject"
+SnowflakeShare.SNOWFLAKE_SHARE_LISTING_GLOBAL_NAME = KeywordField(
+    "snowflakeShareListingGlobalName", "snowflakeShareListingGlobalName"
+)
+SnowflakeShare.SNOWFLAKE_SHARE_SECURE_OBJECT = BooleanField(
+    "snowflakeShareSecureObject", "snowflakeShareSecureObject"
 )
 SnowflakeShare.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SnowflakeShare.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")

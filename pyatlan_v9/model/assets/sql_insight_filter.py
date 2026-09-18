@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -55,8 +48,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightFilter
 from .sql_related import RelatedColumn
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .sql_insight_related import RelatedSqlInsightFilter
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -69,16 +69,16 @@ class SqlInsightFilter(Asset):
     A column-level filtering observation from real query traffic.
     """
 
-    SQL_INSIGHT_DATASET_QUALIFIED_NAME: ClassVar[Any] = None
-    SQL_INSIGHT_COLUMN_QUALIFIED_NAME: ClassVar[Any] = None
-    SQL_INSIGHT_COMMON_VALUES: ClassVar[Any] = None
-    SQL_INSIGHT_OPERATOR: ClassVar[Any] = None
-    SQL_INSIGHT_PREDICATE_SQL: ClassVar[Any] = None
-    SQL_INSIGHT_WHEN_TO_USE: ClassVar[Any] = None
-    SQL_INSIGHT_QUERY_COUNT: ClassVar[Any] = None
-    SQL_INSIGHT_UNIQUE_USERS: ClassVar[Any] = None
-    SQL_INSIGHT_LAST_SEEN_AT: ClassVar[Any] = None
-    SQL_INSIGHT_EXAMPLE_QUERIES: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_DATASET_QUALIFIED_NAME: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_COLUMN_QUALIFIED_NAME: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_COMMON_VALUES: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_OPERATOR: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_PREDICATE_SQL: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_WHEN_TO_USE: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_QUERY_COUNT: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_UNIQUE_USERS: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_LAST_SEEN_AT: ClassVar[Any] = None
+    SQL_INSIGHT_FILTER_EXAMPLE_QUERIES: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -115,36 +115,38 @@ class SqlInsightFilter(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SQL_INSIGHT_COLUMN: ClassVar[Any] = None
 
-    sql_insight_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the dataset containing the filtered column."""
 
-    sql_insight_column_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_column_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the filtered column."""
 
-    sql_insight_common_values: Union[List[str], None, UnsetType] = UNSET
+    sql_insight_filter_common_values: Union[List[str], None, UnsetType] = UNSET
     """Common values observed for this filter."""
 
-    sql_insight_operator: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_operator: Union[str, None, UnsetType] = UNSET
     """SQL operator observed on this column, such as =, !=, IN, LIKE."""
 
-    sql_insight_predicate_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlInsightPredicateSQL"
+    sql_insight_filter_predicate_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlInsightFilterPredicateSQL"
     )
     """SQL predicate expression for this filter pattern."""
 
-    sql_insight_when_to_use: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_when_to_use: Union[str, None, UnsetType] = UNSET
     """Guidance on when this filter pattern should be used."""
 
-    sql_insight_query_count: Union[int, None, UnsetType] = UNSET
+    sql_insight_filter_query_count: Union[int, None, UnsetType] = UNSET
     """Number of queries that use this filter pattern."""
 
-    sql_insight_unique_users: Union[int, None, UnsetType] = UNSET
+    sql_insight_filter_unique_users: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have used this filter pattern."""
 
-    sql_insight_last_seen_at: Union[int, None, UnsetType] = UNSET
+    sql_insight_filter_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this filter pattern was last observed, in milliseconds."""
 
-    sql_insight_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    sql_insight_filter_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """Example SQL queries that demonstrate this filter pattern, with usage details."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -392,36 +394,38 @@ class SqlInsightFilter(Asset):
 class SqlInsightFilterAttributes(AssetAttributes):
     """SqlInsightFilter-specific attributes for nested API format."""
 
-    sql_insight_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the dataset containing the filtered column."""
 
-    sql_insight_column_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_column_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the filtered column."""
 
-    sql_insight_common_values: Union[List[str], None, UnsetType] = UNSET
+    sql_insight_filter_common_values: Union[List[str], None, UnsetType] = UNSET
     """Common values observed for this filter."""
 
-    sql_insight_operator: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_operator: Union[str, None, UnsetType] = UNSET
     """SQL operator observed on this column, such as =, !=, IN, LIKE."""
 
-    sql_insight_predicate_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlInsightPredicateSQL"
+    sql_insight_filter_predicate_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlInsightFilterPredicateSQL"
     )
     """SQL predicate expression for this filter pattern."""
 
-    sql_insight_when_to_use: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_when_to_use: Union[str, None, UnsetType] = UNSET
     """Guidance on when this filter pattern should be used."""
 
-    sql_insight_query_count: Union[int, None, UnsetType] = UNSET
+    sql_insight_filter_query_count: Union[int, None, UnsetType] = UNSET
     """Number of queries that use this filter pattern."""
 
-    sql_insight_unique_users: Union[int, None, UnsetType] = UNSET
+    sql_insight_filter_unique_users: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have used this filter pattern."""
 
-    sql_insight_last_seen_at: Union[int, None, UnsetType] = UNSET
+    sql_insight_filter_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this filter pattern was last observed, in milliseconds."""
 
-    sql_insight_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    sql_insight_filter_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """Example SQL queries that demonstrate this filter pattern, with usage details."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -607,36 +611,42 @@ def _populate_sql_insight_filter_attrs(
 ) -> None:
     """Populate SqlInsightFilter-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sql_insight_dataset_qualified_name = obj.sql_insight_dataset_qualified_name
-    attrs.sql_insight_column_qualified_name = obj.sql_insight_column_qualified_name
-    attrs.sql_insight_common_values = obj.sql_insight_common_values
-    attrs.sql_insight_operator = obj.sql_insight_operator
-    attrs.sql_insight_predicate_sql = obj.sql_insight_predicate_sql
-    attrs.sql_insight_when_to_use = obj.sql_insight_when_to_use
-    attrs.sql_insight_query_count = obj.sql_insight_query_count
-    attrs.sql_insight_unique_users = obj.sql_insight_unique_users
-    attrs.sql_insight_last_seen_at = obj.sql_insight_last_seen_at
-    attrs.sql_insight_example_queries = obj.sql_insight_example_queries
+    attrs.sql_insight_filter_dataset_qualified_name = (
+        obj.sql_insight_filter_dataset_qualified_name
+    )
+    attrs.sql_insight_filter_column_qualified_name = (
+        obj.sql_insight_filter_column_qualified_name
+    )
+    attrs.sql_insight_filter_common_values = obj.sql_insight_filter_common_values
+    attrs.sql_insight_filter_operator = obj.sql_insight_filter_operator
+    attrs.sql_insight_filter_predicate_sql = obj.sql_insight_filter_predicate_sql
+    attrs.sql_insight_filter_when_to_use = obj.sql_insight_filter_when_to_use
+    attrs.sql_insight_filter_query_count = obj.sql_insight_filter_query_count
+    attrs.sql_insight_filter_unique_users = obj.sql_insight_filter_unique_users
+    attrs.sql_insight_filter_last_seen_at = obj.sql_insight_filter_last_seen_at
+    attrs.sql_insight_filter_example_queries = obj.sql_insight_filter_example_queries
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_sql_insight_filter_attrs(attrs: SqlInsightFilterAttributes) -> dict:
     """Extract all SqlInsightFilter attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sql_insight_dataset_qualified_name"] = (
-        attrs.sql_insight_dataset_qualified_name
+    result["sql_insight_filter_dataset_qualified_name"] = (
+        attrs.sql_insight_filter_dataset_qualified_name
     )
-    result["sql_insight_column_qualified_name"] = (
-        attrs.sql_insight_column_qualified_name
+    result["sql_insight_filter_column_qualified_name"] = (
+        attrs.sql_insight_filter_column_qualified_name
     )
-    result["sql_insight_common_values"] = attrs.sql_insight_common_values
-    result["sql_insight_operator"] = attrs.sql_insight_operator
-    result["sql_insight_predicate_sql"] = attrs.sql_insight_predicate_sql
-    result["sql_insight_when_to_use"] = attrs.sql_insight_when_to_use
-    result["sql_insight_query_count"] = attrs.sql_insight_query_count
-    result["sql_insight_unique_users"] = attrs.sql_insight_unique_users
-    result["sql_insight_last_seen_at"] = attrs.sql_insight_last_seen_at
-    result["sql_insight_example_queries"] = attrs.sql_insight_example_queries
+    result["sql_insight_filter_common_values"] = attrs.sql_insight_filter_common_values
+    result["sql_insight_filter_operator"] = attrs.sql_insight_filter_operator
+    result["sql_insight_filter_predicate_sql"] = attrs.sql_insight_filter_predicate_sql
+    result["sql_insight_filter_when_to_use"] = attrs.sql_insight_filter_when_to_use
+    result["sql_insight_filter_query_count"] = attrs.sql_insight_filter_query_count
+    result["sql_insight_filter_unique_users"] = attrs.sql_insight_filter_unique_users
+    result["sql_insight_filter_last_seen_at"] = attrs.sql_insight_filter_last_seen_at
+    result["sql_insight_filter_example_queries"] = (
+        attrs.sql_insight_filter_example_queries
+    )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -756,35 +766,35 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SqlInsightFilter.SQL_INSIGHT_DATASET_QUALIFIED_NAME = KeywordField(
-    "sqlInsightDatasetQualifiedName", "sqlInsightDatasetQualifiedName"
+SqlInsightFilter.SQL_INSIGHT_FILTER_DATASET_QUALIFIED_NAME = KeywordField(
+    "sqlInsightFilterDatasetQualifiedName", "sqlInsightFilterDatasetQualifiedName"
 )
-SqlInsightFilter.SQL_INSIGHT_COLUMN_QUALIFIED_NAME = KeywordField(
-    "sqlInsightColumnQualifiedName", "sqlInsightColumnQualifiedName"
+SqlInsightFilter.SQL_INSIGHT_FILTER_COLUMN_QUALIFIED_NAME = KeywordField(
+    "sqlInsightFilterColumnQualifiedName", "sqlInsightFilterColumnQualifiedName"
 )
-SqlInsightFilter.SQL_INSIGHT_COMMON_VALUES = KeywordField(
-    "sqlInsightCommonValues", "sqlInsightCommonValues"
+SqlInsightFilter.SQL_INSIGHT_FILTER_COMMON_VALUES = KeywordField(
+    "sqlInsightFilterCommonValues", "sqlInsightFilterCommonValues"
 )
-SqlInsightFilter.SQL_INSIGHT_OPERATOR = KeywordField(
-    "sqlInsightOperator", "sqlInsightOperator"
+SqlInsightFilter.SQL_INSIGHT_FILTER_OPERATOR = KeywordField(
+    "sqlInsightFilterOperator", "sqlInsightFilterOperator"
 )
-SqlInsightFilter.SQL_INSIGHT_PREDICATE_SQL = KeywordField(
-    "sqlInsightPredicateSQL", "sqlInsightPredicateSQL"
+SqlInsightFilter.SQL_INSIGHT_FILTER_PREDICATE_SQL = KeywordField(
+    "sqlInsightFilterPredicateSQL", "sqlInsightFilterPredicateSQL"
 )
-SqlInsightFilter.SQL_INSIGHT_WHEN_TO_USE = KeywordField(
-    "sqlInsightWhenToUse", "sqlInsightWhenToUse"
+SqlInsightFilter.SQL_INSIGHT_FILTER_WHEN_TO_USE = KeywordField(
+    "sqlInsightFilterWhenToUse", "sqlInsightFilterWhenToUse"
 )
-SqlInsightFilter.SQL_INSIGHT_QUERY_COUNT = NumericField(
-    "sqlInsightQueryCount", "sqlInsightQueryCount"
+SqlInsightFilter.SQL_INSIGHT_FILTER_QUERY_COUNT = NumericField(
+    "sqlInsightFilterQueryCount", "sqlInsightFilterQueryCount"
 )
-SqlInsightFilter.SQL_INSIGHT_UNIQUE_USERS = NumericField(
-    "sqlInsightUniqueUsers", "sqlInsightUniqueUsers"
+SqlInsightFilter.SQL_INSIGHT_FILTER_UNIQUE_USERS = NumericField(
+    "sqlInsightFilterUniqueUsers", "sqlInsightFilterUniqueUsers"
 )
-SqlInsightFilter.SQL_INSIGHT_LAST_SEEN_AT = NumericField(
-    "sqlInsightLastSeenAt", "sqlInsightLastSeenAt"
+SqlInsightFilter.SQL_INSIGHT_FILTER_LAST_SEEN_AT = NumericField(
+    "sqlInsightFilterLastSeenAt", "sqlInsightFilterLastSeenAt"
 )
-SqlInsightFilter.SQL_INSIGHT_EXAMPLE_QUERIES = KeywordField(
-    "sqlInsightExampleQueries", "sqlInsightExampleQueries"
+SqlInsightFilter.SQL_INSIGHT_FILTER_EXAMPLE_QUERIES = KeywordField(
+    "sqlInsightFilterExampleQueries", "sqlInsightFilterExampleQueries"
 )
 SqlInsightFilter.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"

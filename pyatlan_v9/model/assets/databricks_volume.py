@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -43,7 +36,6 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import RelatedDatabricksVolume, RelatedDatabricksVolumePath
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
@@ -68,6 +60,14 @@ from .sql_insight_related import (
     RelatedSqlInsightJoin,
 )
 from .sql_related import RelatedSchema
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .databricks_related import RelatedDatabricksVolume, RelatedDatabricksVolumePath
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -80,9 +80,9 @@ class DatabricksVolume(Asset):
     Represents a Databricks Volume, a storage object for managing and accessing data files within Databricks workspaces.
     """
 
-    DATABRICKS_OWNER: ClassVar[Any] = None
-    DATABRICKS_EXTERNAL_LOCATION: ClassVar[Any] = None
-    DATABRICKS_TYPE: ClassVar[Any] = None
+    DATABRICKS_VOLUME_OWNER: ClassVar[Any] = None
+    DATABRICKS_VOLUME_EXTERNAL_LOCATION: ClassVar[Any] = None
+    DATABRICKS_VOLUME_TYPE: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -163,13 +163,13 @@ class DatabricksVolume(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_owner: Union[str, None, UnsetType] = UNSET
+    databricks_volume_owner: Union[str, None, UnsetType] = UNSET
     """User or group (principal) currently owning the volume."""
 
-    databricks_external_location: Union[str, None, UnsetType] = UNSET
+    databricks_volume_external_location: Union[str, None, UnsetType] = UNSET
     """The storage location where the volume is created."""
 
-    databricks_type: Union[str, None, UnsetType] = UNSET
+    databricks_volume_type: Union[str, None, UnsetType] = UNSET
     """Type of the volume."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -573,13 +573,13 @@ class DatabricksVolume(Asset):
 class DatabricksVolumeAttributes(AssetAttributes):
     """DatabricksVolume-specific attributes for nested API format."""
 
-    databricks_owner: Union[str, None, UnsetType] = UNSET
+    databricks_volume_owner: Union[str, None, UnsetType] = UNSET
     """User or group (principal) currently owning the volume."""
 
-    databricks_external_location: Union[str, None, UnsetType] = UNSET
+    databricks_volume_external_location: Union[str, None, UnsetType] = UNSET
     """The storage location where the volume is created."""
 
-    databricks_type: Union[str, None, UnsetType] = UNSET
+    databricks_volume_type: Union[str, None, UnsetType] = UNSET
     """Type of the volume."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -922,9 +922,9 @@ def _populate_databricks_volume_attrs(
 ) -> None:
     """Populate DatabricksVolume-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_owner = obj.databricks_owner
-    attrs.databricks_external_location = obj.databricks_external_location
-    attrs.databricks_type = obj.databricks_type
+    attrs.databricks_volume_owner = obj.databricks_volume_owner
+    attrs.databricks_volume_external_location = obj.databricks_volume_external_location
+    attrs.databricks_volume_type = obj.databricks_volume_type
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -968,9 +968,11 @@ def _populate_databricks_volume_attrs(
 def _extract_databricks_volume_attrs(attrs: DatabricksVolumeAttributes) -> dict:
     """Extract all DatabricksVolume attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_owner"] = attrs.databricks_owner
-    result["databricks_external_location"] = attrs.databricks_external_location
-    result["databricks_type"] = attrs.databricks_type
+    result["databricks_volume_owner"] = attrs.databricks_volume_owner
+    result["databricks_volume_external_location"] = (
+        attrs.databricks_volume_external_location
+    )
+    result["databricks_volume_type"] = attrs.databricks_volume_type
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1133,11 +1135,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksVolume.DATABRICKS_OWNER = KeywordField("databricksOwner", "databricksOwner")
-DatabricksVolume.DATABRICKS_EXTERNAL_LOCATION = KeywordField(
-    "databricksExternalLocation", "databricksExternalLocation"
+DatabricksVolume.DATABRICKS_VOLUME_OWNER = KeywordField(
+    "databricksVolumeOwner", "databricksVolumeOwner"
 )
-DatabricksVolume.DATABRICKS_TYPE = KeywordField("databricksType", "databricksType")
+DatabricksVolume.DATABRICKS_VOLUME_EXTERNAL_LOCATION = KeywordField(
+    "databricksVolumeExternalLocation", "databricksVolumeExternalLocation"
+)
+DatabricksVolume.DATABRICKS_VOLUME_TYPE = KeywordField(
+    "databricksVolumeType", "databricksVolumeType"
+)
 DatabricksVolume.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksVolume.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DatabricksVolume.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")

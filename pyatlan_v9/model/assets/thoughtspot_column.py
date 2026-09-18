@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -54,6 +47,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .thoughtspot_related import (
     RelatedThoughtspotColumn,
     RelatedThoughtspotTable,
@@ -75,8 +75,8 @@ class ThoughtspotColumn(Asset):
     THOUGHTSPOT_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
     THOUGHTSPOT_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
     THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME: ClassVar[Any] = None
-    THOUGHTSPOT_DATA_TYPE: ClassVar[Any] = None
-    THOUGHTSPOT_TYPE: ClassVar[Any] = None
+    THOUGHTSPOT_COLUMN_DATA_TYPE: ClassVar[Any] = None
+    THOUGHTSPOT_COLUMN_TYPE: ClassVar[Any] = None
     THOUGHTSPOT_CHART_TYPE: ClassVar[Any] = None
     THOUGHTSPOT_QUESTION_TEXT: ClassVar[Any] = None
     THOUGHTSPOT_JOIN_COUNT: ClassVar[Any] = None
@@ -128,10 +128,10 @@ class ThoughtspotColumn(Asset):
     thoughtspot_worksheet_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the worksheet in which this column exists."""
 
-    thoughtspot_data_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_column_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the technical format of data stored in a column such as integer, float, string, date, boolean etc."""
 
-    thoughtspot_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_column_type: Union[str, None, UnsetType] = UNSET
     """Defines the analytical role of a column in data analysis categorizing it as a dimension, measure, or attribute."""
 
     thoughtspot_chart_type: Union[str, None, UnsetType] = UNSET
@@ -412,10 +412,10 @@ class ThoughtspotColumnAttributes(AssetAttributes):
     thoughtspot_worksheet_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the worksheet in which this column exists."""
 
-    thoughtspot_data_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_column_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the technical format of data stored in a column such as integer, float, string, date, boolean etc."""
 
-    thoughtspot_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_column_type: Union[str, None, UnsetType] = UNSET
     """Defines the analytical role of a column in data analysis categorizing it as a dimension, measure, or attribute."""
 
     thoughtspot_chart_type: Union[str, None, UnsetType] = UNSET
@@ -626,8 +626,8 @@ def _populate_thoughtspot_column_attrs(
     attrs.thoughtspot_worksheet_qualified_name = (
         obj.thoughtspot_worksheet_qualified_name
     )
-    attrs.thoughtspot_data_type = obj.thoughtspot_data_type
-    attrs.thoughtspot_type = obj.thoughtspot_type
+    attrs.thoughtspot_column_data_type = obj.thoughtspot_column_data_type
+    attrs.thoughtspot_column_type = obj.thoughtspot_column_type
     attrs.thoughtspot_chart_type = obj.thoughtspot_chart_type
     attrs.thoughtspot_question_text = obj.thoughtspot_question_text
     attrs.thoughtspot_join_count = obj.thoughtspot_join_count
@@ -643,8 +643,8 @@ def _extract_thoughtspot_column_attrs(attrs: ThoughtspotColumnAttributes) -> dic
     result["thoughtspot_worksheet_qualified_name"] = (
         attrs.thoughtspot_worksheet_qualified_name
     )
-    result["thoughtspot_data_type"] = attrs.thoughtspot_data_type
-    result["thoughtspot_type"] = attrs.thoughtspot_type
+    result["thoughtspot_column_data_type"] = attrs.thoughtspot_column_data_type
+    result["thoughtspot_column_type"] = attrs.thoughtspot_column_type
     result["thoughtspot_chart_type"] = attrs.thoughtspot_chart_type
     result["thoughtspot_question_text"] = attrs.thoughtspot_question_text
     result["thoughtspot_join_count"] = attrs.thoughtspot_join_count
@@ -786,10 +786,12 @@ ThoughtspotColumn.THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME = KeywordTextField(
     "thoughtspotWorksheetQualifiedName",
     "thoughtspotWorksheetQualifiedName.text",
 )
-ThoughtspotColumn.THOUGHTSPOT_DATA_TYPE = KeywordField(
-    "thoughtspotDataType", "thoughtspotDataType"
+ThoughtspotColumn.THOUGHTSPOT_COLUMN_DATA_TYPE = KeywordField(
+    "thoughtspotColumnDataType", "thoughtspotColumnDataType"
 )
-ThoughtspotColumn.THOUGHTSPOT_TYPE = KeywordField("thoughtspotType", "thoughtspotType")
+ThoughtspotColumn.THOUGHTSPOT_COLUMN_TYPE = KeywordField(
+    "thoughtspotColumnType", "thoughtspotColumnType"
+)
 ThoughtspotColumn.THOUGHTSPOT_CHART_TYPE = KeywordField(
     "thoughtspotChartType", "thoughtspotChartType"
 )

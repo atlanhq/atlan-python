@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -37,16 +30,6 @@ from .asset import (
     AssetRelationshipAttributes,
     _extract_asset_attrs,
     _populate_asset_attrs,
-)
-from .cognos_related import (
-    RelatedCognosDashboard,
-    RelatedCognosDataset,
-    RelatedCognosExploration,
-    RelatedCognosFile,
-    RelatedCognosFolder,
-    RelatedCognosModule,
-    RelatedCognosPackage,
-    RelatedCognosReport,
 )
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
@@ -64,6 +47,23 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .cognos_related import (
+    RelatedCognosDashboard,
+    RelatedCognosDataset,
+    RelatedCognosExploration,
+    RelatedCognosFile,
+    RelatedCognosFolder,
+    RelatedCognosModule,
+    RelatedCognosPackage,
+    RelatedCognosReport,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -76,8 +76,8 @@ class CognosFolder(Asset):
     Instance of a Cognos folder in Atlan.
     """
 
-    COGNOS_SUB_FOLDER_COUNT: ClassVar[Any] = None
-    COGNOS_CHILD_OBJECTS_COUNT: ClassVar[Any] = None
+    COGNOS_FOLDER_SUB_FOLDER_COUNT: ClassVar[Any] = None
+    COGNOS_FOLDER_CHILD_OBJECTS_COUNT: ClassVar[Any] = None
     COGNOS_ID: ClassVar[Any] = None
     COGNOS_PATH: ClassVar[Any] = None
     COGNOS_PARENT_NAME: ClassVar[Any] = None
@@ -131,10 +131,10 @@ class CognosFolder(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    cognos_sub_folder_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_sub_folder_count: Union[int, None, UnsetType] = UNSET
     """Number of sub-folders in the folder."""
 
-    cognos_child_objects_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_child_objects_count: Union[int, None, UnsetType] = UNSET
     """Number of children in the folder (excluding subfolders)."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -431,10 +431,10 @@ class CognosFolder(Asset):
 class CognosFolderAttributes(AssetAttributes):
     """CognosFolder-specific attributes for nested API format."""
 
-    cognos_sub_folder_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_sub_folder_count: Union[int, None, UnsetType] = UNSET
     """Number of sub-folders in the folder."""
 
-    cognos_child_objects_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_child_objects_count: Union[int, None, UnsetType] = UNSET
     """Number of children in the folder (excluding subfolders)."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -679,8 +679,8 @@ def _populate_cognos_folder_attrs(
 ) -> None:
     """Populate CognosFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.cognos_sub_folder_count = obj.cognos_sub_folder_count
-    attrs.cognos_child_objects_count = obj.cognos_child_objects_count
+    attrs.cognos_folder_sub_folder_count = obj.cognos_folder_sub_folder_count
+    attrs.cognos_folder_child_objects_count = obj.cognos_folder_child_objects_count
     attrs.cognos_id = obj.cognos_id
     attrs.cognos_path = obj.cognos_path
     attrs.cognos_parent_name = obj.cognos_parent_name
@@ -696,8 +696,10 @@ def _populate_cognos_folder_attrs(
 def _extract_cognos_folder_attrs(attrs: CognosFolderAttributes) -> dict:
     """Extract all CognosFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cognos_sub_folder_count"] = attrs.cognos_sub_folder_count
-    result["cognos_child_objects_count"] = attrs.cognos_child_objects_count
+    result["cognos_folder_sub_folder_count"] = attrs.cognos_folder_sub_folder_count
+    result["cognos_folder_child_objects_count"] = (
+        attrs.cognos_folder_child_objects_count
+    )
     result["cognos_id"] = attrs.cognos_id
     result["cognos_path"] = attrs.cognos_path
     result["cognos_parent_name"] = attrs.cognos_parent_name
@@ -820,11 +822,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CognosFolder.COGNOS_SUB_FOLDER_COUNT = NumericField(
-    "cognosSubFolderCount", "cognosSubFolderCount"
+CognosFolder.COGNOS_FOLDER_SUB_FOLDER_COUNT = NumericField(
+    "cognosFolderSubFolderCount", "cognosFolderSubFolderCount"
 )
-CognosFolder.COGNOS_CHILD_OBJECTS_COUNT = NumericField(
-    "cognosChildObjectsCount", "cognosChildObjectsCount"
+CognosFolder.COGNOS_FOLDER_CHILD_OBJECTS_COUNT = NumericField(
+    "cognosFolderChildObjectsCount", "cognosFolderChildObjectsCount"
 )
 CognosFolder.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosFolder.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")

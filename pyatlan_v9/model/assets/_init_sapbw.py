@@ -8,6 +8,23 @@ SAPBW module exports.
 This module provides convenient imports for all SAPBW types and their Related variants.
 """
 
+from .sapbw_related import (
+    RelatedSAPBW,
+    RelatedSAPBWADSO,
+    RelatedSAPBWADSOField,
+    RelatedSAPBWCompositeProvider,
+    RelatedSAPBWCompositeProviderField,
+    RelatedSAPBWDTP,
+    RelatedSAPBWDataSource,
+    RelatedSAPBWDataSourceField,
+    RelatedSAPBWInfoArea,
+    RelatedSAPBWInfoObject,
+    RelatedSAPBWInfoSource,
+    RelatedSAPBWInfoSourceField,
+    RelatedSAPBWQuery,
+    RelatedSAPBWQueryElement,
+    RelatedSAPBWTransformation,
+)
 from .sapbw import SAPBW
 from .sapbw_composite_provider import SAPBWCompositeProvider
 from .sapbw_composite_provider_field import SAPBWCompositeProviderField
@@ -19,23 +36,6 @@ from .sapbw_info_source import SAPBWInfoSource
 from .sapbw_info_source_field import SAPBWInfoSourceField
 from .sapbw_query import SAPBWQuery
 from .sapbw_query_element import SAPBWQueryElement
-from .sapbw_related import (
-    RelatedSAPBW,
-    RelatedSAPBWADSO,
-    RelatedSAPBWADSOField,
-    RelatedSAPBWCompositeProvider,
-    RelatedSAPBWCompositeProviderField,
-    RelatedSAPBWDataSource,
-    RelatedSAPBWDataSourceField,
-    RelatedSAPBWDTP,
-    RelatedSAPBWInfoArea,
-    RelatedSAPBWInfoObject,
-    RelatedSAPBWInfoSource,
-    RelatedSAPBWInfoSourceField,
-    RelatedSAPBWQuery,
-    RelatedSAPBWQueryElement,
-    RelatedSAPBWTransformation,
-)
 from .sapbw_transformation import SAPBWTransformation
 from .sapbwadso import SAPBWADSO
 from .sapbwadso_field import SAPBWADSOField

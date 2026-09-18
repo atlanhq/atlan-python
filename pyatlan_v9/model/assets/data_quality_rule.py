@@ -23,6 +23,35 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from .airflow_related import RelatedAirflowTask
+from .anomalo_related import RelatedAnomaloCheck
+from .app_related import RelatedApplication, RelatedApplicationField
+from .asset import (
+    _ASSET_REL_FIELDS,
+    Asset,
+    AssetAttributes,
+    AssetNested,
+    AssetRelationshipAttributes,
+    _extract_asset_attrs,
+    _populate_asset_attrs,
+)
+from .asset_related import RelatedAsset
+from .context_related import RelatedContextRepository
+from .data_contract_related import RelatedDataContract
+from .data_mesh_related import RelatedDataProduct
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
+from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
+from .model_related import RelatedModelAttribute, RelatedModelEntity
+from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
+from .partial_related import RelatedPartialField, RelatedPartialObject
+from .process_related import RelatedProcess
+from .referenceable_related import RelatedReferenceable
+from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .schema_registry_related import RelatedSchemaRegistrySubject
+from .soda_related import RelatedSodaCheck
+from .spark_related import RelatedSparkJob
+from .sql_related import RelatedColumn
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import (
     DataQualityDimension,
@@ -46,39 +75,11 @@ from pyatlan_v9.model.structs import (
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .airflow_related import RelatedAirflowTask
-from .anomalo_related import RelatedAnomaloCheck
-from .app_related import RelatedApplication, RelatedApplicationField
-from .asset import (
-    _ASSET_REL_FIELDS,
-    Asset,
-    AssetAttributes,
-    AssetNested,
-    AssetRelationshipAttributes,
-    _extract_asset_attrs,
-    _populate_asset_attrs,
-)
-from .asset_related import RelatedAsset
-from .context_related import RelatedContextRepository
-from .data_contract_related import RelatedDataContract
-from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import (
     RelatedDataQualityRule,
     RelatedDataQualityRuleTemplate,
     RelatedMetric,
 )
-from .gcp_dataplex_related import RelatedGCPDataplexAspectType
-from .gtc_related import RelatedAtlasGlossaryTerm
-from .model_related import RelatedModelAttribute, RelatedModelEntity
-from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
-from .partial_related import RelatedPartialField, RelatedPartialObject
-from .process_related import RelatedProcess
-from .referenceable_related import RelatedReferenceable
-from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .schema_registry_related import RelatedSchemaRegistrySubject
-from .soda_related import RelatedSodaCheck
-from .spark_related import RelatedSparkJob
-from .sql_related import RelatedColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -141,6 +142,7 @@ class DataQualityRule(Asset):
     DQ_RULE_REFERENCE_COLUMNS: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -320,6 +322,9 @@ class DataQualityRule(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -1341,6 +1346,9 @@ class DataQualityRuleRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -1434,6 +1442,7 @@ _DATA_QUALITY_RULE_REL_FIELDS: List[str] = [
     "dq_rule_reference_columns",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -1618,6 +1627,7 @@ def _data_quality_rule_from_nested(nested: DataQualityRuleNested) -> DataQuality
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1762,6 +1772,7 @@ DataQualityRule.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 DataQualityRule.MEANINGS = RelationField("meanings")
+DataQualityRule.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DataQualityRule.MC_MONITORS = RelationField("mcMonitors")
 DataQualityRule.MC_INCIDENTS = RelationField("mcIncidents")
 DataQualityRule.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

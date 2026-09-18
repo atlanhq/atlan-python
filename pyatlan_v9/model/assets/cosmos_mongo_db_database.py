@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -40,11 +33,6 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .context_related import RelatedContextRepository
-from .cosmos_mongo_db_related import (
-    RelatedCosmosMongoDBAccount,
-    RelatedCosmosMongoDBCollection,
-    RelatedCosmosMongoDBDatabase,
-)
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -74,6 +62,18 @@ from .sql_insight_related import (
     RelatedSqlInsightJoin,
 )
 from .sql_related import RelatedSchema
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .cosmos_mongo_db_related import (
+    RelatedCosmosMongoDBAccount,
+    RelatedCosmosMongoDBCollection,
+    RelatedCosmosMongoDBDatabase,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
