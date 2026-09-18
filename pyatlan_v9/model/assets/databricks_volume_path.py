@@ -79,9 +79,9 @@ class DatabricksVolumePath(Asset):
     Represents a path within a Databricks Volume, providing access to specific data files or directories.
     """
 
-    DATABRICKS_PATH: ClassVar[Any] = None
-    DATABRICKS_VOLUME_QUALIFIED_NAME: ClassVar[Any] = None
-    DATABRICKS_VOLUME_NAME: ClassVar[Any] = None
+    DATABRICKS_VOLUME_PATH_PATH: ClassVar[Any] = None
+    DATABRICKS_VOLUME_PATH_VOLUME_QUALIFIED_NAME: ClassVar[Any] = None
+    DATABRICKS_VOLUME_PATH_VOLUME_NAME: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -161,13 +161,13 @@ class DatabricksVolumePath(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_volume_path_path: Union[str, None, UnsetType] = UNSET
     """Path of data on the volume."""
 
-    databricks_volume_qualified_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_path_volume_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent volume."""
 
-    databricks_volume_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_path_volume_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent volume."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -471,12 +471,6 @@ class DatabricksVolumePath(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.databricks_volume is UNSET:
                 errors.append("databricks_volume is required for creation")
-            if self.databricks_volume_name is UNSET:
-                errors.append("databricks_volume_name is required for creation")
-            if self.databricks_volume_qualified_name is UNSET:
-                errors.append(
-                    "databricks_volume_qualified_name is required for creation"
-                )
             if self.schema_name is UNSET:
                 errors.append("schema_name is required for creation")
             if self.schema_qualified_name is UNSET:
@@ -574,13 +568,13 @@ class DatabricksVolumePath(Asset):
 class DatabricksVolumePathAttributes(AssetAttributes):
     """DatabricksVolumePath-specific attributes for nested API format."""
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_volume_path_path: Union[str, None, UnsetType] = UNSET
     """Path of data on the volume."""
 
-    databricks_volume_qualified_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_path_volume_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent volume."""
 
-    databricks_volume_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_path_volume_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent volume."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -917,9 +911,11 @@ def _populate_databricks_volume_path_attrs(
 ) -> None:
     """Populate DatabricksVolumePath-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_path = obj.databricks_path
-    attrs.databricks_volume_qualified_name = obj.databricks_volume_qualified_name
-    attrs.databricks_volume_name = obj.databricks_volume_name
+    attrs.databricks_volume_path_path = obj.databricks_volume_path_path
+    attrs.databricks_volume_path_volume_qualified_name = (
+        obj.databricks_volume_path_volume_qualified_name
+    )
+    attrs.databricks_volume_path_volume_name = obj.databricks_volume_path_volume_name
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -965,9 +961,13 @@ def _extract_databricks_volume_path_attrs(
 ) -> dict:
     """Extract all DatabricksVolumePath attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_path"] = attrs.databricks_path
-    result["databricks_volume_qualified_name"] = attrs.databricks_volume_qualified_name
-    result["databricks_volume_name"] = attrs.databricks_volume_name
+    result["databricks_volume_path_path"] = attrs.databricks_volume_path_path
+    result["databricks_volume_path_volume_qualified_name"] = (
+        attrs.databricks_volume_path_volume_qualified_name
+    )
+    result["databricks_volume_path_volume_name"] = (
+        attrs.databricks_volume_path_volume_name
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1134,12 +1134,14 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksVolumePath.DATABRICKS_PATH = KeywordField("databricksPath", "databricksPath")
-DatabricksVolumePath.DATABRICKS_VOLUME_QUALIFIED_NAME = KeywordField(
-    "databricksVolumeQualifiedName", "databricksVolumeQualifiedName"
+DatabricksVolumePath.DATABRICKS_VOLUME_PATH_PATH = KeywordField(
+    "databricksVolumePathPath", "databricksVolumePathPath"
 )
-DatabricksVolumePath.DATABRICKS_VOLUME_NAME = KeywordField(
-    "databricksVolumeName", "databricksVolumeName"
+DatabricksVolumePath.DATABRICKS_VOLUME_PATH_VOLUME_QUALIFIED_NAME = KeywordField(
+    "databricksVolumePathVolumeQualifiedName", "databricksVolumePathVolumeQualifiedName"
+)
+DatabricksVolumePath.DATABRICKS_VOLUME_PATH_VOLUME_NAME = KeywordField(
+    "databricksVolumePathVolumeName", "databricksVolumePathVolumeName"
 )
 DatabricksVolumePath.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksVolumePath.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")

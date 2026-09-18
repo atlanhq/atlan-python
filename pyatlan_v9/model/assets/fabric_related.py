@@ -29,6 +29,7 @@ __all__ = [
     "RelatedFabricSemanticModel",
     "RelatedFabricSemanticModelTable",
     "RelatedFabricSemanticModelTableColumn",
+    "RelatedFabricSemanticModelMeasure",
     "RelatedFabricPage",
     "RelatedFabricActivity",
     "RelatedFabricVisual",
@@ -217,6 +218,46 @@ class RelatedFabricSemanticModelTableColumn(RelatedFabric):
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
             self.type_name = "FabricSemanticModelTableColumn"
+
+
+class RelatedFabricSemanticModelMeasure(RelatedFabric):
+    """
+    Related entity reference for FabricSemanticModelMeasure assets.
+
+    Extends RelatedFabric with FabricSemanticModelMeasure-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "FabricSemanticModelMeasure" so it serializes correctly
+
+    fabric_semantic_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Fabric semantic model that contains this asset."""
+
+    fabric_semantic_model_table_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Fabric semantic model table that contains this asset."""
+
+    fabric_semantic_model_table_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Fabric semantic model table that contains this asset."""
+
+    fabric_measure_expression: Union[str, None, UnsetType] = UNSET
+    """DAX expression for this measure."""
+
+    fabric_format_string: Union[str, None, UnsetType] = UNSET
+    """Format string applied to the values of this measure."""
+
+    fabric_display_folder: Union[str, None, UnsetType] = UNSET
+    """Display folder in which this measure is grouped within its table."""
+
+    fabric_is_hidden: Union[bool, None, UnsetType] = UNSET
+    """Whether this measure is hidden in the semantic model (true) or visible (false)."""
+
+    fabric_is_external_measure: Union[bool, None, UnsetType] = UNSET
+    """Whether this measure is an external measure (true) or defined within the semantic model (false)."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        if self.type_name is UNSET:
+            self.type_name = "FabricSemanticModelMeasure"
 
 
 class RelatedFabricPage(RelatedFabric):

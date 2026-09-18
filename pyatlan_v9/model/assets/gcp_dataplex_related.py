@@ -15,7 +15,7 @@ from typing import Dict, Union
 
 from msgspec import UNSET, UnsetType
 
-from .catalog_related import RelatedCatalog
+from .cloud_related import RelatedGoogle
 from .referenceable_related import RelatedReferenceable
 
 __all__ = [
@@ -24,11 +24,11 @@ __all__ = [
 ]
 
 
-class RelatedGCPDataplex(RelatedCatalog):
+class RelatedGCPDataplex(RelatedGoogle):
     """
     Related entity reference for GCPDataplex assets.
 
-    Extends RelatedCatalog with GCPDataplex-specific attributes.
+    Extends RelatedGoogle with GCPDataplex-specific attributes.
     """
 
     # type_name inherited from parent with default=UNSET
@@ -51,7 +51,7 @@ class RelatedGCPDataplexAspectType(RelatedGCPDataplex):
     # __post_init__ sets it to "GCPDataplexAspectType" so it serializes correctly
 
     gcp_dataplex_aspect_type_resource_name: Union[str, None, UnsetType] = UNSET
-    """Full GCP resource name of this Aspect Type (e.g. projects/{project}/locations/{location}/aspectTypes/{id}). Used to match against assetGCPDataplexAspectType on BigQuery entry assets."""
+    """Full GCP resource name of this Aspect Type, for example: projects/{project}/locations/{location}/aspectTypes/{id}. Used to match against assetGCPDataplexAspectType on BigQuery entry assets."""
 
     gcp_dataplex_aspect_type_project: Union[str, None, UnsetType] = UNSET
     """GCP project in which this Aspect Type is defined."""

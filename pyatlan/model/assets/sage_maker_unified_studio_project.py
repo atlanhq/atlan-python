@@ -217,10 +217,8 @@ class SageMakerUnifiedStudioProject(SageMakerUnifiedStudio):
 from .sage_maker_unified_studio_published_asset import (
     SageMakerUnifiedStudioPublishedAsset,
 )  # noqa: E402, F401
-
 from .sage_maker_unified_studio_subscribed_asset import (
     SageMakerUnifiedStudioSubscribedAsset,
 )  # noqa: E402, F401
-
 
 SageMakerUnifiedStudioProject.Attributes.update_forward_refs()

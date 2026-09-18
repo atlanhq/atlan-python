@@ -66,8 +66,8 @@ class SapErpView(Asset):
     Instance of a SAP table in Atlan.
     """
 
-    SAP_TYPE: ClassVar[Any] = None
-    SAP_DEFINITION: ClassVar[Any] = None
+    SAP_ERP_VIEW_TYPE: ClassVar[Any] = None
+    SAP_ERP_VIEW_DEFINITION: ClassVar[Any] = None
     SAP_TECHNICAL_NAME: ClassVar[Any] = None
     SAP_LOGICAL_NAME: ClassVar[Any] = None
     SAP_PACKAGE_NAME: ClassVar[Any] = None
@@ -112,10 +112,10 @@ class SapErpView(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sap_type: Union[str, None, UnsetType] = UNSET
+    sap_erp_view_type: Union[str, None, UnsetType] = UNSET
     """Type of the SAP ERP View."""
 
-    sap_definition: Union[str, None, UnsetType] = UNSET
+    sap_erp_view_definition: Union[str, None, UnsetType] = UNSET
     """Specifies the definition of the SAP ERP View."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -375,10 +375,10 @@ class SapErpView(Asset):
 class SapErpViewAttributes(AssetAttributes):
     """SapErpView-specific attributes for nested API format."""
 
-    sap_type: Union[str, None, UnsetType] = UNSET
+    sap_erp_view_type: Union[str, None, UnsetType] = UNSET
     """Type of the SAP ERP View."""
 
-    sap_definition: Union[str, None, UnsetType] = UNSET
+    sap_erp_view_definition: Union[str, None, UnsetType] = UNSET
     """Specifies the definition of the SAP ERP View."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -585,8 +585,8 @@ _SAP_ERP_VIEW_REL_FIELDS: List[str] = [
 def _populate_sap_erp_view_attrs(attrs: SapErpViewAttributes, obj: SapErpView) -> None:
     """Populate SapErpView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_type = obj.sap_type
-    attrs.sap_definition = obj.sap_definition
+    attrs.sap_erp_view_type = obj.sap_erp_view_type
+    attrs.sap_erp_view_definition = obj.sap_erp_view_definition
     attrs.sap_technical_name = obj.sap_technical_name
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
@@ -600,8 +600,8 @@ def _populate_sap_erp_view_attrs(attrs: SapErpViewAttributes, obj: SapErpView) -
 def _extract_sap_erp_view_attrs(attrs: SapErpViewAttributes) -> dict:
     """Extract all SapErpView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_type"] = attrs.sap_type
-    result["sap_definition"] = attrs.sap_definition
+    result["sap_erp_view_type"] = attrs.sap_erp_view_type
+    result["sap_erp_view_definition"] = attrs.sap_erp_view_definition
     result["sap_technical_name"] = attrs.sap_technical_name
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
@@ -718,8 +718,10 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpView.SAP_TYPE = KeywordField("sapType", "sapType")
-SapErpView.SAP_DEFINITION = KeywordField("sapDefinition", "sapDefinition")
+SapErpView.SAP_ERP_VIEW_TYPE = KeywordField("sapErpViewType", "sapErpViewType")
+SapErpView.SAP_ERP_VIEW_DEFINITION = KeywordField(
+    "sapErpViewDefinition", "sapErpViewDefinition"
+)
 SapErpView.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
 SapErpView.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapErpView.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
