@@ -20,6 +20,7 @@ from .referenceable_related import RelatedReferenceable
 
 __all__ = [
     "RelatedKafka",
+    "RelatedKafkaTag",
     "RelatedKafkaCluster",
     "RelatedKafkaTopic",
     "RelatedKafkaConsumerGroup",
@@ -43,6 +44,22 @@ class RelatedKafka(RelatedEventStore):
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
             self.type_name = "Kafka"
+
+
+class RelatedKafkaTag(RelatedKafka):
+    """
+    Related entity reference for KafkaTag assets.
+
+    Extends RelatedKafka with KafkaTag-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "KafkaTag" so it serializes correctly
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        if self.type_name is UNSET:
+            self.type_name = "KafkaTag"
 
 
 class RelatedKafkaCluster(RelatedKafka):
@@ -250,7 +267,7 @@ class RelatedAzureEventHub(RelatedKafka):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AzureEventHub" so it serializes correctly
 
-    kafka_status: Union[str, None, UnsetType] = UNSET
+    azure_event_hub_status: Union[str, None, UnsetType] = UNSET
     """Operational status of the Azure Event Hub at the source."""
 
     def __post_init__(self) -> None:

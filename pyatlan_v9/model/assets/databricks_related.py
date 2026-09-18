@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -60,13 +61,13 @@ class RelatedDatabricksVolume(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksVolume" so it serializes correctly
 
-    databricks_owner: Union[str, None, UnsetType] = UNSET
+    databricks_volume_owner: Union[str, None, UnsetType] = UNSET
     """User or group (principal) currently owning the volume."""
 
-    databricks_external_location: Union[str, None, UnsetType] = UNSET
+    databricks_volume_external_location: Union[str, None, UnsetType] = UNSET
     """The storage location where the volume is created."""
 
-    databricks_type: Union[str, None, UnsetType] = UNSET
+    databricks_volume_type: Union[str, None, UnsetType] = UNSET
     """Type of the volume."""
 
     def __post_init__(self) -> None:
@@ -85,13 +86,13 @@ class RelatedDatabricksVolumePath(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksVolumePath" so it serializes correctly
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_volume_path_path: Union[str, None, UnsetType] = UNSET
     """Path of data on the volume."""
 
-    databricks_volume_qualified_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_path_volume_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent volume."""
 
-    databricks_volume_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_path_volume_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent volume."""
 
     def __post_init__(self) -> None:
@@ -157,7 +158,9 @@ class RelatedDatabricksAIModelContext(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksAIModelContext" so it serializes correctly
 
-    databricks_metastore_id: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_context_metastore_id: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelContextMetastoreId")
+    )
     """The id of the model, common across versions."""
 
     def __post_init__(self) -> None:
@@ -176,40 +179,64 @@ class RelatedDatabricksAIModelVersion(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksAIModelVersion" so it serializes correctly
 
-    databricks_id: Union[int, None, UnsetType] = UNSET
+    databricks_ai_model_version_id: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="databricksAIModelVersionId"
+    )
     """The id of the model, unique to every version."""
 
-    databricks_run_id: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_version_run_id: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="databricksAIModelVersionRunId"
+    )
     """The run id of the model."""
 
-    databricks_run_name: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_version_run_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="databricksAIModelVersionRunName"
+    )
     """The run name of the model."""
 
-    databricks_run_start_time: Union[int, None, UnsetType] = UNSET
+    databricks_ai_model_version_run_start_time: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelVersionRunStartTime")
+    )
     """The run start time of the model."""
 
-    databricks_run_end_time: Union[int, None, UnsetType] = UNSET
+    databricks_ai_model_version_run_end_time: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelVersionRunEndTime")
+    )
     """The run end time of the model."""
 
-    databricks_status: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_version_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="databricksAIModelVersionStatus"
+    )
     """The status of the model."""
 
-    databricks_aliases: Union[List[str], None, UnsetType] = UNSET
+    databricks_ai_model_version_aliases: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelVersionAliases")
+    )
     """The aliases of the model."""
 
-    databricks_dataset_count: Union[int, None, UnsetType] = UNSET
+    databricks_ai_model_version_dataset_count: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelVersionDatasetCount")
+    )
     """Number of datasets."""
 
-    databricks_source: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_version_source: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="databricksAIModelVersionSource"
+    )
     """Source artifact link for the model."""
 
-    databricks_artifact_uri: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_version_artifact_uri: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelVersionArtifactUri")
+    )
     """Artifact uri for the model."""
 
-    databricks_metrics: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    databricks_ai_model_version_metrics: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="databricksAIModelVersionMetrics")
     """Metrics for an individual experiment."""
 
-    databricks_params: Union[Dict[str, str], None, UnsetType] = UNSET
+    databricks_ai_model_version_params: Union[Dict[str, str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelVersionParams")
+    )
     """Params with key mapped to value for an individual experiment."""
 
     def __post_init__(self) -> None:
@@ -244,10 +271,10 @@ class RelatedDatabricksNotebook(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksNotebook" so it serializes correctly
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_path: Union[str, None, UnsetType] = UNSET
     """Path of the notebook."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_workspace_id: Union[str, None, UnsetType] = UNSET
     """Workspace Id of the notebook."""
 
     def __post_init__(self) -> None:
@@ -282,22 +309,22 @@ class RelatedDatabricksDashboard(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksDashboard" so it serializes correctly
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_path: Union[str, None, UnsetType] = UNSET
     """Workspace path of the dashboard asset, including its file name. The parent folder path can be derived by dropping the last path segment."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_workspace_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the workspace containing the dashboard."""
 
-    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_warehouse_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the SQL warehouse backing the dashboard."""
 
-    databricks_etag: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_etag: Union[str, None, UnsetType] = UNSET
     """Entity tag used as a change token for the dashboard."""
 
-    databricks_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
+    databricks_dashboard_is_genie_space_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether a Genie space is enabled for the dashboard."""
 
-    databricks_lifecycle_state: Union[str, None, UnsetType] = UNSET
+    databricks_dashboard_lifecycle_state: Union[str, None, UnsetType] = UNSET
     """Lifecycle state of the dashboard."""
 
     def __post_init__(self) -> None:
@@ -316,16 +343,16 @@ class RelatedDatabricksGenieAgent(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksGenieAgent" so it serializes correctly
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_workspace_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the workspace containing the Genie space."""
 
-    databricks_warehouse_id: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_warehouse_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the SQL warehouse backing the Genie space."""
 
-    databricks_parent_path: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_parent_path: Union[str, None, UnsetType] = UNSET
     """Workspace folder path containing the Genie space. It is descriptive only and creates no containment or hierarchy edge."""
 
-    databricks_etag: Union[str, None, UnsetType] = UNSET
+    databricks_genie_agent_etag: Union[str, None, UnsetType] = UNSET
     """Entity tag used as a change token for the Genie space. It is populated only by an enabled serialized-detail read, so it is null when that read is disabled, denied, or omitted by the source."""
 
     def __post_init__(self) -> None:

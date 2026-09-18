@@ -19,8 +19,10 @@ from .kafka_related import (
     RelatedKafkaCluster,
     RelatedKafkaConsumerGroup,
     RelatedKafkaField,
+    RelatedKafkaTag,
     RelatedKafkaTopic,
 )
+from .kafka_tag import KafkaTag
 from .kafka_topic import KafkaTopic
 
 __all__ = [
@@ -28,6 +30,7 @@ __all__ = [
     "KafkaCluster",
     "KafkaConsumerGroup",
     "KafkaField",
+    "KafkaTag",
     "KafkaTopic",
     "RelatedAzureEventHub",
     "RelatedAzureEventHubConsumerGroup",
@@ -35,5 +38,6 @@ __all__ = [
     "RelatedKafkaCluster",
     "RelatedKafkaConsumerGroup",
     "RelatedKafkaField",
+    "RelatedKafkaTag",
     "RelatedKafkaTopic",
 ]

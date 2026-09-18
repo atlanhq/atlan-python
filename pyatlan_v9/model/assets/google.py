@@ -64,7 +64,7 @@ class Google(Asset):
     GOOGLE_SERVICE: ClassVar[Any] = None
     GOOGLE_PROJECT_NAME: ClassVar[Any] = None
     GOOGLE_PROJECT_ID: ClassVar[Any] = None
-    CLOUD_PROJECT_NUMBER: ClassVar[Any] = None
+    GOOGLE_PROJECT_NUMBER: ClassVar[Any] = None
     GOOGLE_LOCATION: ClassVar[Any] = None
     GOOGLE_LOCATION_TYPE: ClassVar[Any] = None
     GOOGLE_LABELS: ClassVar[Any] = None
@@ -103,7 +103,7 @@ class Google(Asset):
     google_project_id: Union[str, None, UnsetType] = UNSET
     """ID of the project in which the asset exists."""
 
-    cloud_project_number: Union[int, None, UnsetType] = UNSET
+    google_project_number: Union[int, None, UnsetType] = UNSET
     """Number of the project in which the asset exists."""
 
     google_location: Union[str, None, UnsetType] = UNSET
@@ -325,7 +325,7 @@ class GoogleAttributes(AssetAttributes):
     google_project_id: Union[str, None, UnsetType] = UNSET
     """ID of the project in which the asset exists."""
 
-    cloud_project_number: Union[int, None, UnsetType] = UNSET
+    google_project_number: Union[int, None, UnsetType] = UNSET
     """Number of the project in which the asset exists."""
 
     google_location: Union[str, None, UnsetType] = UNSET
@@ -476,7 +476,7 @@ def _populate_google_attrs(attrs: GoogleAttributes, obj: Google) -> None:
     attrs.google_service = obj.google_service
     attrs.google_project_name = obj.google_project_name
     attrs.google_project_id = obj.google_project_id
-    attrs.cloud_project_number = obj.cloud_project_number
+    attrs.google_project_number = obj.google_project_number
     attrs.google_location = obj.google_location
     attrs.google_location_type = obj.google_location_type
     attrs.google_labels = obj.google_labels
@@ -490,7 +490,7 @@ def _extract_google_attrs(attrs: GoogleAttributes) -> dict:
     result["google_service"] = attrs.google_service
     result["google_project_name"] = attrs.google_project_name
     result["google_project_id"] = attrs.google_project_id
-    result["cloud_project_number"] = attrs.cloud_project_number
+    result["google_project_number"] = attrs.google_project_number
     result["google_location"] = attrs.google_location
     result["google_location_type"] = attrs.google_location_type
     result["google_labels"] = attrs.google_labels
@@ -610,7 +610,9 @@ Google.GOOGLE_PROJECT_NAME = KeywordTextField(
 Google.GOOGLE_PROJECT_ID = KeywordTextField(
     "googleProjectId", "googleProjectId", "googleProjectId.text"
 )
-Google.CLOUD_PROJECT_NUMBER = NumericField("cloudProjectNumber", "cloudProjectNumber")
+Google.GOOGLE_PROJECT_NUMBER = NumericField(
+    "googleProjectNumber", "googleProjectNumber"
+)
 Google.GOOGLE_LOCATION = KeywordField("googleLocation", "googleLocation")
 Google.GOOGLE_LOCATION_TYPE = KeywordField("googleLocationType", "googleLocationType")
 Google.GOOGLE_LABELS = KeywordField("googleLabels", "googleLabels")
