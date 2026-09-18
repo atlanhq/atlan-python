@@ -8,6 +8,10 @@ SapAnalyticsCloud module exports.
 This module provides convenient imports for all SapAnalyticsCloud types and their Related variants.
 """
 
+from .sap_analytics_cloud import SapAnalyticsCloud
+from .sap_analytics_cloud_column import SapAnalyticsCloudColumn
+from .sap_analytics_cloud_folder import SapAnalyticsCloudFolder
+from .sap_analytics_cloud_model import SapAnalyticsCloudModel
 from .sap_analytics_cloud_related import (
     RelatedSapAnalyticsCloud,
     RelatedSapAnalyticsCloudColumn,
@@ -15,10 +19,6 @@ from .sap_analytics_cloud_related import (
     RelatedSapAnalyticsCloudModel,
     RelatedSapAnalyticsCloudStory,
 )
-from .sap_analytics_cloud import SapAnalyticsCloud
-from .sap_analytics_cloud_column import SapAnalyticsCloudColumn
-from .sap_analytics_cloud_folder import SapAnalyticsCloudFolder
-from .sap_analytics_cloud_model import SapAnalyticsCloudModel
 from .sap_analytics_cloud_story import SapAnalyticsCloudStory
 
 __all__ = [

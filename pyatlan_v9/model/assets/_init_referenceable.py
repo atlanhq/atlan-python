@@ -8,9 +8,9 @@ Referenceable module exports.
 This module provides convenient imports for all Referenceable types and their Related variants.
 """
 
-from .entity import Entity, AtlasClassification, TermAssignment
-from .referenceable_related import RelatedReferenceable
+from .entity import AtlasClassification, Entity, TermAssignment
 from .referenceable import Referenceable
+from .referenceable_related import RelatedReferenceable
 
 __all__ = [
     "AtlasClassification",

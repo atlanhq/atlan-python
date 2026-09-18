@@ -8,14 +8,14 @@ DocumentDB module exports.
 This module provides convenient imports for all DocumentDB types and their Related variants.
 """
 
+from .document_db import DocumentDB
+from .document_db_collection import DocumentDBCollection
+from .document_db_database import DocumentDBDatabase
 from .document_db_related import (
     RelatedDocumentDB,
     RelatedDocumentDBCollection,
     RelatedDocumentDBDatabase,
 )
-from .document_db import DocumentDB
-from .document_db_collection import DocumentDBCollection
-from .document_db_database import DocumentDBDatabase
 
 __all__ = [
     "DocumentDB",
