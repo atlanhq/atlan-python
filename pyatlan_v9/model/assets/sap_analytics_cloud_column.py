@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -37,7 +37,14 @@ from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtMetric, RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtMetric,
+    RelatedDbtModel,
+    RelatedDbtModelColumn,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -49,20 +56,42 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeDynamicTable, RelatedSnowflakeSemanticLogicalTable
+from .snowflake_related import (
+    RelatedSnowflakeDynamicTable,
+    RelatedSnowflakeSemanticLogicalTable,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightFilter, RelatedSqlInsightJoin
-from .sql_related import RelatedCalculationView, RelatedColumn, RelatedMaterialisedView, RelatedQuery, RelatedTable, RelatedTablePartition, RelatedView
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightFilter,
+    RelatedSqlInsightJoin,
+)
+from .sql_related import (
+    RelatedCalculationView,
+    RelatedColumn,
+    RelatedMaterialisedView,
+    RelatedQuery,
+    RelatedTable,
+    RelatedTablePartition,
+    RelatedView,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sap_analytics_cloud_related import RelatedSapAnalyticsCloudColumn, RelatedSapAnalyticsCloudModel
+from .sap_analytics_cloud_related import (
+    RelatedSapAnalyticsCloudColumn,
+    RelatedSapAnalyticsCloudModel,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SapAnalyticsCloudColumn(Asset):
@@ -281,7 +310,9 @@ class SapAnalyticsCloudColumn(Asset):
     sap_analytics_cloud_workspace_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the SAP Analytics Cloud workspace that owns this asset."""
 
-    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Unique name of the SAP Analytics Cloud folder that directly contains this asset. Empty for a root-level folder and for a live model, neither of which is contained by a folder."""
 
     sap_analytics_cloud_parent_folder_name: Union[str, None, UnsetType] = UNSET
@@ -530,7 +561,9 @@ class SapAnalyticsCloudColumn(Asset):
     column_ai_insights_dimension_type: Union[str, None, UnsetType] = UNSET
     """Type of dimension as classified by AI analysis, for example: time, categorical, geographic."""
 
-    column_ai_insights_foreign_key_column_qualified_name: Union[str, None, UnsetType] = UNSET
+    column_ai_insights_foreign_key_column_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
     """Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -581,7 +614,9 @@ class SapAnalyticsCloudColumn(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -650,7 +685,9 @@ class SapAnalyticsCloudColumn(Asset):
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
-    cosmos_mongo_db_collection: Union[RelatedCosmosMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
@@ -668,7 +705,9 @@ class SapAnalyticsCloudColumn(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -686,10 +725,14 @@ class SapAnalyticsCloudColumn(Asset):
     dq_base_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this column."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this column is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -704,7 +747,9 @@ class SapAnalyticsCloudColumn(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
@@ -713,13 +758,17 @@ class SapAnalyticsCloudColumn(Asset):
     dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """(Deprecated) Model columns related to this model column."""
 
-    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
+    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = (
+        UNSET
+    )
     """Model columns related to this column."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -728,7 +777,9 @@ class SapAnalyticsCloudColumn(Asset):
     knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
     """Knowledge files linked to this asset."""
 
-    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollection")
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -752,7 +803,9 @@ class SapAnalyticsCloudColumn(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -794,16 +847,24 @@ class SapAnalyticsCloudColumn(Asset):
     queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that access this column."""
 
-    sap_analytics_cloud_model: Union[RelatedSapAnalyticsCloudModel, None, UnsetType] = UNSET
+    sap_analytics_cloud_model: Union[RelatedSapAnalyticsCloudModel, None, UnsetType] = (
+        UNSET
+    )
     """Model in which this column is defined."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = UNSET
+    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
+        UNSET
+    )
     """Snowflake dynamic table in which this column exists."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -815,16 +876,22 @@ class SapAnalyticsCloudColumn(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
     sql_insight_filters: Union[List[RelatedSqlInsightFilter], None, UnsetType] = UNSET
     """Filter insights for this column."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -875,7 +942,9 @@ class SapAnalyticsCloudColumn(Asset):
             if self.sap_analytics_cloud_model_name is UNSET:
                 errors.append("sap_analytics_cloud_model_name is required for creation")
             if self.sap_analytics_cloud_model_qualified_name is UNSET:
-                errors.append("sap_analytics_cloud_model_qualified_name is required for creation")
+                errors.append(
+                    "sap_analytics_cloud_model_qualified_name is required for creation"
+                )
             if self.order is UNSET:
                 errors.append("order is required for creation")
         if errors:
@@ -893,7 +962,9 @@ class SapAnalyticsCloudColumn(Asset):
             A new SapAnalyticsCloudColumn instance with only the minimum required fields.
         """
         self.validate()
-        return SapAnalyticsCloudColumn(qualified_name=self.qualified_name, name=self.name)
+        return SapAnalyticsCloudColumn(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     def relate(self) -> "RelatedSapAnalyticsCloudColumn":
         """
@@ -939,7 +1010,9 @@ class SapAnalyticsCloudColumn(Asset):
         return _sap_analytics_cloud_column_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SapAnalyticsCloudColumn:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SapAnalyticsCloudColumn:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -960,6 +1033,7 @@ class SapAnalyticsCloudColumn(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class SapAnalyticsCloudColumnAttributes(AssetAttributes):
     """SapAnalyticsCloudColumn-specific attributes for nested API format."""
@@ -985,7 +1059,9 @@ class SapAnalyticsCloudColumnAttributes(AssetAttributes):
     sap_analytics_cloud_workspace_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the SAP Analytics Cloud workspace that owns this asset."""
 
-    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Unique name of the SAP Analytics Cloud folder that directly contains this asset. Empty for a root-level folder and for a live model, neither of which is contained by a folder."""
 
     sap_analytics_cloud_parent_folder_name: Union[str, None, UnsetType] = UNSET
@@ -1234,7 +1310,9 @@ class SapAnalyticsCloudColumnAttributes(AssetAttributes):
     column_ai_insights_dimension_type: Union[str, None, UnsetType] = UNSET
     """Type of dimension as classified by AI analysis, for example: time, categorical, geographic."""
 
-    column_ai_insights_foreign_key_column_qualified_name: Union[str, None, UnsetType] = UNSET
+    column_ai_insights_foreign_key_column_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
     """Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -1285,7 +1363,9 @@ class SapAnalyticsCloudColumnAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -1336,6 +1416,7 @@ class SapAnalyticsCloudColumnAttributes(AssetAttributes):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+
 class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes):
     """SapAnalyticsCloudColumn-specific relationship attributes for nested API format."""
 
@@ -1357,7 +1438,9 @@ class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes)
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
-    cosmos_mongo_db_collection: Union[RelatedCosmosMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
@@ -1375,7 +1458,9 @@ class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes)
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -1393,10 +1478,14 @@ class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes)
     dq_base_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this column."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this column is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -1411,7 +1500,9 @@ class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes)
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
@@ -1420,13 +1511,17 @@ class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes)
     dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """(Deprecated) Model columns related to this model column."""
 
-    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
+    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = (
+        UNSET
+    )
     """Model columns related to this column."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -1435,7 +1530,9 @@ class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes)
     knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
     """Knowledge files linked to this asset."""
 
-    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollection")
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -1459,7 +1556,9 @@ class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes)
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -1501,16 +1600,24 @@ class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes)
     queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that access this column."""
 
-    sap_analytics_cloud_model: Union[RelatedSapAnalyticsCloudModel, None, UnsetType] = UNSET
+    sap_analytics_cloud_model: Union[RelatedSapAnalyticsCloudModel, None, UnsetType] = (
+        UNSET
+    )
     """Model in which this column is defined."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = UNSET
+    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
+        UNSET
+    )
     """Snowflake dynamic table in which this column exists."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -1522,25 +1629,39 @@ class SapAnalyticsCloudColumnRelationshipAttributes(AssetRelationshipAttributes)
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
     sql_insight_filters: Union[List[RelatedSqlInsightFilter], None, UnsetType] = UNSET
     """Filter insights for this column."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class SapAnalyticsCloudColumnNested(AssetNested):
     """SapAnalyticsCloudColumn in nested API format for high-performance serialization."""
 
     attributes: Union[SapAnalyticsCloudColumnAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SapAnalyticsCloudColumnRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SapAnalyticsCloudColumnRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SapAnalyticsCloudColumnRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        SapAnalyticsCloudColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        SapAnalyticsCloudColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SapAnalyticsCloudColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -1615,18 +1736,29 @@ _SAP_ANALYTICS_CLOUD_COLUMN_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-def _populate_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAttributes, obj: SapAnalyticsCloudColumn) -> None:
+
+def _populate_sap_analytics_cloud_column_attrs(
+    attrs: SapAnalyticsCloudColumnAttributes, obj: SapAnalyticsCloudColumn
+) -> None:
     """Populate SapAnalyticsCloudColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_analytics_cloud_model_qualified_name = obj.sap_analytics_cloud_model_qualified_name
+    attrs.sap_analytics_cloud_model_qualified_name = (
+        obj.sap_analytics_cloud_model_qualified_name
+    )
     attrs.sap_analytics_cloud_model_name = obj.sap_analytics_cloud_model_name
     attrs.sap_analytics_cloud_resource_id = obj.sap_analytics_cloud_resource_id
     attrs.sap_analytics_cloud_object_id = obj.sap_analytics_cloud_object_id
-    attrs.sap_analytics_cloud_repository_partition = obj.sap_analytics_cloud_repository_partition
+    attrs.sap_analytics_cloud_repository_partition = (
+        obj.sap_analytics_cloud_repository_partition
+    )
     attrs.sap_analytics_cloud_workspace_id = obj.sap_analytics_cloud_workspace_id
     attrs.sap_analytics_cloud_workspace_name = obj.sap_analytics_cloud_workspace_name
-    attrs.sap_analytics_cloud_parent_folder_qualified_name = obj.sap_analytics_cloud_parent_folder_qualified_name
-    attrs.sap_analytics_cloud_parent_folder_name = obj.sap_analytics_cloud_parent_folder_name
+    attrs.sap_analytics_cloud_parent_folder_qualified_name = (
+        obj.sap_analytics_cloud_parent_folder_qualified_name
+    )
+    attrs.sap_analytics_cloud_parent_folder_name = (
+        obj.sap_analytics_cloud_parent_folder_name
+    )
     attrs.sap_technical_name = obj.sap_technical_name
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
@@ -1708,7 +1840,9 @@ def _populate_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAtt
     attrs.column_ai_insights_measure_type = obj.column_ai_insights_measure_type
     attrs.column_ai_insights_is_dimension = obj.column_ai_insights_is_dimension
     attrs.column_ai_insights_dimension_type = obj.column_ai_insights_dimension_type
-    attrs.column_ai_insights_foreign_key_column_qualified_name = obj.column_ai_insights_foreign_key_column_qualified_name
+    attrs.column_ai_insights_foreign_key_column_qualified_name = (
+        obj.column_ai_insights_foreign_key_column_qualified_name
+    )
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1729,9 +1863,13 @@ def _populate_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAtt
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
     attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
@@ -1743,18 +1881,31 @@ def _populate_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAtt
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
 
-def _extract_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAttributes) -> dict:
+
+def _extract_sap_analytics_cloud_column_attrs(
+    attrs: SapAnalyticsCloudColumnAttributes,
+) -> dict:
     """Extract all SapAnalyticsCloudColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_analytics_cloud_model_qualified_name"] = attrs.sap_analytics_cloud_model_qualified_name
+    result["sap_analytics_cloud_model_qualified_name"] = (
+        attrs.sap_analytics_cloud_model_qualified_name
+    )
     result["sap_analytics_cloud_model_name"] = attrs.sap_analytics_cloud_model_name
     result["sap_analytics_cloud_resource_id"] = attrs.sap_analytics_cloud_resource_id
     result["sap_analytics_cloud_object_id"] = attrs.sap_analytics_cloud_object_id
-    result["sap_analytics_cloud_repository_partition"] = attrs.sap_analytics_cloud_repository_partition
+    result["sap_analytics_cloud_repository_partition"] = (
+        attrs.sap_analytics_cloud_repository_partition
+    )
     result["sap_analytics_cloud_workspace_id"] = attrs.sap_analytics_cloud_workspace_id
-    result["sap_analytics_cloud_workspace_name"] = attrs.sap_analytics_cloud_workspace_name
-    result["sap_analytics_cloud_parent_folder_qualified_name"] = attrs.sap_analytics_cloud_parent_folder_qualified_name
-    result["sap_analytics_cloud_parent_folder_name"] = attrs.sap_analytics_cloud_parent_folder_name
+    result["sap_analytics_cloud_workspace_name"] = (
+        attrs.sap_analytics_cloud_workspace_name
+    )
+    result["sap_analytics_cloud_parent_folder_qualified_name"] = (
+        attrs.sap_analytics_cloud_parent_folder_qualified_name
+    )
+    result["sap_analytics_cloud_parent_folder_name"] = (
+        attrs.sap_analytics_cloud_parent_folder_name
+    )
     result["sap_technical_name"] = attrs.sap_technical_name
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
@@ -1792,8 +1943,12 @@ def _extract_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAttr
     result["parent_column_qualified_name"] = attrs.parent_column_qualified_name
     result["parent_column_name"] = attrs.parent_column_name
     result["column_distinct_values_count"] = attrs.column_distinct_values_count
-    result["column_distinct_values_count_long"] = attrs.column_distinct_values_count_long
-    result["column_distinct_values_percentage"] = attrs.column_distinct_values_percentage
+    result["column_distinct_values_count_long"] = (
+        attrs.column_distinct_values_count_long
+    )
+    result["column_distinct_values_percentage"] = (
+        attrs.column_distinct_values_percentage
+    )
     result["column_histogram"] = attrs.column_histogram
     result["column_max"] = attrs.column_max
     result["column_min"] = attrs.column_min
@@ -1806,7 +1961,9 @@ def _extract_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAttr
     result["column_average"] = attrs.column_average
     result["column_average_length"] = attrs.column_average_length
     result["column_duplicate_values_count"] = attrs.column_duplicate_values_count
-    result["column_duplicate_values_count_long"] = attrs.column_duplicate_values_count_long
+    result["column_duplicate_values_count_long"] = (
+        attrs.column_duplicate_values_count_long
+    )
     result["column_maximum_string_length"] = attrs.column_maximum_string_length
     result["column_maxs"] = attrs.column_maxs
     result["column_minimum_string_length"] = attrs.column_minimum_string_length
@@ -1835,8 +1992,12 @@ def _extract_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAttr
     result["column_ai_insights_is_measure"] = attrs.column_ai_insights_is_measure
     result["column_ai_insights_measure_type"] = attrs.column_ai_insights_measure_type
     result["column_ai_insights_is_dimension"] = attrs.column_ai_insights_is_dimension
-    result["column_ai_insights_dimension_type"] = attrs.column_ai_insights_dimension_type
-    result["column_ai_insights_foreign_key_column_qualified_name"] = attrs.column_ai_insights_foreign_key_column_qualified_name
+    result["column_ai_insights_dimension_type"] = (
+        attrs.column_ai_insights_dimension_type
+    )
+    result["column_ai_insights_foreign_key_column_qualified_name"] = (
+        attrs.column_ai_insights_foreign_key_column_qualified_name
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1853,14 +2014,24 @@ def _extract_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAttr
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
     result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
     result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
@@ -1872,18 +2043,23 @@ def _extract_sap_analytics_cloud_column_attrs(attrs: SapAnalyticsCloudColumnAttr
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sap_analytics_cloud_column_to_nested(sap_analytics_cloud_column: SapAnalyticsCloudColumn) -> SapAnalyticsCloudColumnNested:
+def _sap_analytics_cloud_column_to_nested(
+    sap_analytics_cloud_column: SapAnalyticsCloudColumn,
+) -> SapAnalyticsCloudColumnNested:
     """Convert flat SapAnalyticsCloudColumn to nested format."""
     attrs = SapAnalyticsCloudColumnAttributes()
     _populate_sap_analytics_cloud_column_attrs(attrs, sap_analytics_cloud_column)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sap_analytics_cloud_column, _SAP_ANALYTICS_CLOUD_COLUMN_REL_FIELDS, SapAnalyticsCloudColumnRelationshipAttributes
+        sap_analytics_cloud_column,
+        _SAP_ANALYTICS_CLOUD_COLUMN_REL_FIELDS,
+        SapAnalyticsCloudColumnRelationshipAttributes,
     )
     return SapAnalyticsCloudColumnNested(
         guid=sap_analytics_cloud_column.guid,
@@ -1914,16 +2090,23 @@ def _sap_analytics_cloud_column_to_nested(sap_analytics_cloud_column: SapAnalyti
         remove_relationship_attributes=remove_rels,
     )
 
-def _sap_analytics_cloud_column_from_nested(nested: SapAnalyticsCloudColumnNested) -> SapAnalyticsCloudColumn:
+
+def _sap_analytics_cloud_column_from_nested(
+    nested: SapAnalyticsCloudColumnNested,
+) -> SapAnalyticsCloudColumn:
     """Convert nested format to flat SapAnalyticsCloudColumn."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SapAnalyticsCloudColumnAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SapAnalyticsCloudColumnAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ANALYTICS_CLOUD_COLUMN_REL_FIELDS,
-        SapAnalyticsCloudColumnRelationshipAttributes
+        SapAnalyticsCloudColumnRelationshipAttributes,
     )
     return SapAnalyticsCloudColumn(
         guid=nested.guid,
@@ -1953,15 +2136,23 @@ def _sap_analytics_cloud_column_from_nested(nested: SapAnalyticsCloudColumnNeste
         **merged_rels,
     )
 
-def _sap_analytics_cloud_column_to_nested_bytes(sap_analytics_cloud_column: SapAnalyticsCloudColumn, serde: Serde) -> bytes:
+
+def _sap_analytics_cloud_column_to_nested_bytes(
+    sap_analytics_cloud_column: SapAnalyticsCloudColumn, serde: Serde
+) -> bytes:
     """Convert flat SapAnalyticsCloudColumn to nested JSON bytes."""
-    return serde.encode(_sap_analytics_cloud_column_to_nested(sap_analytics_cloud_column))
+    return serde.encode(
+        _sap_analytics_cloud_column_to_nested(sap_analytics_cloud_column)
+    )
 
 
-def _sap_analytics_cloud_column_from_nested_bytes(data: bytes, serde: Serde) -> SapAnalyticsCloudColumn:
+def _sap_analytics_cloud_column_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SapAnalyticsCloudColumn:
     """Convert nested JSON bytes to flat SapAnalyticsCloudColumn."""
     nested = serde.decode(data, SapAnalyticsCloudColumnNested)
     return _sap_analytics_cloud_column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1974,34 +2165,79 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_MODEL_QUALIFIED_NAME = KeywordField("sapAnalyticsCloudModelQualifiedName", "sapAnalyticsCloudModelQualifiedName")
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_MODEL_NAME = KeywordField("sapAnalyticsCloudModelName", "sapAnalyticsCloudModelName")
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_RESOURCE_ID = KeywordField("sapAnalyticsCloudResourceId", "sapAnalyticsCloudResourceId")
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_OBJECT_ID = KeywordField("sapAnalyticsCloudObjectId", "sapAnalyticsCloudObjectId")
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_REPOSITORY_PARTITION = KeywordField("sapAnalyticsCloudRepositoryPartition", "sapAnalyticsCloudRepositoryPartition")
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_WORKSPACE_ID = KeywordField("sapAnalyticsCloudWorkspaceId", "sapAnalyticsCloudWorkspaceId")
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_WORKSPACE_NAME = KeywordField("sapAnalyticsCloudWorkspaceName", "sapAnalyticsCloudWorkspaceName")
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_PARENT_FOLDER_QUALIFIED_NAME = KeywordField("sapAnalyticsCloudParentFolderQualifiedName", "sapAnalyticsCloudParentFolderQualifiedName")
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_PARENT_FOLDER_NAME = KeywordField("sapAnalyticsCloudParentFolderName", "sapAnalyticsCloudParentFolderName")
-SapAnalyticsCloudColumn.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
-SapAnalyticsCloudColumn.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
-SapAnalyticsCloudColumn.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
-SapAnalyticsCloudColumn.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponentName")
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_MODEL_QUALIFIED_NAME = KeywordField(
+    "sapAnalyticsCloudModelQualifiedName", "sapAnalyticsCloudModelQualifiedName"
+)
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_MODEL_NAME = KeywordField(
+    "sapAnalyticsCloudModelName", "sapAnalyticsCloudModelName"
+)
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_RESOURCE_ID = KeywordField(
+    "sapAnalyticsCloudResourceId", "sapAnalyticsCloudResourceId"
+)
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_OBJECT_ID = KeywordField(
+    "sapAnalyticsCloudObjectId", "sapAnalyticsCloudObjectId"
+)
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_REPOSITORY_PARTITION = KeywordField(
+    "sapAnalyticsCloudRepositoryPartition", "sapAnalyticsCloudRepositoryPartition"
+)
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_WORKSPACE_ID = KeywordField(
+    "sapAnalyticsCloudWorkspaceId", "sapAnalyticsCloudWorkspaceId"
+)
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_WORKSPACE_NAME = KeywordField(
+    "sapAnalyticsCloudWorkspaceName", "sapAnalyticsCloudWorkspaceName"
+)
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
+    "sapAnalyticsCloudParentFolderQualifiedName",
+    "sapAnalyticsCloudParentFolderQualifiedName",
+)
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_PARENT_FOLDER_NAME = KeywordField(
+    "sapAnalyticsCloudParentFolderName", "sapAnalyticsCloudParentFolderName"
+)
+SapAnalyticsCloudColumn.SAP_TECHNICAL_NAME = KeywordField(
+    "sapTechnicalName", "sapTechnicalName"
+)
+SapAnalyticsCloudColumn.SAP_LOGICAL_NAME = KeywordField(
+    "sapLogicalName", "sapLogicalName"
+)
+SapAnalyticsCloudColumn.SAP_PACKAGE_NAME = KeywordField(
+    "sapPackageName", "sapPackageName"
+)
+SapAnalyticsCloudColumn.SAP_COMPONENT_NAME = KeywordField(
+    "sapComponentName", "sapComponentName"
+)
 SapAnalyticsCloudColumn.SAP_DATA_TYPE = KeywordField("sapDataType", "sapDataType")
 SapAnalyticsCloudColumn.SAP_FIELD_COUNT = NumericField("sapFieldCount", "sapFieldCount")
 SapAnalyticsCloudColumn.SAP_FIELD_ORDER = NumericField("sapFieldOrder", "sapFieldOrder")
-SapAnalyticsCloudColumn.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
-SapAnalyticsCloudColumn.DATA_TYPE = KeywordTextField("dataType", "dataType", "dataType.text")
+SapAnalyticsCloudColumn.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
+SapAnalyticsCloudColumn.DATA_TYPE = KeywordTextField(
+    "dataType", "dataType", "dataType.text"
+)
 SapAnalyticsCloudColumn.SUB_DATA_TYPE = KeywordField("subDataType", "subDataType")
-SapAnalyticsCloudColumn.COLUMN_COMPRESSION = KeywordField("columnCompression", "columnCompression")
-SapAnalyticsCloudColumn.COLUMN_ENCODING = KeywordField("columnEncoding", "columnEncoding")
-SapAnalyticsCloudColumn.RAW_DATA_TYPE_DEFINITION = KeywordField("rawDataTypeDefinition", "rawDataTypeDefinition")
+SapAnalyticsCloudColumn.COLUMN_COMPRESSION = KeywordField(
+    "columnCompression", "columnCompression"
+)
+SapAnalyticsCloudColumn.COLUMN_ENCODING = KeywordField(
+    "columnEncoding", "columnEncoding"
+)
+SapAnalyticsCloudColumn.RAW_DATA_TYPE_DEFINITION = KeywordField(
+    "rawDataTypeDefinition", "rawDataTypeDefinition"
+)
 SapAnalyticsCloudColumn.ORDER = NumericField("order", "order")
-SapAnalyticsCloudColumn.NESTED_COLUMN_ORDER = KeywordTextField("nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text")
-SapAnalyticsCloudColumn.NESTED_COLUMN_COUNT = NumericField("nestedColumnCount", "nestedColumnCount")
-SapAnalyticsCloudColumn.COLUMN_HIERARCHY = KeywordField("columnHierarchy", "columnHierarchy")
+SapAnalyticsCloudColumn.NESTED_COLUMN_ORDER = KeywordTextField(
+    "nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text"
+)
+SapAnalyticsCloudColumn.NESTED_COLUMN_COUNT = NumericField(
+    "nestedColumnCount", "nestedColumnCount"
+)
+SapAnalyticsCloudColumn.COLUMN_HIERARCHY = KeywordField(
+    "columnHierarchy", "columnHierarchy"
+)
 SapAnalyticsCloudColumn.IS_PARTITION = BooleanField("isPartition", "isPartition")
-SapAnalyticsCloudColumn.PARTITION_ORDER = NumericField("partitionOrder", "partitionOrder")
+SapAnalyticsCloudColumn.PARTITION_ORDER = NumericField(
+    "partitionOrder", "partitionOrder"
+)
 SapAnalyticsCloudColumn.IS_CLUSTERED = BooleanField("isClustered", "isClustered")
 SapAnalyticsCloudColumn.IS_PRIMARY = BooleanField("isPrimary", "isPrimary")
 SapAnalyticsCloudColumn.IS_FOREIGN = BooleanField("isForeign", "isForeign")
@@ -2017,107 +2253,265 @@ SapAnalyticsCloudColumn.IS_NULLABLE = BooleanField("isNullable", "isNullable")
 SapAnalyticsCloudColumn.NUMERIC_SCALE = NumericField("numericScale", "numericScale")
 SapAnalyticsCloudColumn.MAX_LENGTH = NumericField("maxLength", "maxLength")
 SapAnalyticsCloudColumn.VALIDATIONS = KeywordField("validations", "validations")
-SapAnalyticsCloudColumn.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField("parentColumnQualifiedName", "parentColumnQualifiedName", "parentColumnQualifiedName.text")
-SapAnalyticsCloudColumn.PARENT_COLUMN_NAME = KeywordField("parentColumnName", "parentColumnName")
-SapAnalyticsCloudColumn.COLUMN_DISTINCT_VALUES_COUNT = NumericField("columnDistinctValuesCount", "columnDistinctValuesCount")
-SapAnalyticsCloudColumn.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField("columnDistinctValuesCountLong", "columnDistinctValuesCountLong")
-SapAnalyticsCloudColumn.COLUMN_DISTINCT_VALUES_PERCENTAGE = NumericField("columnDistinctValuesPercentage", "columnDistinctValuesPercentage")
-SapAnalyticsCloudColumn.COLUMN_HISTOGRAM = KeywordField("columnHistogram", "columnHistogram")
+SapAnalyticsCloudColumn.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField(
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName.text",
+)
+SapAnalyticsCloudColumn.PARENT_COLUMN_NAME = KeywordField(
+    "parentColumnName", "parentColumnName"
+)
+SapAnalyticsCloudColumn.COLUMN_DISTINCT_VALUES_COUNT = NumericField(
+    "columnDistinctValuesCount", "columnDistinctValuesCount"
+)
+SapAnalyticsCloudColumn.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField(
+    "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
+)
+SapAnalyticsCloudColumn.COLUMN_DISTINCT_VALUES_PERCENTAGE = NumericField(
+    "columnDistinctValuesPercentage", "columnDistinctValuesPercentage"
+)
+SapAnalyticsCloudColumn.COLUMN_HISTOGRAM = KeywordField(
+    "columnHistogram", "columnHistogram"
+)
 SapAnalyticsCloudColumn.COLUMN_MAX = NumericField("columnMax", "columnMax")
 SapAnalyticsCloudColumn.COLUMN_MIN = NumericField("columnMin", "columnMin")
 SapAnalyticsCloudColumn.COLUMN_MEAN = NumericField("columnMean", "columnMean")
 SapAnalyticsCloudColumn.COLUMN_SUM = NumericField("columnSum", "columnSum")
 SapAnalyticsCloudColumn.COLUMN_MEDIAN = NumericField("columnMedian", "columnMedian")
-SapAnalyticsCloudColumn.COLUMN_STANDARD_DEVIATION = NumericField("columnStandardDeviation", "columnStandardDeviation")
-SapAnalyticsCloudColumn.COLUMN_UNIQUE_VALUES_COUNT = NumericField("columnUniqueValuesCount", "columnUniqueValuesCount")
-SapAnalyticsCloudColumn.COLUMN_UNIQUE_VALUES_COUNT_LONG = NumericField("columnUniqueValuesCountLong", "columnUniqueValuesCountLong")
+SapAnalyticsCloudColumn.COLUMN_STANDARD_DEVIATION = NumericField(
+    "columnStandardDeviation", "columnStandardDeviation"
+)
+SapAnalyticsCloudColumn.COLUMN_UNIQUE_VALUES_COUNT = NumericField(
+    "columnUniqueValuesCount", "columnUniqueValuesCount"
+)
+SapAnalyticsCloudColumn.COLUMN_UNIQUE_VALUES_COUNT_LONG = NumericField(
+    "columnUniqueValuesCountLong", "columnUniqueValuesCountLong"
+)
 SapAnalyticsCloudColumn.COLUMN_AVERAGE = NumericField("columnAverage", "columnAverage")
-SapAnalyticsCloudColumn.COLUMN_AVERAGE_LENGTH = NumericField("columnAverageLength", "columnAverageLength")
-SapAnalyticsCloudColumn.COLUMN_DUPLICATE_VALUES_COUNT = NumericField("columnDuplicateValuesCount", "columnDuplicateValuesCount")
-SapAnalyticsCloudColumn.COLUMN_DUPLICATE_VALUES_COUNT_LONG = NumericField("columnDuplicateValuesCountLong", "columnDuplicateValuesCountLong")
-SapAnalyticsCloudColumn.COLUMN_MAXIMUM_STRING_LENGTH = NumericField("columnMaximumStringLength", "columnMaximumStringLength")
+SapAnalyticsCloudColumn.COLUMN_AVERAGE_LENGTH = NumericField(
+    "columnAverageLength", "columnAverageLength"
+)
+SapAnalyticsCloudColumn.COLUMN_DUPLICATE_VALUES_COUNT = NumericField(
+    "columnDuplicateValuesCount", "columnDuplicateValuesCount"
+)
+SapAnalyticsCloudColumn.COLUMN_DUPLICATE_VALUES_COUNT_LONG = NumericField(
+    "columnDuplicateValuesCountLong", "columnDuplicateValuesCountLong"
+)
+SapAnalyticsCloudColumn.COLUMN_MAXIMUM_STRING_LENGTH = NumericField(
+    "columnMaximumStringLength", "columnMaximumStringLength"
+)
 SapAnalyticsCloudColumn.COLUMN_MAXS = KeywordField("columnMaxs", "columnMaxs")
-SapAnalyticsCloudColumn.COLUMN_MINIMUM_STRING_LENGTH = NumericField("columnMinimumStringLength", "columnMinimumStringLength")
+SapAnalyticsCloudColumn.COLUMN_MINIMUM_STRING_LENGTH = NumericField(
+    "columnMinimumStringLength", "columnMinimumStringLength"
+)
 SapAnalyticsCloudColumn.COLUMN_MINS = KeywordField("columnMins", "columnMins")
-SapAnalyticsCloudColumn.COLUMN_MISSING_VALUES_COUNT = NumericField("columnMissingValuesCount", "columnMissingValuesCount")
-SapAnalyticsCloudColumn.COLUMN_MISSING_VALUES_COUNT_LONG = NumericField("columnMissingValuesCountLong", "columnMissingValuesCountLong")
-SapAnalyticsCloudColumn.COLUMN_MISSING_VALUES_PERCENTAGE = NumericField("columnMissingValuesPercentage", "columnMissingValuesPercentage")
-SapAnalyticsCloudColumn.COLUMN_UNIQUENESS_PERCENTAGE = NumericField("columnUniquenessPercentage", "columnUniquenessPercentage")
-SapAnalyticsCloudColumn.COLUMN_VARIANCE = NumericField("columnVariance", "columnVariance")
-SapAnalyticsCloudColumn.COLUMN_TOP_VALUES = KeywordField("columnTopValues", "columnTopValues")
-SapAnalyticsCloudColumn.COLUMN_MAX_VALUE = NumericField("columnMaxValue", "columnMaxValue")
-SapAnalyticsCloudColumn.COLUMN_MIN_VALUE = NumericField("columnMinValue", "columnMinValue")
-SapAnalyticsCloudColumn.COLUMN_MEAN_VALUE = NumericField("columnMeanValue", "columnMeanValue")
-SapAnalyticsCloudColumn.COLUMN_SUM_VALUE = NumericField("columnSumValue", "columnSumValue")
-SapAnalyticsCloudColumn.COLUMN_MEDIAN_VALUE = NumericField("columnMedianValue", "columnMedianValue")
-SapAnalyticsCloudColumn.COLUMN_STANDARD_DEVIATION_VALUE = NumericField("columnStandardDeviationValue", "columnStandardDeviationValue")
-SapAnalyticsCloudColumn.COLUMN_AVERAGE_VALUE = NumericField("columnAverageValue", "columnAverageValue")
-SapAnalyticsCloudColumn.COLUMN_VARIANCE_VALUE = NumericField("columnVarianceValue", "columnVarianceValue")
-SapAnalyticsCloudColumn.COLUMN_AVERAGE_LENGTH_VALUE = NumericField("columnAverageLengthValue", "columnAverageLengthValue")
-SapAnalyticsCloudColumn.COLUMN_DISTRIBUTION_HISTOGRAM = KeywordField("columnDistributionHistogram", "columnDistributionHistogram")
-SapAnalyticsCloudColumn.COLUMN_DEPTH_LEVEL = NumericField("columnDepthLevel", "columnDepthLevel")
-SapAnalyticsCloudColumn.NOSQL_COLLECTION_NAME = KeywordField("nosqlCollectionName", "nosqlCollectionName")
-SapAnalyticsCloudColumn.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField("nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName")
-SapAnalyticsCloudColumn.COLUMN_IS_MEASURE = BooleanField("columnIsMeasure", "columnIsMeasure")
-SapAnalyticsCloudColumn.COLUMN_MEASURE_TYPE = KeywordField("columnMeasureType", "columnMeasureType")
-SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_IS_MEASURE = BooleanField("columnAiInsightsIsMeasure", "columnAiInsightsIsMeasure")
-SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_MEASURE_TYPE = KeywordField("columnAiInsightsMeasureType", "columnAiInsightsMeasureType")
-SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_IS_DIMENSION = BooleanField("columnAiInsightsIsDimension", "columnAiInsightsIsDimension")
-SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_DIMENSION_TYPE = KeywordField("columnAiInsightsDimensionType", "columnAiInsightsDimensionType")
-SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_FOREIGN_KEY_COLUMN_QUALIFIED_NAME = KeywordField("columnAiInsightsForeignKeyColumnQualifiedName", "columnAiInsightsForeignKeyColumnQualifiedName")
+SapAnalyticsCloudColumn.COLUMN_MISSING_VALUES_COUNT = NumericField(
+    "columnMissingValuesCount", "columnMissingValuesCount"
+)
+SapAnalyticsCloudColumn.COLUMN_MISSING_VALUES_COUNT_LONG = NumericField(
+    "columnMissingValuesCountLong", "columnMissingValuesCountLong"
+)
+SapAnalyticsCloudColumn.COLUMN_MISSING_VALUES_PERCENTAGE = NumericField(
+    "columnMissingValuesPercentage", "columnMissingValuesPercentage"
+)
+SapAnalyticsCloudColumn.COLUMN_UNIQUENESS_PERCENTAGE = NumericField(
+    "columnUniquenessPercentage", "columnUniquenessPercentage"
+)
+SapAnalyticsCloudColumn.COLUMN_VARIANCE = NumericField(
+    "columnVariance", "columnVariance"
+)
+SapAnalyticsCloudColumn.COLUMN_TOP_VALUES = KeywordField(
+    "columnTopValues", "columnTopValues"
+)
+SapAnalyticsCloudColumn.COLUMN_MAX_VALUE = NumericField(
+    "columnMaxValue", "columnMaxValue"
+)
+SapAnalyticsCloudColumn.COLUMN_MIN_VALUE = NumericField(
+    "columnMinValue", "columnMinValue"
+)
+SapAnalyticsCloudColumn.COLUMN_MEAN_VALUE = NumericField(
+    "columnMeanValue", "columnMeanValue"
+)
+SapAnalyticsCloudColumn.COLUMN_SUM_VALUE = NumericField(
+    "columnSumValue", "columnSumValue"
+)
+SapAnalyticsCloudColumn.COLUMN_MEDIAN_VALUE = NumericField(
+    "columnMedianValue", "columnMedianValue"
+)
+SapAnalyticsCloudColumn.COLUMN_STANDARD_DEVIATION_VALUE = NumericField(
+    "columnStandardDeviationValue", "columnStandardDeviationValue"
+)
+SapAnalyticsCloudColumn.COLUMN_AVERAGE_VALUE = NumericField(
+    "columnAverageValue", "columnAverageValue"
+)
+SapAnalyticsCloudColumn.COLUMN_VARIANCE_VALUE = NumericField(
+    "columnVarianceValue", "columnVarianceValue"
+)
+SapAnalyticsCloudColumn.COLUMN_AVERAGE_LENGTH_VALUE = NumericField(
+    "columnAverageLengthValue", "columnAverageLengthValue"
+)
+SapAnalyticsCloudColumn.COLUMN_DISTRIBUTION_HISTOGRAM = KeywordField(
+    "columnDistributionHistogram", "columnDistributionHistogram"
+)
+SapAnalyticsCloudColumn.COLUMN_DEPTH_LEVEL = NumericField(
+    "columnDepthLevel", "columnDepthLevel"
+)
+SapAnalyticsCloudColumn.NOSQL_COLLECTION_NAME = KeywordField(
+    "nosqlCollectionName", "nosqlCollectionName"
+)
+SapAnalyticsCloudColumn.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField(
+    "nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName"
+)
+SapAnalyticsCloudColumn.COLUMN_IS_MEASURE = BooleanField(
+    "columnIsMeasure", "columnIsMeasure"
+)
+SapAnalyticsCloudColumn.COLUMN_MEASURE_TYPE = KeywordField(
+    "columnMeasureType", "columnMeasureType"
+)
+SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_IS_MEASURE = BooleanField(
+    "columnAiInsightsIsMeasure", "columnAiInsightsIsMeasure"
+)
+SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_MEASURE_TYPE = KeywordField(
+    "columnAiInsightsMeasureType", "columnAiInsightsMeasureType"
+)
+SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_IS_DIMENSION = BooleanField(
+    "columnAiInsightsIsDimension", "columnAiInsightsIsDimension"
+)
+SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_DIMENSION_TYPE = KeywordField(
+    "columnAiInsightsDimensionType", "columnAiInsightsDimensionType"
+)
+SapAnalyticsCloudColumn.COLUMN_AI_INSIGHTS_FOREIGN_KEY_COLUMN_QUALIFIED_NAME = (
+    KeywordField(
+        "columnAiInsightsForeignKeyColumnQualifiedName",
+        "columnAiInsightsForeignKeyColumnQualifiedName",
+    )
+)
 SapAnalyticsCloudColumn.QUERY_COUNT = NumericField("queryCount", "queryCount")
-SapAnalyticsCloudColumn.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
+SapAnalyticsCloudColumn.QUERY_USER_COUNT = NumericField(
+    "queryUserCount", "queryUserCount"
+)
 SapAnalyticsCloudColumn.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-SapAnalyticsCloudColumn.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+SapAnalyticsCloudColumn.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 SapAnalyticsCloudColumn.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-SapAnalyticsCloudColumn.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+SapAnalyticsCloudColumn.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 SapAnalyticsCloudColumn.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-SapAnalyticsCloudColumn.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+SapAnalyticsCloudColumn.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 SapAnalyticsCloudColumn.TABLE_NAME = KeywordField("tableName", "tableName")
-SapAnalyticsCloudColumn.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+SapAnalyticsCloudColumn.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 SapAnalyticsCloudColumn.VIEW_NAME = KeywordField("viewName", "viewName")
-SapAnalyticsCloudColumn.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-SapAnalyticsCloudColumn.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-SapAnalyticsCloudColumn.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+SapAnalyticsCloudColumn.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+SapAnalyticsCloudColumn.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+SapAnalyticsCloudColumn.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 SapAnalyticsCloudColumn.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-SapAnalyticsCloudColumn.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-SapAnalyticsCloudColumn.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+SapAnalyticsCloudColumn.LAST_PROFILED_AT = NumericField(
+    "lastProfiledAt", "lastProfiledAt"
+)
+SapAnalyticsCloudColumn.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 SapAnalyticsCloudColumn.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-SapAnalyticsCloudColumn.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
-SapAnalyticsCloudColumn.SQL_COALESCE_LAST_RUN_STATUS = KeywordField("sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus")
-SapAnalyticsCloudColumn.SQL_COALESCE_NODE_STATUS = KeywordField("sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus")
-SapAnalyticsCloudColumn.SQL_COALESCE_LAST_RUN_AT = NumericField("sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt")
-SapAnalyticsCloudColumn.SQL_COALESCE_NODE_TYPE = KeywordField("sqlCoalesceNodeType", "sqlCoalesceNodeType")
-SapAnalyticsCloudColumn.SQL_COALESCE_ENVIRONMENT_ID = KeywordField("sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId")
-SapAnalyticsCloudColumn.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField("sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName.text")
-SapAnalyticsCloudColumn.SQL_COALESCE_PROJECT_ID = KeywordField("sqlCoalesceProjectId", "sqlCoalesceProjectId")
-SapAnalyticsCloudColumn.SQL_COALESCE_PROJECT_NAME = KeywordTextField("sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text")
-SapAnalyticsCloudColumn.SQL_SHARE_QUALIFIED_NAMES = KeywordField("sqlShareQualifiedNames", "sqlShareQualifiedNames")
+SapAnalyticsCloudColumn.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+SapAnalyticsCloudColumn.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+SapAnalyticsCloudColumn.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+SapAnalyticsCloudColumn.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+SapAnalyticsCloudColumn.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+SapAnalyticsCloudColumn.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+SapAnalyticsCloudColumn.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+SapAnalyticsCloudColumn.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+SapAnalyticsCloudColumn.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+SapAnalyticsCloudColumn.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+SapAnalyticsCloudColumn.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
 SapAnalyticsCloudColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SapAnalyticsCloudColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+SapAnalyticsCloudColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 SapAnalyticsCloudColumn.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapAnalyticsCloudColumn.APPLICATION = RelationField("application")
 SapAnalyticsCloudColumn.APPLICATION_FIELD = RelationField("applicationField")
 SapAnalyticsCloudColumn.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
-SapAnalyticsCloudColumn.COSMOS_MONGO_DB_COLLECTION = RelationField("cosmosMongoDBCollection")
+SapAnalyticsCloudColumn.COSMOS_MONGO_DB_COLLECTION = RelationField(
+    "cosmosMongoDBCollection"
+)
 SapAnalyticsCloudColumn.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SapAnalyticsCloudColumn.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-SapAnalyticsCloudColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-SapAnalyticsCloudColumn.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SapAnalyticsCloudColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SapAnalyticsCloudColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SapAnalyticsCloudColumn.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+SapAnalyticsCloudColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+SapAnalyticsCloudColumn.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+SapAnalyticsCloudColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+SapAnalyticsCloudColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SapAnalyticsCloudColumn.METRICS = RelationField("metrics")
 SapAnalyticsCloudColumn.METRIC_TIMESTAMPS = RelationField("metricTimestamps")
-SapAnalyticsCloudColumn.DATA_QUALITY_METRIC_DIMENSIONS = RelationField("dataQualityMetricDimensions")
+SapAnalyticsCloudColumn.DATA_QUALITY_METRIC_DIMENSIONS = RelationField(
+    "dataQualityMetricDimensions"
+)
 SapAnalyticsCloudColumn.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SapAnalyticsCloudColumn.DQ_BASE_COLUMN_RULES = RelationField("dqBaseColumnRules")
-SapAnalyticsCloudColumn.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SapAnalyticsCloudColumn.DQ_REFERENCE_COLUMN_RULES = RelationField("dqReferenceColumnRules")
+SapAnalyticsCloudColumn.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+SapAnalyticsCloudColumn.DQ_REFERENCE_COLUMN_RULES = RelationField(
+    "dqReferenceColumnRules"
+)
 SapAnalyticsCloudColumn.DBT_MODELS = RelationField("dbtModels")
 SapAnalyticsCloudColumn.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 SapAnalyticsCloudColumn.DBT_TESTS = RelationField("dbtTests")
@@ -2125,9 +2519,13 @@ SapAnalyticsCloudColumn.DBT_SOURCES = RelationField("dbtSources")
 SapAnalyticsCloudColumn.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 SapAnalyticsCloudColumn.DBT_METRICS = RelationField("dbtMetrics")
 SapAnalyticsCloudColumn.DBT_MODEL_COLUMNS = RelationField("dbtModelColumns")
-SapAnalyticsCloudColumn.COLUMN_DBT_MODEL_COLUMNS = RelationField("columnDbtModelColumns")
+SapAnalyticsCloudColumn.COLUMN_DBT_MODEL_COLUMNS = RelationField(
+    "columnDbtModelColumns"
+)
 SapAnalyticsCloudColumn.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-SapAnalyticsCloudColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SapAnalyticsCloudColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SapAnalyticsCloudColumn.MEANINGS = RelationField("meanings")
 SapAnalyticsCloudColumn.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SapAnalyticsCloudColumn.MONGO_DB_COLLECTION = RelationField("mongoDBCollection")
@@ -2137,8 +2535,12 @@ SapAnalyticsCloudColumn.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields
 SapAnalyticsCloudColumn.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 SapAnalyticsCloudColumn.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SapAnalyticsCloudColumn.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-SapAnalyticsCloudColumn.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SapAnalyticsCloudColumn.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+SapAnalyticsCloudColumn.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+SapAnalyticsCloudColumn.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 SapAnalyticsCloudColumn.FILES = RelationField("files")
 SapAnalyticsCloudColumn.LINKS = RelationField("links")
 SapAnalyticsCloudColumn.README = RelationField("readme")
@@ -2152,14 +2554,26 @@ SapAnalyticsCloudColumn.MATERIALISED_VIEW = RelationField("materialisedView")
 SapAnalyticsCloudColumn.FOREIGN_KEY_TO = RelationField("foreignKeyTo")
 SapAnalyticsCloudColumn.FOREIGN_KEY_FROM = RelationField("foreignKeyFrom")
 SapAnalyticsCloudColumn.QUERIES = RelationField("queries")
-SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_MODEL = RelationField("sapAnalyticsCloudModel")
-SapAnalyticsCloudColumn.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+SapAnalyticsCloudColumn.SAP_ANALYTICS_CLOUD_MODEL = RelationField(
+    "sapAnalyticsCloudModel"
+)
+SapAnalyticsCloudColumn.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 SapAnalyticsCloudColumn.SNOWFLAKE_DYNAMIC_TABLE = RelationField("snowflakeDynamicTable")
-SapAnalyticsCloudColumn.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+SapAnalyticsCloudColumn.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 SapAnalyticsCloudColumn.SODA_CHECKS = RelationField("sodaChecks")
 SapAnalyticsCloudColumn.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SapAnalyticsCloudColumn.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-SapAnalyticsCloudColumn.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
-SapAnalyticsCloudColumn.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+SapAnalyticsCloudColumn.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
+    "sqlInsightOutgoingJoins"
+)
+SapAnalyticsCloudColumn.SQL_INSIGHT_INCOMING_JOINS = RelationField(
+    "sqlInsightIncomingJoins"
+)
 SapAnalyticsCloudColumn.SQL_INSIGHT_FILTERS = RelationField("sqlInsightFilters")
-SapAnalyticsCloudColumn.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
+SapAnalyticsCloudColumn.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

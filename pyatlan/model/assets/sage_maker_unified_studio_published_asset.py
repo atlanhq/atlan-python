@@ -380,9 +380,7 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
     )
 
 
-from .sage_maker_unified_studio_project import (
-    SageMakerUnifiedStudioProject,  # noqa: E402, F401
-)
+from .sage_maker_unified_studio_project import SageMakerUnifiedStudioProject  # noqa: E402, F401
 from .sage_maker_unified_studio_subscribed_asset import (
     SageMakerUnifiedStudioSubscribedAsset,
 )  # noqa: E402, F401

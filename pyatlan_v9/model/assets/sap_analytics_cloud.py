@@ -14,9 +14,8 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -47,7 +46,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -56,6 +58,7 @@ from .sap_analytics_cloud_related import RelatedSapAnalyticsCloud
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SapAnalyticsCloud(Asset):
@@ -127,7 +130,9 @@ class SapAnalyticsCloud(Asset):
     sap_analytics_cloud_workspace_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the SAP Analytics Cloud workspace that owns this asset."""
 
-    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Unique name of the SAP Analytics Cloud folder that directly contains this asset. Empty for a root-level folder and for a live model, neither of which is contained by a folder."""
 
     sap_analytics_cloud_parent_folder_name: Union[str, None, UnsetType] = UNSET
@@ -190,7 +195,9 @@ class SapAnalyticsCloud(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -199,10 +206,14 @@ class SapAnalyticsCloud(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -232,7 +243,9 @@ class SapAnalyticsCloud(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -244,7 +257,9 @@ class SapAnalyticsCloud(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -348,7 +363,9 @@ class SapAnalyticsCloud(Asset):
         return _sap_analytics_cloud_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SapAnalyticsCloud:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SapAnalyticsCloud:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -370,6 +387,7 @@ class SapAnalyticsCloud(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SapAnalyticsCloudAttributes(AssetAttributes):
     """SapAnalyticsCloud-specific attributes for nested API format."""
 
@@ -388,7 +406,9 @@ class SapAnalyticsCloudAttributes(AssetAttributes):
     sap_analytics_cloud_workspace_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the SAP Analytics Cloud workspace that owns this asset."""
 
-    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Unique name of the SAP Analytics Cloud folder that directly contains this asset. Empty for a root-level folder and for a live model, neither of which is contained by a folder."""
 
     sap_analytics_cloud_parent_folder_name: Union[str, None, UnsetType] = UNSET
@@ -417,6 +437,7 @@ class SapAnalyticsCloudAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class SapAnalyticsCloudRelationshipAttributes(AssetRelationshipAttributes):
     """SapAnalyticsCloud-specific relationship attributes for nested API format."""
@@ -454,7 +475,9 @@ class SapAnalyticsCloudRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -463,10 +486,14 @@ class SapAnalyticsCloudRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -496,7 +523,9 @@ class SapAnalyticsCloudRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -508,7 +537,9 @@ class SapAnalyticsCloudRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -520,13 +551,21 @@ class SapAnalyticsCloudRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SapAnalyticsCloudNested(AssetNested):
     """SapAnalyticsCloud in nested API format for high-performance serialization."""
 
     attributes: Union[SapAnalyticsCloudAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SapAnalyticsCloudRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SapAnalyticsCloudRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SapAnalyticsCloudRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        SapAnalyticsCloudRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        SapAnalyticsCloudRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SapAnalyticsCloudRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -569,16 +608,25 @@ _SAP_ANALYTICS_CLOUD_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sap_analytics_cloud_attrs(attrs: SapAnalyticsCloudAttributes, obj: SapAnalyticsCloud) -> None:
+
+def _populate_sap_analytics_cloud_attrs(
+    attrs: SapAnalyticsCloudAttributes, obj: SapAnalyticsCloud
+) -> None:
     """Populate SapAnalyticsCloud-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sap_analytics_cloud_resource_id = obj.sap_analytics_cloud_resource_id
     attrs.sap_analytics_cloud_object_id = obj.sap_analytics_cloud_object_id
-    attrs.sap_analytics_cloud_repository_partition = obj.sap_analytics_cloud_repository_partition
+    attrs.sap_analytics_cloud_repository_partition = (
+        obj.sap_analytics_cloud_repository_partition
+    )
     attrs.sap_analytics_cloud_workspace_id = obj.sap_analytics_cloud_workspace_id
     attrs.sap_analytics_cloud_workspace_name = obj.sap_analytics_cloud_workspace_name
-    attrs.sap_analytics_cloud_parent_folder_qualified_name = obj.sap_analytics_cloud_parent_folder_qualified_name
-    attrs.sap_analytics_cloud_parent_folder_name = obj.sap_analytics_cloud_parent_folder_name
+    attrs.sap_analytics_cloud_parent_folder_qualified_name = (
+        obj.sap_analytics_cloud_parent_folder_qualified_name
+    )
+    attrs.sap_analytics_cloud_parent_folder_name = (
+        obj.sap_analytics_cloud_parent_folder_name
+    )
     attrs.sap_technical_name = obj.sap_technical_name
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
@@ -588,16 +636,25 @@ def _populate_sap_analytics_cloud_attrs(attrs: SapAnalyticsCloudAttributes, obj:
     attrs.sap_field_order = obj.sap_field_order
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_sap_analytics_cloud_attrs(attrs: SapAnalyticsCloudAttributes) -> dict:
     """Extract all SapAnalyticsCloud attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["sap_analytics_cloud_resource_id"] = attrs.sap_analytics_cloud_resource_id
     result["sap_analytics_cloud_object_id"] = attrs.sap_analytics_cloud_object_id
-    result["sap_analytics_cloud_repository_partition"] = attrs.sap_analytics_cloud_repository_partition
+    result["sap_analytics_cloud_repository_partition"] = (
+        attrs.sap_analytics_cloud_repository_partition
+    )
     result["sap_analytics_cloud_workspace_id"] = attrs.sap_analytics_cloud_workspace_id
-    result["sap_analytics_cloud_workspace_name"] = attrs.sap_analytics_cloud_workspace_name
-    result["sap_analytics_cloud_parent_folder_qualified_name"] = attrs.sap_analytics_cloud_parent_folder_qualified_name
-    result["sap_analytics_cloud_parent_folder_name"] = attrs.sap_analytics_cloud_parent_folder_name
+    result["sap_analytics_cloud_workspace_name"] = (
+        attrs.sap_analytics_cloud_workspace_name
+    )
+    result["sap_analytics_cloud_parent_folder_qualified_name"] = (
+        attrs.sap_analytics_cloud_parent_folder_qualified_name
+    )
+    result["sap_analytics_cloud_parent_folder_name"] = (
+        attrs.sap_analytics_cloud_parent_folder_name
+    )
     result["sap_technical_name"] = attrs.sap_technical_name
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
@@ -608,18 +665,23 @@ def _extract_sap_analytics_cloud_attrs(attrs: SapAnalyticsCloudAttributes) -> di
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sap_analytics_cloud_to_nested(sap_analytics_cloud: SapAnalyticsCloud) -> SapAnalyticsCloudNested:
+def _sap_analytics_cloud_to_nested(
+    sap_analytics_cloud: SapAnalyticsCloud,
+) -> SapAnalyticsCloudNested:
     """Convert flat SapAnalyticsCloud to nested format."""
     attrs = SapAnalyticsCloudAttributes()
     _populate_sap_analytics_cloud_attrs(attrs, sap_analytics_cloud)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sap_analytics_cloud, _SAP_ANALYTICS_CLOUD_REL_FIELDS, SapAnalyticsCloudRelationshipAttributes
+        sap_analytics_cloud,
+        _SAP_ANALYTICS_CLOUD_REL_FIELDS,
+        SapAnalyticsCloudRelationshipAttributes,
     )
     return SapAnalyticsCloudNested(
         guid=sap_analytics_cloud.guid,
@@ -650,16 +712,23 @@ def _sap_analytics_cloud_to_nested(sap_analytics_cloud: SapAnalyticsCloud) -> Sa
         remove_relationship_attributes=remove_rels,
     )
 
-def _sap_analytics_cloud_from_nested(nested: SapAnalyticsCloudNested) -> SapAnalyticsCloud:
+
+def _sap_analytics_cloud_from_nested(
+    nested: SapAnalyticsCloudNested,
+) -> SapAnalyticsCloud:
     """Convert nested format to flat SapAnalyticsCloud."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SapAnalyticsCloudAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SapAnalyticsCloudAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ANALYTICS_CLOUD_REL_FIELDS,
-        SapAnalyticsCloudRelationshipAttributes
+        SapAnalyticsCloudRelationshipAttributes,
     )
     return SapAnalyticsCloud(
         guid=nested.guid,
@@ -689,15 +758,21 @@ def _sap_analytics_cloud_from_nested(nested: SapAnalyticsCloudNested) -> SapAnal
         **merged_rels,
     )
 
-def _sap_analytics_cloud_to_nested_bytes(sap_analytics_cloud: SapAnalyticsCloud, serde: Serde) -> bytes:
+
+def _sap_analytics_cloud_to_nested_bytes(
+    sap_analytics_cloud: SapAnalyticsCloud, serde: Serde
+) -> bytes:
     """Convert flat SapAnalyticsCloud to nested JSON bytes."""
     return serde.encode(_sap_analytics_cloud_to_nested(sap_analytics_cloud))
 
 
-def _sap_analytics_cloud_from_nested_bytes(data: bytes, serde: Serde) -> SapAnalyticsCloud:
+def _sap_analytics_cloud_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SapAnalyticsCloud:
     """Convert nested JSON bytes to flat SapAnalyticsCloud."""
     nested = serde.decode(data, SapAnalyticsCloudNested)
     return _sap_analytics_cloud_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -708,21 +783,42 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_RESOURCE_ID = KeywordField("sapAnalyticsCloudResourceId", "sapAnalyticsCloudResourceId")
-SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_OBJECT_ID = KeywordField("sapAnalyticsCloudObjectId", "sapAnalyticsCloudObjectId")
-SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_REPOSITORY_PARTITION = KeywordField("sapAnalyticsCloudRepositoryPartition", "sapAnalyticsCloudRepositoryPartition")
-SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_WORKSPACE_ID = KeywordField("sapAnalyticsCloudWorkspaceId", "sapAnalyticsCloudWorkspaceId")
-SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_WORKSPACE_NAME = KeywordField("sapAnalyticsCloudWorkspaceName", "sapAnalyticsCloudWorkspaceName")
-SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_PARENT_FOLDER_QUALIFIED_NAME = KeywordField("sapAnalyticsCloudParentFolderQualifiedName", "sapAnalyticsCloudParentFolderQualifiedName")
-SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_PARENT_FOLDER_NAME = KeywordField("sapAnalyticsCloudParentFolderName", "sapAnalyticsCloudParentFolderName")
-SapAnalyticsCloud.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
+SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_RESOURCE_ID = KeywordField(
+    "sapAnalyticsCloudResourceId", "sapAnalyticsCloudResourceId"
+)
+SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_OBJECT_ID = KeywordField(
+    "sapAnalyticsCloudObjectId", "sapAnalyticsCloudObjectId"
+)
+SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_REPOSITORY_PARTITION = KeywordField(
+    "sapAnalyticsCloudRepositoryPartition", "sapAnalyticsCloudRepositoryPartition"
+)
+SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_WORKSPACE_ID = KeywordField(
+    "sapAnalyticsCloudWorkspaceId", "sapAnalyticsCloudWorkspaceId"
+)
+SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_WORKSPACE_NAME = KeywordField(
+    "sapAnalyticsCloudWorkspaceName", "sapAnalyticsCloudWorkspaceName"
+)
+SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
+    "sapAnalyticsCloudParentFolderQualifiedName",
+    "sapAnalyticsCloudParentFolderQualifiedName",
+)
+SapAnalyticsCloud.SAP_ANALYTICS_CLOUD_PARENT_FOLDER_NAME = KeywordField(
+    "sapAnalyticsCloudParentFolderName", "sapAnalyticsCloudParentFolderName"
+)
+SapAnalyticsCloud.SAP_TECHNICAL_NAME = KeywordField(
+    "sapTechnicalName", "sapTechnicalName"
+)
 SapAnalyticsCloud.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapAnalyticsCloud.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
-SapAnalyticsCloud.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponentName")
+SapAnalyticsCloud.SAP_COMPONENT_NAME = KeywordField(
+    "sapComponentName", "sapComponentName"
+)
 SapAnalyticsCloud.SAP_DATA_TYPE = KeywordField("sapDataType", "sapDataType")
 SapAnalyticsCloud.SAP_FIELD_COUNT = NumericField("sapFieldCount", "sapFieldCount")
 SapAnalyticsCloud.SAP_FIELD_ORDER = NumericField("sapFieldOrder", "sapFieldOrder")
-SapAnalyticsCloud.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SapAnalyticsCloud.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SapAnalyticsCloud.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SapAnalyticsCloud.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SapAnalyticsCloud.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -730,15 +826,21 @@ SapAnalyticsCloud.APPLICATION = RelationField("application")
 SapAnalyticsCloud.APPLICATION_FIELD = RelationField("applicationField")
 SapAnalyticsCloud.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SapAnalyticsCloud.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SapAnalyticsCloud.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SapAnalyticsCloud.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SapAnalyticsCloud.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SapAnalyticsCloud.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SapAnalyticsCloud.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SapAnalyticsCloud.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SapAnalyticsCloud.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SapAnalyticsCloud.METRICS = RelationField("metrics")
 SapAnalyticsCloud.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SapAnalyticsCloud.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SapAnalyticsCloud.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SapAnalyticsCloud.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SapAnalyticsCloud.MEANINGS = RelationField("meanings")
 SapAnalyticsCloud.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SapAnalyticsCloud.MC_MONITORS = RelationField("mcMonitors")

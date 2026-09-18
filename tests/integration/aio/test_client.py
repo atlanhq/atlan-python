@@ -29,8 +29,8 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Connection,
     Database,
-    DataContract,
     KnowledgeFile,
+    DataContract,
     Schema,
     Table,
 )

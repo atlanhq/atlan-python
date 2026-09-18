@@ -621,9 +621,7 @@ from .databricks_volume import DatabricksVolume  # noqa: E402, F401
 from .function import Function  # noqa: E402, F401
 from .materialised_view import MaterialisedView  # noqa: E402, F401
 from .procedure import Procedure  # noqa: E402, F401
-from .sap_datasphere_replication_flow import (
-    SapDatasphereReplicationFlow,  # noqa: E402, F401
-)
+from .sap_datasphere_replication_flow import SapDatasphereReplicationFlow  # noqa: E402, F401
 from .snowflake_a_i_model_context import SnowflakeAIModelContext  # noqa: E402, F401
 from .snowflake_pipe import SnowflakePipe  # noqa: E402, F401
 from .snowflake_semantic_view import SnowflakeSemanticView  # noqa: E402, F401

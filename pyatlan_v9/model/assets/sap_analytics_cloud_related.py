@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -53,7 +52,9 @@ class RelatedSapAnalyticsCloud(RelatedSAP):
     sap_analytics_cloud_workspace_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the SAP Analytics Cloud workspace that owns this asset."""
 
-    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_analytics_cloud_parent_folder_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Unique name of the SAP Analytics Cloud folder that directly contains this asset. Empty for a root-level folder and for a live model, neither of which is contained by a folder."""
 
     sap_analytics_cloud_parent_folder_name: Union[str, None, UnsetType] = UNSET
@@ -63,6 +64,7 @@ class RelatedSapAnalyticsCloud(RelatedSAP):
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
             self.type_name = "SapAnalyticsCloud"
+
 
 class RelatedSapAnalyticsCloudFolder(RelatedSapAnalyticsCloud):
     """
@@ -78,6 +80,7 @@ class RelatedSapAnalyticsCloudFolder(RelatedSapAnalyticsCloud):
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
             self.type_name = "SapAnalyticsCloudFolder"
+
 
 class RelatedSapAnalyticsCloudModel(RelatedSapAnalyticsCloud):
     """
@@ -130,6 +133,7 @@ class RelatedSapAnalyticsCloudModel(RelatedSapAnalyticsCloud):
         if self.type_name is UNSET:
             self.type_name = "SapAnalyticsCloudModel"
 
+
 class RelatedSapAnalyticsCloudStory(RelatedSapAnalyticsCloud):
     """
     Related entity reference for SapAnalyticsCloudStory assets.
@@ -150,6 +154,7 @@ class RelatedSapAnalyticsCloudStory(RelatedSapAnalyticsCloud):
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
             self.type_name = "SapAnalyticsCloudStory"
+
 
 class RelatedSapAnalyticsCloudColumn(RelatedSapAnalyticsCloud):
     """

@@ -132,6 +132,4 @@ class FabricSemanticModelTable(Fabric):
 
 
 from .fabric_semantic_model import FabricSemanticModel  # noqa: E402, F401
-from .fabric_semantic_model_table_column import (
-    FabricSemanticModelTableColumn,  # noqa: E402, F401
-)
+from .fabric_semantic_model_table_column import FabricSemanticModelTableColumn  # noqa: E402, F401

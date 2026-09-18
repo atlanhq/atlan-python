@@ -115,8 +115,6 @@ class DatabricksExternalLocation(Databricks):
     )
 
 
-from .databricks_external_location_path import (
-    DatabricksExternalLocationPath,  # noqa: E402, F401
-)
+from .databricks_external_location_path import DatabricksExternalLocationPath  # noqa: E402, F401
 
 DatabricksExternalLocation.Attributes.update_forward_refs()

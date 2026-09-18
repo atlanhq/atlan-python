@@ -2138,12 +2138,8 @@ from .mongo_d_b_database import MongoDBDatabase  # noqa: E402, F401
 from .procedure import Procedure  # noqa: E402, F401
 from .query import Query  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401
-from .snowflake_semantic_logical_table import (
-    SnowflakeSemanticLogicalTable,  # noqa: E402, F401
-)
-from .sql_insight_business_question import (
-    SqlInsightBusinessQuestion,  # noqa: E402, F401
-)
+from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable  # noqa: E402, F401
+from .sql_insight_business_question import SqlInsightBusinessQuestion  # noqa: E402, F401
 from .sql_insight_join import SqlInsightJoin  # noqa: E402, F401
 from .table import Table  # noqa: E402, F401
 from .table_partition import TablePartition  # noqa: E402, F401

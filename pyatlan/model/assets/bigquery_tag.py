@@ -1156,12 +1156,8 @@ from .core.dbt_model import DbtModel  # noqa: E402, F401
 from .core.dbt_seed import DbtSeed  # noqa: E402, F401
 from .core.dbt_source import DbtSource  # noqa: E402, F401
 from .core.dbt_test import DbtTest  # noqa: E402, F401
-from .core.snowflake_semantic_logical_table import (
-    SnowflakeSemanticLogicalTable,  # noqa: E402, F401
-)
-from .core.sql_insight_business_question import (
-    SqlInsightBusinessQuestion,  # noqa: E402, F401
-)
+from .core.snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable  # noqa: E402, F401
+from .core.sql_insight_business_question import SqlInsightBusinessQuestion  # noqa: E402, F401
 from .core.sql_insight_join import SqlInsightJoin  # noqa: E402, F401
 
 BigqueryTag.Attributes.update_forward_refs()

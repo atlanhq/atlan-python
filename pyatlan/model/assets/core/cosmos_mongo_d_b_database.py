@@ -1289,10 +1289,6 @@ from .dbt_test import DbtTest  # noqa: E402, F401
 from .fabric_workspace import FabricWorkspace  # noqa: E402, F401
 from .mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401
-from .snowflake_semantic_logical_table import (
-    SnowflakeSemanticLogicalTable,  # noqa: E402, F401
-)
-from .sql_insight_business_question import (
-    SqlInsightBusinessQuestion,  # noqa: E402, F401
-)
+from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable  # noqa: E402, F401
+from .sql_insight_business_question import SqlInsightBusinessQuestion  # noqa: E402, F401
 from .sql_insight_join import SqlInsightJoin  # noqa: E402, F401

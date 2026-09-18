@@ -24,12 +24,6 @@ from pyatlan.client.protocol import (
 # Admin shared logic classes
 from .admin import AdminGetAdminEvents, AdminGetKeycloakEvents
 
-# Role shared logic classes
-from .approval_workflow import (
-    ApprovalWorkflowBulkActionRequests,
-    ApprovalWorkflowGetRequest,
-)
-
 # Asset shared logic classes
 from .asset import (
     DeleteByGuid,
@@ -122,6 +116,12 @@ from .open_lineage import (
 
 # Query shared logic classes
 from .query import QueryStream
+
+# Role shared logic classes
+from .approval_workflow import (
+    ApprovalWorkflowBulkActionRequests,
+    ApprovalWorkflowGetRequest,
+)
 from .requests import (
     RequestsAction,
     RequestsCreate,

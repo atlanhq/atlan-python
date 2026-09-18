@@ -7,17 +7,16 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 
 from pydantic.v1 import BaseModel, Extra, Field, root_validator
-
 from pyatlan.model.enums import (
-    AppWorkflowRunStatus,
-    AssetSmusMetadataFormStatus,
     AtlanConnectorType,
     BadgeComparisonOperator,
     BadgeConditionColor,
-    DataQualityRuleThresholdUnit,
+    SourceCostUnitType,
     FormFieldDimension,
     FormFieldType,
-    SourceCostUnitType,
+    DataQualityRuleThresholdUnit,
+    AppWorkflowRunStatus,
+    AssetSmusMetadataFormStatus,
 )
 from pyatlan.model.utils import to_camel_case
 from pyatlan.utils import select_optional_set_fields, validate_required_fields
@@ -25,8 +24,8 @@ from pyatlan.utils import select_optional_set_fields, validate_required_fields
 if TYPE_CHECKING:
     from pyatlan.cache.aio.source_tag_cache import AsyncSourceTagName
     from pyatlan.cache.source_tag_cache import SourceTagName
-    from pyatlan.client.aio import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
+    from pyatlan.client.aio import AsyncAtlanClient
 
 
 class AtlanObject(BaseModel):

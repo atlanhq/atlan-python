@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+
 from typing import no_type_check
 from unittest.mock import MagicMock
 
