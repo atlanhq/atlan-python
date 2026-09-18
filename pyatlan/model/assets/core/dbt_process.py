@@ -183,7 +183,7 @@ class DbtProcess(Process):
         "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
     )
     """
-    
+
     """
     AST: ClassVar[TextField] = TextField("ast", "ast")
     """

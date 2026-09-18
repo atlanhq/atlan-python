@@ -95,7 +95,6 @@ class CubeDimension(Asset):
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
-    CUBE_DIMENSIONS: ClassVar[Any] = None
     CUBE: ClassVar[Any] = None
     CUBE_HIERARCHIES: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -201,9 +200,6 @@ class CubeDimension(Asset):
 
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
-
-    cube_dimensions: Union[List[RelatedCubeDimension], None, UnsetType] = UNSET
-    """Individual dimensions contained in the cube."""
 
     cube: Union[RelatedCube, None, UnsetType] = UNSET
     """Cube containing the dimension."""
@@ -482,9 +478,6 @@ class CubeDimensionRelationshipAttributes(AssetRelationshipAttributes):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    cube_dimensions: Union[List[RelatedCubeDimension], None, UnsetType] = UNSET
-    """Individual dimensions contained in the cube."""
-
     cube: Union[RelatedCube, None, UnsetType] = UNSET
     """Cube containing the dimension."""
 
@@ -576,7 +569,6 @@ _CUBE_DIMENSION_REL_FIELDS: List[str] = [
     "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
-    "cube_dimensions",
     "cube",
     "cube_hierarchies",
     "partial_child_fields",
@@ -780,7 +772,6 @@ CubeDimension.MEANINGS = RelationField("meanings")
 CubeDimension.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 CubeDimension.MC_MONITORS = RelationField("mcMonitors")
 CubeDimension.MC_INCIDENTS = RelationField("mcIncidents")
-CubeDimension.CUBE_DIMENSIONS = RelationField("cubeDimensions")
 CubeDimension.CUBE = RelationField("cube")
 CubeDimension.CUBE_HIERARCHIES = RelationField("cubeHierarchies")
 CubeDimension.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

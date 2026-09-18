@@ -66,7 +66,7 @@ class CognosDatasource(Asset):
     Instance of a Cognos datasource in Atlan.
     """
 
-    COGNOS_CONNECTION_STRING: ClassVar[Any] = None
+    COGNOS_DATASOURCE_CONNECTION_STRING: ClassVar[Any] = None
     COGNOS_ID: ClassVar[Any] = None
     COGNOS_PATH: ClassVar[Any] = None
     COGNOS_PARENT_NAME: ClassVar[Any] = None
@@ -111,7 +111,7 @@ class CognosDatasource(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    cognos_connection_string: Union[str, None, UnsetType] = UNSET
+    cognos_datasource_connection_string: Union[str, None, UnsetType] = UNSET
     """Connection string of a Cognos datasource."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -373,7 +373,7 @@ class CognosDatasource(Asset):
 class CognosDatasourceAttributes(AssetAttributes):
     """CognosDatasource-specific attributes for nested API format."""
 
-    cognos_connection_string: Union[str, None, UnsetType] = UNSET
+    cognos_datasource_connection_string: Union[str, None, UnsetType] = UNSET
     """Connection string of a Cognos datasource."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -582,7 +582,7 @@ def _populate_cognos_datasource_attrs(
 ) -> None:
     """Populate CognosDatasource-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.cognos_connection_string = obj.cognos_connection_string
+    attrs.cognos_datasource_connection_string = obj.cognos_datasource_connection_string
     attrs.cognos_id = obj.cognos_id
     attrs.cognos_path = obj.cognos_path
     attrs.cognos_parent_name = obj.cognos_parent_name
@@ -598,7 +598,9 @@ def _populate_cognos_datasource_attrs(
 def _extract_cognos_datasource_attrs(attrs: CognosDatasourceAttributes) -> dict:
     """Extract all CognosDatasource attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cognos_connection_string"] = attrs.cognos_connection_string
+    result["cognos_datasource_connection_string"] = (
+        attrs.cognos_datasource_connection_string
+    )
     result["cognos_id"] = attrs.cognos_id
     result["cognos_path"] = attrs.cognos_path
     result["cognos_parent_name"] = attrs.cognos_parent_name
@@ -726,8 +728,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CognosDatasource.COGNOS_CONNECTION_STRING = KeywordField(
-    "cognosConnectionString", "cognosConnectionString"
+CognosDatasource.COGNOS_DATASOURCE_CONNECTION_STRING = KeywordField(
+    "cognosDatasourceConnectionString", "cognosDatasourceConnectionString"
 )
 CognosDatasource.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosDatasource.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")
