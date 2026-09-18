@@ -43,6 +43,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .bigquery_related import RelatedBigqueryRoutine
 from .catalog_related import RelatedCatalog
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
@@ -89,6 +90,7 @@ class ColumnProcess(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    BIGQUERY_ROUTINES: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -160,6 +162,9 @@ class ColumnProcess(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines used by this process."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -574,6 +579,9 @@ class ColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines used by this process."""
+
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
@@ -707,6 +715,7 @@ _COLUMN_PROCESS_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "bigquery_routines",
     "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -903,6 +912,7 @@ ColumnProcess.AIRFLOW_TASKS = RelationField("airflowTasks")
 ColumnProcess.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ColumnProcess.APPLICATION = RelationField("application")
 ColumnProcess.APPLICATION_FIELD = RelationField("applicationField")
+ColumnProcess.BIGQUERY_ROUTINES = RelationField("bigqueryRoutines")
 ColumnProcess.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 ColumnProcess.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 ColumnProcess.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(

@@ -84,7 +84,7 @@ class DatabricksAIModelContext(Asset):
     Instance of an ai model in databricks.
     """
 
-    DATABRICKS_METASTORE_ID: ClassVar[Any] = None
+    DATABRICKS_AI_MODEL_CONTEXT_METASTORE_ID: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -177,7 +177,9 @@ class DatabricksAIModelContext(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    databricks_metastore_id: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_context_metastore_id: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelContextMetastoreId")
+    )
     """The id of the model, common across versions."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -637,7 +639,9 @@ class DatabricksAIModelContext(Asset):
 class DatabricksAIModelContextAttributes(AssetAttributes):
     """DatabricksAIModelContext-specific attributes for nested API format."""
 
-    databricks_metastore_id: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_context_metastore_id: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelContextMetastoreId")
+    )
     """The id of the model, common across versions."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -1036,7 +1040,9 @@ def _populate_databricks_ai_model_context_attrs(
 ) -> None:
     """Populate DatabricksAIModelContext-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_metastore_id = obj.databricks_metastore_id
+    attrs.databricks_ai_model_context_metastore_id = (
+        obj.databricks_ai_model_context_metastore_id
+    )
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1096,7 +1102,9 @@ def _extract_databricks_ai_model_context_attrs(
 ) -> dict:
     """Extract all DatabricksAIModelContext attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_metastore_id"] = attrs.databricks_metastore_id
+    result["databricks_ai_model_context_metastore_id"] = (
+        attrs.databricks_ai_model_context_metastore_id
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1281,8 +1289,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksAIModelContext.DATABRICKS_METASTORE_ID = KeywordField(
-    "databricksMetastoreId", "databricksMetastoreId"
+DatabricksAIModelContext.DATABRICKS_AI_MODEL_CONTEXT_METASTORE_ID = KeywordField(
+    "databricksAIModelContextMetastoreId", "databricksAIModelContextMetastoreId"
 )
 DatabricksAIModelContext.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksAIModelContext.QUERY_USER_COUNT = NumericField(

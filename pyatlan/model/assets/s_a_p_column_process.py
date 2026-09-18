@@ -94,7 +94,7 @@ class SAPColumnProcess(SAP):
         "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
     )
     """
-    
+
     """
     AST: ClassVar[TextField] = TextField("ast", "ast")
     """
@@ -644,7 +644,7 @@ from .core.matillion_component import MatillionComponent  # noqa: E402, F401
 from .core.power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
 from .core.procedure import Procedure  # noqa: E402, F401
 from .core.process import Process  # noqa: E402, F401
-from .s_a_p_b_w_transformation import SAPBWTransformation  # noqa: E402, F401
 from .core.spark_job import SparkJob  # noqa: E402, F401
+from .s_a_p_b_w_transformation import SAPBWTransformation  # noqa: E402, F401
 
 SAPColumnProcess.Attributes.update_forward_refs()

@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import (
     RelatedFabricSemanticModel,
+    RelatedFabricSemanticModelMeasure,
     RelatedFabricSemanticModelTable,
     RelatedFabricSemanticModelTableColumn,
 )
@@ -93,6 +94,7 @@ class FabricSemanticModelTable(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     FABRIC_SEMANTIC_MODEL: ClassVar[Any] = None
     FABRIC_SEMANTIC_MODEL_TABLE_COLUMNS: ClassVar[Any] = None
+    FABRIC_SEMANTIC_MODEL_MEASURES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
@@ -183,6 +185,11 @@ class FabricSemanticModelTable(Asset):
         List[RelatedFabricSemanticModelTableColumn], None, UnsetType
     ] = UNSET
     """Individual semantic model table columns contained in the semantic model table."""
+
+    fabric_semantic_model_measures: Union[
+        List[RelatedFabricSemanticModelMeasure], None, UnsetType
+    ] = UNSET
+    """Individual semantic model measures contained in the semantic model table."""
 
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
@@ -460,6 +467,11 @@ class FabricSemanticModelTableRelationshipAttributes(AssetRelationshipAttributes
     ] = UNSET
     """Individual semantic model table columns contained in the semantic model table."""
 
+    fabric_semantic_model_measures: Union[
+        List[RelatedFabricSemanticModelMeasure], None, UnsetType
+    ] = UNSET
+    """Individual semantic model measures contained in the semantic model table."""
+
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
     ] = UNSET
@@ -559,6 +571,7 @@ _FABRIC_SEMANTIC_MODEL_TABLE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "fabric_semantic_model",
     "fabric_semantic_model_table_columns",
+    "fabric_semantic_model_measures",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "knowledge_linked_files",
@@ -773,6 +786,9 @@ FabricSemanticModelTable.DQ_REFERENCE_DATASET_RULES = RelationField(
 FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL = RelationField("fabricSemanticModel")
 FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL_TABLE_COLUMNS = RelationField(
     "fabricSemanticModelTableColumns"
+)
+FabricSemanticModelTable.FABRIC_SEMANTIC_MODEL_MEASURES = RelationField(
+    "fabricSemanticModelMeasures"
 )
 FabricSemanticModelTable.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
