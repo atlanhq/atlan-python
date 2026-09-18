@@ -10,7 +10,9 @@ from pyatlan._pydantic_v1_perf import install as _install_pydantic_v1_perf
 
 _install_pydantic_v1_perf()
 
-from pyatlan.utils import REQUEST_ID_FILTER  # noqa: E402  (perf patch must install first)
+from pyatlan.utils import (
+    REQUEST_ID_FILTER,  # noqa: E402  (perf patch must install first)
+)
 
 # Version information
 try:
