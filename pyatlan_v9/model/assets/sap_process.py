@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .bigquery_related import RelatedBigqueryRoutine
 from .catalog_related import RelatedCatalog
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
@@ -99,6 +100,7 @@ class SAPProcess(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    BIGQUERY_ROUTINES: ClassVar[Any] = None
     CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -208,6 +210,9 @@ class SAPProcess(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines used by this process."""
 
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
@@ -532,6 +537,9 @@ class SAPProcessRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    bigquery_routines: Union[List[RelatedBigqueryRoutine], None, UnsetType] = UNSET
+    """Routines used by this process."""
+
     context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
     """Context repositories that use this asset as input."""
 
@@ -691,6 +699,7 @@ _SAP_PROCESS_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "bigquery_routines",
     "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -916,6 +925,7 @@ SAPProcess.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SAPProcess.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SAPProcess.APPLICATION = RelationField("application")
 SAPProcess.APPLICATION_FIELD = RelationField("applicationField")
+SAPProcess.BIGQUERY_ROUTINES = RelationField("bigqueryRoutines")
 SAPProcess.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SAPProcess.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SAPProcess.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")

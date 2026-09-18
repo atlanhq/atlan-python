@@ -73,7 +73,7 @@ class SisenseDashboard(Asset):
     """
 
     SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
-    SISENSE_WIDGET_COUNT: ClassVar[Any] = None
+    SISENSE_DASHBOARD_WIDGET_COUNT: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -115,7 +115,7 @@ class SisenseDashboard(Asset):
     sisense_dashboard_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this dashboard exists."""
 
-    sisense_widget_count: Union[int, None, UnsetType] = UNSET
+    sisense_dashboard_widget_count: Union[int, None, UnsetType] = UNSET
     """Number of widgets in this dashboard."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -374,7 +374,7 @@ class SisenseDashboardAttributes(AssetAttributes):
     sisense_dashboard_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this dashboard exists."""
 
-    sisense_widget_count: Union[int, None, UnsetType] = UNSET
+    sisense_dashboard_widget_count: Union[int, None, UnsetType] = UNSET
     """Number of widgets in this dashboard."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -571,7 +571,7 @@ def _populate_sisense_dashboard_attrs(
     attrs.sisense_dashboard_folder_qualified_name = (
         obj.sisense_dashboard_folder_qualified_name
     )
-    attrs.sisense_widget_count = obj.sisense_widget_count
+    attrs.sisense_dashboard_widget_count = obj.sisense_dashboard_widget_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -581,7 +581,7 @@ def _extract_sisense_dashboard_attrs(attrs: SisenseDashboardAttributes) -> dict:
     result["sisense_dashboard_folder_qualified_name"] = (
         attrs.sisense_dashboard_folder_qualified_name
     )
-    result["sisense_widget_count"] = attrs.sisense_widget_count
+    result["sisense_dashboard_widget_count"] = attrs.sisense_dashboard_widget_count
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -705,8 +705,8 @@ SisenseDashboard.SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME = KeywordTextField(
     "sisenseDashboardFolderQualifiedName",
     "sisenseDashboardFolderQualifiedName.text",
 )
-SisenseDashboard.SISENSE_WIDGET_COUNT = NumericField(
-    "sisenseWidgetCount", "sisenseWidgetCount"
+SisenseDashboard.SISENSE_DASHBOARD_WIDGET_COUNT = NumericField(
+    "sisenseDashboardWidgetCount", "sisenseDashboardWidgetCount"
 )
 SisenseDashboard.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
