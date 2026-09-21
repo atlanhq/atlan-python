@@ -8,14 +8,14 @@ Knowledge module exports.
 This module provides convenient imports for all Knowledge types and their Related variants.
 """
 
+from .knowledge import Knowledge
+from .knowledge_file import KnowledgeFile
+from .knowledge_folder import KnowledgeFolder
 from .knowledge_related import (
     RelatedKnowledge,
     RelatedKnowledgeFile,
     RelatedKnowledgeFolder,
 )
-from .knowledge import Knowledge
-from .knowledge_file import KnowledgeFile
-from .knowledge_folder import KnowledgeFolder
 
 __all__ = [
     "Knowledge",

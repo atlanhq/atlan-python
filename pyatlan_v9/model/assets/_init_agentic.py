@@ -8,8 +8,8 @@ Agentic module exports.
 This module provides convenient imports for all Agentic types and their Related variants.
 """
 
-from .agentic_related import RelatedAgentic
 from .agentic import Agentic
+from .agentic_related import RelatedAgentic
 
 __all__ = [
     "Agentic",
