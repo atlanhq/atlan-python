@@ -8,6 +8,12 @@ SageMaker module exports.
 This module provides convenient imports for all SageMaker types and their Related variants.
 """
 
+from .sage_maker import SageMaker
+from .sage_maker_feature import SageMakerFeature
+from .sage_maker_feature_group import SageMakerFeatureGroup
+from .sage_maker_model import SageMakerModel
+from .sage_maker_model_deployment import SageMakerModelDeployment
+from .sage_maker_model_group import SageMakerModelGroup
 from .sage_maker_related import (
     RelatedSageMaker,
     RelatedSageMakerFeature,
@@ -16,12 +22,6 @@ from .sage_maker_related import (
     RelatedSageMakerModelDeployment,
     RelatedSageMakerModelGroup,
 )
-from .sage_maker import SageMaker
-from .sage_maker_feature import SageMakerFeature
-from .sage_maker_feature_group import SageMakerFeatureGroup
-from .sage_maker_model import SageMakerModel
-from .sage_maker_model_deployment import SageMakerModelDeployment
-from .sage_maker_model_group import SageMakerModelGroup
 
 __all__ = [
     "RelatedSageMaker",

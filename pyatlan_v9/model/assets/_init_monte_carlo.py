@@ -8,14 +8,10 @@ MonteCarlo module exports.
 This module provides convenient imports for all MonteCarlo types and their Related variants.
 """
 
-from .monte_carlo_related import (
-    RelatedMCIncident,
-    RelatedMCMonitor,
-    RelatedMonteCarlo,
-)
-from .monte_carlo import MonteCarlo
 from .mc_incident import MCIncident
 from .mc_monitor import MCMonitor
+from .monte_carlo import MonteCarlo
+from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor, RelatedMonteCarlo
 
 __all__ = [
     "MCIncident",
