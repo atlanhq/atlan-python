@@ -34,6 +34,12 @@ class KafkaConfluentInputs(AppInput):
     include_filter: str = Field("", alias="include-filter")
     """Include topic regex — Regex of kafka topics to include.  By default, everything will be included."""
     preflight_check: str = Field("", alias="preflight-check")
+    include_cloud_metrics: Optional[str] = Field(None, alias="include-cloud-metrics")
+    """Include Cloud Metrics — Collect topic sizes from the Confluent Cloud Metrics API. Unset falls back to the credential's legacy includeCloudMetrics."""
+    include_connect_lineage: Optional[str] = Field(
+        None, alias="include-connect-lineage"
+    )
+    """Include Connect Lineage — Build lineage from Confluent Cloud connectors to the tables they read and write."""
 
 
 class KafkaConfluent(AppBuilder):
@@ -43,9 +49,11 @@ class KafkaConfluent(AppBuilder):
 
         resp = (
             KafkaConfluent(client)
-            .basic(username="...", password="...", security_protocol="...", include_cloud_metrics="...", include_schema_registry="...", host="...")
+            .basic(username="...", password="...", security_protocol="SASL_SSL", enable_cloud_api=True, cloud_api_key="...", cloud_api_secret="...", cluster_id="...", include_schema_registry="false", host="...")
             .connection(name="my-connection", admin_users=["jdoe"])
             .skip_internal_topics(True)
+            .include_cloud_metrics(True)
+            .include_connect_lineage(True)
             .run()
         )
     """
@@ -64,7 +72,8 @@ class KafkaConfluent(AppBuilder):
         username: str,
         password: str,
         security_protocol: str,
-        include_cloud_metrics: str,
+        enable_cloud_api: Optional[bool] = None,
+        include_cloud_metrics: Optional[str] = None,
         cloud_api_key: Optional[str] = None,
         cloud_api_secret: Optional[str] = None,
         cluster_id: Optional[str] = None,
@@ -81,7 +90,10 @@ class KafkaConfluent(AppBuilder):
         :param username: API Key.
         :param password: API Secret.
         :param security_protocol: Security protocol.
-        :param include_cloud_metrics: Include Cloud Metrics.
+        :param enable_cloud_api: Enable Cloud API, for topic size metrics and Connect lineage.
+            Omitted, the app falls back to the legacy ``include_cloud_metrics``.
+        :param include_cloud_metrics: Legacy credential toggle, superseded by
+            ``enable_cloud_api`` plus the ``include_cloud_metrics()`` workflow setter.
         :param cloud_api_key: Cloud API Key.
         :param cloud_api_secret: Cloud API Secret.
         :param cluster_id: Cluster ID.
@@ -92,7 +104,10 @@ class KafkaConfluent(AppBuilder):
         """
         extras: Dict[str, Any] = {}
         extras["securityProtocol"] = security_protocol
-        extras["includeCloudMetrics"] = include_cloud_metrics
+        if enable_cloud_api is not None:
+            extras["enableCloudApi"] = "true" if enable_cloud_api else "false"
+        if include_cloud_metrics is not None:
+            extras["includeCloudMetrics"] = include_cloud_metrics
         if cloud_api_key is not None:
             extras["cloudApiKey"] = cloud_api_key
         if cloud_api_secret is not None:
@@ -138,6 +153,16 @@ class KafkaConfluent(AppBuilder):
     def include_topic_regex(self, value: str) -> "KafkaConfluent":
         """Include topic regex — Regex of kafka topics to include.  By default, everything will be included."""
         self._metadata["include-filter"] = value
+        return self
+
+    def include_cloud_metrics(self, value: bool) -> "KafkaConfluent":
+        """Include Cloud Metrics — Collect topic sizes from the Confluent Cloud Metrics API. Needs enable_cloud_api on the credential."""
+        self._metadata["include-cloud-metrics"] = "true" if value else "false"
+        return self
+
+    def include_connect_lineage(self, value: bool) -> "KafkaConfluent":
+        """Include Connect Lineage — Build lineage from Confluent Cloud connectors to the tables they read and write. Needs enable_cloud_api on the credential."""
+        self._metadata["include-connect-lineage"] = "true" if value else "false"
         return self
 
     def preflight_check(self, value: str) -> "KafkaConfluent":
