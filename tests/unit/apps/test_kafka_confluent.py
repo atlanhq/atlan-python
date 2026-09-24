@@ -72,3 +72,16 @@ def test_kafka_confluent_credential_cloud_api():
     cred = next(iter(b._raw_creds.values()))
     assert cred.extras["enableCloudApi"] == "true"
     assert cred.extras["includeCloudMetrics"] == "true"
+
+
+def test_kafka_confluent_credential_cloud_api_off():
+    b = KafkaConfluent(Mock()).basic(
+        username="x",
+        password="x",
+        security_protocol="x",
+        enable_cloud_api=False,
+        include_schema_registry="x",
+        host="x",
+    )
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.extras["enableCloudApi"] == "false"
