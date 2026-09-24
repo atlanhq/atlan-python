@@ -341,3 +341,43 @@ DQ_RULE_DESCRIPTION = "Test data quality rule"
 DQ_RULE_DESCRIPTION_UPDATED = "Updated test data quality rule"
 DQ_TABLE_QUALIFIED_NAME = TABLE_QUALIFIED_NAME
 DQ_COLUMN_QUALIFIED_NAME = TABLE_COLUMN_QUALIFIED_NAME
+
+# SqlInsightFilter / SqlInsightBusinessQuestion
+#
+# The qualifiedNames below are PINNED LITERALS, not values recomputed from the
+# formula. Their contract is byte-identity with the SQL-Intelligence miner
+# (`STRING_AGG`/md5 in the sql_intelligence DAG) and the UI's authoring path
+# (`sqlInsightIdentity.ts`) -- a row whose identity differs by one byte is a
+# DUPLICATE of the mined one rather than a convergence with it. Deriving the
+# expectation from the same code under test would assert nothing.
+SQL_INSIGHT_FILTER_OPERATOR = "IN"
+SQL_INSIGHT_FILTER_OPERATOR_OTHER = "="
+SQL_INSIGHT_FILTER_PREDICATE_SQL = "MyColumn IN ('EMEA', 'APAC')"
+SQL_INSIGHT_FILTER_WHEN_TO_USE = "scope results to a sales region"
+SQL_INSIGHT_FILTER_NAME = f"{COLUMN_NAME} {SQL_INSIGHT_FILTER_OPERATOR}"
+# <columnQN>/filter/md5("IN")
+SQL_INSIGHT_FILTER_QUALIFIED_NAME = (
+    "default/snowflake/1686532494/MyDB/MySchema/MyTable/MyColumn"
+    "/filter/c86ee0d9d7ed3e7b4fdbf486fa6c0ebb"
+)
+# <columnQN>/filter/md5("=") -- a different operator must be a different entity
+SQL_INSIGHT_FILTER_QUALIFIED_NAME_OTHER_OPERATOR = (
+    "default/snowflake/1686532494/MyDB/MySchema/MyTable/MyColumn"
+    "/filter/43ec3e5dee6e706af7766fffea512721"
+)
+
+SQL_INSIGHT_QUESTION_TEXT = "What is total revenue by region?"
+SQL_INSIGHT_QUESTION_TEXT_OTHER = "What is total revenue by country?"
+SQL_INSIGHT_QUESTION_CANONICAL_SQL = (
+    "SELECT region, SUM(amount) FROM MyTable GROUP BY 1"
+)
+# <datasetQN>/question/md5("What is total revenue by region?")
+SQL_INSIGHT_QUESTION_QUALIFIED_NAME = (
+    "default/snowflake/1686532494/MyDB/MySchema/MyTable"
+    "/question/685c806ed064f19da9d071f41f391054"
+)
+# Rewording is a NEW question, never an update to the old one.
+SQL_INSIGHT_QUESTION_QUALIFIED_NAME_OTHER_TEXT = (
+    "default/snowflake/1686532494/MyDB/MySchema/MyTable"
+    "/question/92a9c6c2952bce015e07a2ee59f414bf"
+)

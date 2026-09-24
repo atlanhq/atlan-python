@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from datetime import datetime
 from typing import ClassVar, List, Optional
 
@@ -11,12 +12,70 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.model.structs import PopularityInsights
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .sql_insight import SqlInsight
 
 
 class SqlInsightBusinessQuestion(SqlInsight):
     """Description"""
+
+    @staticmethod
+    def generate_qualified_name(
+        *, dataset_qualified_name: str, question_text: str
+    ) -> str:
+        """
+        Derive the deterministic qualifiedName for a SqlInsightBusinessQuestion,
+        identical to the SQL-Intelligence miner's formula — so a human-confirmed
+        question and a later mined observation of the same question converge on
+        one entity instead of duplicating:
+
+        ``dataset_qn || '/question/' || md5(question_text)``
+
+        The hash is over the question TEXT alone, so rewording a question makes a
+        new entity rather than updating the old one.
+
+        :param dataset_qualified_name: unique name of the dataset the question is about
+        :param question_text: the business question, verbatim
+        :returns: the deterministic qualifiedName for the business-question entity
+        """
+        digest = hashlib.md5(  # noqa: S324 (miner-compatible identity, not crypto)
+            question_text.encode()
+        ).hexdigest()
+        return f"{dataset_qualified_name}/question/{digest}"
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        dataset: SQL,
+        question_text: str,
+        canonical_sql: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> SqlInsightBusinessQuestion:
+        """
+        Create a SqlInsightBusinessQuestion against a SQL dataset, carrying both
+        the string qualified-name attribute and the dataset relationship edge —
+        plus a deterministic, miner-identical qualifiedName so repeated
+        confirmation or a later mined observation converges on the same entity.
+
+        :param dataset: the dataset the question is about, e.g.
+            ``Table.ref_by_qualified_name(...)`` or a search result — must carry
+            its real type (Table / View / MaterialisedView) and qualifiedName
+        :param question_text: the business question, verbatim. The qualifiedName is
+            derived from this, so rewording it creates a NEW entity
+        :param canonical_sql: optional SQL that answers the question
+        :param name: optional display name (defaults to the question text)
+        :returns: the minimal request to create the SqlInsightBusinessQuestion
+        """
+        attributes = SqlInsightBusinessQuestion.Attributes.creator(
+            dataset=dataset,
+            question_text=question_text,
+            canonical_sql=canonical_sql,
+            name=name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="SqlInsightBusinessQuestion", allow_mutation=False)
 
@@ -263,6 +322,38 @@ class SqlInsightBusinessQuestion(SqlInsight):
         sql_insight_dataset: Optional[SQL] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            dataset: SQL,
+            question_text: str,
+            canonical_sql: Optional[str] = None,
+            name: Optional[str] = None,
+        ) -> SqlInsightBusinessQuestion.Attributes:
+            validate_required_fields(
+                ["dataset", "question_text"], [dataset, question_text]
+            )
+            dataset_qualified_name = dataset.qualified_name
+            validate_required_fields(
+                ["dataset.qualified_name"], [dataset_qualified_name]
+            )
+            return SqlInsightBusinessQuestion.Attributes(
+                name=name or question_text,
+                qualified_name=SqlInsightBusinessQuestion.generate_qualified_name(
+                    dataset_qualified_name=dataset_qualified_name,  # type: ignore[arg-type]
+                    question_text=question_text,
+                ),
+                sql_insight_business_question_dataset_qualified_name=dataset_qualified_name,
+                sql_insight_business_question_text=question_text,
+                sql_insight_business_question_canonical_s_q_l=canonical_sql,
+                # A human-declared question has no observed usage: never claim any.
+                sql_insight_business_question_query_count=0,
+                sql_insight_business_question_unique_users=0,
+                sql_insight_dataset=dataset,
+            )
 
     attributes: SqlInsightBusinessQuestion.Attributes = Field(
         default_factory=lambda: SqlInsightBusinessQuestion.Attributes(),
