@@ -8,14 +8,14 @@ AzureServiceBus module exports.
 This module provides convenient imports for all AzureServiceBus types and their Related variants.
 """
 
+from .azure_service_bus import AzureServiceBus
+from .azure_service_bus_namespace import AzureServiceBusNamespace
 from .azure_service_bus_related import (
     RelatedAzureServiceBus,
     RelatedAzureServiceBusNamespace,
     RelatedAzureServiceBusSchema,
     RelatedAzureServiceBusTopic,
 )
-from .azure_service_bus import AzureServiceBus
-from .azure_service_bus_namespace import AzureServiceBusNamespace
 from .azure_service_bus_schema import AzureServiceBusSchema
 from .azure_service_bus_topic import AzureServiceBusTopic
 

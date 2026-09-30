@@ -1072,4 +1072,6 @@ class SnowflakeSemanticFact(Snowflake):
 
 
 from .semantic_model import SemanticModel  # noqa: E402, F401
-from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable  # noqa: E402, F401
+from .snowflake_semantic_logical_table import (
+    SnowflakeSemanticLogicalTable,  # noqa: E402, F401
+)
