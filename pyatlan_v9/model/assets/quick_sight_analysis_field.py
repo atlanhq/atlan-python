@@ -4,19 +4,19 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-AIApplication asset model with flattened inheritance.
+QuickSightAnalysisField asset model with flattened inheritance.
 
 This module provides:
-- AIApplication: Flat asset class (easy to use)
-- AIApplicationAttributes: Nested attributes struct (extends AssetAttributes)
-- AIApplicationNested: Nested API format struct
+- QuickSightAnalysisField: Flat asset class (easy to use)
+- QuickSightAnalysisFieldAttributes: Nested attributes struct (extends AssetAttributes)
+- QuickSightAnalysisFieldNested: Nested API format struct
 """
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -47,17 +47,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.utils import to_camel_case
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .ai_related import RelatedAIApplication, RelatedAIModel
+from .quick_sight_related import (
+    RelatedQuickSightAnalysisField,
+    RelatedQuickSightAnalysisVisual,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -65,22 +65,19 @@ from .ai_related import RelatedAIApplication, RelatedAIModel
 
 
 @register_asset
-class AIApplication(Asset):
+class QuickSightAnalysisField(Asset):
     """
-    Instance of an AI application in Atlan.
+    Instance of a QuickSight analysis field in Atlan. These represent the dataset columns and calculated fields used by an analysis visual.
     """
 
-    AI_APPLICATION_VERSION: ClassVar[Any] = None
-    AI_APPLICATION_DEVELOPMENT_STAGE: ClassVar[Any] = None
-    ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
-    ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
-    ETHICAL_AI_BIAS_MITIGATION_CONFIG: ClassVar[Any] = None
-    ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG: ClassVar[Any] = None
-    ETHICAL_AI_TRANSPARENCY_CONFIG: ClassVar[Any] = None
-    ETHICAL_AI_ACCOUNTABILITY_CONFIG: ClassVar[Any] = None
-    ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_VISUAL_QUALIFIED_NAME: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_FIELD_EXPRESSION: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_FIELD_DATA_SET_IDENTIFIER: ClassVar[Any] = None
+    QUICK_SIGHT_ID: ClassVar[Any] = None
+    QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
+    QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
-    MODELS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -105,6 +102,7 @@ class AIApplication(Asset):
     PARTIAL_CHILD_OBJECTS: ClassVar[Any] = None
     INPUT_TO_PROCESSES: ClassVar[Any] = None
     OUTPUT_FROM_PROCESSES: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_VISUAL: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_FROM: ClassVar[Any] = None
     FILES: ClassVar[Any] = None
@@ -115,52 +113,29 @@ class AIApplication(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    ai_application_version: Union[str, None, UnsetType] = UNSET
-    """Version of the AI application"""
+    quick_sight_analysis_visual_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis visual that uses this field."""
 
-    ai_application_development_stage: Union[str, None, UnsetType] = UNSET
-    """Development stage of the AI application"""
+    quick_sight_analysis_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis that contains this field's visual."""
 
-    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIPrivacyConfig"
-    )
-    """Privacy configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_analysis_field_expression: Union[str, None, UnsetType] = UNSET
+    """Formula of this field, when it is a calculated field."""
 
-    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIFairnessConfig"
-    )
-    """Fairness configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_analysis_field_data_set_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the analysis dataset this field belongs to."""
 
-    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIBiasMitigationConfig"
-    )
-    """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier for the QuickSight asset."""
 
-    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
-    )
-    """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_sheet_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier for the QuickSight sheet."""
 
-    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAITransparencyConfig"
-    )
-    """Transparency configuration for ensuring the ethical use of an AI asset"""
-
-    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIAccountabilityConfig"
-    )
-    """Accountability configuration for ensuring the ethical use of an AI asset"""
-
-    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
-    )
-    """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
+    """Name of the QuickSight sheet."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
-    models: Union[List[RelatedAIModel], None, UnsetType] = UNSET
-    """AI models that are used in this AI application."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -239,6 +214,11 @@ class AIApplication(Asset):
 
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
+
+    quick_sight_analysis_visual: Union[
+        RelatedQuickSightAnalysisVisual, None, UnsetType
+    ] = UNSET
+    """Analysis visual that uses this field."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
@@ -272,15 +252,19 @@ class AIApplication(Asset):
     """"""
 
     def __post_init__(self) -> None:
-        self.type_name = "AIApplication"
+        self.type_name = "QuickSightAnalysisField"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
+    )
+
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this AIApplication instance.
+        Dry-run validation of this QuickSightAnalysisField instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -302,74 +286,57 @@ class AIApplication(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.quick_sight_analysis_visual is UNSET:
+                errors.append("quick_sight_analysis_visual is required for creation")
+            if self.quick_sight_analysis_visual_qualified_name is UNSET:
+                errors.append(
+                    "quick_sight_analysis_visual_qualified_name is required for creation"
+                )
+            if self.quick_sight_analysis_qualified_name is UNSET:
+                errors.append(
+                    "quick_sight_analysis_qualified_name is required for creation"
+                )
         if errors:
-            raise ValueError(f"AIApplication validation failed: {errors}")
+            raise ValueError(f"QuickSightAnalysisField validation failed: {errors}")
 
-    def minimize(self) -> "AIApplication":
+    def minimize(self) -> "QuickSightAnalysisField":
         """
-        Return a minimal copy of this AIApplication with only updater-required fields.
+        Return a minimal copy of this QuickSightAnalysisField with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new AIApplication with only the fields needed for an update
+        returns a new QuickSightAnalysisField with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new AIApplication instance with only the minimum required fields.
+            A new QuickSightAnalysisField instance with only the minimum required fields.
         """
         self.validate()
-        return AIApplication(qualified_name=self.qualified_name, name=self.name)
+        return QuickSightAnalysisField(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
-    def relate(self) -> "RelatedAIApplication":
+    def relate(self) -> "RelatedQuickSightAnalysisField":
         """
-        Create a :class:`RelatedAIApplication` reference from this instance.
+        Create a :class:`RelatedQuickSightAnalysisField` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedAIApplication reference to this asset.
+            A RelatedQuickSightAnalysisField reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedAIApplication(guid=self.guid)
-        return RelatedAIApplication(qualified_name=self.qualified_name)
-
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        ai_application_version: str,
-        ai_application_development_stage: str,
-        owner_groups: Union[set[str], None] = None,
-        owner_users: Union[set[str], None] = None,
-    ) -> "AIApplication":
-        """Create a new AIApplication asset."""
-        validate_required_fields(
-            ["name", "ai_application_version", "ai_application_development_stage"],
-            [name, ai_application_version, ai_application_development_stage],
-        )
-        name_camel_case = to_camel_case(name)
-        return cls(
-            name=name,
-            qualified_name=f"default/ai/aiapplication/{name_camel_case}",
-            connector_name=AtlanConnectorType.AI.value,
-            ai_application_version=ai_application_version,
-            ai_application_development_stage=ai_application_development_stage,
-            owner_groups=owner_groups if owner_groups is not None else UNSET,
-            owner_users=owner_users if owner_users is not None else UNSET,
-        )
-
-    @classmethod
-    def updater(cls, *, qualified_name: str, name: str) -> "AIApplication":
-        """Create an AIApplication instance for update operations."""
-        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
-        return cls(qualified_name=qualified_name, name=name)
-
-    def trim_to_required(self) -> "AIApplication":
-        """Return only fields required for update operations."""
-        return AIApplication.updater(qualified_name=self.qualified_name, name=self.name)
+            return RelatedQuickSightAnalysisField(guid=self.guid)
+        return RelatedQuickSightAnalysisField(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -397,10 +364,12 @@ class AIApplication(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _ai_application_to_nested_bytes(self, serde)
+        return _quick_sight_analysis_field_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AIApplication:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> QuickSightAnalysisField:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -409,13 +378,13 @@ class AIApplication(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            AIApplication instance
+            QuickSightAnalysisField instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _ai_application_from_nested_bytes(json_data, serde)
+        return _quick_sight_analysis_field_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -423,59 +392,36 @@ class AIApplication(Asset):
 # =============================================================================
 
 
-class AIApplicationAttributes(AssetAttributes):
-    """AIApplication-specific attributes for nested API format."""
+class QuickSightAnalysisFieldAttributes(AssetAttributes):
+    """QuickSightAnalysisField-specific attributes for nested API format."""
 
-    ai_application_version: Union[str, None, UnsetType] = UNSET
-    """Version of the AI application"""
+    quick_sight_analysis_visual_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis visual that uses this field."""
 
-    ai_application_development_stage: Union[str, None, UnsetType] = UNSET
-    """Development stage of the AI application"""
+    quick_sight_analysis_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis that contains this field's visual."""
 
-    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIPrivacyConfig"
-    )
-    """Privacy configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_analysis_field_expression: Union[str, None, UnsetType] = UNSET
+    """Formula of this field, when it is a calculated field."""
 
-    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIFairnessConfig"
-    )
-    """Fairness configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_analysis_field_data_set_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the analysis dataset this field belongs to."""
 
-    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIBiasMitigationConfig"
-    )
-    """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier for the QuickSight asset."""
 
-    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
-    )
-    """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_sheet_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier for the QuickSight sheet."""
 
-    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAITransparencyConfig"
-    )
-    """Transparency configuration for ensuring the ethical use of an AI asset"""
-
-    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIAccountabilityConfig"
-    )
-    """Accountability configuration for ensuring the ethical use of an AI asset"""
-
-    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
-    )
-    """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
+    quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
+    """Name of the QuickSight sheet."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
 
-class AIApplicationRelationshipAttributes(AssetRelationshipAttributes):
-    """AIApplication-specific relationship attributes for nested API format."""
-
-    models: Union[List[RelatedAIModel], None, UnsetType] = UNSET
-    """AI models that are used in this AI application."""
+class QuickSightAnalysisFieldRelationshipAttributes(AssetRelationshipAttributes):
+    """QuickSightAnalysisField-specific relationship attributes for nested API format."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -555,6 +501,11 @@ class AIApplicationRelationshipAttributes(AssetRelationshipAttributes):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
+    quick_sight_analysis_visual: Union[
+        RelatedQuickSightAnalysisVisual, None, UnsetType
+    ] = UNSET
+    """Analysis visual that uses this field."""
+
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
@@ -587,18 +538,18 @@ class AIApplicationRelationshipAttributes(AssetRelationshipAttributes):
     """"""
 
 
-class AIApplicationNested(AssetNested):
-    """AIApplication in nested API format for high-performance serialization."""
+class QuickSightAnalysisFieldNested(AssetNested):
+    """QuickSightAnalysisField in nested API format for high-performance serialization."""
 
-    attributes: Union[AIApplicationAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[AIApplicationRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
+    attributes: Union[QuickSightAnalysisFieldAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        QuickSightAnalysisFieldRelationshipAttributes, UnsetType
+    ] = UNSET
     append_relationship_attributes: Union[
-        AIApplicationRelationshipAttributes, UnsetType
+        QuickSightAnalysisFieldRelationshipAttributes, UnsetType
     ] = UNSET
     remove_relationship_attributes: Union[
-        AIApplicationRelationshipAttributes, UnsetType
+        QuickSightAnalysisFieldRelationshipAttributes, UnsetType
     ] = UNSET
 
 
@@ -606,9 +557,8 @@ class AIApplicationNested(AssetNested):
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_AI_APPLICATION_REL_FIELDS: List[str] = [
+_QUICK_SIGHT_ANALYSIS_FIELD_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
-    "models",
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
     "anomalo_checks",
@@ -633,6 +583,7 @@ _AI_APPLICATION_REL_FIELDS: List[str] = [
     "partial_child_objects",
     "input_to_processes",
     "output_from_processes",
+    "quick_sight_analysis_visual",
     "user_def_relationship_to",
     "user_def_relationship_from",
     "files",
@@ -645,45 +596,47 @@ _AI_APPLICATION_REL_FIELDS: List[str] = [
 ]
 
 
-def _populate_ai_application_attrs(
-    attrs: AIApplicationAttributes, obj: AIApplication
+def _populate_quick_sight_analysis_field_attrs(
+    attrs: QuickSightAnalysisFieldAttributes, obj: QuickSightAnalysisField
 ) -> None:
-    """Populate AIApplication-specific attributes on the attrs struct."""
+    """Populate QuickSightAnalysisField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.ai_application_version = obj.ai_application_version
-    attrs.ai_application_development_stage = obj.ai_application_development_stage
-    attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
-    attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
-    attrs.ethical_ai_bias_mitigation_config = obj.ethical_ai_bias_mitigation_config
-    attrs.ethical_ai_reliability_and_safety_config = (
-        obj.ethical_ai_reliability_and_safety_config
+    attrs.quick_sight_analysis_visual_qualified_name = (
+        obj.quick_sight_analysis_visual_qualified_name
     )
-    attrs.ethical_ai_transparency_config = obj.ethical_ai_transparency_config
-    attrs.ethical_ai_accountability_config = obj.ethical_ai_accountability_config
-    attrs.ethical_ai_environmental_consciousness_config = (
-        obj.ethical_ai_environmental_consciousness_config
+    attrs.quick_sight_analysis_qualified_name = obj.quick_sight_analysis_qualified_name
+    attrs.quick_sight_analysis_field_expression = (
+        obj.quick_sight_analysis_field_expression
     )
+    attrs.quick_sight_analysis_field_data_set_identifier = (
+        obj.quick_sight_analysis_field_data_set_identifier
+    )
+    attrs.quick_sight_id = obj.quick_sight_id
+    attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
+    attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
-def _extract_ai_application_attrs(attrs: AIApplicationAttributes) -> dict:
-    """Extract all AIApplication attributes from the attrs struct into a flat dict."""
+def _extract_quick_sight_analysis_field_attrs(
+    attrs: QuickSightAnalysisFieldAttributes,
+) -> dict:
+    """Extract all QuickSightAnalysisField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["ai_application_version"] = attrs.ai_application_version
-    result["ai_application_development_stage"] = attrs.ai_application_development_stage
-    result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
-    result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
-    result["ethical_ai_bias_mitigation_config"] = (
-        attrs.ethical_ai_bias_mitigation_config
+    result["quick_sight_analysis_visual_qualified_name"] = (
+        attrs.quick_sight_analysis_visual_qualified_name
     )
-    result["ethical_ai_reliability_and_safety_config"] = (
-        attrs.ethical_ai_reliability_and_safety_config
+    result["quick_sight_analysis_qualified_name"] = (
+        attrs.quick_sight_analysis_qualified_name
     )
-    result["ethical_ai_transparency_config"] = attrs.ethical_ai_transparency_config
-    result["ethical_ai_accountability_config"] = attrs.ethical_ai_accountability_config
-    result["ethical_ai_environmental_consciousness_config"] = (
-        attrs.ethical_ai_environmental_consciousness_config
+    result["quick_sight_analysis_field_expression"] = (
+        attrs.quick_sight_analysis_field_expression
     )
+    result["quick_sight_analysis_field_data_set_identifier"] = (
+        attrs.quick_sight_analysis_field_data_set_identifier
+    )
+    result["quick_sight_id"] = attrs.quick_sight_id
+    result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
+    result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -693,37 +646,41 @@ def _extract_ai_application_attrs(attrs: AIApplicationAttributes) -> dict:
 # =============================================================================
 
 
-def _ai_application_to_nested(ai_application: AIApplication) -> AIApplicationNested:
-    """Convert flat AIApplication to nested format."""
-    attrs = AIApplicationAttributes()
-    _populate_ai_application_attrs(attrs, ai_application)
+def _quick_sight_analysis_field_to_nested(
+    quick_sight_analysis_field: QuickSightAnalysisField,
+) -> QuickSightAnalysisFieldNested:
+    """Convert flat QuickSightAnalysisField to nested format."""
+    attrs = QuickSightAnalysisFieldAttributes()
+    _populate_quick_sight_analysis_field_attrs(attrs, quick_sight_analysis_field)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        ai_application, _AI_APPLICATION_REL_FIELDS, AIApplicationRelationshipAttributes
+        quick_sight_analysis_field,
+        _QUICK_SIGHT_ANALYSIS_FIELD_REL_FIELDS,
+        QuickSightAnalysisFieldRelationshipAttributes,
     )
-    return AIApplicationNested(
-        guid=ai_application.guid,
-        type_name=ai_application.type_name,
-        status=ai_application.status,
-        version=ai_application.version,
-        create_time=ai_application.create_time,
-        update_time=ai_application.update_time,
-        created_by=ai_application.created_by,
-        updated_by=ai_application.updated_by,
-        classifications=ai_application.classifications,
-        classification_names=ai_application.classification_names,
-        meanings=ai_application.meanings,
-        labels=ai_application.labels,
-        business_attributes=ai_application.business_attributes,
-        custom_attributes=ai_application.custom_attributes,
-        pending_tasks=ai_application.pending_tasks,
-        proxy=ai_application.proxy,
-        is_incomplete=ai_application.is_incomplete,
-        provenance_type=ai_application.provenance_type,
-        home_id=ai_application.home_id,
-        depth=ai_application.depth,
-        immediate_upstream=ai_application.immediate_upstream,
-        immediate_downstream=ai_application.immediate_downstream,
+    return QuickSightAnalysisFieldNested(
+        guid=quick_sight_analysis_field.guid,
+        type_name=quick_sight_analysis_field.type_name,
+        status=quick_sight_analysis_field.status,
+        version=quick_sight_analysis_field.version,
+        create_time=quick_sight_analysis_field.create_time,
+        update_time=quick_sight_analysis_field.update_time,
+        created_by=quick_sight_analysis_field.created_by,
+        updated_by=quick_sight_analysis_field.updated_by,
+        classifications=quick_sight_analysis_field.classifications,
+        classification_names=quick_sight_analysis_field.classification_names,
+        meanings=quick_sight_analysis_field.meanings,
+        labels=quick_sight_analysis_field.labels,
+        business_attributes=quick_sight_analysis_field.business_attributes,
+        custom_attributes=quick_sight_analysis_field.custom_attributes,
+        pending_tasks=quick_sight_analysis_field.pending_tasks,
+        proxy=quick_sight_analysis_field.proxy,
+        is_incomplete=quick_sight_analysis_field.is_incomplete,
+        provenance_type=quick_sight_analysis_field.provenance_type,
+        home_id=quick_sight_analysis_field.home_id,
+        depth=quick_sight_analysis_field.depth,
+        immediate_upstream=quick_sight_analysis_field.immediate_upstream,
+        immediate_downstream=quick_sight_analysis_field.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -731,20 +688,22 @@ def _ai_application_to_nested(ai_application: AIApplication) -> AIApplicationNes
     )
 
 
-def _ai_application_from_nested(nested: AIApplicationNested) -> AIApplication:
-    """Convert nested format to flat AIApplication."""
+def _quick_sight_analysis_field_from_nested(
+    nested: QuickSightAnalysisFieldNested,
+) -> QuickSightAnalysisField:
+    """Convert nested format to flat QuickSightAnalysisField."""
     attrs = (
         nested.attributes
         if nested.attributes is not UNSET
-        else AIApplicationAttributes()
+        else QuickSightAnalysisFieldAttributes()
     )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _AI_APPLICATION_REL_FIELDS,
-        AIApplicationRelationshipAttributes,
+        _QUICK_SIGHT_ANALYSIS_FIELD_REL_FIELDS,
+        QuickSightAnalysisFieldRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -773,22 +732,26 @@ def _ai_application_from_nested(nested: AIApplicationNested) -> AIApplication:
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
     }
-    kwargs.update(_extract_ai_application_attrs(attrs))
+    kwargs.update(_extract_quick_sight_analysis_field_attrs(attrs))
     kwargs.update(merged_rels)
-    return AIApplication(**kwargs)
+    return QuickSightAnalysisField(**kwargs)
 
 
-def _ai_application_to_nested_bytes(
-    ai_application: AIApplication, serde: Serde
+def _quick_sight_analysis_field_to_nested_bytes(
+    quick_sight_analysis_field: QuickSightAnalysisField, serde: Serde
 ) -> bytes:
-    """Convert flat AIApplication to nested JSON bytes."""
-    return serde.encode(_ai_application_to_nested(ai_application))
+    """Convert flat QuickSightAnalysisField to nested JSON bytes."""
+    return serde.encode(
+        _quick_sight_analysis_field_to_nested(quick_sight_analysis_field)
+    )
 
 
-def _ai_application_from_nested_bytes(data: bytes, serde: Serde) -> AIApplication:
-    """Convert nested JSON bytes to flat AIApplication."""
-    nested = serde.decode(data, AIApplicationNested)
-    return _ai_application_from_nested(nested)
+def _quick_sight_analysis_field_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> QuickSightAnalysisField:
+    """Convert nested JSON bytes to flat QuickSightAnalysisField."""
+    nested = serde.decode(data, QuickSightAnalysisFieldNested)
+    return _quick_sight_analysis_field_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
@@ -796,75 +759,89 @@ def _ai_application_from_nested_bytes(data: bytes, serde: Serde) -> AIApplicatio
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
+    KeywordTextField,
     RelationField,
+    TextField,
 )
 
-AIApplication.AI_APPLICATION_VERSION = KeywordField(
-    "aiApplicationVersion", "aiApplicationVersion"
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_VISUAL_QUALIFIED_NAME = KeywordField(
+    "quickSightAnalysisVisualQualifiedName", "quickSightAnalysisVisualQualifiedName"
 )
-AIApplication.AI_APPLICATION_DEVELOPMENT_STAGE = KeywordField(
-    "aiApplicationDevelopmentStage", "aiApplicationDevelopmentStage"
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME = KeywordField(
+    "quickSightAnalysisQualifiedName", "quickSightAnalysisQualifiedName"
 )
-AIApplication.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
-    "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_FIELD_EXPRESSION = TextField(
+    "quickSightAnalysisFieldExpression", "quickSightAnalysisFieldExpression"
 )
-AIApplication.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField(
-    "ethicalAIFairnessConfig", "ethicalAIFairnessConfig"
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_FIELD_DATA_SET_IDENTIFIER = KeywordField(
+    "quickSightAnalysisFieldDataSetIdentifier",
+    "quickSightAnalysisFieldDataSetIdentifier",
 )
-AIApplication.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField(
-    "ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig"
+QuickSightAnalysisField.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
+QuickSightAnalysisField.QUICK_SIGHT_SHEET_ID = KeywordField(
+    "quickSightSheetId", "quickSightSheetId"
 )
-AIApplication.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField(
-    "ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig"
+QuickSightAnalysisField.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
+    "quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text"
 )
-AIApplication.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField(
-    "ethicalAITransparencyConfig", "ethicalAITransparencyConfig"
-)
-AIApplication.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField(
-    "ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig"
-)
-AIApplication.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
-    "ethicalAIEnvironmentalConsciousnessConfig",
-    "ethicalAIEnvironmentalConsciousnessConfig",
-)
-AIApplication.CATALOG_DATASET_GUID = KeywordField(
+QuickSightAnalysisField.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
-AIApplication.MODELS = RelationField("models")
-AIApplication.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-AIApplication.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
-AIApplication.ANOMALO_CHECKS = RelationField("anomaloChecks")
-AIApplication.APPLICATION = RelationField("application")
-AIApplication.APPLICATION_FIELD = RelationField("applicationField")
-AIApplication.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
-AIApplication.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AIApplication.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+QuickSightAnalysisField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+QuickSightAnalysisField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
+QuickSightAnalysisField.ANOMALO_CHECKS = RelationField("anomaloChecks")
+QuickSightAnalysisField.APPLICATION = RelationField("application")
+QuickSightAnalysisField.APPLICATION_FIELD = RelationField("applicationField")
+QuickSightAnalysisField.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+QuickSightAnalysisField.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+QuickSightAnalysisField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
 )
-AIApplication.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-AIApplication.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-AIApplication.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AIApplication.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
-AIApplication.METRICS = RelationField("metrics")
-AIApplication.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-AIApplication.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AIApplication.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+QuickSightAnalysisField.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+QuickSightAnalysisField.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+QuickSightAnalysisField.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+QuickSightAnalysisField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
+QuickSightAnalysisField.METRICS = RelationField("metrics")
+QuickSightAnalysisField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+QuickSightAnalysisField.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+QuickSightAnalysisField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
-AIApplication.MEANINGS = RelationField("meanings")
-AIApplication.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
-AIApplication.MC_MONITORS = RelationField("mcMonitors")
-AIApplication.MC_INCIDENTS = RelationField("mcIncidents")
-AIApplication.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-AIApplication.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-AIApplication.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-AIApplication.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-AIApplication.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-AIApplication.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
-AIApplication.FILES = RelationField("files")
-AIApplication.LINKS = RelationField("links")
-AIApplication.README = RelationField("readme")
-AIApplication.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-AIApplication.SODA_CHECKS = RelationField("sodaChecks")
-AIApplication.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-AIApplication.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+QuickSightAnalysisField.MEANINGS = RelationField("meanings")
+QuickSightAnalysisField.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+QuickSightAnalysisField.MC_MONITORS = RelationField("mcMonitors")
+QuickSightAnalysisField.MC_INCIDENTS = RelationField("mcIncidents")
+QuickSightAnalysisField.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+QuickSightAnalysisField.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+QuickSightAnalysisField.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+QuickSightAnalysisField.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_VISUAL = RelationField(
+    "quickSightAnalysisVisual"
+)
+QuickSightAnalysisField.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+QuickSightAnalysisField.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
+QuickSightAnalysisField.FILES = RelationField("files")
+QuickSightAnalysisField.LINKS = RelationField("links")
+QuickSightAnalysisField.README = RelationField("readme")
+QuickSightAnalysisField.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
+QuickSightAnalysisField.SODA_CHECKS = RelationField("sodaChecks")
+QuickSightAnalysisField.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+QuickSightAnalysisField.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
