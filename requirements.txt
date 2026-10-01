@@ -3,7 +3,9 @@
 -e .
 annotated-types==0.7.0 ; python_full_version < '3.15' and platform_python_implementation == 'CPython'
     # via pydantic
-anyio==4.12.1 ; python_full_version < '3.15' and platform_python_implementation == 'CPython'
+anyio==4.12.1 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
+    # via httpx
+anyio==4.15.1 ; python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'
     # via httpx
 ast-serialize==0.6.0 ; python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'
     # via mypy
@@ -266,12 +268,23 @@ types-authlib==1.6.11.20260518 ; python_full_version >= '3.10' and python_full_v
 types-retry==0.9.9.20250322 ; python_full_version < '3.15' and platform_python_implementation == 'CPython'
 types-setuptools==81.0.0.20260209 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
 types-setuptools==83.0.0.20260716 ; python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'
-typing-extensions==4.15.0 ; python_full_version < '3.15' and platform_python_implementation == 'CPython'
+typing-extensions==4.15.0 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
     # via
     #   anyio
     #   cryptography
     #   exceptiongroup
     #   multidict
+    #   mypy
+    #   pydantic
+    #   pydantic-core
+    #   pytest-asyncio
+    #   typing-inspection
+    #   virtualenv
+typing-extensions==4.16.0 ; python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'
+    # via
+    #   anyio
+    #   cryptography
+    #   exceptiongroup
     #   mypy
     #   pydantic
     #   pydantic-core

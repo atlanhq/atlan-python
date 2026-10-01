@@ -69,16 +69,30 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
-      - uses: pypa/gh-action-pip-audit@v1.1.0
-        with:
+      - name: Compose the audit ignore list
+        run: |
+          {
+            echo 'AUDIT_IGNORE<<IGNORE_EOF'
             # Since we used pytest for dev
             # ("py" -> library is in maintenance mode)
             # We can ignore this vulnerability here
             # Reference: https://github.com/pytest-dev/py
-            ignore-vulns: |
-              PYSEC-2022-42969
-              GHSA-48p4-8xcf-vxj5
-              GHSA-pq67-6m6q-mj2v
+            echo 'PYSEC-2022-42969'
+            echo 'GHSA-48p4-8xcf-vxj5'
+            echo 'GHSA-pq67-6m6q-mj2v'
+            # anyio fixes both of these from 4.14.2, which needs Python >= 3.10.
+            # This package still supports >= 3.9.1, so 3.9 is pinned to 4.12.1
+            # and cannot take the fix. Drop these two when 3.9 support goes.
+            if [ "${{ matrix.python-version }}" = "3.9" ]; then
+              echo 'GHSA-5p39-cfhj-2xmp'
+              echo 'GHSA-82r6-8w77-94w6'
+            fi
+            echo 'IGNORE_EOF'
+          } >> "$GITHUB_ENV"
+
+      - uses: pypa/gh-action-pip-audit@v1.1.0
+        with:
+            ignore-vulns: ${{ env.AUDIT_IGNORE }}
             summary: true
             vulnerability-service: osv
             inputs: .
