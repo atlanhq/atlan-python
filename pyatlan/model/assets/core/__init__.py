@@ -144,6 +144,7 @@ from .mongo_d_b_database import MongoDBDatabase
 from .monte_carlo import MonteCarlo
 from .namespace import Namespace
 from .no_s_q_l import NoSQL
+from .notification import Notification
 from .partial import Partial
 from .partial_field import PartialField
 from .partial_object import PartialObject
@@ -210,6 +211,7 @@ from .table import Table
 from .table_partition import TablePartition
 from .tag import Tag
 from .view import View
+from .workflow_notification import WorkflowNotification
 
 # Update asset forward references:
 localns = locals()
@@ -221,6 +223,7 @@ Asset.Attributes.update_forward_refs(**localns)
 Process.Attributes.update_forward_refs(**localns)
 AtlasGlossaryCategory.Attributes.update_forward_refs(**localns)
 AccessControl.Attributes.update_forward_refs(**localns)
+Notification.Attributes.update_forward_refs(**localns)
 AuthPolicy.Attributes.update_forward_refs(**localns)
 StakeholderTitle.Attributes.update_forward_refs(**localns)
 Catalog.Attributes.update_forward_refs(**localns)
@@ -234,6 +237,7 @@ BIProcess.Attributes.update_forward_refs(**localns)
 DbtProcess.Attributes.update_forward_refs(**localns)
 ColumnProcess.Attributes.update_forward_refs(**localns)
 Persona.Attributes.update_forward_refs(**localns)
+WorkflowNotification.Attributes.update_forward_refs(**localns)
 App.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 ADF.Attributes.update_forward_refs(**localns)
