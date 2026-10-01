@@ -11,6 +11,7 @@ This module provides convenient imports for all QuickSight types and their Relat
 from .quick_sight_related import (
     RelatedQuickSight,
     RelatedQuickSightAnalysis,
+    RelatedQuickSightAnalysisField,
     RelatedQuickSightAnalysisVisual,
     RelatedQuickSightDashboard,
     RelatedQuickSightDashboardVisual,
@@ -20,6 +21,7 @@ from .quick_sight_related import (
 )
 from .quick_sight import QuickSight
 from .quick_sight_analysis import QuickSightAnalysis
+from .quick_sight_analysis_field import QuickSightAnalysisField
 from .quick_sight_analysis_visual import QuickSightAnalysisVisual
 from .quick_sight_dashboard import QuickSightDashboard
 from .quick_sight_dashboard_visual import QuickSightDashboardVisual
@@ -30,6 +32,7 @@ from .quick_sight_folder import QuickSightFolder
 __all__ = [
     "QuickSight",
     "QuickSightAnalysis",
+    "QuickSightAnalysisField",
     "QuickSightAnalysisVisual",
     "QuickSightDashboard",
     "QuickSightDashboardVisual",
@@ -38,6 +41,7 @@ __all__ = [
     "QuickSightFolder",
     "RelatedQuickSight",
     "RelatedQuickSightAnalysis",
+    "RelatedQuickSightAnalysisField",
     "RelatedQuickSightAnalysisVisual",
     "RelatedQuickSightDashboard",
     "RelatedQuickSightDashboardVisual",

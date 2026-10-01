@@ -89,6 +89,7 @@ class Incident(Referenceable):
     CONNECTOR_NAME: ClassVar[Any] = None
     CONNECTION_NAME: ClassVar[Any] = None
     CONNECTION_QUALIFIED_NAME: ClassVar[Any] = None
+    ASSET_MANAGED_BY: ClassVar[Any] = None
     HAS_LINEAGE: ClassVar[Any] = None
     IS_DISCOVERABLE: ClassVar[Any] = None
     IS_EDITABLE: ClassVar[Any] = None
@@ -372,6 +373,9 @@ class Incident(Referenceable):
 
     connection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the connection through which this asset is accessible."""
+
+    asset_managed_by: Union[str, None, UnsetType] = UNSET
+    """Identity of the agent that creates and maintains this asset — a connection qualified name, an application name, or any other opaque token that agent chooses. Written by that agent on create, never supplied by a source, and stable for the life of the asset. Compared only for equality; never parsed or resolved."""
 
     has_lineage: Union[bool, None, UnsetType] = msgspec.field(
         default=UNSET, name="__hasLineage"
@@ -1284,6 +1288,9 @@ class IncidentAttributes(ReferenceableAttributes):
     connection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the connection through which this asset is accessible."""
 
+    asset_managed_by: Union[str, None, UnsetType] = UNSET
+    """Identity of the agent that creates and maintains this asset — a connection qualified name, an application name, or any other opaque token that agent chooses. Written by that agent on create, never supplied by a source, and stable for the life of the asset. Compared only for equality; never parsed or resolved."""
+
     has_lineage: Union[bool, None, UnsetType] = msgspec.field(
         default=UNSET, name="__hasLineage"
     )
@@ -2076,6 +2083,7 @@ def _populate_incident_attrs(attrs: IncidentAttributes, obj: Incident) -> None:
     attrs.connector_name = obj.connector_name
     attrs.connection_name = obj.connection_name
     attrs.connection_qualified_name = obj.connection_qualified_name
+    attrs.asset_managed_by = obj.asset_managed_by
     attrs.has_lineage = obj.has_lineage
     attrs.is_discoverable = obj.is_discoverable
     attrs.is_editable = obj.is_editable
@@ -2337,6 +2345,7 @@ def _extract_incident_attrs(attrs: IncidentAttributes) -> dict:
     result["connector_name"] = attrs.connector_name
     result["connection_name"] = attrs.connection_name
     result["connection_qualified_name"] = attrs.connection_qualified_name
+    result["asset_managed_by"] = attrs.asset_managed_by
     result["has_lineage"] = attrs.has_lineage
     result["is_discoverable"] = attrs.is_discoverable
     result["is_editable"] = attrs.is_editable
@@ -2770,6 +2779,7 @@ Incident.CONNECTION_NAME = KeywordTextField(
 Incident.CONNECTION_QUALIFIED_NAME = KeywordTextField(
     "connectionQualifiedName", "connectionQualifiedName", "connectionQualifiedName.text"
 )
+Incident.ASSET_MANAGED_BY = KeywordField("assetManagedBy", "assetManagedBy")
 Incident.HAS_LINEAGE = BooleanField("__hasLineage", "__hasLineage")
 Incident.IS_DISCOVERABLE = BooleanField("isDiscoverable", "isDiscoverable")
 Incident.IS_EDITABLE = BooleanField("isEditable", "isEditable")

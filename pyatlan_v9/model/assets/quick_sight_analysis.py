@@ -223,7 +223,7 @@ class QuickSightAnalysis(Asset):
     quick_sight_analysis_folders: Union[
         List[RelatedQuickSightFolder], None, UnsetType
     ] = UNSET
-    """"""
+    """Folders that contain this analysis."""
 
     quick_sight_analysis_visuals: Union[
         List[RelatedQuickSightAnalysisVisual], None, UnsetType
@@ -541,7 +541,7 @@ class QuickSightAnalysisRelationshipAttributes(AssetRelationshipAttributes):
     quick_sight_analysis_folders: Union[
         List[RelatedQuickSightFolder], None, UnsetType
     ] = UNSET
-    """"""
+    """Folders that contain this analysis."""
 
     quick_sight_analysis_visuals: Union[
         List[RelatedQuickSightAnalysisVisual], None, UnsetType

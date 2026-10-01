@@ -212,17 +212,17 @@ class QuickSightFolder(Asset):
     """Processes from which this asset is produced as output."""
 
     quick_sight_datasets: Union[List[RelatedQuickSightDataset], None, UnsetType] = UNSET
-    """"""
+    """Datasets contained in this folder."""
 
     quick_sight_analyses: Union[List[RelatedQuickSightAnalysis], None, UnsetType] = (
         UNSET
     )
-    """"""
+    """Analyses contained in this folder."""
 
     quick_sight_dashboards: Union[List[RelatedQuickSightDashboard], None, UnsetType] = (
         UNSET
     )
-    """"""
+    """Dashboards contained in this folder."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
@@ -516,17 +516,17 @@ class QuickSightFolderRelationshipAttributes(AssetRelationshipAttributes):
     """Processes from which this asset is produced as output."""
 
     quick_sight_datasets: Union[List[RelatedQuickSightDataset], None, UnsetType] = UNSET
-    """"""
+    """Datasets contained in this folder."""
 
     quick_sight_analyses: Union[List[RelatedQuickSightAnalysis], None, UnsetType] = (
         UNSET
     )
-    """"""
+    """Analyses contained in this folder."""
 
     quick_sight_dashboards: Union[List[RelatedQuickSightDashboard], None, UnsetType] = (
         UNSET
     )
-    """"""
+    """Dashboards contained in this folder."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""

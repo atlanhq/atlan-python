@@ -48,6 +48,7 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .workflow_notification_related import RelatedWorkflowNotification
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -60,7 +61,6 @@ from .atlan_app_related import (
     RelatedAtlanAppTool,
     RelatedAtlanAppWorkflow,
 )
-from .workflow_notification_related import RelatedWorkflowNotification
 
 # =============================================================================
 # FLAT ASSET CLASS

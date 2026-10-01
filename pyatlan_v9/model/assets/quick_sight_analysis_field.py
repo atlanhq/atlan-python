@@ -4,12 +4,12 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-QuickSightDashboard asset model with flattened inheritance.
+QuickSightAnalysisField asset model with flattened inheritance.
 
 This module provides:
-- QuickSightDashboard: Flat asset class (easy to use)
-- QuickSightDashboardAttributes: Nested attributes struct (extends AssetAttributes)
-- QuickSightDashboardNested: Nested API format struct
+- QuickSightAnalysisField: Flat asset class (easy to use)
+- QuickSightAnalysisFieldAttributes: Nested attributes struct (extends AssetAttributes)
+- QuickSightAnalysisFieldNested: Nested API format struct
 """
 
 from __future__ import annotations
@@ -53,12 +53,10 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .quick_sight_related import (
-    RelatedQuickSightDashboard,
-    RelatedQuickSightDashboardVisual,
-    RelatedQuickSightFolder,
+    RelatedQuickSightAnalysisField,
+    RelatedQuickSightAnalysisVisual,
 )
 
 # =============================================================================
@@ -67,13 +65,15 @@ from .quick_sight_related import (
 
 
 @register_asset
-class QuickSightDashboard(Asset):
+class QuickSightAnalysisField(Asset):
     """
-    Instance of a QuickSight dashboard in Atlan. These are reports in QuickSight, created from analyses.
+    Instance of a QuickSight analysis field in Atlan. These represent the dataset columns and calculated fields used by an analysis visual.
     """
 
-    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[Any] = None
-    QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_VISUAL_QUALIFIED_NAME: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_FIELD_EXPRESSION: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_FIELD_DATA_SET_IDENTIFIER: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
@@ -102,8 +102,7 @@ class QuickSightDashboard(Asset):
     PARTIAL_CHILD_OBJECTS: ClassVar[Any] = None
     INPUT_TO_PROCESSES: ClassVar[Any] = None
     OUTPUT_FROM_PROCESSES: ClassVar[Any] = None
-    QUICK_SIGHT_DASHBOARD_VISUALS: ClassVar[Any] = None
-    QUICK_SIGHT_DASHBOARD_FOLDERS: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_VISUAL: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_FROM: ClassVar[Any] = None
     FILES: ClassVar[Any] = None
@@ -114,11 +113,17 @@ class QuickSightDashboard(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_dashboard_published_version_number: Union[int, None, UnsetType] = UNSET
-    """Version number of the published dashboard."""
+    quick_sight_analysis_visual_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis visual that uses this field."""
 
-    quick_sight_dashboard_last_published_time: Union[int, None, UnsetType] = UNSET
-    """Time (epoch) at which this dashboard was last published, in milliseconds."""
+    quick_sight_analysis_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis that contains this field's visual."""
+
+    quick_sight_analysis_field_expression: Union[str, None, UnsetType] = UNSET
+    """Formula of this field, when it is a calculated field."""
+
+    quick_sight_analysis_field_data_set_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the analysis dataset this field belongs to."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the QuickSight asset."""
@@ -210,15 +215,10 @@ class QuickSightDashboard(Asset):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    quick_sight_dashboard_visuals: Union[
-        List[RelatedQuickSightDashboardVisual], None, UnsetType
+    quick_sight_analysis_visual: Union[
+        RelatedQuickSightAnalysisVisual, None, UnsetType
     ] = UNSET
-    """Visuals that exist within this dashboard."""
-
-    quick_sight_dashboard_folders: Union[
-        List[RelatedQuickSightFolder], None, UnsetType
-    ] = UNSET
-    """Folders that contain this dashboard."""
+    """Analysis visual that uses this field."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
@@ -252,17 +252,19 @@ class QuickSightDashboard(Asset):
     """"""
 
     def __post_init__(self) -> None:
-        self.type_name = "QuickSightDashboard"
+        self.type_name = "QuickSightAnalysisField"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
+    )
 
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this QuickSightDashboard instance.
+        Dry-run validation of this QuickSightAnalysisField instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -292,85 +294,49 @@ class QuickSightDashboard(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.quick_sight_dashboard_folders is UNSET:
-                errors.append("quick_sight_dashboard_folders is required for creation")
+            if self.quick_sight_analysis_visual is UNSET:
+                errors.append("quick_sight_analysis_visual is required for creation")
+            if self.quick_sight_analysis_visual_qualified_name is UNSET:
+                errors.append(
+                    "quick_sight_analysis_visual_qualified_name is required for creation"
+                )
+            if self.quick_sight_analysis_qualified_name is UNSET:
+                errors.append(
+                    "quick_sight_analysis_qualified_name is required for creation"
+                )
         if errors:
-            raise ValueError(f"QuickSightDashboard validation failed: {errors}")
+            raise ValueError(f"QuickSightAnalysisField validation failed: {errors}")
 
-    def minimize(self) -> "QuickSightDashboard":
+    def minimize(self) -> "QuickSightAnalysisField":
         """
-        Return a minimal copy of this QuickSightDashboard with only updater-required fields.
+        Return a minimal copy of this QuickSightAnalysisField with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new QuickSightDashboard with only the fields needed for an update
+        returns a new QuickSightAnalysisField with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new QuickSightDashboard instance with only the minimum required fields.
+            A new QuickSightAnalysisField instance with only the minimum required fields.
         """
         self.validate()
-        return QuickSightDashboard(qualified_name=self.qualified_name, name=self.name)
+        return QuickSightAnalysisField(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
-    def relate(self) -> "RelatedQuickSightDashboard":
+    def relate(self) -> "RelatedQuickSightAnalysisField":
         """
-        Create a :class:`RelatedQuickSightDashboard` reference from this instance.
+        Create a :class:`RelatedQuickSightAnalysisField` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedQuickSightDashboard reference to this asset.
+            A RelatedQuickSightAnalysisField reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedQuickSightDashboard(guid=self.guid)
-        return RelatedQuickSightDashboard(qualified_name=self.qualified_name)
-
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        quick_sight_id: str,
-        quick_sight_dashboard_folders: Union[list[str], None] = None,
-    ) -> "QuickSightDashboard":
-        """Create a new QuickSightDashboard asset."""
-        validate_required_fields(
-            ["name", "connection_qualified_name", "quick_sight_id"],
-            [name, connection_qualified_name, quick_sight_id],
-        )
-        fields = connection_qualified_name.split("/")
-        connector_name = fields[1] if len(fields) > 1 else None
-        folder_refs = (
-            [
-                RelatedQuickSightFolder(unique_attributes={"qualifiedName": folder_qn})
-                for folder_qn in quick_sight_dashboard_folders
-            ]
-            if quick_sight_dashboard_folders
-            else UNSET
-        )
-        return cls(
-            name=name,
-            quick_sight_id=quick_sight_id,
-            qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
-            connection_qualified_name=connection_qualified_name,
-            connector_name=connector_name,
-            quick_sight_dashboard_folders=folder_refs,
-        )
-
-    @classmethod
-    def updater(cls, *, qualified_name: str, name: str) -> "QuickSightDashboard":
-        """Create a QuickSightDashboard instance for update operations."""
-        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
-        return cls(qualified_name=qualified_name, name=name)
-
-    def trim_to_required(self) -> "QuickSightDashboard":
-        """Return only fields required for update operations."""
-        return QuickSightDashboard.updater(
-            qualified_name=self.qualified_name, name=self.name
-        )
+            return RelatedQuickSightAnalysisField(guid=self.guid)
+        return RelatedQuickSightAnalysisField(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -398,12 +364,12 @@ class QuickSightDashboard(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _quick_sight_dashboard_to_nested_bytes(self, serde)
+        return _quick_sight_analysis_field_to_nested_bytes(self, serde)
 
     @staticmethod
     def from_json(
         json_data: str | bytes, serde: Serde | None = None
-    ) -> QuickSightDashboard:
+    ) -> QuickSightAnalysisField:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -412,13 +378,13 @@ class QuickSightDashboard(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            QuickSightDashboard instance
+            QuickSightAnalysisField instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _quick_sight_dashboard_from_nested_bytes(json_data, serde)
+        return _quick_sight_analysis_field_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -426,14 +392,20 @@ class QuickSightDashboard(Asset):
 # =============================================================================
 
 
-class QuickSightDashboardAttributes(AssetAttributes):
-    """QuickSightDashboard-specific attributes for nested API format."""
+class QuickSightAnalysisFieldAttributes(AssetAttributes):
+    """QuickSightAnalysisField-specific attributes for nested API format."""
 
-    quick_sight_dashboard_published_version_number: Union[int, None, UnsetType] = UNSET
-    """Version number of the published dashboard."""
+    quick_sight_analysis_visual_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis visual that uses this field."""
 
-    quick_sight_dashboard_last_published_time: Union[int, None, UnsetType] = UNSET
-    """Time (epoch) at which this dashboard was last published, in milliseconds."""
+    quick_sight_analysis_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis that contains this field's visual."""
+
+    quick_sight_analysis_field_expression: Union[str, None, UnsetType] = UNSET
+    """Formula of this field, when it is a calculated field."""
+
+    quick_sight_analysis_field_data_set_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the analysis dataset this field belongs to."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the QuickSight asset."""
@@ -448,8 +420,8 @@ class QuickSightDashboardAttributes(AssetAttributes):
     """Unique identifier of the dataset this asset belongs to."""
 
 
-class QuickSightDashboardRelationshipAttributes(AssetRelationshipAttributes):
-    """QuickSightDashboard-specific relationship attributes for nested API format."""
+class QuickSightAnalysisFieldRelationshipAttributes(AssetRelationshipAttributes):
+    """QuickSightAnalysisField-specific relationship attributes for nested API format."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -529,15 +501,10 @@ class QuickSightDashboardRelationshipAttributes(AssetRelationshipAttributes):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    quick_sight_dashboard_visuals: Union[
-        List[RelatedQuickSightDashboardVisual], None, UnsetType
+    quick_sight_analysis_visual: Union[
+        RelatedQuickSightAnalysisVisual, None, UnsetType
     ] = UNSET
-    """Visuals that exist within this dashboard."""
-
-    quick_sight_dashboard_folders: Union[
-        List[RelatedQuickSightFolder], None, UnsetType
-    ] = UNSET
-    """Folders that contain this dashboard."""
+    """Analysis visual that uses this field."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
@@ -571,18 +538,18 @@ class QuickSightDashboardRelationshipAttributes(AssetRelationshipAttributes):
     """"""
 
 
-class QuickSightDashboardNested(AssetNested):
-    """QuickSightDashboard in nested API format for high-performance serialization."""
+class QuickSightAnalysisFieldNested(AssetNested):
+    """QuickSightAnalysisField in nested API format for high-performance serialization."""
 
-    attributes: Union[QuickSightDashboardAttributes, UnsetType] = UNSET
+    attributes: Union[QuickSightAnalysisFieldAttributes, UnsetType] = UNSET
     relationship_attributes: Union[
-        QuickSightDashboardRelationshipAttributes, UnsetType
+        QuickSightAnalysisFieldRelationshipAttributes, UnsetType
     ] = UNSET
     append_relationship_attributes: Union[
-        QuickSightDashboardRelationshipAttributes, UnsetType
+        QuickSightAnalysisFieldRelationshipAttributes, UnsetType
     ] = UNSET
     remove_relationship_attributes: Union[
-        QuickSightDashboardRelationshipAttributes, UnsetType
+        QuickSightAnalysisFieldRelationshipAttributes, UnsetType
     ] = UNSET
 
 
@@ -590,7 +557,7 @@ class QuickSightDashboardNested(AssetNested):
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_QUICK_SIGHT_DASHBOARD_REL_FIELDS: List[str] = [
+_QUICK_SIGHT_ANALYSIS_FIELD_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
@@ -616,8 +583,7 @@ _QUICK_SIGHT_DASHBOARD_REL_FIELDS: List[str] = [
     "partial_child_objects",
     "input_to_processes",
     "output_from_processes",
-    "quick_sight_dashboard_visuals",
-    "quick_sight_dashboard_folders",
+    "quick_sight_analysis_visual",
     "user_def_relationship_to",
     "user_def_relationship_from",
     "files",
@@ -630,16 +596,20 @@ _QUICK_SIGHT_DASHBOARD_REL_FIELDS: List[str] = [
 ]
 
 
-def _populate_quick_sight_dashboard_attrs(
-    attrs: QuickSightDashboardAttributes, obj: QuickSightDashboard
+def _populate_quick_sight_analysis_field_attrs(
+    attrs: QuickSightAnalysisFieldAttributes, obj: QuickSightAnalysisField
 ) -> None:
-    """Populate QuickSightDashboard-specific attributes on the attrs struct."""
+    """Populate QuickSightAnalysisField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_dashboard_published_version_number = (
-        obj.quick_sight_dashboard_published_version_number
+    attrs.quick_sight_analysis_visual_qualified_name = (
+        obj.quick_sight_analysis_visual_qualified_name
     )
-    attrs.quick_sight_dashboard_last_published_time = (
-        obj.quick_sight_dashboard_last_published_time
+    attrs.quick_sight_analysis_qualified_name = obj.quick_sight_analysis_qualified_name
+    attrs.quick_sight_analysis_field_expression = (
+        obj.quick_sight_analysis_field_expression
+    )
+    attrs.quick_sight_analysis_field_data_set_identifier = (
+        obj.quick_sight_analysis_field_data_set_identifier
     )
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
@@ -647,14 +617,22 @@ def _populate_quick_sight_dashboard_attrs(
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
-def _extract_quick_sight_dashboard_attrs(attrs: QuickSightDashboardAttributes) -> dict:
-    """Extract all QuickSightDashboard attributes from the attrs struct into a flat dict."""
+def _extract_quick_sight_analysis_field_attrs(
+    attrs: QuickSightAnalysisFieldAttributes,
+) -> dict:
+    """Extract all QuickSightAnalysisField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_dashboard_published_version_number"] = (
-        attrs.quick_sight_dashboard_published_version_number
+    result["quick_sight_analysis_visual_qualified_name"] = (
+        attrs.quick_sight_analysis_visual_qualified_name
     )
-    result["quick_sight_dashboard_last_published_time"] = (
-        attrs.quick_sight_dashboard_last_published_time
+    result["quick_sight_analysis_qualified_name"] = (
+        attrs.quick_sight_analysis_qualified_name
+    )
+    result["quick_sight_analysis_field_expression"] = (
+        attrs.quick_sight_analysis_field_expression
+    )
+    result["quick_sight_analysis_field_data_set_identifier"] = (
+        attrs.quick_sight_analysis_field_data_set_identifier
     )
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
@@ -668,41 +646,41 @@ def _extract_quick_sight_dashboard_attrs(attrs: QuickSightDashboardAttributes) -
 # =============================================================================
 
 
-def _quick_sight_dashboard_to_nested(
-    quick_sight_dashboard: QuickSightDashboard,
-) -> QuickSightDashboardNested:
-    """Convert flat QuickSightDashboard to nested format."""
-    attrs = QuickSightDashboardAttributes()
-    _populate_quick_sight_dashboard_attrs(attrs, quick_sight_dashboard)
+def _quick_sight_analysis_field_to_nested(
+    quick_sight_analysis_field: QuickSightAnalysisField,
+) -> QuickSightAnalysisFieldNested:
+    """Convert flat QuickSightAnalysisField to nested format."""
+    attrs = QuickSightAnalysisFieldAttributes()
+    _populate_quick_sight_analysis_field_attrs(attrs, quick_sight_analysis_field)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        quick_sight_dashboard,
-        _QUICK_SIGHT_DASHBOARD_REL_FIELDS,
-        QuickSightDashboardRelationshipAttributes,
+        quick_sight_analysis_field,
+        _QUICK_SIGHT_ANALYSIS_FIELD_REL_FIELDS,
+        QuickSightAnalysisFieldRelationshipAttributes,
     )
-    return QuickSightDashboardNested(
-        guid=quick_sight_dashboard.guid,
-        type_name=quick_sight_dashboard.type_name,
-        status=quick_sight_dashboard.status,
-        version=quick_sight_dashboard.version,
-        create_time=quick_sight_dashboard.create_time,
-        update_time=quick_sight_dashboard.update_time,
-        created_by=quick_sight_dashboard.created_by,
-        updated_by=quick_sight_dashboard.updated_by,
-        classifications=quick_sight_dashboard.classifications,
-        classification_names=quick_sight_dashboard.classification_names,
-        meanings=quick_sight_dashboard.meanings,
-        labels=quick_sight_dashboard.labels,
-        business_attributes=quick_sight_dashboard.business_attributes,
-        custom_attributes=quick_sight_dashboard.custom_attributes,
-        pending_tasks=quick_sight_dashboard.pending_tasks,
-        proxy=quick_sight_dashboard.proxy,
-        is_incomplete=quick_sight_dashboard.is_incomplete,
-        provenance_type=quick_sight_dashboard.provenance_type,
-        home_id=quick_sight_dashboard.home_id,
-        depth=quick_sight_dashboard.depth,
-        immediate_upstream=quick_sight_dashboard.immediate_upstream,
-        immediate_downstream=quick_sight_dashboard.immediate_downstream,
+    return QuickSightAnalysisFieldNested(
+        guid=quick_sight_analysis_field.guid,
+        type_name=quick_sight_analysis_field.type_name,
+        status=quick_sight_analysis_field.status,
+        version=quick_sight_analysis_field.version,
+        create_time=quick_sight_analysis_field.create_time,
+        update_time=quick_sight_analysis_field.update_time,
+        created_by=quick_sight_analysis_field.created_by,
+        updated_by=quick_sight_analysis_field.updated_by,
+        classifications=quick_sight_analysis_field.classifications,
+        classification_names=quick_sight_analysis_field.classification_names,
+        meanings=quick_sight_analysis_field.meanings,
+        labels=quick_sight_analysis_field.labels,
+        business_attributes=quick_sight_analysis_field.business_attributes,
+        custom_attributes=quick_sight_analysis_field.custom_attributes,
+        pending_tasks=quick_sight_analysis_field.pending_tasks,
+        proxy=quick_sight_analysis_field.proxy,
+        is_incomplete=quick_sight_analysis_field.is_incomplete,
+        provenance_type=quick_sight_analysis_field.provenance_type,
+        home_id=quick_sight_analysis_field.home_id,
+        depth=quick_sight_analysis_field.depth,
+        immediate_upstream=quick_sight_analysis_field.immediate_upstream,
+        immediate_downstream=quick_sight_analysis_field.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -710,22 +688,22 @@ def _quick_sight_dashboard_to_nested(
     )
 
 
-def _quick_sight_dashboard_from_nested(
-    nested: QuickSightDashboardNested,
-) -> QuickSightDashboard:
-    """Convert nested format to flat QuickSightDashboard."""
+def _quick_sight_analysis_field_from_nested(
+    nested: QuickSightAnalysisFieldNested,
+) -> QuickSightAnalysisField:
+    """Convert nested format to flat QuickSightAnalysisField."""
     attrs = (
         nested.attributes
         if nested.attributes is not UNSET
-        else QuickSightDashboardAttributes()
+        else QuickSightAnalysisFieldAttributes()
     )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _QUICK_SIGHT_DASHBOARD_REL_FIELDS,
-        QuickSightDashboardRelationshipAttributes,
+        _QUICK_SIGHT_ANALYSIS_FIELD_REL_FIELDS,
+        QuickSightAnalysisFieldRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -754,24 +732,26 @@ def _quick_sight_dashboard_from_nested(
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
     }
-    kwargs.update(_extract_quick_sight_dashboard_attrs(attrs))
+    kwargs.update(_extract_quick_sight_analysis_field_attrs(attrs))
     kwargs.update(merged_rels)
-    return QuickSightDashboard(**kwargs)
+    return QuickSightAnalysisField(**kwargs)
 
 
-def _quick_sight_dashboard_to_nested_bytes(
-    quick_sight_dashboard: QuickSightDashboard, serde: Serde
+def _quick_sight_analysis_field_to_nested_bytes(
+    quick_sight_analysis_field: QuickSightAnalysisField, serde: Serde
 ) -> bytes:
-    """Convert flat QuickSightDashboard to nested JSON bytes."""
-    return serde.encode(_quick_sight_dashboard_to_nested(quick_sight_dashboard))
+    """Convert flat QuickSightAnalysisField to nested JSON bytes."""
+    return serde.encode(
+        _quick_sight_analysis_field_to_nested(quick_sight_analysis_field)
+    )
 
 
-def _quick_sight_dashboard_from_nested_bytes(
+def _quick_sight_analysis_field_from_nested_bytes(
     data: bytes, serde: Serde
-) -> QuickSightDashboard:
-    """Convert nested JSON bytes to flat QuickSightDashboard."""
-    nested = serde.decode(data, QuickSightDashboardNested)
-    return _quick_sight_dashboard_from_nested(nested)
+) -> QuickSightAnalysisField:
+    """Convert nested JSON bytes to flat QuickSightAnalysisField."""
+    nested = serde.decode(data, QuickSightAnalysisFieldNested)
+    return _quick_sight_analysis_field_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
@@ -780,75 +760,88 @@ def _quick_sight_dashboard_from_nested_bytes(
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
     KeywordTextField,
-    NumericField,
     RelationField,
+    TextField,
 )
 
-QuickSightDashboard.QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER = NumericField(
-    "quickSightDashboardPublishedVersionNumber",
-    "quickSightDashboardPublishedVersionNumber",
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_VISUAL_QUALIFIED_NAME = KeywordField(
+    "quickSightAnalysisVisualQualifiedName", "quickSightAnalysisVisualQualifiedName"
 )
-QuickSightDashboard.QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME = NumericField(
-    "quickSightDashboardLastPublishedTime", "quickSightDashboardLastPublishedTime"
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME = KeywordField(
+    "quickSightAnalysisQualifiedName", "quickSightAnalysisQualifiedName"
 )
-QuickSightDashboard.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
-QuickSightDashboard.QUICK_SIGHT_SHEET_ID = KeywordField(
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_FIELD_EXPRESSION = TextField(
+    "quickSightAnalysisFieldExpression", "quickSightAnalysisFieldExpression"
+)
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_FIELD_DATA_SET_IDENTIFIER = KeywordField(
+    "quickSightAnalysisFieldDataSetIdentifier",
+    "quickSightAnalysisFieldDataSetIdentifier",
+)
+QuickSightAnalysisField.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
+QuickSightAnalysisField.QUICK_SIGHT_SHEET_ID = KeywordField(
     "quickSightSheetId", "quickSightSheetId"
 )
-QuickSightDashboard.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
+QuickSightAnalysisField.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
     "quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text"
 )
-QuickSightDashboard.CATALOG_DATASET_GUID = KeywordField(
+QuickSightAnalysisField.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
-QuickSightDashboard.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-QuickSightDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
-QuickSightDashboard.ANOMALO_CHECKS = RelationField("anomaloChecks")
-QuickSightDashboard.APPLICATION = RelationField("application")
-QuickSightDashboard.APPLICATION_FIELD = RelationField("applicationField")
-QuickSightDashboard.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
-QuickSightDashboard.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-QuickSightDashboard.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+QuickSightAnalysisField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+QuickSightAnalysisField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
+QuickSightAnalysisField.ANOMALO_CHECKS = RelationField("anomaloChecks")
+QuickSightAnalysisField.APPLICATION = RelationField("application")
+QuickSightAnalysisField.APPLICATION_FIELD = RelationField("applicationField")
+QuickSightAnalysisField.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+QuickSightAnalysisField.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+QuickSightAnalysisField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
 )
-QuickSightDashboard.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-QuickSightDashboard.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-QuickSightDashboard.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+QuickSightAnalysisField.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+QuickSightAnalysisField.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+QuickSightAnalysisField.MODEL_IMPLEMENTED_ENTITIES = RelationField(
     "modelImplementedEntities"
 )
-QuickSightDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+QuickSightAnalysisField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
     "modelImplementedAttributes"
 )
-QuickSightDashboard.METRICS = RelationField("metrics")
-QuickSightDashboard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-QuickSightDashboard.DQ_REFERENCE_DATASET_RULES = RelationField(
+QuickSightAnalysisField.METRICS = RelationField("metrics")
+QuickSightAnalysisField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+QuickSightAnalysisField.DQ_REFERENCE_DATASET_RULES = RelationField(
     "dqReferenceDatasetRules"
 )
-QuickSightDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+QuickSightAnalysisField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
-QuickSightDashboard.MEANINGS = RelationField("meanings")
-QuickSightDashboard.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
-QuickSightDashboard.MC_MONITORS = RelationField("mcMonitors")
-QuickSightDashboard.MC_INCIDENTS = RelationField("mcIncidents")
-QuickSightDashboard.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-QuickSightDashboard.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-QuickSightDashboard.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-QuickSightDashboard.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-QuickSightDashboard.QUICK_SIGHT_DASHBOARD_VISUALS = RelationField(
-    "quickSightDashboardVisuals"
+QuickSightAnalysisField.MEANINGS = RelationField("meanings")
+QuickSightAnalysisField.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+QuickSightAnalysisField.MC_MONITORS = RelationField("mcMonitors")
+QuickSightAnalysisField.MC_INCIDENTS = RelationField("mcIncidents")
+QuickSightAnalysisField.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+QuickSightAnalysisField.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+QuickSightAnalysisField.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+QuickSightAnalysisField.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_VISUAL = RelationField(
+    "quickSightAnalysisVisual"
 )
-QuickSightDashboard.QUICK_SIGHT_DASHBOARD_FOLDERS = RelationField(
-    "quickSightDashboardFolders"
+QuickSightAnalysisField.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
 )
-QuickSightDashboard.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-QuickSightDashboard.USER_DEF_RELATIONSHIP_FROM = RelationField(
+QuickSightAnalysisField.USER_DEF_RELATIONSHIP_FROM = RelationField(
     "userDefRelationshipFrom"
 )
-QuickSightDashboard.FILES = RelationField("files")
-QuickSightDashboard.LINKS = RelationField("links")
-QuickSightDashboard.README = RelationField("readme")
-QuickSightDashboard.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-QuickSightDashboard.SODA_CHECKS = RelationField("sodaChecks")
-QuickSightDashboard.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-QuickSightDashboard.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+QuickSightAnalysisField.FILES = RelationField("files")
+QuickSightAnalysisField.LINKS = RelationField("links")
+QuickSightAnalysisField.README = RelationField("readme")
+QuickSightAnalysisField.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
+QuickSightAnalysisField.SODA_CHECKS = RelationField("sodaChecks")
+QuickSightAnalysisField.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+QuickSightAnalysisField.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

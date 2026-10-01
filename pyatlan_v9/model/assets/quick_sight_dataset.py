@@ -213,7 +213,7 @@ class QuickSightDataset(Asset):
     quick_sight_dataset_folders: Union[
         List[RelatedQuickSightFolder], None, UnsetType
     ] = UNSET
-    """"""
+    """Folders that contain this dataset."""
 
     quick_sight_dataset_fields: Union[
         List[RelatedQuickSightDatasetField], None, UnsetType
@@ -536,7 +536,7 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     quick_sight_dataset_folders: Union[
         List[RelatedQuickSightFolder], None, UnsetType
     ] = UNSET
-    """"""
+    """Folders that contain this dataset."""
 
     quick_sight_dataset_fields: Union[
         List[RelatedQuickSightDatasetField], None, UnsetType
