@@ -1,0 +1,26 @@
+[
+  {
+    "alias": "okta",
+    "internalId": "8f0f7a9d-0000-0000-0000-000000000000",
+    "displayName": "Sign in with Okta",
+    "providerId": "saml",
+    "enabled": true,
+    "trustEmail": true,
+    "storeToken": false,
+    "linkOnly": false,
+    "addReadTokenRoleOnCreate": false,
+    "firstBrokerLoginFlowAlias": "SimpleLoginFlow",
+    "futureUnknownField": "must-survive-round-trip",
+    "config": {
+      "nameIDPolicyFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+      "postBindingAuthnRequest": "true",
+      "postBindingResponse": "true",
+      "principalType": "SUBJECT",
+      "signingCertificate": "MIIDOLDCERTAAAA",
+      "singleSignOnServiceUrl": "https://example.okta.com/app/x/sso/saml",
+      "syncMode": "IMPORT",
+      "validateSignature": "true",
+      "someFutureConfigKey": "also-must-survive"
+    }
+  }
+]
