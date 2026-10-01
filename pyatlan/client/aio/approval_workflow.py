@@ -13,11 +13,11 @@ from pyatlan.client.common import (
     AsyncApiCaller,
 )
 from pyatlan.errors import ErrorCode, InvalidRequestError
-from pyatlan.model.enums import ApprovalWorkflowRequestType
 from pyatlan.model.approval_workflow import (
     ApprovalWorkflowBulkActionResponse,
     ApprovalWorkflowRequest,
 )
+from pyatlan.model.enums import ApprovalWorkflowRequestType
 
 
 def _raise_if_recipient_scoped(err: InvalidRequestError, group_key: str):

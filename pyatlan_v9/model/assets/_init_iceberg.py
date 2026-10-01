@@ -8,6 +8,10 @@ Iceberg module exports.
 This module provides convenient imports for all Iceberg types and their Related variants.
 """
 
+from .iceberg import Iceberg
+from .iceberg_catalog import IcebergCatalog
+from .iceberg_column import IcebergColumn
+from .iceberg_namespace import IcebergNamespace
 from .iceberg_related import (
     RelatedIceberg,
     RelatedIcebergCatalog,
@@ -15,10 +19,6 @@ from .iceberg_related import (
     RelatedIcebergNamespace,
     RelatedIcebergTable,
 )
-from .iceberg import Iceberg
-from .iceberg_catalog import IcebergCatalog
-from .iceberg_column import IcebergColumn
-from .iceberg_namespace import IcebergNamespace
 from .iceberg_table import IcebergTable
 
 __all__ = [

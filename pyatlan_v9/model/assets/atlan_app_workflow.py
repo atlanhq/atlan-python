@@ -19,6 +19,13 @@ from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -31,6 +38,11 @@ from .asset import (
     AssetRelationshipAttributes,
     _extract_asset_attrs,
     _populate_asset_attrs,
+)
+from .atlan_app_related import (
+    RelatedAtlanApp,
+    RelatedAtlanAppTool,
+    RelatedAtlanAppWorkflow,
 )
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
@@ -48,19 +60,6 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .atlan_app_related import (
-    RelatedAtlanApp,
-    RelatedAtlanAppTool,
-    RelatedAtlanAppWorkflow,
-)
-from .workflow_notification_related import RelatedWorkflowNotification
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -126,7 +125,6 @@ class AtlanAppWorkflow(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
-    WORKFLOW_NOTIFICATION_NOTIFICATIONS: ClassVar[Any] = None
 
     atlan_app_workflow_version: Union[str, None, UnsetType] = UNSET
     """Version of the workflow."""
@@ -296,11 +294,6 @@ class AtlanAppWorkflow(Asset):
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
-
-    workflow_notification_notifications: Union[
-        List[RelatedWorkflowNotification], None, UnsetType
-    ] = UNSET
-    """Notifications raised about this workflow."""
 
     def __post_init__(self) -> None:
         self.type_name = "AtlanAppWorkflow"
@@ -609,11 +602,6 @@ class AtlanAppWorkflowRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    workflow_notification_notifications: Union[
-        List[RelatedWorkflowNotification], None, UnsetType
-    ] = UNSET
-    """Notifications raised about this workflow."""
-
 
 class AtlanAppWorkflowNested(AssetNested):
     """AtlanAppWorkflow in nested API format for high-performance serialization."""
@@ -673,7 +661,6 @@ _ATLAN_APP_WORKFLOW_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
-    "workflow_notification_notifications",
 ]
 
 
@@ -788,33 +775,36 @@ def _atlan_app_workflow_from_nested(nested: AtlanAppWorkflowNested) -> AtlanAppW
         _ATLAN_APP_WORKFLOW_REL_FIELDS,
         AtlanAppWorkflowRelationshipAttributes,
     )
-    return AtlanAppWorkflow(
-        guid=nested.guid,
-        type_name=nested.type_name,
-        status=nested.status,
-        version=nested.version,
-        create_time=nested.create_time,
-        update_time=nested.update_time,
-        created_by=nested.created_by,
-        updated_by=nested.updated_by,
-        classifications=nested.classifications,
-        classification_names=nested.classification_names,
-        meanings=nested.meanings,
-        labels=nested.labels,
-        business_attributes=nested.business_attributes,
-        custom_attributes=nested.custom_attributes,
-        pending_tasks=nested.pending_tasks,
-        proxy=nested.proxy,
-        is_incomplete=nested.is_incomplete,
-        provenance_type=nested.provenance_type,
-        home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
-        **_extract_atlan_app_workflow_attrs(attrs),
-        # Merged relationship attributes
-        **merged_rels,
-    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_atlan_app_workflow_attrs(attrs))
+    kwargs.update(merged_rels)
+    return AtlanAppWorkflow(**kwargs)
 
 
 def _atlan_app_workflow_to_nested_bytes(
@@ -926,6 +916,3 @@ AtlanAppWorkflow.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubject
 AtlanAppWorkflow.SODA_CHECKS = RelationField("sodaChecks")
 AtlanAppWorkflow.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 AtlanAppWorkflow.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-AtlanAppWorkflow.WORKFLOW_NOTIFICATION_NOTIFICATIONS = RelationField(
-    "workflowNotificationNotifications"
-)

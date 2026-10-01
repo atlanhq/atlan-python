@@ -4,29 +4,23 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-Anaplan asset model with flattened inheritance.
+QuickSightAnalysisField asset model with flattened inheritance.
 
 This module provides:
-- Anaplan: Flat asset class (easy to use)
-- AnaplanAttributes: Nested attributes struct (extends AssetAttributes)
-- AnaplanNested: Nested API format struct
+- QuickSightAnalysisField: Flat asset class (easy to use)
+- QuickSightAnalysisFieldAttributes: Nested attributes struct (extends AssetAttributes)
+- QuickSightAnalysisFieldNested: Nested API format struct
 """
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+import re
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
-from .anaplan_related import RelatedAnaplan
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -54,25 +48,29 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .quick_sight_related import RelatedQuickSightAnalysisField, RelatedQuickSightAnalysisVisual
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
 
-
 @register_asset
-class Anaplan(Asset):
+class QuickSightAnalysisField(Asset):
     """
-    Base class for all Anaplan types.
+    Instance of a QuickSight analysis field in Atlan. These represent the dataset columns and calculated fields used by an analysis visual.
     """
 
-    ANAPLAN_WORKSPACE_QUALIFIED_NAME: ClassVar[Any] = None
-    ANAPLAN_WORKSPACE_NAME: ClassVar[Any] = None
-    ANAPLAN_MODEL_QUALIFIED_NAME: ClassVar[Any] = None
-    ANAPLAN_MODEL_NAME: ClassVar[Any] = None
-    ANAPLAN_MODULE_QUALIFIED_NAME: ClassVar[Any] = None
-    ANAPLAN_MODULE_NAME: ClassVar[Any] = None
-    ANAPLAN_SOURCE_ID: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_VISUAL_QUALIFIED_NAME: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_FIELD_EXPRESSION: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_FIELD_DATA_SET_IDENTIFIER: ClassVar[Any] = None
+    QUICK_SIGHT_ID: ClassVar[Any] = None
+    QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
+    QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -98,6 +96,7 @@ class Anaplan(Asset):
     PARTIAL_CHILD_OBJECTS: ClassVar[Any] = None
     INPUT_TO_PROCESSES: ClassVar[Any] = None
     OUTPUT_FROM_PROCESSES: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_VISUAL: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_FROM: ClassVar[Any] = None
     FILES: ClassVar[Any] = None
@@ -108,26 +107,26 @@ class Anaplan(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    anaplan_workspace_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the AnaplanWorkspace asset that contains this asset (AnaplanModel and everything under its hierarchy)."""
+    quick_sight_analysis_visual_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis visual that uses this field."""
 
-    anaplan_workspace_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the AnaplanWorkspace asset that contains this asset (AnaplanModel and everything under its hierarchy)."""
+    quick_sight_analysis_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis that contains this field's visual."""
 
-    anaplan_model_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the AnaplanModel asset that contains this asset (AnaplanModule and everything under its hierarchy)."""
+    quick_sight_analysis_field_expression: Union[str, None, UnsetType] = UNSET
+    """Formula of this field, when it is a calculated field."""
 
-    anaplan_model_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the AnaplanModel asset that contains this asset (AnaplanModule and everything under its hierarchy)."""
+    quick_sight_analysis_field_data_set_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the analysis dataset this field belongs to."""
 
-    anaplan_module_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the AnaplanModule asset that contains this asset (AnaplanLineItem, AnaplanList, AnaplanView and everything under their hierarchy)."""
+    quick_sight_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier for the QuickSight asset."""
 
-    anaplan_module_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the AnaplanModule asset that contains this asset (AnaplanLineItem, AnaplanList, AnaplanView and everything under their hierarchy)."""
+    quick_sight_sheet_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier for the QuickSight sheet."""
 
-    anaplan_source_id: Union[str, None, UnsetType] = UNSET
-    """Id/Guid of the Anaplan asset in the source system."""
+    quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
+    """Name of the QuickSight sheet."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -165,9 +164,7 @@ class Anaplan(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -176,14 +173,10 @@ class Anaplan(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -210,12 +203,13 @@ class Anaplan(Asset):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
+    quick_sight_analysis_visual: Union[RelatedQuickSightAnalysisVisual, None, UnsetType] = UNSET
+    """Analysis visual that uses this field."""
+
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -227,9 +221,7 @@ class Anaplan(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -242,15 +234,19 @@ class Anaplan(Asset):
     """"""
 
     def __post_init__(self) -> None:
-        self.type_name = "Anaplan"
+        self.type_name = "QuickSightAnalysisField"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
+    )
+
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this Anaplan instance.
+        Dry-run validation of this QuickSightAnalysisField instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -272,37 +268,51 @@ class Anaplan(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.quick_sight_analysis_visual is UNSET:
+                errors.append("quick_sight_analysis_visual is required for creation")
+            if self.quick_sight_analysis_visual_qualified_name is UNSET:
+                errors.append("quick_sight_analysis_visual_qualified_name is required for creation")
+            if self.quick_sight_analysis_qualified_name is UNSET:
+                errors.append("quick_sight_analysis_qualified_name is required for creation")
         if errors:
-            raise ValueError(f"Anaplan validation failed: {errors}")
+            raise ValueError(f"QuickSightAnalysisField validation failed: {errors}")
 
-    def minimize(self) -> "Anaplan":
+    def minimize(self) -> "QuickSightAnalysisField":
         """
-        Return a minimal copy of this Anaplan with only updater-required fields.
+        Return a minimal copy of this QuickSightAnalysisField with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Anaplan with only the fields needed for an update
+        returns a new QuickSightAnalysisField with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new Anaplan instance with only the minimum required fields.
+            A new QuickSightAnalysisField instance with only the minimum required fields.
         """
         self.validate()
-        return Anaplan(qualified_name=self.qualified_name, name=self.name)
+        return QuickSightAnalysisField(qualified_name=self.qualified_name, name=self.name)
 
-    def relate(self) -> "RelatedAnaplan":
+    def relate(self) -> "RelatedQuickSightAnalysisField":
         """
-        Create a :class:`RelatedAnaplan` reference from this instance.
+        Create a :class:`RelatedQuickSightAnalysisField` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedAnaplan reference to this asset.
+            A RelatedQuickSightAnalysisField reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedAnaplan(guid=self.guid)
-        return RelatedAnaplan(qualified_name=self.qualified_name)
+            return RelatedQuickSightAnalysisField(guid=self.guid)
+        return RelatedQuickSightAnalysisField(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -330,10 +340,10 @@ class Anaplan(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _anaplan_to_nested_bytes(self, serde)
+        return _quick_sight_analysis_field_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> Anaplan:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> QuickSightAnalysisField:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -342,50 +352,48 @@ class Anaplan(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            Anaplan instance
+            QuickSightAnalysisField instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _anaplan_from_nested_bytes(json_data, serde)
+        return _quick_sight_analysis_field_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+class QuickSightAnalysisFieldAttributes(AssetAttributes):
+    """QuickSightAnalysisField-specific attributes for nested API format."""
 
-class AnaplanAttributes(AssetAttributes):
-    """Anaplan-specific attributes for nested API format."""
+    quick_sight_analysis_visual_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis visual that uses this field."""
 
-    anaplan_workspace_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the AnaplanWorkspace asset that contains this asset (AnaplanModel and everything under its hierarchy)."""
+    quick_sight_analysis_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis that contains this field's visual."""
 
-    anaplan_workspace_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the AnaplanWorkspace asset that contains this asset (AnaplanModel and everything under its hierarchy)."""
+    quick_sight_analysis_field_expression: Union[str, None, UnsetType] = UNSET
+    """Formula of this field, when it is a calculated field."""
 
-    anaplan_model_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the AnaplanModel asset that contains this asset (AnaplanModule and everything under its hierarchy)."""
+    quick_sight_analysis_field_data_set_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the analysis dataset this field belongs to."""
 
-    anaplan_model_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the AnaplanModel asset that contains this asset (AnaplanModule and everything under its hierarchy)."""
+    quick_sight_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier for the QuickSight asset."""
 
-    anaplan_module_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the AnaplanModule asset that contains this asset (AnaplanLineItem, AnaplanList, AnaplanView and everything under their hierarchy)."""
+    quick_sight_sheet_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier for the QuickSight sheet."""
 
-    anaplan_module_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the AnaplanModule asset that contains this asset (AnaplanLineItem, AnaplanList, AnaplanView and everything under their hierarchy)."""
-
-    anaplan_source_id: Union[str, None, UnsetType] = UNSET
-    """Id/Guid of the Anaplan asset in the source system."""
+    quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
+    """Name of the QuickSight sheet."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
-class AnaplanRelationshipAttributes(AssetRelationshipAttributes):
-    """Anaplan-specific relationship attributes for nested API format."""
+class QuickSightAnalysisFieldRelationshipAttributes(AssetRelationshipAttributes):
+    """QuickSightAnalysisField-specific relationship attributes for nested API format."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -420,9 +428,7 @@ class AnaplanRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -431,14 +437,10 @@ class AnaplanRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -465,12 +467,13 @@ class AnaplanRelationshipAttributes(AssetRelationshipAttributes):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
+    quick_sight_analysis_visual: Union[RelatedQuickSightAnalysisVisual, None, UnsetType] = UNSET
+    """Analysis visual that uses this field."""
+
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -482,9 +485,7 @@ class AnaplanRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -496,25 +497,19 @@ class AnaplanRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+class QuickSightAnalysisFieldNested(AssetNested):
+    """QuickSightAnalysisField in nested API format for high-performance serialization."""
 
-class AnaplanNested(AssetNested):
-    """Anaplan in nested API format for high-performance serialization."""
-
-    attributes: Union[AnaplanAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[AnaplanRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[AnaplanRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[AnaplanRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    attributes: Union[QuickSightAnalysisFieldAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[QuickSightAnalysisFieldRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[QuickSightAnalysisFieldRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[QuickSightAnalysisFieldRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_ANAPLAN_REL_FIELDS: List[str] = [
+_QUICK_SIGHT_ANALYSIS_FIELD_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
@@ -540,6 +535,7 @@ _ANAPLAN_REL_FIELDS: List[str] = [
     "partial_child_objects",
     "input_to_processes",
     "output_from_processes",
+    "quick_sight_analysis_visual",
     "user_def_relationship_to",
     "user_def_relationship_from",
     "files",
@@ -551,87 +547,83 @@ _ANAPLAN_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_anaplan_attrs(attrs: AnaplanAttributes, obj: Anaplan) -> None:
-    """Populate Anaplan-specific attributes on the attrs struct."""
+def _populate_quick_sight_analysis_field_attrs(attrs: QuickSightAnalysisFieldAttributes, obj: QuickSightAnalysisField) -> None:
+    """Populate QuickSightAnalysisField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.anaplan_workspace_qualified_name = obj.anaplan_workspace_qualified_name
-    attrs.anaplan_workspace_name = obj.anaplan_workspace_name
-    attrs.anaplan_model_qualified_name = obj.anaplan_model_qualified_name
-    attrs.anaplan_model_name = obj.anaplan_model_name
-    attrs.anaplan_module_qualified_name = obj.anaplan_module_qualified_name
-    attrs.anaplan_module_name = obj.anaplan_module_name
-    attrs.anaplan_source_id = obj.anaplan_source_id
+    attrs.quick_sight_analysis_visual_qualified_name = obj.quick_sight_analysis_visual_qualified_name
+    attrs.quick_sight_analysis_qualified_name = obj.quick_sight_analysis_qualified_name
+    attrs.quick_sight_analysis_field_expression = obj.quick_sight_analysis_field_expression
+    attrs.quick_sight_analysis_field_data_set_identifier = obj.quick_sight_analysis_field_data_set_identifier
+    attrs.quick_sight_id = obj.quick_sight_id
+    attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
+    attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
-def _extract_anaplan_attrs(attrs: AnaplanAttributes) -> dict:
-    """Extract all Anaplan attributes from the attrs struct into a flat dict."""
+def _extract_quick_sight_analysis_field_attrs(attrs: QuickSightAnalysisFieldAttributes) -> dict:
+    """Extract all QuickSightAnalysisField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["anaplan_workspace_qualified_name"] = attrs.anaplan_workspace_qualified_name
-    result["anaplan_workspace_name"] = attrs.anaplan_workspace_name
-    result["anaplan_model_qualified_name"] = attrs.anaplan_model_qualified_name
-    result["anaplan_model_name"] = attrs.anaplan_model_name
-    result["anaplan_module_qualified_name"] = attrs.anaplan_module_qualified_name
-    result["anaplan_module_name"] = attrs.anaplan_module_name
-    result["anaplan_source_id"] = attrs.anaplan_source_id
+    result["quick_sight_analysis_visual_qualified_name"] = attrs.quick_sight_analysis_visual_qualified_name
+    result["quick_sight_analysis_qualified_name"] = attrs.quick_sight_analysis_qualified_name
+    result["quick_sight_analysis_field_expression"] = attrs.quick_sight_analysis_field_expression
+    result["quick_sight_analysis_field_data_set_identifier"] = attrs.quick_sight_analysis_field_data_set_identifier
+    result["quick_sight_id"] = attrs.quick_sight_id
+    result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
+    result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _anaplan_to_nested(anaplan: Anaplan) -> AnaplanNested:
-    """Convert flat Anaplan to nested format."""
-    attrs = AnaplanAttributes()
-    _populate_anaplan_attrs(attrs, anaplan)
+def _quick_sight_analysis_field_to_nested(quick_sight_analysis_field: QuickSightAnalysisField) -> QuickSightAnalysisFieldNested:
+    """Convert flat QuickSightAnalysisField to nested format."""
+    attrs = QuickSightAnalysisFieldAttributes()
+    _populate_quick_sight_analysis_field_attrs(attrs, quick_sight_analysis_field)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        anaplan, _ANAPLAN_REL_FIELDS, AnaplanRelationshipAttributes
+        quick_sight_analysis_field, _QUICK_SIGHT_ANALYSIS_FIELD_REL_FIELDS, QuickSightAnalysisFieldRelationshipAttributes
     )
-    return AnaplanNested(
-        guid=anaplan.guid,
-        type_name=anaplan.type_name,
-        status=anaplan.status,
-        version=anaplan.version,
-        create_time=anaplan.create_time,
-        update_time=anaplan.update_time,
-        created_by=anaplan.created_by,
-        updated_by=anaplan.updated_by,
-        classifications=anaplan.classifications,
-        classification_names=anaplan.classification_names,
-        meanings=anaplan.meanings,
-        labels=anaplan.labels,
-        business_attributes=anaplan.business_attributes,
-        custom_attributes=anaplan.custom_attributes,
-        pending_tasks=anaplan.pending_tasks,
-        proxy=anaplan.proxy,
-        is_incomplete=anaplan.is_incomplete,
-        provenance_type=anaplan.provenance_type,
-        home_id=anaplan.home_id,
-        depth=anaplan.depth,
-        immediate_upstream=anaplan.immediate_upstream,
-        immediate_downstream=anaplan.immediate_downstream,
+    return QuickSightAnalysisFieldNested(
+        guid=quick_sight_analysis_field.guid,
+        type_name=quick_sight_analysis_field.type_name,
+        status=quick_sight_analysis_field.status,
+        version=quick_sight_analysis_field.version,
+        create_time=quick_sight_analysis_field.create_time,
+        update_time=quick_sight_analysis_field.update_time,
+        created_by=quick_sight_analysis_field.created_by,
+        updated_by=quick_sight_analysis_field.updated_by,
+        classifications=quick_sight_analysis_field.classifications,
+        classification_names=quick_sight_analysis_field.classification_names,
+        meanings=quick_sight_analysis_field.meanings,
+        labels=quick_sight_analysis_field.labels,
+        business_attributes=quick_sight_analysis_field.business_attributes,
+        custom_attributes=quick_sight_analysis_field.custom_attributes,
+        pending_tasks=quick_sight_analysis_field.pending_tasks,
+        proxy=quick_sight_analysis_field.proxy,
+        is_incomplete=quick_sight_analysis_field.is_incomplete,
+        provenance_type=quick_sight_analysis_field.provenance_type,
+        home_id=quick_sight_analysis_field.home_id,
+        depth=quick_sight_analysis_field.depth,
+        immediate_upstream=quick_sight_analysis_field.immediate_upstream,
+        immediate_downstream=quick_sight_analysis_field.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _anaplan_from_nested(nested: AnaplanNested) -> Anaplan:
-    """Convert nested format to flat Anaplan."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AnaplanAttributes()
+def _quick_sight_analysis_field_from_nested(nested: QuickSightAnalysisFieldNested) -> QuickSightAnalysisField:
+    """Convert nested format to flat QuickSightAnalysisField."""
+    attrs = nested.attributes if nested.attributes is not UNSET else QuickSightAnalysisFieldAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _ANAPLAN_REL_FIELDS,
-        AnaplanRelationshipAttributes,
+        _QUICK_SIGHT_ANALYSIS_FIELD_REL_FIELDS,
+        QuickSightAnalysisFieldRelationshipAttributes
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -660,75 +652,69 @@ def _anaplan_from_nested(nested: AnaplanNested) -> Anaplan:
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
     }
-    kwargs.update(_extract_anaplan_attrs(attrs))
+    kwargs.update(_extract_quick_sight_analysis_field_attrs(attrs))
     kwargs.update(merged_rels)
-    return Anaplan(**kwargs)
+    return QuickSightAnalysisField(**kwargs)
+
+def _quick_sight_analysis_field_to_nested_bytes(quick_sight_analysis_field: QuickSightAnalysisField, serde: Serde) -> bytes:
+    """Convert flat QuickSightAnalysisField to nested JSON bytes."""
+    return serde.encode(_quick_sight_analysis_field_to_nested(quick_sight_analysis_field))
 
 
-def _anaplan_to_nested_bytes(anaplan: Anaplan, serde: Serde) -> bytes:
-    """Convert flat Anaplan to nested JSON bytes."""
-    return serde.encode(_anaplan_to_nested(anaplan))
-
-
-def _anaplan_from_nested_bytes(data: bytes, serde: Serde) -> Anaplan:
-    """Convert nested JSON bytes to flat Anaplan."""
-    nested = serde.decode(data, AnaplanNested)
-    return _anaplan_from_nested(nested)
-
+def _quick_sight_analysis_field_from_nested_bytes(data: bytes, serde: Serde) -> QuickSightAnalysisField:
+    """Convert nested JSON bytes to flat QuickSightAnalysisField."""
+    nested = serde.decode(data, QuickSightAnalysisFieldNested)
+    return _quick_sight_analysis_field_from_nested(nested)
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    KeywordTextField,
+    RelationField,
+    TextField,
+)
 
-Anaplan.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField(
-    "anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName"
-)
-Anaplan.ANAPLAN_WORKSPACE_NAME = KeywordField(
-    "anaplanWorkspaceName", "anaplanWorkspaceName"
-)
-Anaplan.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField(
-    "anaplanModelQualifiedName", "anaplanModelQualifiedName"
-)
-Anaplan.ANAPLAN_MODEL_NAME = KeywordField("anaplanModelName", "anaplanModelName")
-Anaplan.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField(
-    "anaplanModuleQualifiedName", "anaplanModuleQualifiedName"
-)
-Anaplan.ANAPLAN_MODULE_NAME = KeywordField("anaplanModuleName", "anaplanModuleName")
-Anaplan.ANAPLAN_SOURCE_ID = KeywordField("anaplanSourceId", "anaplanSourceId")
-Anaplan.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
-Anaplan.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-Anaplan.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
-Anaplan.ANOMALO_CHECKS = RelationField("anomaloChecks")
-Anaplan.APPLICATION = RelationField("application")
-Anaplan.APPLICATION_FIELD = RelationField("applicationField")
-Anaplan.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
-Anaplan.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-Anaplan.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-Anaplan.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-Anaplan.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-Anaplan.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-Anaplan.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
-Anaplan.METRICS = RelationField("metrics")
-Anaplan.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-Anaplan.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Anaplan.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
-Anaplan.MEANINGS = RelationField("meanings")
-Anaplan.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
-Anaplan.MC_MONITORS = RelationField("mcMonitors")
-Anaplan.MC_INCIDENTS = RelationField("mcIncidents")
-Anaplan.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-Anaplan.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-Anaplan.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-Anaplan.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-Anaplan.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-Anaplan.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
-Anaplan.FILES = RelationField("files")
-Anaplan.LINKS = RelationField("links")
-Anaplan.README = RelationField("readme")
-Anaplan.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-Anaplan.SODA_CHECKS = RelationField("sodaChecks")
-Anaplan.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-Anaplan.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_VISUAL_QUALIFIED_NAME = KeywordField("quickSightAnalysisVisualQualifiedName", "quickSightAnalysisVisualQualifiedName")
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME = KeywordField("quickSightAnalysisQualifiedName", "quickSightAnalysisQualifiedName")
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_FIELD_EXPRESSION = TextField("quickSightAnalysisFieldExpression", "quickSightAnalysisFieldExpression")
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_FIELD_DATA_SET_IDENTIFIER = KeywordField("quickSightAnalysisFieldDataSetIdentifier", "quickSightAnalysisFieldDataSetIdentifier")
+QuickSightAnalysisField.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
+QuickSightAnalysisField.QUICK_SIGHT_SHEET_ID = KeywordField("quickSightSheetId", "quickSightSheetId")
+QuickSightAnalysisField.QUICK_SIGHT_SHEET_NAME = KeywordTextField("quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text")
+QuickSightAnalysisField.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+QuickSightAnalysisField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+QuickSightAnalysisField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+QuickSightAnalysisField.ANOMALO_CHECKS = RelationField("anomaloChecks")
+QuickSightAnalysisField.APPLICATION = RelationField("application")
+QuickSightAnalysisField.APPLICATION_FIELD = RelationField("applicationField")
+QuickSightAnalysisField.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+QuickSightAnalysisField.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+QuickSightAnalysisField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+QuickSightAnalysisField.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+QuickSightAnalysisField.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+QuickSightAnalysisField.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+QuickSightAnalysisField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+QuickSightAnalysisField.METRICS = RelationField("metrics")
+QuickSightAnalysisField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+QuickSightAnalysisField.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+QuickSightAnalysisField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+QuickSightAnalysisField.MEANINGS = RelationField("meanings")
+QuickSightAnalysisField.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+QuickSightAnalysisField.MC_MONITORS = RelationField("mcMonitors")
+QuickSightAnalysisField.MC_INCIDENTS = RelationField("mcIncidents")
+QuickSightAnalysisField.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+QuickSightAnalysisField.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+QuickSightAnalysisField.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+QuickSightAnalysisField.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+QuickSightAnalysisField.QUICK_SIGHT_ANALYSIS_VISUAL = RelationField("quickSightAnalysisVisual")
+QuickSightAnalysisField.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+QuickSightAnalysisField.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+QuickSightAnalysisField.FILES = RelationField("files")
+QuickSightAnalysisField.LINKS = RelationField("links")
+QuickSightAnalysisField.README = RelationField("readme")
+QuickSightAnalysisField.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+QuickSightAnalysisField.SODA_CHECKS = RelationField("sodaChecks")
+QuickSightAnalysisField.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+QuickSightAnalysisField.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

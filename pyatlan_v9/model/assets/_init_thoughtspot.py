@@ -8,6 +8,11 @@ Thoughtspot module exports.
 This module provides convenient imports for all Thoughtspot types and their Related variants.
 """
 
+from .thoughtspot import Thoughtspot
+from .thoughtspot_answer import ThoughtspotAnswer
+from .thoughtspot_column import ThoughtspotColumn
+from .thoughtspot_dashlet import ThoughtspotDashlet
+from .thoughtspot_liveboard import ThoughtspotLiveboard
 from .thoughtspot_related import (
     RelatedThoughtspot,
     RelatedThoughtspotAnswer,
@@ -18,11 +23,6 @@ from .thoughtspot_related import (
     RelatedThoughtspotView,
     RelatedThoughtspotWorksheet,
 )
-from .thoughtspot import Thoughtspot
-from .thoughtspot_answer import ThoughtspotAnswer
-from .thoughtspot_column import ThoughtspotColumn
-from .thoughtspot_dashlet import ThoughtspotDashlet
-from .thoughtspot_liveboard import ThoughtspotLiveboard
 from .thoughtspot_table import ThoughtspotTable
 from .thoughtspot_view import ThoughtspotView
 from .thoughtspot_worksheet import ThoughtspotWorksheet
