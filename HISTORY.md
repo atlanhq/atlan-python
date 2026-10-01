@@ -1,3 +1,11 @@
+## 11.4.1 (October 1, 2026)
+
+### New Features
+
+- **Latest asset models (pydantic + `pyatlan_v9`)**: Both model sets are regenerated from the latest typedefs. The pydantic models (`pyatlan.model.assets`) gain the SAP Analytics Cloud types (models, stories, folders, columns), `KafkaTag` and `FabricSemanticModelMeasure`, plus the latest attributes across existing connectors. Both sets gain `assetManagedBy` — the identity of the agent that creates and maintains an asset — and `pyatlan_v9` also gains `knowledgeLinkedFiles` on the glossary types. Nothing is removed.
+- **`Notification` asset model**: Adds the `Notification` asset type and its related enums.
+- **Kafka Confluent app gains Cloud API, Cloud Metrics and Connect Lineage**: The `KafkaConfluent` builder takes `enable_cloud_api` on `basic()` and the `include_cloud_metrics` / `include_connect_lineage` workflow toggles, matching what the app surfaces.
+
 ## 11.4.0 (September 18, 2026)
 
 ### New Features
