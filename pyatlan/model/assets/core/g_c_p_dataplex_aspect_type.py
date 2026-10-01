@@ -33,7 +33,7 @@ class GCPDataplexAspectType(GCPDataplex):
         "gcpDataplexAspectTypeResourceName", "gcpDataplexAspectTypeResourceName"
     )
     """
-    Full GCP resource name of this Aspect Type (e.g. projects/{project}/locations/{location}/aspectTypes/{id}). Used to match against assetGCPDataplexAspectType on BigQuery entry assets.
+    Full GCP resource name of this Aspect Type, for example: projects/{project}/locations/{location}/aspectTypes/{id}. Used to match against assetGCPDataplexAspectType on BigQuery entry assets.
     """  # noqa: E501
     GCP_DATAPLEX_ASPECT_TYPE_PROJECT: ClassVar[KeywordField] = KeywordField(
         "gcpDataplexAspectTypeProject", "gcpDataplexAspectTypeProject"

@@ -98,6 +98,7 @@ from .fabric_dataflow_entity_column import FabricDataflowEntityColumn
 from .fabric_page import FabricPage
 from .fabric_report import FabricReport
 from .fabric_semantic_model import FabricSemanticModel
+from .fabric_semantic_model_measure import FabricSemanticModelMeasure
 from .fabric_semantic_model_table import FabricSemanticModelTable
 from .fabric_semantic_model_table_column import FabricSemanticModelTableColumn
 from .fabric_visual import FabricVisual
@@ -170,6 +171,7 @@ from .readme import Readme
 from .resource import Resource
 from .s_a_p import SAP
 from .s_q_l import SQL
+from .sap_analytics_cloud import SapAnalyticsCloud
 from .sap_datasphere_replication_flow import SapDatasphereReplicationFlow
 from .schema import Schema
 from .schema_registry import SchemaRegistry
@@ -280,6 +282,7 @@ AdfDataset.Attributes.update_forward_refs(**localns)
 AdfPipeline.Attributes.update_forward_refs(**localns)
 AdfLinkedservice.Attributes.update_forward_refs(**localns)
 AdfActivity.Attributes.update_forward_refs(**localns)
+SapAnalyticsCloud.Attributes.update_forward_refs(**localns)
 SapDatasphereReplicationFlow.Attributes.update_forward_refs(**localns)
 Context.Attributes.update_forward_refs(**localns)
 Agent.Attributes.update_forward_refs(**localns)
@@ -375,17 +378,18 @@ PowerBITile.Attributes.update_forward_refs(**localns)
 PowerBIDataset.Attributes.update_forward_refs(**localns)
 PowerBIApp.Attributes.update_forward_refs(**localns)
 PowerBIPage.Attributes.update_forward_refs(**localns)
+FabricDataflow.Attributes.update_forward_refs(**localns)
+FabricSemanticModelTable.Attributes.update_forward_refs(**localns)
 FabricVisual.Attributes.update_forward_refs(**localns)
 FabricDashboard.Attributes.update_forward_refs(**localns)
-FabricDataflow.Attributes.update_forward_refs(**localns)
 FabricActivity.Attributes.update_forward_refs(**localns)
 FabricPage.Attributes.update_forward_refs(**localns)
 FabricWorkspace.Attributes.update_forward_refs(**localns)
 FabricDataPipeline.Attributes.update_forward_refs(**localns)
-FabricSemanticModelTable.Attributes.update_forward_refs(**localns)
 FabricSemanticModelTableColumn.Attributes.update_forward_refs(**localns)
 FabricDataflowEntityColumn.Attributes.update_forward_refs(**localns)
 FabricReport.Attributes.update_forward_refs(**localns)
+FabricSemanticModelMeasure.Attributes.update_forward_refs(**localns)
 FabricSemanticModel.Attributes.update_forward_refs(**localns)
 SnowflakeSemanticDimension.Attributes.update_forward_refs(**localns)
 SnowflakeSemanticLogicalTable.Attributes.update_forward_refs(**localns)

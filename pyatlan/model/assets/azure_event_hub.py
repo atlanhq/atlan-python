@@ -46,7 +46,7 @@ class AzureEventHub(KafkaTopic):
         "azureEventHubStatus", "azureEventHubStatus"
     )
     """
-
+    Operational status of the Azure Event Hub at the source.
     """
 
     _convenience_properties: ClassVar[List[str]] = [
