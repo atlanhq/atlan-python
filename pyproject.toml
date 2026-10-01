@@ -154,5 +154,17 @@ filterwarnings = [
 environments = ["python_version >= '3.9' and python_version < '3.15' and platform_python_implementation == 'CPython'"]
 constraint-dependencies = ["cryptography>=50.0.0"]
 
+# Pin PyPI as the project index so uv.lock records pypi.org URLs, not the
+# machine-wide Endor firewall proxy (factory.endorlabs.com) that laptops default
+# to. A project-level index takes precedence over the machine default for every
+# uv command (lock/sync/add/...), which keeps the committed lockfile portable --
+# otherwise CI, which has no laptop proxy credentials, 401s on the proxy URLs.
+# Per the Security team's rollout guidance (2026-09-11); Endor still scans deps
+# via the GitHub dependency check, not the index.
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
+
 [tool.poe.tasks]
 snyk-requirements = "uv export --all-extras --no-hashes > snyk-requirements.txt"
