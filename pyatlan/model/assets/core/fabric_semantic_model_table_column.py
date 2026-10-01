@@ -44,6 +44,12 @@ class FabricSemanticModelTableColumn(Fabric):
     Name of the Fabric semantic model table that contains this asset.
     """
 
+    FABRIC_SEMANTIC_MODEL_MEASURES: ClassVar[RelationField] = RelationField(
+        "fabricSemanticModelMeasures"
+    )
+    """
+    TBC
+    """
     FABRIC_SEMANTIC_MODEL_TABLE: ClassVar[RelationField] = RelationField(
         "fabricSemanticModelTable"
     )
@@ -54,6 +60,7 @@ class FabricSemanticModelTableColumn(Fabric):
     _convenience_properties: ClassVar[List[str]] = [
         "fabric_semantic_model_table_qualified_name",
         "fabric_semantic_model_table_name",
+        "fabric_semantic_model_measures",
         "fabric_semantic_model_table",
     ]
 
@@ -94,6 +101,24 @@ class FabricSemanticModelTableColumn(Fabric):
         )
 
     @property
+    def fabric_semantic_model_measures(
+        self,
+    ) -> Optional[List[FabricSemanticModelMeasure]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fabric_semantic_model_measures
+        )
+
+    @fabric_semantic_model_measures.setter
+    def fabric_semantic_model_measures(
+        self, fabric_semantic_model_measures: Optional[List[FabricSemanticModelMeasure]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fabric_semantic_model_measures = fabric_semantic_model_measures
+
+    @property
     def fabric_semantic_model_table(self) -> Optional[FabricSemanticModelTable]:
         return (
             None
@@ -116,6 +141,9 @@ class FabricSemanticModelTableColumn(Fabric):
         fabric_semantic_model_table_name: Optional[str] = Field(
             default=None, description=""
         )
+        fabric_semantic_model_measures: Optional[List[FabricSemanticModelMeasure]] = (
+            Field(default=None, description="")
+        )  # relationship
         fabric_semantic_model_table: Optional[FabricSemanticModelTable] = Field(
             default=None, description=""
         )  # relationship
@@ -130,4 +158,7 @@ class FabricSemanticModelTableColumn(Fabric):
     )
 
 
+from .fabric_semantic_model_measure import (
+    FabricSemanticModelMeasure,  # noqa: E402, F401
+)
 from .fabric_semantic_model_table import FabricSemanticModelTable  # noqa: E402, F401

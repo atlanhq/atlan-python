@@ -420,6 +420,12 @@ class Asset(Referenceable):
     """
     Unique name of the connection through which this asset is accessible.
     """
+    ASSET_MANAGED_BY: ClassVar[KeywordField] = KeywordField(
+        "assetManagedBy", "assetManagedBy"
+    )
+    """
+    Identity of the agent that creates and maintains this asset — a connection qualified name, an application name, or any other opaque token that agent chooses. Written by that agent on create, never supplied by a source, and stable for the life of the asset. Compared only for equality; never parsed or resolved.
+    """  # noqa: E501
     HAS_LINEAGE: ClassVar[BooleanField] = BooleanField("__hasLineage", "__hasLineage")
     """
     Whether this asset has lineage (true) or not (false).
@@ -1063,13 +1069,13 @@ class Asset(Referenceable):
         "assetSodaLastSyncRunAt", "assetSodaLastSyncRunAt"
     )
     """
-
+    
     """
     ASSET_SODA_LAST_SCAN_AT: ClassVar[NumericField] = NumericField(
         "assetSodaLastScanAt", "assetSodaLastScanAt"
     )
     """
-
+    
     """
     ASSET_SODA_CHECK_STATUSES: ClassVar[TextField] = TextField(
         "assetSodaCheckStatuses", "assetSodaCheckStatuses"
@@ -1081,7 +1087,7 @@ class Asset(Referenceable):
         "assetSodaSourceURL", "assetSodaSourceURL"
     )
     """
-
+    
     """
     ASSET_ICON: ClassVar[TextField] = TextField("assetIcon", "assetIcon")
     """
@@ -1147,7 +1153,7 @@ class Asset(Referenceable):
         "isAIGenerated", "isAIGenerated"
     )
     """
-
+    
     """
     ASSET_COVER_IMAGE: ClassVar[TextField] = TextField(
         "assetCoverImage", "assetCoverImage"
@@ -1593,6 +1599,7 @@ class Asset(Referenceable):
         "connector_name",
         "connection_name",
         "connection_qualified_name",
+        "asset_managed_by",
         "has_lineage",
         "is_discoverable",
         "is_editable",
@@ -2114,6 +2121,16 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.connection_qualified_name = connection_qualified_name
+
+    @property
+    def asset_managed_by(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.asset_managed_by
+
+    @asset_managed_by.setter
+    def asset_managed_by(self, asset_managed_by: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_managed_by = asset_managed_by
 
     @property
     def has_lineage(self) -> Optional[bool]:
@@ -4943,6 +4960,7 @@ class Asset(Referenceable):
         connector_name: Optional[str] = Field(default=None, description="")
         connection_name: Optional[str] = Field(default=None, description="")
         connection_qualified_name: Optional[str] = Field(default=None, description="")
+        asset_managed_by: Optional[str] = Field(default=None, description="")
         has_lineage: Optional[bool] = Field(default=None, description="")
         is_discoverable: Optional[bool] = Field(default=None, description="")
         is_editable: Optional[bool] = Field(default=None, description="")

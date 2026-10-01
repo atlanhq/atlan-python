@@ -64,6 +64,7 @@ __all__ = [
     "AdfPipeline",
     "AdfLinkedservice",
     "AdfActivity",
+    "SapAnalyticsCloud",
     "SapDatasphereReplicationFlow",
     "Context",
     "Agent",
@@ -161,17 +162,18 @@ __all__ = [
     "PowerBIDataset",
     "PowerBIApp",
     "PowerBIPage",
+    "FabricDataflow",
+    "FabricSemanticModelTable",
     "FabricVisual",
     "FabricDashboard",
-    "FabricDataflow",
     "FabricActivity",
     "FabricPage",
     "FabricWorkspace",
     "FabricDataPipeline",
-    "FabricSemanticModelTable",
     "FabricSemanticModelTableColumn",
     "FabricDataflowEntityColumn",
     "FabricReport",
+    "FabricSemanticModelMeasure",
     "FabricSemanticModel",
     "SnowflakeSemanticDimension",
     "SnowflakeSemanticLogicalTable",
@@ -312,6 +314,7 @@ __all__ = [
     "APIObject",
     "APIPath",
     "APIField",
+    "KafkaTag",
     "SourceTag",
     "DataStudioAsset",
     "AtlanAppDeployment",
@@ -330,6 +333,10 @@ __all__ = [
     "SAPBWInfoSourceField",
     "SAPBWQuery",
     "SAPBWCompositeProvider",
+    "SapAnalyticsCloudColumn",
+    "SapAnalyticsCloudModel",
+    "SapAnalyticsCloudFolder",
+    "SapAnalyticsCloudStory",
     "PresetChart",
     "PresetDataset",
     "PresetDashboard",
@@ -661,6 +668,7 @@ from .core.fabric_dataflow_entity_column import FabricDataflowEntityColumn
 from .core.fabric_page import FabricPage
 from .core.fabric_report import FabricReport
 from .core.fabric_semantic_model import FabricSemanticModel
+from .core.fabric_semantic_model_measure import FabricSemanticModelMeasure
 from .core.fabric_semantic_model_table import FabricSemanticModelTable
 from .core.fabric_semantic_model_table_column import FabricSemanticModelTableColumn
 from .core.fabric_visual import FabricVisual
@@ -734,6 +742,7 @@ from .core.referenceable import Referenceable
 from .core.resource import Resource
 from .core.s_a_p import SAP
 from .core.s_q_l import SQL
+from .core.sap_analytics_cloud import SapAnalyticsCloud
 from .core.sap_datasphere_replication_flow import SapDatasphereReplicationFlow
 from .core.schema import Schema
 from .core.schema_registry import SchemaRegistry
@@ -824,6 +833,7 @@ from .kafka import Kafka
 from .kafka_cluster import KafkaCluster
 from .kafka_consumer_group import KafkaConsumerGroup
 from .kafka_field import KafkaField
+from .kafka_tag import KafkaTag
 from .kafka_topic import KafkaTopic
 from .looker import Looker
 from .looker_dashboard import LookerDashboard
@@ -939,6 +949,10 @@ from .salesforce_field import SalesforceField
 from .salesforce_object import SalesforceObject
 from .salesforce_organization import SalesforceOrganization
 from .salesforce_report import SalesforceReport
+from .sap_analytics_cloud_column import SapAnalyticsCloudColumn
+from .sap_analytics_cloud_folder import SapAnalyticsCloudFolder
+from .sap_analytics_cloud_model import SapAnalyticsCloudModel
+from .sap_analytics_cloud_story import SapAnalyticsCloudStory
 from .sap_erp_abap_program import SapErpAbapProgram
 from .sap_erp_cds_view import SapErpCdsView
 from .sap_erp_column import SapErpColumn
