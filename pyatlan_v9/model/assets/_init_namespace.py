@@ -8,14 +8,10 @@ Namespace module exports.
 This module provides convenient imports for all Namespace types and their Related variants.
 """
 
-from .namespace_related import (
-    RelatedCollection,
-    RelatedFolder,
-    RelatedNamespace,
-)
-from .namespace import Namespace
 from .collection import Collection
 from .folder import Folder
+from .namespace import Namespace
+from .namespace_related import RelatedCollection, RelatedFolder, RelatedNamespace
 
 __all__ = [
     "Collection",

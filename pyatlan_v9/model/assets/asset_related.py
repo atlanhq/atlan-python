@@ -121,6 +121,9 @@ class RelatedAsset(RelatedReferenceable):
     connection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the connection through which this asset is accessible."""
 
+    asset_managed_by: Union[str, None, UnsetType] = UNSET
+    """Identity of the agent that creates and maintains this asset — a connection qualified name, an application name, or any other opaque token that agent chooses. Written by that agent on create, never supplied by a source, and stable for the life of the asset. Compared only for equality; never parsed or resolved."""
+
     has_lineage: Union[bool, None, UnsetType] = msgspec.field(
         default=UNSET, name="__hasLineage"
     )

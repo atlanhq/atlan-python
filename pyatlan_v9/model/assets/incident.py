@@ -19,8 +19,15 @@ from typing import Any, ClassVar, Dict, List, Set, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
+from .asset_related import RelatedIncident
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -42,13 +49,6 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-
-from .asset_related import RelatedIncident
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -89,6 +89,7 @@ class Incident(Referenceable):
     CONNECTOR_NAME: ClassVar[Any] = None
     CONNECTION_NAME: ClassVar[Any] = None
     CONNECTION_QUALIFIED_NAME: ClassVar[Any] = None
+    ASSET_MANAGED_BY: ClassVar[Any] = None
     HAS_LINEAGE: ClassVar[Any] = None
     IS_DISCOVERABLE: ClassVar[Any] = None
     IS_EDITABLE: ClassVar[Any] = None
@@ -372,6 +373,9 @@ class Incident(Referenceable):
 
     connection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the connection through which this asset is accessible."""
+
+    asset_managed_by: Union[str, None, UnsetType] = UNSET
+    """Identity of the agent that creates and maintains this asset — a connection qualified name, an application name, or any other opaque token that agent chooses. Written by that agent on create, never supplied by a source, and stable for the life of the asset. Compared only for equality; never parsed or resolved."""
 
     has_lineage: Union[bool, None, UnsetType] = msgspec.field(
         default=UNSET, name="__hasLineage"
@@ -1284,6 +1288,9 @@ class IncidentAttributes(ReferenceableAttributes):
     connection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the connection through which this asset is accessible."""
 
+    asset_managed_by: Union[str, None, UnsetType] = UNSET
+    """Identity of the agent that creates and maintains this asset — a connection qualified name, an application name, or any other opaque token that agent chooses. Written by that agent on create, never supplied by a source, and stable for the life of the asset. Compared only for equality; never parsed or resolved."""
+
     has_lineage: Union[bool, None, UnsetType] = msgspec.field(
         default=UNSET, name="__hasLineage"
     )
@@ -2076,6 +2083,7 @@ def _populate_incident_attrs(attrs: IncidentAttributes, obj: Incident) -> None:
     attrs.connector_name = obj.connector_name
     attrs.connection_name = obj.connection_name
     attrs.connection_qualified_name = obj.connection_qualified_name
+    attrs.asset_managed_by = obj.asset_managed_by
     attrs.has_lineage = obj.has_lineage
     attrs.is_discoverable = obj.is_discoverable
     attrs.is_editable = obj.is_editable
@@ -2337,6 +2345,7 @@ def _extract_incident_attrs(attrs: IncidentAttributes) -> dict:
     result["connector_name"] = attrs.connector_name
     result["connection_name"] = attrs.connection_name
     result["connection_qualified_name"] = attrs.connection_qualified_name
+    result["asset_managed_by"] = attrs.asset_managed_by
     result["has_lineage"] = attrs.has_lineage
     result["is_discoverable"] = attrs.is_discoverable
     result["is_editable"] = attrs.is_editable
@@ -2657,33 +2666,36 @@ def _incident_from_nested(nested: IncidentNested) -> Incident:
         _INCIDENT_REL_FIELDS,
         IncidentRelationshipAttributes,
     )
-    return Incident(
-        guid=nested.guid,
-        type_name=nested.type_name,
-        status=nested.status,
-        version=nested.version,
-        create_time=nested.create_time,
-        update_time=nested.update_time,
-        created_by=nested.created_by,
-        updated_by=nested.updated_by,
-        classifications=nested.classifications,
-        classification_names=nested.classification_names,
-        meanings=nested.meanings,
-        labels=nested.labels,
-        business_attributes=nested.business_attributes,
-        custom_attributes=nested.custom_attributes,
-        pending_tasks=nested.pending_tasks,
-        proxy=nested.proxy,
-        is_incomplete=nested.is_incomplete,
-        provenance_type=nested.provenance_type,
-        home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
-        **_extract_incident_attrs(attrs),
-        # Merged relationship attributes
-        **merged_rels,
-    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_incident_attrs(attrs))
+    kwargs.update(merged_rels)
+    return Incident(**kwargs)
 
 
 def _incident_to_nested_bytes(incident: Incident, serde: Serde) -> bytes:
@@ -2767,6 +2779,7 @@ Incident.CONNECTION_NAME = KeywordTextField(
 Incident.CONNECTION_QUALIFIED_NAME = KeywordTextField(
     "connectionQualifiedName", "connectionQualifiedName", "connectionQualifiedName.text"
 )
+Incident.ASSET_MANAGED_BY = KeywordField("assetManagedBy", "assetManagedBy")
 Incident.HAS_LINEAGE = BooleanField("__hasLineage", "__hasLineage")
 Incident.IS_DISCOVERABLE = BooleanField("isDiscoverable", "isDiscoverable")
 Incident.IS_EDITABLE = BooleanField("isEditable", "isEditable")

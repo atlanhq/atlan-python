@@ -1407,5 +1407,7 @@ from .snowflake_semantic_dimension import SnowflakeSemanticDimension  # noqa: E4
 from .snowflake_semantic_fact import SnowflakeSemanticFact  # noqa: E402, F401
 from .snowflake_semantic_metric import SnowflakeSemanticMetric  # noqa: E402, F401
 from .snowflake_semantic_view import SnowflakeSemanticView  # noqa: E402, F401
-from .sql_insight_business_question import SqlInsightBusinessQuestion  # noqa: E402, F401
+from .sql_insight_business_question import (
+    SqlInsightBusinessQuestion,  # noqa: E402, F401
+)
 from .sql_insight_join import SqlInsightJoin  # noqa: E402, F401
