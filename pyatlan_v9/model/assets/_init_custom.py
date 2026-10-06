@@ -8,12 +8,9 @@ Custom module exports.
 This module provides convenient imports for all Custom types and their Related variants.
 """
 
-from .custom_related import (
-    RelatedCustom,
-    RelatedCustomEntity,
-)
 from .custom import Custom
 from .custom_entity import CustomEntity
+from .custom_related import RelatedCustom, RelatedCustomEntity
 
 __all__ = [
     "Custom",
