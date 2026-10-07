@@ -18,13 +18,7 @@ from .core.asset import Asset
 
 
 class TagAttachment(Asset, type_name="TagAttachment"):
-    """
-    Represents Source tag association asset.
-
-    Only tagQualifiedName and tagAttachmentStringValue are Atlas typedef attributes.
-    The other attributes are the source tag contract that atlan-publish-app reads
-    to attach the tag to the asset; Atlas does not store them.
-    """
+    """Description"""
 
     type_name: str = Field(default="TagAttachment", allow_mutation=False)
 
@@ -44,6 +38,14 @@ class TagAttachment(Asset, type_name="TagAttachment"):
     )
     """
     Represents associated source tag's qualified name.
+    """
+    TAG_ATTACHMENT_STRING_VALUE: ClassVar[KeywordTextField] = KeywordTextField(
+        "tagAttachmentStringValue",
+        "tagAttachmentStringValue",
+        "tagAttachmentStringValue.text",
+    )
+    """
+    Represents associated tag value.
     """
     OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "objectQualifiedName", "objectQualifiedName"
@@ -87,17 +89,10 @@ class TagAttachment(Asset, type_name="TagAttachment"):
     """
     Whether the Atlan tag propagates from the asset. Read by publish-app; not an Atlas typedef attribute.
     """
-    TAG_ATTACHMENT_STRING_VALUE: ClassVar[KeywordTextField] = KeywordTextField(
-        "tagAttachmentStringValue",
-        "tagAttachmentStringValue",
-        "tagAttachmentStringValue.text",
-    )
-    """
-    Represents associated tag value.
-    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "tag_qualified_name",
+        "tag_attachment_string_value",
         "object_qualified_name",
         "object_type_name",
         "source_tag_qualified_name",
@@ -106,7 +101,6 @@ class TagAttachment(Asset, type_name="TagAttachment"):
         "value_type",
         "value",
         "propagate",
-        "tag_attachment_string_value",
     ]
 
     @property
@@ -118,6 +112,20 @@ class TagAttachment(Asset, type_name="TagAttachment"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tag_qualified_name = tag_qualified_name
+
+    @property
+    def tag_attachment_string_value(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tag_attachment_string_value
+        )
+
+    @tag_attachment_string_value.setter
+    def tag_attachment_string_value(self, tag_attachment_string_value: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_attachment_string_value = tag_attachment_string_value
 
     @property
     def object_qualified_name(self) -> Optional[str]:
@@ -207,22 +215,9 @@ class TagAttachment(Asset, type_name="TagAttachment"):
             self.attributes = self.Attributes()
         self.attributes.propagate = propagate
 
-    @property
-    def tag_attachment_string_value(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.tag_attachment_string_value
-        )
-
-    @tag_attachment_string_value.setter
-    def tag_attachment_string_value(self, tag_attachment_string_value: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tag_attachment_string_value = tag_attachment_string_value
-
     class Attributes(Asset.Attributes):
         tag_qualified_name: Optional[str] = Field(default=None, description="")
+        tag_attachment_string_value: Optional[str] = Field(default=None, description="")
         object_qualified_name: Optional[str] = Field(default=None, description="")
         object_type_name: Optional[str] = Field(default=None, description="")
         source_tag_qualified_name: Optional[str] = Field(default=None, description="")
@@ -231,7 +226,6 @@ class TagAttachment(Asset, type_name="TagAttachment"):
         value_type: Optional[str] = Field(default=None, description="")
         value: Optional[str] = Field(default=None, description="")
         propagate: Optional[bool] = Field(default=None, description="")
-        tag_attachment_string_value: Optional[str] = Field(default=None, description="")
 
     attributes: TagAttachment.Attributes = Field(
         default_factory=lambda: TagAttachment.Attributes(),

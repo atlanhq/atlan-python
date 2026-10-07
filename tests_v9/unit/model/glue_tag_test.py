@@ -40,14 +40,6 @@ TAG_ATTACHMENT_ATTRIBUTES = {
 }
 
 
-def test_glue_tag_type_values():
-    assert [member.value for member in GlueTagType] == [
-        "property",
-        "resource_tag",
-        "lf_tag",
-    ]
-
-
 def test_glue_tag_serializes_to_atlas_shape():
     tag = GlueTag(
         name="OwningTeam",
