@@ -499,6 +499,9 @@ __PYATLAN_V9_ASSETS__ = {
         "RelatedGCSBucket",
         "RelatedGCSObject",
     ],
+    "_init_glue": [
+        "RelatedGlueTag",
+    ],
     "_init_gtc": [
         "AtlasGlossary",
         "AtlasGlossaryCategory",
@@ -570,7 +573,9 @@ __PYATLAN_V9_ASSETS__ = {
         "AzureEventHubConsumerGroup",
         "Badge",
         "BadgeCondition",
+        "GlueTag",
         "SnowflakeDynamicTable",
+        "TagAttachment",
     ],
     "_init_matillion": [
         "Matillion",

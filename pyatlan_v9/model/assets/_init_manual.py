@@ -5,12 +5,16 @@ from .azure_event_consumer_group import AzureEventHubConsumerGroup
 from .azure_event_hub import AzureEventHub
 from .badge import Badge
 from .badge_condition import BadgeCondition
+from .glue_tag import GlueTag
 from .snowflake_dynamic_table import SnowflakeDynamicTable
+from .tag_attachment import TagAttachment
 
 __all__ = [
     "AzureEventHubConsumerGroup",
     "AzureEventHub",
     "Badge",
     "BadgeCondition",
+    "GlueTag",
     "SnowflakeDynamicTable",
+    "TagAttachment",
 ]

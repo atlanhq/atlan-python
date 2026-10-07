@@ -426,6 +426,7 @@ __all__ = [
     "RelatedGCS",
     "RelatedGCSBucket",
     "RelatedGCSObject",
+    "RelatedGlueTag",
     "AtlasGlossary",
     "AtlasGlossaryCategory",
     "AtlasGlossaryTerm",
@@ -490,6 +491,7 @@ __all__ = [
     "BadgeCondition",
     "Cognite3DModel",
     "DataContract",
+    "GlueTag",
     "Persona",
     "Purpose",
     "RelatedSuperset",
@@ -501,6 +503,7 @@ __all__ = [
     "SupersetChart",
     "SupersetDashboard",
     "SupersetDataset",
+    "TagAttachment",
     "Matillion",
     "MatillionComponent",
     "MatillionGroup",
@@ -1505,6 +1508,8 @@ from .gcs_object import GCSObject as GCSObject
 from .gcs_related import RelatedGCS as RelatedGCS
 from .gcs_related import RelatedGCSBucket as RelatedGCSBucket
 from .gcs_related import RelatedGCSObject as RelatedGCSObject
+from .glue_related import RelatedGlueTag as RelatedGlueTag
+from .glue_tag import GlueTag as GlueTag
 from .google import Google as Google
 from .gtc_related import RelatedAtlasGlossary as RelatedAtlasGlossary
 from .gtc_related import RelatedAtlasGlossaryCategory as RelatedAtlasGlossaryCategory
@@ -2157,6 +2162,7 @@ from .tag import Tag as Tag
 from .tag_related import RelatedSourceTag as RelatedSourceTag
 from .tag_related import RelatedTag as RelatedTag
 from .tag_related import RelatedTagAttachment as RelatedTagAttachment
+from .tag_attachment import TagAttachment as TagAttachment
 from .task import Task as Task
 from .task_related import RelatedTask as RelatedTask
 from .thoughtspot import Thoughtspot as Thoughtspot

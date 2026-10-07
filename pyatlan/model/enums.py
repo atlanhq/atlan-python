@@ -3140,6 +3140,12 @@ class FormFieldType(str, Enum):
     JSON = "JSON"
 
 
+class GlueTagType(str, Enum):
+    PROPERTY = "property"
+    RESOURCE_TAG = "resource_tag"
+    LF_TAG = "lf_tag"
+
+
 class GoogleDatastudioAssetType(str, Enum):
     REPORT = "REPORT"
     DATA_SOURCE = "DATA_SOURCE"

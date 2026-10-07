@@ -305,6 +305,7 @@ __all__ = [
     "CubeField",
     "CustomEntity",
     "BigqueryTag",
+    "GlueTag",
     "SnowflakeListing",
     "SnowflakeShare",
     "Starburst",
@@ -821,6 +822,7 @@ from .flow_project import FlowProject
 from .form import Form
 from .g_c_s_bucket import GCSBucket
 from .g_c_s_object import GCSObject
+from .glue_tag import GlueTag
 from .iceberg import Iceberg
 from .iceberg_catalog import IcebergCatalog
 from .iceberg_column import IcebergColumn
