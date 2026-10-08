@@ -18,6 +18,13 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -46,13 +53,6 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .sql_insight_related import RelatedSqlInsight
 
 # =============================================================================
@@ -572,33 +572,36 @@ def _sql_insight_from_nested(nested: SqlInsightNested) -> SqlInsight:
         _SQL_INSIGHT_REL_FIELDS,
         SqlInsightRelationshipAttributes,
     )
-    return SqlInsight(
-        guid=nested.guid,
-        type_name=nested.type_name,
-        status=nested.status,
-        version=nested.version,
-        create_time=nested.create_time,
-        update_time=nested.update_time,
-        created_by=nested.created_by,
-        updated_by=nested.updated_by,
-        classifications=nested.classifications,
-        classification_names=nested.classification_names,
-        meanings=nested.meanings,
-        labels=nested.labels,
-        business_attributes=nested.business_attributes,
-        custom_attributes=nested.custom_attributes,
-        pending_tasks=nested.pending_tasks,
-        proxy=nested.proxy,
-        is_incomplete=nested.is_incomplete,
-        provenance_type=nested.provenance_type,
-        home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
-        **_extract_sql_insight_attrs(attrs),
-        # Merged relationship attributes
-        **merged_rels,
-    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_sql_insight_attrs(attrs))
+    kwargs.update(merged_rels)
+    return SqlInsight(**kwargs)
 
 
 def _sql_insight_to_nested_bytes(sql_insight: SqlInsight, serde: Serde) -> bytes:
@@ -615,10 +618,7 @@ def _sql_insight_from_nested_bytes(data: bytes, serde: Serde) -> SqlInsight:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
 SqlInsight.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"

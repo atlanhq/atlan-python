@@ -44,6 +44,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -88,6 +89,7 @@ class WorkflowNotification(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -182,6 +184,9 @@ class WorkflowNotification(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -437,6 +442,9 @@ class WorkflowNotificationRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -508,6 +516,7 @@ _WORKFLOW_NOTIFICATION_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -638,32 +647,36 @@ def _workflow_notification_from_nested(
         _WORKFLOW_NOTIFICATION_REL_FIELDS,
         WorkflowNotificationRelationshipAttributes,
     )
-    return WorkflowNotification(
-        guid=nested.guid,
-        type_name=nested.type_name,
-        status=nested.status,
-        version=nested.version,
-        create_time=nested.create_time,
-        update_time=nested.update_time,
-        created_by=nested.created_by,
-        updated_by=nested.updated_by,
-        classifications=nested.classifications,
-        classification_names=nested.classification_names,
-        labels=nested.labels,
-        business_attributes=nested.business_attributes,
-        custom_attributes=nested.custom_attributes,
-        pending_tasks=nested.pending_tasks,
-        proxy=nested.proxy,
-        is_incomplete=nested.is_incomplete,
-        provenance_type=nested.provenance_type,
-        home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
-        **_extract_workflow_notification_attrs(attrs),
-        # Merged relationship attributes
-        **merged_rels,
-    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_workflow_notification_attrs(attrs))
+    kwargs.update(merged_rels)
+    return WorkflowNotification(**kwargs)
 
 
 def _workflow_notification_to_nested_bytes(
@@ -686,13 +699,16 @@ def _workflow_notification_from_nested_bytes(
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
     TextField,
 )
 
-WorkflowNotification.WORKFLOW_NOTIFICATION_WORKFLOW_SLUG = KeywordField(
-    "workflowNotificationWorkflowSlug", "workflowNotificationWorkflowSlug"
+WorkflowNotification.WORKFLOW_NOTIFICATION_WORKFLOW_SLUG = KeywordTextField(
+    "workflowNotificationWorkflowSlug",
+    "workflowNotificationWorkflowSlug",
+    "workflowNotificationWorkflowSlug.text",
 )
 WorkflowNotification.WORKFLOW_NOTIFICATION_LAST_PREFLIGHT_RESULT = TextField(
     "workflowNotificationLastPreflightResult", "workflowNotificationLastPreflightResult"
@@ -711,17 +727,23 @@ WorkflowNotification.WORKFLOW_NOTIFICATION_ACTION = KeywordField(
 WorkflowNotification.NOTIFICATION_STATE = KeywordField(
     "notificationState", "notificationState"
 )
-WorkflowNotification.NOTIFICATION_RECIPIENT_USERS = KeywordField(
-    "notificationRecipientUsers", "notificationRecipientUsers"
+WorkflowNotification.NOTIFICATION_RECIPIENT_USERS = KeywordTextField(
+    "notificationRecipientUsers",
+    "notificationRecipientUsers",
+    "notificationRecipientUsers.text",
 )
-WorkflowNotification.NOTIFICATION_RECIPIENT_GROUPS = KeywordField(
-    "notificationRecipientGroups", "notificationRecipientGroups"
+WorkflowNotification.NOTIFICATION_RECIPIENT_GROUPS = KeywordTextField(
+    "notificationRecipientGroups",
+    "notificationRecipientGroups",
+    "notificationRecipientGroups.text",
 )
-WorkflowNotification.NOTIFICATION_RECIPIENT_ROLES = KeywordField(
-    "notificationRecipientRoles", "notificationRecipientRoles"
+WorkflowNotification.NOTIFICATION_RECIPIENT_ROLES = KeywordTextField(
+    "notificationRecipientRoles",
+    "notificationRecipientRoles",
+    "notificationRecipientRoles.text",
 )
-WorkflowNotification.NOTIFICATION_LAST_ACTED_BY = KeywordField(
-    "notificationLastActedBy", "notificationLastActedBy"
+WorkflowNotification.NOTIFICATION_LAST_ACTED_BY = KeywordTextField(
+    "notificationLastActedBy", "notificationLastActedBy", "notificationLastActedBy.text"
 )
 WorkflowNotification.NOTIFICATION_LAST_ACTED_AT = NumericField(
     "notificationLastActedAt", "notificationLastActedAt"
@@ -751,6 +773,7 @@ WorkflowNotification.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 WorkflowNotification.MEANINGS = RelationField("meanings")
+WorkflowNotification.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 WorkflowNotification.MC_MONITORS = RelationField("mcMonitors")
 WorkflowNotification.MC_INCIDENTS = RelationField("mcIncidents")
 WorkflowNotification.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

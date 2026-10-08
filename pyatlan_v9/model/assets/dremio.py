@@ -19,6 +19,13 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -41,6 +48,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .dremio_related import RelatedDremio
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -58,14 +66,6 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .dremio_related import RelatedDremio
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -1071,33 +1071,36 @@ def _dremio_from_nested(nested: DremioNested) -> Dremio:
         _DREMIO_REL_FIELDS,
         DremioRelationshipAttributes,
     )
-    return Dremio(
-        guid=nested.guid,
-        type_name=nested.type_name,
-        status=nested.status,
-        version=nested.version,
-        create_time=nested.create_time,
-        update_time=nested.update_time,
-        created_by=nested.created_by,
-        updated_by=nested.updated_by,
-        classifications=nested.classifications,
-        classification_names=nested.classification_names,
-        meanings=nested.meanings,
-        labels=nested.labels,
-        business_attributes=nested.business_attributes,
-        custom_attributes=nested.custom_attributes,
-        pending_tasks=nested.pending_tasks,
-        proxy=nested.proxy,
-        is_incomplete=nested.is_incomplete,
-        provenance_type=nested.provenance_type,
-        home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
-        **_extract_dremio_attrs(attrs),
-        # Merged relationship attributes
-        **merged_rels,
-    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_dremio_attrs(attrs))
+    kwargs.update(merged_rels)
+    return Dremio(**kwargs)
 
 
 def _dremio_to_nested_bytes(dremio: Dremio, serde: Serde) -> bytes:

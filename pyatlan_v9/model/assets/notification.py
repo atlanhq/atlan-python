@@ -42,6 +42,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .notification_related import RelatedNotification
 from .referenceable_related import RelatedReferenceable
@@ -81,6 +82,7 @@ class Notification(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
@@ -159,6 +161,9 @@ class Notification(Asset):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -382,6 +387,9 @@ class NotificationRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -448,6 +456,7 @@ _NOTIFICATION_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_linked_files",
     "mc_monitors",
     "mc_incidents",
     "user_def_relationship_to",
@@ -547,32 +556,36 @@ def _notification_from_nested(nested: NotificationNested) -> Notification:
         _NOTIFICATION_REL_FIELDS,
         NotificationRelationshipAttributes,
     )
-    return Notification(
-        guid=nested.guid,
-        type_name=nested.type_name,
-        status=nested.status,
-        version=nested.version,
-        create_time=nested.create_time,
-        update_time=nested.update_time,
-        created_by=nested.created_by,
-        updated_by=nested.updated_by,
-        classifications=nested.classifications,
-        classification_names=nested.classification_names,
-        labels=nested.labels,
-        business_attributes=nested.business_attributes,
-        custom_attributes=nested.custom_attributes,
-        pending_tasks=nested.pending_tasks,
-        proxy=nested.proxy,
-        is_incomplete=nested.is_incomplete,
-        provenance_type=nested.provenance_type,
-        home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
-        **_extract_notification_attrs(attrs),
-        # Merged relationship attributes
-        **merged_rels,
-    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_notification_attrs(attrs))
+    kwargs.update(merged_rels)
+    return Notification(**kwargs)
 
 
 def _notification_to_nested_bytes(notification: Notification, serde: Serde) -> bytes:
@@ -591,23 +604,30 @@ def _notification_from_nested_bytes(data: bytes, serde: Serde) -> Notification:
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
     TextField,
 )
 
 Notification.NOTIFICATION_STATE = KeywordField("notificationState", "notificationState")
-Notification.NOTIFICATION_RECIPIENT_USERS = KeywordField(
-    "notificationRecipientUsers", "notificationRecipientUsers"
+Notification.NOTIFICATION_RECIPIENT_USERS = KeywordTextField(
+    "notificationRecipientUsers",
+    "notificationRecipientUsers",
+    "notificationRecipientUsers.text",
 )
-Notification.NOTIFICATION_RECIPIENT_GROUPS = KeywordField(
-    "notificationRecipientGroups", "notificationRecipientGroups"
+Notification.NOTIFICATION_RECIPIENT_GROUPS = KeywordTextField(
+    "notificationRecipientGroups",
+    "notificationRecipientGroups",
+    "notificationRecipientGroups.text",
 )
-Notification.NOTIFICATION_RECIPIENT_ROLES = KeywordField(
-    "notificationRecipientRoles", "notificationRecipientRoles"
+Notification.NOTIFICATION_RECIPIENT_ROLES = KeywordTextField(
+    "notificationRecipientRoles",
+    "notificationRecipientRoles",
+    "notificationRecipientRoles.text",
 )
-Notification.NOTIFICATION_LAST_ACTED_BY = KeywordField(
-    "notificationLastActedBy", "notificationLastActedBy"
+Notification.NOTIFICATION_LAST_ACTED_BY = KeywordTextField(
+    "notificationLastActedBy", "notificationLastActedBy", "notificationLastActedBy.text"
 )
 Notification.NOTIFICATION_LAST_ACTED_AT = NumericField(
     "notificationLastActedAt", "notificationLastActedAt"
@@ -635,6 +655,7 @@ Notification.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
 Notification.MEANINGS = RelationField("meanings")
+Notification.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Notification.MC_MONITORS = RelationField("mcMonitors")
 Notification.MC_INCIDENTS = RelationField("mcIncidents")
 Notification.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
