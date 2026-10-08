@@ -8,8 +8,8 @@ Artifact module exports.
 This module provides convenient imports for all Artifact types and their Related variants.
 """
 
-from .artifact_related import RelatedArtifact
 from .artifact import Artifact
+from .artifact_related import RelatedArtifact
 
 __all__ = [
     "Artifact",

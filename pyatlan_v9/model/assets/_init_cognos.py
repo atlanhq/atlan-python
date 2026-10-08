@@ -8,6 +8,16 @@ Cognos module exports.
 This module provides convenient imports for all Cognos types and their Related variants.
 """
 
+from .cognos import Cognos
+from .cognos_column import CognosColumn
+from .cognos_dashboard import CognosDashboard
+from .cognos_dataset import CognosDataset
+from .cognos_datasource import CognosDatasource
+from .cognos_exploration import CognosExploration
+from .cognos_file import CognosFile
+from .cognos_folder import CognosFolder
+from .cognos_module import CognosModule
+from .cognos_package import CognosPackage
 from .cognos_related import (
     RelatedCognos,
     RelatedCognosColumn,
@@ -21,16 +31,6 @@ from .cognos_related import (
     RelatedCognosPackage,
     RelatedCognosReport,
 )
-from .cognos import Cognos
-from .cognos_column import CognosColumn
-from .cognos_dashboard import CognosDashboard
-from .cognos_dataset import CognosDataset
-from .cognos_datasource import CognosDatasource
-from .cognos_exploration import CognosExploration
-from .cognos_file import CognosFile
-from .cognos_folder import CognosFolder
-from .cognos_module import CognosModule
-from .cognos_package import CognosPackage
 from .cognos_report import CognosReport
 
 __all__ = [

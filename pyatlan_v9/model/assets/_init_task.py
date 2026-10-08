@@ -8,8 +8,8 @@ Task module exports.
 This module provides convenient imports for all Task types and their Related variants.
 """
 
-from .task_related import RelatedTask
 from .task import Task
+from .task_related import RelatedTask
 
 __all__ = [
     "RelatedTask",

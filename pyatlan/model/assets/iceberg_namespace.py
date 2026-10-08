@@ -1358,13 +1358,19 @@ class IcebergNamespace(Iceberg):
 from .core.bigquery_routine import BigqueryRoutine  # noqa: E402, F401
 from .core.calculation_view import CalculationView  # noqa: E402, F401
 from .core.database import Database  # noqa: E402, F401
-from .core.databricks_a_i_model_context import DatabricksAIModelContext  # noqa: E402, F401
+from .core.databricks_a_i_model_context import (
+    DatabricksAIModelContext,  # noqa: E402, F401
+)
 from .core.databricks_volume import DatabricksVolume  # noqa: E402, F401
 from .core.function import Function  # noqa: E402, F401
 from .core.materialised_view import MaterialisedView  # noqa: E402, F401
 from .core.procedure import Procedure  # noqa: E402, F401
-from .core.sap_datasphere_replication_flow import SapDatasphereReplicationFlow  # noqa: E402, F401
-from .core.snowflake_a_i_model_context import SnowflakeAIModelContext  # noqa: E402, F401
+from .core.sap_datasphere_replication_flow import (
+    SapDatasphereReplicationFlow,  # noqa: E402, F401
+)
+from .core.snowflake_a_i_model_context import (
+    SnowflakeAIModelContext,  # noqa: E402, F401
+)
 from .core.snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
 from .core.snowflake_pipe import SnowflakePipe  # noqa: E402, F401
 from .core.snowflake_semantic_view import SnowflakeSemanticView  # noqa: E402, F401

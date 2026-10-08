@@ -8,8 +8,8 @@ AppWorkflowRun module exports.
 This module provides convenient imports for all AppWorkflowRun types and their Related variants.
 """
 
-from .app_workflow_run_related import RelatedAppWorkflowRun
 from .app_workflow_run import AppWorkflowRun
+from .app_workflow_run_related import RelatedAppWorkflowRun
 
 __all__ = [
     "AppWorkflowRun",

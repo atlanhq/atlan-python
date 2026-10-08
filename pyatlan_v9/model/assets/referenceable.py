@@ -33,7 +33,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 
-from .entity import AtlasClassification, Entity
+from .entity import Entity
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .referenceable_related import RelatedReferenceable
 
@@ -295,7 +295,7 @@ class ReferenceableNested(
     update_time: Union[Any, UnsetType] = UNSET
     created_by: Union[Any, UnsetType] = UNSET
     updated_by: Union[Any, UnsetType] = UNSET
-    classifications: Union[List[AtlasClassification], None, UnsetType] = UNSET
+    classifications: Union[Any, UnsetType] = UNSET
     classification_names: Union[Any, UnsetType] = UNSET
     meanings: Union[Any, UnsetType] = UNSET
     labels: Union[Any, UnsetType] = UNSET
@@ -409,32 +409,36 @@ def _referenceable_from_nested(nested: ReferenceableNested) -> Referenceable:
         _REFERENCEABLE_REL_FIELDS,
         ReferenceableRelationshipAttributes,
     )
-    return Referenceable(
-        guid=nested.guid,
-        type_name=nested.type_name,
-        status=nested.status,
-        version=nested.version,
-        create_time=nested.create_time,
-        update_time=nested.update_time,
-        created_by=nested.created_by,
-        updated_by=nested.updated_by,
-        classifications=nested.classifications,
-        classification_names=nested.classification_names,
-        labels=nested.labels,
-        business_attributes=nested.business_attributes,
-        custom_attributes=nested.custom_attributes,
-        pending_tasks=nested.pending_tasks,
-        proxy=nested.proxy,
-        is_incomplete=nested.is_incomplete,
-        provenance_type=nested.provenance_type,
-        home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
-        **_extract_referenceable_attrs(attrs),
-        # Merged relationship attributes
-        **merged_rels,
-    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_referenceable_attrs(attrs))
+    kwargs.update(merged_rels)
+    return Referenceable(**kwargs)
 
 
 def _referenceable_to_nested_bytes(referenceable: Referenceable, serde: Serde) -> bytes:
@@ -461,46 +465,6 @@ Referenceable.REPLICATED_TO = KeywordField("replicatedTo", "replicatedTo")
 Referenceable.MEANINGS = RelationField("meanings")
 Referenceable.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
 Referenceable.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
-# ---------------------------------------------------------------------------
-# Referenceable internal field descriptors (entity-level, not in typedef)
-# ---------------------------------------------------------------------------
-
-Referenceable.STATUS = InternalKeywordField("status", "__state", "__state")
-Referenceable.GUID = InternalKeywordField("guid", "__guid", "__guid")
-Referenceable.TYPE_NAME = InternalKeywordTextField(
-    "typeName", "__typeName.keyword", "__typeName", "__typeName"
-)
-Referenceable.CREATED_BY = InternalKeywordField(
-    "createdBy", "__createdBy", "__createdBy"
-)
-Referenceable.UPDATED_BY = InternalKeywordField(
-    "updatedBy", "__modifiedBy", "__modifiedBy"
-)
-Referenceable.ATLAN_TAGS = InternalKeywordTextField(
-    "classificationNames",
-    "__traitNames",
-    "__classificationsText",
-    "__classificationNames",
-)
-Referenceable.PROPAGATED_ATLAN_TAGS = InternalKeywordTextField(
-    "classificationNames",
-    "__propagatedTraitNames",
-    "__classificationsText",
-    "__propagatedClassificationNames",
-)
-Referenceable.ASSIGNED_TERMS = InternalKeywordTextField(
-    "meanings", "__meanings", "__meaningsText", "__meanings"
-)
-Referenceable.SUPER_TYPE_NAMES = InternalKeywordTextField(
-    "typeName", "__superTypeNames.keyword", "__superTypeNames", "__superTypeNames"
-)
-Referenceable.CREATE_TIME = InternalNumericField(
-    "createTime", "__timestamp", "__timestamp"
-)
-Referenceable.UPDATE_TIME = InternalNumericField(
-    "updateTime", "__modificationTimestamp", "__modificationTimestamp"
-)
-Referenceable.CUSTOM_ATTRIBUTES = TextField("customAttributes", "customAttributes")
 
 Referenceable.TYPE_NAME = InternalKeywordTextField(
     "typeName", "__typeName.keyword", "__typeName", "__typeName"
