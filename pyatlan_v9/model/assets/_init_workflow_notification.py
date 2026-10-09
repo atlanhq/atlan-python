@@ -8,8 +8,8 @@ WorkflowNotification module exports.
 This module provides convenient imports for all WorkflowNotification types and their Related variants.
 """
 
-from .workflow_notification import WorkflowNotification
 from .workflow_notification_related import RelatedWorkflowNotification
+from .workflow_notification import WorkflowNotification
 
 __all__ = [
     "RelatedWorkflowNotification",

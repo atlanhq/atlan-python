@@ -767,6 +767,8 @@ __PYATLAN_V9_ASSETS__ = {
         "RelatedQuickSightDataset",
         "RelatedQuickSightDatasetField",
         "RelatedQuickSightFolder",
+        "QuickSightAnalysisField",
+        "RelatedQuickSightAnalysisField",
     ],
     "_init_redash": [
         "Redash",
