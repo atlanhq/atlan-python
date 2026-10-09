@@ -94,7 +94,8 @@ rm -rf "${STAGING_DIR}"
 **No `--delete`** — passthrough types (`passthrough = true` in the typedef) are
 NOT generated and must be preserved: `azure_event_hub.py`,
 `azure_event_consumer_group.py`, `badge.py`, `badge_condition.py`,
-`snowflake_dynamic_table.py`, plus `_init_manual.py`, `relations/`, `_overlays/`.
+`glue_tag.py`, `snowflake_dynamic_table.py`, `tag_attachment.py`, plus
+`_init_manual.py`, `relations/`, `_overlays/`.
 
 Then remove **stale generated orphans** by hand — files a previous/renamed
 generator left behind that the current typedefs no longer produce, e.g.:
@@ -128,7 +129,12 @@ from pyatlan.model.assets.connection import _validate_connector_type_value
 
 **`_init_manual.py`** — the hand-written registry of passthrough types. Keep ONLY
 types BLDX-708 does not generate (currently `AzureEventHub`,
-`AzureEventHubConsumerGroup`, `Badge`, `BadgeCondition`, `SnowflakeDynamicTable`).
+`AzureEventHubConsumerGroup`, `Badge`, `BadgeCondition`, `GlueTag`,
+`SnowflakeDynamicTable`, `TagAttachment`).
+`GlueTag` and `TagAttachment` were generated once with passthrough turned off
+locally. `TagAttachment` also carries the publish-app source tag contract fields
+(`objectQualifiedName`, `sourceTagTypeName`, `value`, `propagate`, ...), which are
+not typedef attributes, so a regenerated `tag_attachment.py` must keep them.
 When a type moves from passthrough to generated (e.g. `Cognite3DModel`), remove it
 here AND from the `_init_manual` group in `__init__.py` / `__init__.pyi`, or the
 lazy loader looks for it in the wrong module.
