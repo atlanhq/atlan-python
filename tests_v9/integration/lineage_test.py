@@ -8,11 +8,14 @@ import pytest
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import (
     Asset,
+    BIProcess,
     Column,
     ColumnProcess,
     Connection,
     Database,
     MaterialisedView,
+    MetabaseDashboard,
+    MetabaseQuestion,
     Process,
     Schema,
     Table,
@@ -46,6 +49,16 @@ COLUMN_NAME6 = f"{MODULE_NAME}6"
 CONNECTOR_TYPE = AtlanConnectorType.VERTICA
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
+
+BI_CONNECTION_NAME = f"{MODULE_NAME}_bi"
+BI_CONNECTOR_TYPE = AtlanConnectorType.METABASE
+BI_QUESTION_NAME = f"{MODULE_NAME}_qstn"
+BI_QUESTION_HASHED_NAME = f"{MODULE_NAME}_qstn_hashed"
+BI_DASHBOARD_NAME = f"{MODULE_NAME}_dash"
+BI_QUESTION_ID = "3003"
+BI_QUESTION_HASHED_ID = "3004"
+BI_DASHBOARD_ID = "2002"
+BI_PROCESS_ID = f"questions_dashboards/{BI_QUESTION_ID}"
 
 
 @pytest.fixture(scope="module")
@@ -742,3 +755,201 @@ def test_purge_lineage(
     assert one.guid == lineage_start.guid
     assert one.qualified_name == lineage_start.qualified_name
     assert one.status == EntityStatus.DELETED
+
+
+@pytest.fixture(scope="module")
+def bi_connection(client: AtlanClient) -> Generator[Connection, None, None]:
+    result = create_connection(
+        client=client, name=BI_CONNECTION_NAME, connector_type=BI_CONNECTOR_TYPE
+    )
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=Connection)
+
+
+def _create_metabase_question(
+    client: AtlanClient, connection: Connection, name: str, metabase_id: str
+) -> MetabaseQuestion:
+    assert connection.qualified_name
+    to_create = MetabaseQuestion.creator(
+        name=name,
+        connection_qualified_name=connection.qualified_name,
+        metabase_id=metabase_id,
+    )
+    response = client.asset.save(to_create)
+    return response.assets_created(asset_type=MetabaseQuestion)[0]
+
+
+@pytest.fixture(scope="module")
+def bi_question(
+    client: AtlanClient, bi_connection: Connection
+) -> Generator[MetabaseQuestion, None, None]:
+    q = _create_metabase_question(
+        client, bi_connection, BI_QUESTION_NAME, BI_QUESTION_ID
+    )
+    yield q
+    delete_asset(client, guid=q.guid, asset_type=MetabaseQuestion)
+
+
+@pytest.fixture(scope="module")
+def bi_question_hashed(
+    client: AtlanClient, bi_connection: Connection
+) -> Generator[MetabaseQuestion, None, None]:
+    q = _create_metabase_question(
+        client, bi_connection, BI_QUESTION_HASHED_NAME, BI_QUESTION_HASHED_ID
+    )
+    yield q
+    delete_asset(client, guid=q.guid, asset_type=MetabaseQuestion)
+
+
+@pytest.fixture(scope="module")
+def bi_dashboard(
+    client: AtlanClient, bi_connection: Connection
+) -> Generator[MetabaseDashboard, None, None]:
+    assert bi_connection.qualified_name
+    to_create = MetabaseDashboard.creator(
+        name=BI_DASHBOARD_NAME,
+        connection_qualified_name=bi_connection.qualified_name,
+        metabase_id=BI_DASHBOARD_ID,
+    )
+    response = client.asset.save(to_create)
+    d = response.assets_created(asset_type=MetabaseDashboard)[0]
+    yield d
+    delete_asset(client, guid=d.guid, asset_type=MetabaseDashboard)
+
+
+@pytest.fixture(scope="module")
+def bi_lineage(
+    client: AtlanClient,
+    bi_connection: Connection,
+    bi_question: MetabaseQuestion,
+    bi_dashboard: MetabaseDashboard,
+) -> Generator[BIProcess, None, None]:
+    process_name = f"{bi_question.name} >> {bi_dashboard.name}"
+    assert bi_connection.qualified_name
+    to_create = BIProcess.creator(
+        name=process_name,
+        connection_qualified_name=bi_connection.qualified_name,
+        inputs=[MetabaseQuestion.ref_by_guid(bi_question.guid)],
+        outputs=[MetabaseDashboard.ref_by_guid(bi_dashboard.guid)],
+        process_id=BI_PROCESS_ID,
+    )
+    response = client.asset.save(to_create)
+    created = response.assets_created(asset_type=BIProcess)
+    assert len(created) == 1
+    bp = created[0]
+    yield bp
+    delete_asset(client, guid=bp.guid, asset_type=BIProcess)
+
+
+@pytest.fixture(scope="module")
+def bi_lineage_hashed(
+    client: AtlanClient,
+    bi_connection: Connection,
+    bi_question_hashed: MetabaseQuestion,
+    bi_dashboard: MetabaseDashboard,
+) -> Generator[BIProcess, None, None]:
+    process_name = f"{bi_question_hashed.name} >> {bi_dashboard.name}"
+    assert bi_connection.qualified_name
+    to_create = BIProcess.creator(
+        name=process_name,
+        connection_qualified_name=bi_connection.qualified_name,
+        inputs=[MetabaseQuestion.ref_by_guid(bi_question_hashed.guid)],
+        outputs=[MetabaseDashboard.ref_by_guid(bi_dashboard.guid)],
+    )
+    response = client.asset.save(to_create)
+    created = response.assets_created(asset_type=BIProcess)
+    assert len(created) == 1
+    bp = created[0]
+    yield bp
+    delete_asset(client, guid=bp.guid, asset_type=BIProcess)
+
+
+def test_bi_lineage(
+    bi_connection: Connection,
+    bi_question: MetabaseQuestion,
+    bi_dashboard: MetabaseDashboard,
+    bi_lineage: BIProcess,
+):
+    _assert_lineage(bi_question, bi_dashboard, bi_lineage)
+    assert isinstance(bi_lineage, BIProcess)
+    assert bi_lineage.type_name == "BIProcess"
+    assert bi_lineage.qualified_name == (
+        f"{bi_connection.qualified_name}/{BI_PROCESS_ID}"
+    )
+    assert bi_lineage.connection_qualified_name == bi_connection.qualified_name
+    assert bi_lineage.connector_name == BI_CONNECTOR_TYPE.value
+
+
+def test_bi_lineage_hashed(
+    bi_connection: Connection,
+    bi_question_hashed: MetabaseQuestion,
+    bi_dashboard: MetabaseDashboard,
+    bi_lineage_hashed: BIProcess,
+):
+    _assert_lineage(bi_question_hashed, bi_dashboard, bi_lineage_hashed)
+    assert isinstance(bi_lineage_hashed, BIProcess)
+    assert bi_lineage_hashed.type_name == "BIProcess"
+    assert bi_connection.qualified_name
+    assert bi_lineage_hashed.name
+    assert bi_lineage_hashed.qualified_name == BIProcess.generate_qualified_name(
+        name=bi_lineage_hashed.name,
+        connection_qualified_name=bi_connection.qualified_name,
+        inputs=[MetabaseQuestion.ref_by_guid(bi_question_hashed.guid)],
+        outputs=[MetabaseDashboard.ref_by_guid(bi_dashboard.guid)],
+    )
+
+
+def test_retrieve_bi_lineage(
+    client: AtlanClient,
+    bi_question: MetabaseQuestion,
+    bi_dashboard: MetabaseDashboard,
+    bi_lineage: BIProcess,
+):
+    retrieved = client.asset.get_by_guid(
+        bi_lineage.guid, asset_type=BIProcess, ignore_relationships=False
+    )
+    assert isinstance(retrieved, BIProcess)
+    assert retrieved.type_name == "BIProcess"
+    assert retrieved.qualified_name == bi_lineage.qualified_name
+    assert retrieved.inputs and len(retrieved.inputs) == 1
+    assert retrieved.inputs[0].guid == bi_question.guid
+    assert retrieved.outputs and len(retrieved.outputs) == 1
+    assert retrieved.outputs[0].guid == bi_dashboard.guid
+
+
+def test_fetch_bi_lineage_list(
+    client: AtlanClient,
+    bi_question: MetabaseQuestion,
+    bi_question_hashed: MetabaseQuestion,
+    bi_dashboard: MetabaseDashboard,
+    bi_lineage: BIProcess,
+    bi_lineage_hashed: BIProcess,
+):
+    lineage = FluentLineage(
+        starting_guid=bi_question.guid, includes_on_results=Asset.NAME
+    ).request
+    response = client.asset.get_lineage_list(lineage)
+    assert response
+    results = []
+    for a in response:
+        results.append(a)
+    assert len(results) == 2
+    assert isinstance(results[0], BIProcess)
+    assert results[0].depth == 1
+    assert results[0].guid == bi_lineage.guid
+    assert isinstance(results[1], MetabaseDashboard)
+    assert results[1].depth == 1
+    assert results[1].guid == bi_dashboard.guid
+    lineage = FluentLineage(
+        starting_guid=bi_dashboard.guid, direction=LineageDirection.UPSTREAM
+    ).request
+    response = client.asset.get_lineage_list(lineage)
+    assert response
+    results = []
+    for a in response:
+        results.append(a)
+    assert len(results) == 4
+    processes = [a for a in results if isinstance(a, BIProcess)]
+    questions = [a for a in results if isinstance(a, MetabaseQuestion)]
+    assert {p.guid for p in processes} == {bi_lineage.guid, bi_lineage_hashed.guid}
+    assert {q.guid for q in questions} == {bi_question.guid, bi_question_hashed.guid}
