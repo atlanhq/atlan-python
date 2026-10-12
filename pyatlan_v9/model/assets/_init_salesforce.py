@@ -8,6 +8,11 @@ Salesforce module exports.
 This module provides convenient imports for all Salesforce types and their Related variants.
 """
 
+from .salesforce import Salesforce
+from .salesforce_dashboard import SalesforceDashboard
+from .salesforce_field import SalesforceField
+from .salesforce_object import SalesforceObject
+from .salesforce_organization import SalesforceOrganization
 from .salesforce_related import (
     RelatedSalesforce,
     RelatedSalesforceDashboard,
@@ -16,11 +21,6 @@ from .salesforce_related import (
     RelatedSalesforceOrganization,
     RelatedSalesforceReport,
 )
-from .salesforce import Salesforce
-from .salesforce_dashboard import SalesforceDashboard
-from .salesforce_field import SalesforceField
-from .salesforce_object import SalesforceObject
-from .salesforce_organization import SalesforceOrganization
 from .salesforce_report import SalesforceReport
 
 __all__ = [

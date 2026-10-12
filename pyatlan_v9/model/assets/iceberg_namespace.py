@@ -20,6 +20,13 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -46,6 +53,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .iceberg_related import RelatedIcebergNamespace
 from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -53,7 +61,10 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import RelatedSapDatasphereReplicationFlow
+from .sap_related import (
+    RelatedSapDatasphereDataProduct,
+    RelatedSapDatasphereReplicationFlow,
+)
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeAIModelContext,
@@ -80,14 +91,6 @@ from .sql_related import (
     RelatedTable,
     RelatedView,
 )
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .iceberg_related import RelatedIcebergNamespace
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -181,6 +184,7 @@ class IcebergNamespace(Asset):
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
     SAP_DATASPHERE_REPLICATION_FLOWS: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     CALCULATION_VIEWS: ClassVar[Any] = None
     FUNCTIONS: ClassVar[Any] = None
     MATERIALISED_VIEWS: ClassVar[Any] = None
@@ -465,6 +469,11 @@ class IcebergNamespace(Asset):
         List[RelatedSapDatasphereReplicationFlow], None, UnsetType
     ] = UNSET
     """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose objects from this schema (Datasphere space)."""
 
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
@@ -946,6 +955,11 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     ] = UNSET
     """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose objects from this schema (Datasphere space)."""
+
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
 
@@ -1094,6 +1108,7 @@ _ICEBERG_NAMESPACE_REL_FIELDS: List[str] = [
     "links",
     "readme",
     "sap_datasphere_replication_flows",
+    "sap_datasphere_data_products",
     "calculation_views",
     "functions",
     "materialised_views",
@@ -1498,6 +1513,9 @@ IcebergNamespace.LINKS = RelationField("links")
 IcebergNamespace.README = RelationField("readme")
 IcebergNamespace.SAP_DATASPHERE_REPLICATION_FLOWS = RelationField(
     "sapDatasphereReplicationFlows"
+)
+IcebergNamespace.SAP_DATASPHERE_DATA_PRODUCTS = RelationField(
+    "sapDatasphereDataProducts"
 )
 IcebergNamespace.CALCULATION_VIEWS = RelationField("calculationViews")
 IcebergNamespace.FUNCTIONS = RelationField("functions")
