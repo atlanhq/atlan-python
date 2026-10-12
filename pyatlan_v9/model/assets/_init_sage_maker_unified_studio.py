@@ -8,6 +8,13 @@ SageMakerUnifiedStudio module exports.
 This module provides convenient imports for all SageMakerUnifiedStudio types and their Related variants.
 """
 
+from .sage_maker_unified_studio import SageMakerUnifiedStudio
+from .sage_maker_unified_studio_asset import SageMakerUnifiedStudioAsset
+from .sage_maker_unified_studio_asset_schema import SageMakerUnifiedStudioAssetSchema
+from .sage_maker_unified_studio_project import SageMakerUnifiedStudioProject
+from .sage_maker_unified_studio_published_asset import (
+    SageMakerUnifiedStudioPublishedAsset,
+)
 from .sage_maker_unified_studio_related import (
     RelatedSageMakerUnifiedStudio,
     RelatedSageMakerUnifiedStudioAsset,
@@ -15,13 +22,6 @@ from .sage_maker_unified_studio_related import (
     RelatedSageMakerUnifiedStudioProject,
     RelatedSageMakerUnifiedStudioPublishedAsset,
     RelatedSageMakerUnifiedStudioSubscribedAsset,
-)
-from .sage_maker_unified_studio import SageMakerUnifiedStudio
-from .sage_maker_unified_studio_asset import SageMakerUnifiedStudioAsset
-from .sage_maker_unified_studio_asset_schema import SageMakerUnifiedStudioAssetSchema
-from .sage_maker_unified_studio_project import SageMakerUnifiedStudioProject
-from .sage_maker_unified_studio_published_asset import (
-    SageMakerUnifiedStudioPublishedAsset,
 )
 from .sage_maker_unified_studio_subscribed_asset import (
     SageMakerUnifiedStudioSubscribedAsset,

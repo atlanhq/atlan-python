@@ -19,8 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from .entity import AtlasClassification, Entity
-from .gtc_related import RelatedAtlasGlossaryTerm
 from pyatlan.model.fields.atlan_fields import (
     InternalKeywordField,
     InternalKeywordTextField,
@@ -35,6 +33,8 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 
+from .entity import Entity
+from .gtc_related import RelatedAtlasGlossaryTerm
 from .referenceable_related import RelatedReferenceable
 
 # =============================================================================
@@ -295,7 +295,7 @@ class ReferenceableNested(
     update_time: Union[Any, UnsetType] = UNSET
     created_by: Union[Any, UnsetType] = UNSET
     updated_by: Union[Any, UnsetType] = UNSET
-    classifications: Union[List[AtlasClassification], None, UnsetType] = UNSET
+    classifications: Union[Any, UnsetType] = UNSET
     classification_names: Union[Any, UnsetType] = UNSET
     meanings: Union[Any, UnsetType] = UNSET
     labels: Union[Any, UnsetType] = UNSET
@@ -455,9 +455,7 @@ def _referenceable_from_nested_bytes(data: bytes, serde: Serde) -> Referenceable
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import RelationField  # noqa: E402
 
 Referenceable.QUALIFIED_NAME = KeywordTextField(
     "qualifiedName", "qualifiedName", "qualifiedName.text"

@@ -8,12 +8,9 @@ Anomalo module exports.
 This module provides convenient imports for all Anomalo types and their Related variants.
 """
 
-from .anomalo_related import (
-    RelatedAnomalo,
-    RelatedAnomaloCheck,
-)
 from .anomalo import Anomalo
 from .anomalo_check import AnomaloCheck
+from .anomalo_related import RelatedAnomalo, RelatedAnomaloCheck
 
 __all__ = [
     "Anomalo",
