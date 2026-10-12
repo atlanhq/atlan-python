@@ -8,23 +8,9 @@ SAP module exports.
 This module provides convenient imports for all SAP types and their Related variants.
 """
 
-from .sap_related import (
-    RelatedSAP,
-    RelatedSAPColumnProcess,
-    RelatedSAPProcess,
-    RelatedSapDatasphereReplicationFlow,
-    RelatedSapErpAbapProgram,
-    RelatedSapErpCdsView,
-    RelatedSapErpColumn,
-    RelatedSapErpComponent,
-    RelatedSapErpFioriApp,
-    RelatedSapErpFunctionModule,
-    RelatedSapErpTable,
-    RelatedSapErpTransactionCode,
-    RelatedSapErpView,
-)
 from .sap import SAP
 from .sap_column_process import SAPColumnProcess
+from .sap_datasphere_data_product import SapDatasphereDataProduct
 from .sap_datasphere_replication_flow import SapDatasphereReplicationFlow
 from .sap_erp_abap_program import SapErpAbapProgram
 from .sap_erp_cds_view import SapErpCdsView
@@ -36,11 +22,28 @@ from .sap_erp_table import SapErpTable
 from .sap_erp_transaction_code import SapErpTransactionCode
 from .sap_erp_view import SapErpView
 from .sap_process import SAPProcess
+from .sap_related import (
+    RelatedSAP,
+    RelatedSAPColumnProcess,
+    RelatedSapDatasphereDataProduct,
+    RelatedSapDatasphereReplicationFlow,
+    RelatedSapErpAbapProgram,
+    RelatedSapErpCdsView,
+    RelatedSapErpColumn,
+    RelatedSapErpComponent,
+    RelatedSapErpFioriApp,
+    RelatedSapErpFunctionModule,
+    RelatedSapErpTable,
+    RelatedSapErpTransactionCode,
+    RelatedSapErpView,
+    RelatedSAPProcess,
+)
 
 __all__ = [
     "RelatedSAP",
     "RelatedSAPColumnProcess",
     "RelatedSAPProcess",
+    "RelatedSapDatasphereDataProduct",
     "RelatedSapDatasphereReplicationFlow",
     "RelatedSapErpAbapProgram",
     "RelatedSapErpCdsView",
@@ -54,6 +57,7 @@ __all__ = [
     "SAP",
     "SAPColumnProcess",
     "SAPProcess",
+    "SapDatasphereDataProduct",
     "SapDatasphereReplicationFlow",
     "SapErpAbapProgram",
     "SapErpCdsView",

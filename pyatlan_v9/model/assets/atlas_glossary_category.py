@@ -19,6 +19,14 @@ from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -35,22 +43,17 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
-from .gtc_related import RelatedAtlasGlossary
+from .gtc_related import (
+    RelatedAtlasGlossary,
+    RelatedAtlasGlossaryCategory,
+    RelatedAtlasGlossaryTerm,
+)
 from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .gtc_related import RelatedAtlasGlossaryCategory, RelatedAtlasGlossaryTerm
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -499,9 +502,6 @@ class AtlasGlossaryCategoryAttributes(AssetAttributes):
     """Unused. Arbitrary set of additional attributes associated with the category."""
 
     category_type: Union[str, None, UnsetType] = UNSET
-
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
-    """Glossary in which this term is contained."""
     """"""
 
 
@@ -635,6 +635,7 @@ _ATLAS_GLOSSARY_CATEGORY_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "terms",
+    "anchor",
     "children_categories",
     "parent_category",
     "knowledge_linked_files",
@@ -659,7 +660,6 @@ def _populate_atlas_glossary_category_attrs(
     attrs.long_description = obj.long_description
     attrs.additional_attributes = obj.additional_attributes
     attrs.category_type = obj.category_type
-    attrs.anchor = obj.anchor
 
 
 def _extract_atlas_glossary_category_attrs(
@@ -671,7 +671,6 @@ def _extract_atlas_glossary_category_attrs(
     result["long_description"] = attrs.long_description
     result["additional_attributes"] = attrs.additional_attributes
     result["category_type"] = attrs.category_type
-    result["anchor"] = attrs.anchor
     return result
 
 
@@ -789,10 +788,7 @@ def _atlas_glossary_category_from_nested_bytes(
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
 AtlasGlossaryCategory.SHORT_DESCRIPTION = KeywordField(
     "shortDescription", "shortDescription"
