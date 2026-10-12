@@ -37,10 +37,6 @@ from pyatlan.client.common.app import (
     is_duplicate_name_conflict,
 )
 from pyatlan.errors import AtlanError, ErrorCode
-from pyatlan.model.apps import AppInput
-from pyatlan.model.assets import AppWorkflowRun
-from pyatlan.model.enums import AppWorkflowRunStatus
-from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
@@ -56,7 +52,10 @@ from pyatlan.model.app import (
     CreateApp,
     UpdateApp,
 )
-
+from pyatlan.model.apps import AppInput
+from pyatlan.model.assets import AppWorkflowRun
+from pyatlan.model.enums import AppWorkflowRunStatus
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 
 LOGGER = logging.getLogger(__name__)
 
