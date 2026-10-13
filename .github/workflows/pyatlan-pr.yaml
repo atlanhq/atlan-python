@@ -55,7 +55,7 @@ jobs:
       matrix:
         # Specify version as a string
         # https://github.com/actions/setup-python/issues/160"
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Checkout code
@@ -80,13 +80,6 @@ jobs:
             echo 'PYSEC-2022-42969'
             echo 'GHSA-48p4-8xcf-vxj5'
             echo 'GHSA-pq67-6m6q-mj2v'
-            # anyio fixes both of these from 4.14.2, which needs Python >= 3.10.
-            # This package still supports >= 3.9.1, so 3.9 is pinned to 4.12.1
-            # and cannot take the fix. Drop these two when 3.9 support goes.
-            if [ "${{ matrix.python-version }}" = "3.9" ]; then
-              echo 'GHSA-5p39-cfhj-2xmp'
-              echo 'GHSA-82r6-8w77-94w6'
-            fi
             echo 'IGNORE_EOF'
           } >> "$GITHUB_ENV"
 
@@ -163,7 +156,7 @@ jobs:
       matrix:
         # Specify version as a string
         # https://github.com/actions/setup-python/issues/160"
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Checkout code
@@ -229,12 +222,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
           # Specify version as a string
           # https://github.com/actions/setup-python/issues/160"
-          python-version: "3.9"
+          python-version: "3.10"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
@@ -271,12 +264,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
           # Specify version as a string
           # https://github.com/actions/setup-python/issues/160"
-          python-version: "3.9"
+          python-version: "3.10"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
@@ -306,7 +299,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Checkout code
