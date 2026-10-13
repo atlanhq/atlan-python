@@ -310,6 +310,7 @@ __PYATLAN_ASSETS__ = {
     "cube_field": ["CubeField"],
     "custom_entity": ["CustomEntity"],
     "bigquery_tag": ["BigqueryTag"],
+    "glue_tag": ["GlueTag"],
     "snowflake_listing": ["SnowflakeListing"],
     "snowflake_share": ["SnowflakeShare"],
     "starburst": ["Starburst"],

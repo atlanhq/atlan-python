@@ -1771,6 +1771,62 @@ class EnumDefInfo:
         cls.enum_def_info = sorted(cls.enum_def_info, key=lambda e: e.name)
 
 
+_PUBLISH_CONTRACT_NOTE = "Read by publish-app; not an Atlas typedef attribute."
+SOURCE_TAG_CONTRACT_ATTRIBUTE_DEFS: List[Dict[str, Any]] = [
+    {
+        "name": name,
+        "typeName": type_name,
+        "description": f"{description} {_PUBLISH_CONTRACT_NOTE}",
+        "cardinality": "SINGLE",
+        "indexType": "STRING" if type_name == "string" else None,
+    }
+    for name, type_name, description in (
+        (
+            "objectQualifiedName",
+            "string",
+            "Qualified name of the asset the source tag is attached to.",
+        ),
+        (
+            "objectTypeName",
+            "string",
+            "Type name of the asset the source tag is attached to.",
+        ),
+        ("sourceTagQualifiedName", "string", "Qualified name of the source tag."),
+        (
+            "sourceTagDisplayName",
+            "string",
+            "Name of the source tag, used as the Atlan tag name.",
+        ),
+        (
+            "sourceTagTypeName",
+            "string",
+            "Type name of the source tag, for example GlueTag.",
+        ),
+        ("valueType", "string", "Type of the tag value, for example STRING."),
+        ("value", "string", "Value of the source tag on the asset."),
+        ("propagate", "boolean", "Whether the Atlan tag propagates from the asset."),
+    )
+]
+
+
+def add_source_tag_contract_attributes(entity_defs: List[EntityDef]):
+    """Add the source tag contract that connectors write for atlan-publish-app to TagAttachment.
+
+    Atlas does not define these attributes, so without this step every regeneration
+    would drop them from the SDK model.
+    """
+    for entity_def in entity_defs:
+        if entity_def.name != "TagAttachment":
+            continue
+        attribute_defs = entity_def.attribute_defs or []
+        existing = {attribute_def["name"] for attribute_def in attribute_defs}
+        entity_def.attribute_defs = attribute_defs + [
+            attribute_def
+            for attribute_def in SOURCE_TAG_CONTRACT_ATTRIBUTE_DEFS
+            if attribute_def["name"] not in existing
+        ]
+
+
 def filter_attributes_of_custom_entity_type():
     for entity_def in type_defs.reserved_entity_defs:
         if entity_def.attribute_defs:
@@ -1811,6 +1867,7 @@ if __name__ == "__main__":
 
     type_defs = get_type_defs(args.typedefs_file)
     filter_attributes_of_custom_entity_type()
+    add_source_tag_contract_attributes(type_defs.reserved_entity_defs)
     AssetInfo.sub_type_names_to_ignore = type_defs.custom_entity_def_names
     AssetInfo.set_entity_defs(type_defs.reserved_entity_defs)
     RelationshipDefInfo.create(type_defs.relationship_defs)

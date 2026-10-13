@@ -1,0 +1,1238 @@
+# Passthrough type in atlanhq/models: generated once with passthrough off, maintained here (see _init_manual.py).
+# ruff: noqa: ARG002
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2024 Atlan Pte. Ltd.
+
+"""
+GlueTag asset model with flattened inheritance.
+
+This module provides:
+- GlueTag: Flat asset class (easy to use)
+- GlueTagAttributes: Nested attributes struct (extends AssetAttributes)
+- GlueTagNested: Nested API format struct
+"""
+
+from __future__ import annotations
+
+from typing import Any, ClassVar, Dict, List, Union
+
+import msgspec
+from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .airflow_related import RelatedAirflowTask
+from .anomalo_related import RelatedAnomaloCheck
+from .app_related import RelatedApplication, RelatedApplicationField
+from .asset import (
+    _ASSET_REL_FIELDS,
+    Asset,
+    AssetAttributes,
+    AssetNested,
+    AssetRelationshipAttributes,
+    _extract_asset_attrs,
+    _populate_asset_attrs,
+)
+from .context_related import RelatedContextRepository
+from .data_contract_related import RelatedDataContract
+from .data_mesh_related import RelatedDataProduct
+from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
+from .glue_related import RelatedGlueTag
+from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile
+from .model_related import RelatedModelAttribute, RelatedModelEntity
+from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
+from .partial_related import RelatedPartialField, RelatedPartialObject
+from .process_related import RelatedProcess
+from .referenceable_related import RelatedReferenceable
+from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .schema_registry_related import RelatedSchemaRegistrySubject
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
+from .soda_related import RelatedSodaCheck
+from .spark_related import RelatedSparkJob
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
+
+# =============================================================================
+# FLAT ASSET CLASS
+# =============================================================================
+
+
+@register_asset
+class GlueTag(Asset):
+    """
+    Instance of an AWS Glue tag in Atlan.
+    """
+
+    GLUE_TAG_TYPE: ClassVar[Any] = None
+    TAG_ID: ClassVar[Any] = None
+    TAG_ATTRIBUTES: ClassVar[Any] = None
+    TAG_ALLOWED_VALUES: ClassVar[Any] = None
+    MAPPED_CLASSIFICATION_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
+    QUERY_COUNT: ClassVar[Any] = None
+    QUERY_USER_COUNT: ClassVar[Any] = None
+    QUERY_USER_MAP: ClassVar[Any] = None
+    QUERY_COUNT_UPDATED_AT: ClassVar[Any] = None
+    DATABASE_NAME: ClassVar[Any] = None
+    DATABASE_QUALIFIED_NAME: ClassVar[Any] = None
+    SCHEMA_NAME: ClassVar[Any] = None
+    SCHEMA_QUALIFIED_NAME: ClassVar[Any] = None
+    TABLE_NAME: ClassVar[Any] = None
+    TABLE_QUALIFIED_NAME: ClassVar[Any] = None
+    VIEW_NAME: ClassVar[Any] = None
+    VIEW_QUALIFIED_NAME: ClassVar[Any] = None
+    CALCULATION_VIEW_NAME: ClassVar[Any] = None
+    CALCULATION_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
+    IS_PROFILED: ClassVar[Any] = None
+    LAST_PROFILED_AT: ClassVar[Any] = None
+    SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
+    SQL_IS_SECURE: ClassVar[Any] = None
+    SQL_HAS_AI_INSIGHTS: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_NODE_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_AT: ClassVar[Any] = None
+    SQL_COALESCE_NODE_TYPE: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_ID: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_NAME: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
+    SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
+    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
+    ANOMALO_CHECKS: ClassVar[Any] = None
+    APPLICATION: ClassVar[Any] = None
+    APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
+    OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
+    INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
+    MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
+    MODEL_IMPLEMENTED_ATTRIBUTES: ClassVar[Any] = None
+    METRICS: ClassVar[Any] = None
+    DQ_BASE_DATASET_RULES: ClassVar[Any] = None
+    DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    DBT_MODELS: ClassVar[Any] = None
+    SQL_DBT_MODELS: ClassVar[Any] = None
+    DBT_TESTS: ClassVar[Any] = None
+    DBT_SOURCES: ClassVar[Any] = None
+    SQL_DBT_SOURCES: ClassVar[Any] = None
+    DBT_SEED_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
+    MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_LINKED_FILES: ClassVar[Any] = None
+    MC_MONITORS: ClassVar[Any] = None
+    MC_INCIDENTS: ClassVar[Any] = None
+    PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
+    PARTIAL_CHILD_OBJECTS: ClassVar[Any] = None
+    INPUT_TO_PROCESSES: ClassVar[Any] = None
+    OUTPUT_FROM_PROCESSES: ClassVar[Any] = None
+    USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
+    USER_DEF_RELATIONSHIP_FROM: ClassVar[Any] = None
+    FILES: ClassVar[Any] = None
+    LINKS: ClassVar[Any] = None
+    README: ClassVar[Any] = None
+    SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
+    SODA_CHECKS: ClassVar[Any] = None
+    INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
+    OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    glue_tag_type: Union[str, None, UnsetType] = UNSET
+    """Source mechanism of the AWS Glue tag."""
+
+    tag_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the tag in the source system."""
+
+    tag_attributes: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Attributes associated with the tag in the source system."""
+
+    tag_allowed_values: Union[List[str], None, UnsetType] = UNSET
+    """Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying."""
+
+    mapped_classification_name: Union[str, None, UnsetType] = UNSET
+    """Name of the classification in Atlan that is mapped to this tag."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
+    query_count: Union[int, None, UnsetType] = UNSET
+    """Number of times this asset has been queried."""
+
+    query_user_count: Union[int, None, UnsetType] = UNSET
+    """Number of unique users who have queried this asset."""
+
+    query_user_map: Union[Dict[str, int], None, UnsetType] = UNSET
+    """Map of unique users who have queried this asset to the number of times they have queried it."""
+
+    query_count_updated_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the query count was last updated, in milliseconds."""
+
+    database_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
+
+    database_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
+
+    schema_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
+
+    schema_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
+
+    table_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
+
+    table_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
+
+    view_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
+
+    view_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
+
+    calculation_view_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
+
+    calculation_view_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
+
+    is_profiled: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has been profiled (true) or not (false)."""
+
+    last_profiled_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last profiled, in milliseconds."""
+
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
+    """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
+
+    sql_is_secure: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset is secure (true) or not (false)."""
+
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
+    """Tasks to which this asset provides input."""
+
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
+    """Tasks from which this asset is output."""
+
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
+    """Checks that run on this asset."""
+
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
+    """Application owning the Asset."""
+
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
+    """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
+    """Data products for which this asset is an output port."""
+
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
+    """Data products for which this asset is an input port."""
+
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    """Entities implemented by this asset."""
+
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
+    """Attributes implemented by this asset."""
+
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
+    """"""
+
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    """Rules that are applied on this dataset."""
+
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
+    """Rules where this dataset is referenced."""
+
+    dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
+    """(Deprecated) Model containing the assets."""
+
+    sql_dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
+    """Assets related to the model."""
+
+    dbt_tests: Union[List[RelatedDbtTest], None, UnsetType] = UNSET
+    """Tests related to this asset."""
+
+    dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
+    """Source containing the assets."""
+
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
+    """Sources related to this asset."""
+
+    dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
+    """DBT seeds that materialize the SQL asset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
+    """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
+    """Monitors that observe this asset."""
+
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
+    """"""
+
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
+    """Partial fields contained in the asset."""
+
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
+    """Partial objects contained in the asset."""
+
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes to which this asset provides input."""
+
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes from which this asset is produced as output."""
+
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    """"""
+
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
+    """"""
+
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """Schema registry subjects associated with this asset."""
+
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
+
+    def __post_init__(self) -> None:
+        self.type_name = "GlueTag"
+
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this GlueTag instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if for_creation:
+            if self.tag_id is UNSET:
+                errors.append("tag_id is required for creation")
+            if self.tag_allowed_values is UNSET:
+                errors.append("tag_allowed_values is required for creation")
+            if self.mapped_classification_name is UNSET:
+                errors.append("mapped_classification_name is required for creation")
+        if errors:
+            raise ValueError(f"GlueTag validation failed: {errors}")
+
+    def minimize(self) -> "GlueTag":
+        """
+        Return a minimal copy of this GlueTag with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new GlueTag with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new GlueTag instance with only the minimum required fields.
+        """
+        self.validate()
+        return GlueTag(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedGlueTag":
+        """
+        Create a :class:`RelatedGlueTag` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedGlueTag reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedGlueTag(guid=self.guid)
+        return RelatedGlueTag(qualified_name=self.qualified_name)
+
+    # =========================================================================
+    # Optimized Serialization Methods (override Asset base class)
+    # =========================================================================
+
+    def to_json(self, nested: bool = True, serde: Serde | None = None) -> str:
+        """
+        Convert to JSON string using optimized nested struct serialization.
+
+        Args:
+            nested: If True (default), use nested API format. If False, use flat format.
+            serde: Optional Serde instance for encoder reuse. Uses shared singleton if None.
+
+        Returns:
+            JSON string representation
+        """
+        if serde is None:
+            serde = get_serde()
+        if nested:
+            return self.to_nested_bytes(serde).decode("utf-8")
+        else:
+            return serde.encode(self).decode("utf-8")
+
+    def to_nested_bytes(self, serde: Serde | None = None) -> bytes:
+        """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
+        if serde is None:
+            serde = get_serde()
+        return _glue_tag_to_nested_bytes(self, serde)
+
+    @staticmethod
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> GlueTag:
+        """
+        Create from JSON string or bytes using optimized nested struct deserialization.
+
+        Args:
+            json_data: JSON string or bytes to deserialize
+            serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
+
+        Returns:
+            GlueTag instance
+        """
+        if isinstance(json_data, str):
+            json_data = json_data.encode("utf-8")
+        if serde is None:
+            serde = get_serde()
+        return _glue_tag_from_nested_bytes(json_data, serde)
+
+
+# =============================================================================
+# NESTED FORMAT CLASSES
+# =============================================================================
+
+
+class GlueTagAttributes(AssetAttributes):
+    """GlueTag-specific attributes for nested API format."""
+
+    glue_tag_type: Union[str, None, UnsetType] = UNSET
+    """Source mechanism of the AWS Glue tag."""
+
+    tag_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the tag in the source system."""
+
+    tag_attributes: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Attributes associated with the tag in the source system."""
+
+    tag_allowed_values: Union[List[str], None, UnsetType] = UNSET
+    """Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying."""
+
+    mapped_classification_name: Union[str, None, UnsetType] = UNSET
+    """Name of the classification in Atlan that is mapped to this tag."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
+    query_count: Union[int, None, UnsetType] = UNSET
+    """Number of times this asset has been queried."""
+
+    query_user_count: Union[int, None, UnsetType] = UNSET
+    """Number of unique users who have queried this asset."""
+
+    query_user_map: Union[Dict[str, int], None, UnsetType] = UNSET
+    """Map of unique users who have queried this asset to the number of times they have queried it."""
+
+    query_count_updated_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the query count was last updated, in milliseconds."""
+
+    database_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
+
+    database_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
+
+    schema_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
+
+    schema_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
+
+    table_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
+
+    table_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
+
+    view_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
+
+    view_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
+
+    calculation_view_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
+
+    calculation_view_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
+
+    is_profiled: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has been profiled (true) or not (false)."""
+
+    last_profiled_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last profiled, in milliseconds."""
+
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
+    """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
+
+    sql_is_secure: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset is secure (true) or not (false)."""
+
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
+
+class GlueTagRelationshipAttributes(AssetRelationshipAttributes):
+    """GlueTag-specific relationship attributes for nested API format."""
+
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
+    """Tasks to which this asset provides input."""
+
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
+    """Tasks from which this asset is output."""
+
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
+    """Checks that run on this asset."""
+
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
+    """Application owning the Asset."""
+
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
+    """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
+    """Data products for which this asset is an output port."""
+
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
+    """Data products for which this asset is an input port."""
+
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    """Entities implemented by this asset."""
+
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
+    """Attributes implemented by this asset."""
+
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
+    """"""
+
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    """Rules that are applied on this dataset."""
+
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
+    """Rules where this dataset is referenced."""
+
+    dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
+    """(Deprecated) Model containing the assets."""
+
+    sql_dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
+    """Assets related to the model."""
+
+    dbt_tests: Union[List[RelatedDbtTest], None, UnsetType] = UNSET
+    """Tests related to this asset."""
+
+    dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
+    """Source containing the assets."""
+
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
+    """Sources related to this asset."""
+
+    dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
+    """DBT seeds that materialize the SQL asset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
+    """Glossary terms that are linked to this asset."""
+
+    knowledge_linked_files: Union[List[RelatedKnowledgeFile], None, UnsetType] = UNSET
+    """Knowledge files linked to this asset."""
+
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
+    """Monitors that observe this asset."""
+
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
+    """"""
+
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
+    """Partial fields contained in the asset."""
+
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
+    """Partial objects contained in the asset."""
+
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes to which this asset provides input."""
+
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes from which this asset is produced as output."""
+
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    """"""
+
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
+    """"""
+
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """Schema registry subjects associated with this asset."""
+
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
+
+
+class GlueTagNested(AssetNested):
+    """GlueTag in nested API format for high-performance serialization."""
+
+    attributes: Union[GlueTagAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[GlueTagRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[GlueTagRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[GlueTagRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
+
+# =============================================================================
+# CONVERSION HELPERS & CONSTANTS
+# =============================================================================
+
+_GLUE_TAG_REL_FIELDS: List[str] = [
+    *_ASSET_REL_FIELDS,
+    "input_to_airflow_tasks",
+    "output_from_airflow_tasks",
+    "anomalo_checks",
+    "application",
+    "application_field",
+    "context_repositories",
+    "data_contract_latest",
+    "data_contract_latest_certified",
+    "output_port_data_products",
+    "input_port_data_products",
+    "model_implemented_entities",
+    "model_implemented_attributes",
+    "metrics",
+    "dq_base_dataset_rules",
+    "dq_reference_dataset_rules",
+    "dbt_models",
+    "sql_dbt_models",
+    "dbt_tests",
+    "dbt_sources",
+    "sql_dbt_sources",
+    "dbt_seed_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
+    "meanings",
+    "knowledge_linked_files",
+    "mc_monitors",
+    "mc_incidents",
+    "partial_child_fields",
+    "partial_child_objects",
+    "input_to_processes",
+    "output_from_processes",
+    "user_def_relationship_to",
+    "user_def_relationship_from",
+    "files",
+    "links",
+    "readme",
+    "schema_registry_subjects",
+    "snowflake_semantic_logical_tables",
+    "soda_checks",
+    "input_to_spark_jobs",
+    "output_from_spark_jobs",
+    "sql_insight_outgoing_joins",
+    "sql_insight_incoming_joins",
+    "sql_insight_business_questions",
+]
+
+
+def _populate_glue_tag_attrs(attrs: GlueTagAttributes, obj: GlueTag) -> None:
+    """Populate GlueTag-specific attributes on the attrs struct."""
+    _populate_asset_attrs(attrs, obj)
+    attrs.glue_tag_type = obj.glue_tag_type
+    attrs.tag_id = obj.tag_id
+    attrs.tag_attributes = obj.tag_attributes
+    attrs.tag_allowed_values = obj.tag_allowed_values
+    attrs.mapped_classification_name = obj.mapped_classification_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+    attrs.query_count = obj.query_count
+    attrs.query_user_count = obj.query_user_count
+    attrs.query_user_map = obj.query_user_map
+    attrs.query_count_updated_at = obj.query_count_updated_at
+    attrs.database_name = obj.database_name
+    attrs.database_qualified_name = obj.database_qualified_name
+    attrs.schema_name = obj.schema_name
+    attrs.schema_qualified_name = obj.schema_qualified_name
+    attrs.table_name = obj.table_name
+    attrs.table_qualified_name = obj.table_qualified_name
+    attrs.view_name = obj.view_name
+    attrs.view_qualified_name = obj.view_qualified_name
+    attrs.calculation_view_name = obj.calculation_view_name
+    attrs.calculation_view_qualified_name = obj.calculation_view_qualified_name
+    attrs.is_profiled = obj.is_profiled
+    attrs.last_profiled_at = obj.last_profiled_at
+    attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
+    attrs.sql_is_secure = obj.sql_is_secure
+    attrs.sql_has_ai_insights = obj.sql_has_ai_insights
+    attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
+    attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
+    attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
+    attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
+    attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
+    attrs.sql_coalesce_last_run_at = obj.sql_coalesce_last_run_at
+    attrs.sql_coalesce_node_type = obj.sql_coalesce_node_type
+    attrs.sql_coalesce_environment_id = obj.sql_coalesce_environment_id
+    attrs.sql_coalesce_environment_name = obj.sql_coalesce_environment_name
+    attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
+    attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
+    attrs.sql_share_qualified_names = obj.sql_share_qualified_names
+
+
+def _extract_glue_tag_attrs(attrs: GlueTagAttributes) -> dict:
+    """Extract all GlueTag attributes from the attrs struct into a flat dict."""
+    result = _extract_asset_attrs(attrs)
+    result["glue_tag_type"] = attrs.glue_tag_type
+    result["tag_id"] = attrs.tag_id
+    result["tag_attributes"] = attrs.tag_attributes
+    result["tag_allowed_values"] = attrs.tag_allowed_values
+    result["mapped_classification_name"] = attrs.mapped_classification_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
+    result["query_count"] = attrs.query_count
+    result["query_user_count"] = attrs.query_user_count
+    result["query_user_map"] = attrs.query_user_map
+    result["query_count_updated_at"] = attrs.query_count_updated_at
+    result["database_name"] = attrs.database_name
+    result["database_qualified_name"] = attrs.database_qualified_name
+    result["schema_name"] = attrs.schema_name
+    result["schema_qualified_name"] = attrs.schema_qualified_name
+    result["table_name"] = attrs.table_name
+    result["table_qualified_name"] = attrs.table_qualified_name
+    result["view_name"] = attrs.view_name
+    result["view_qualified_name"] = attrs.view_qualified_name
+    result["calculation_view_name"] = attrs.calculation_view_name
+    result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
+    result["is_profiled"] = attrs.is_profiled
+    result["last_profiled_at"] = attrs.last_profiled_at
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
+    result["sql_is_secure"] = attrs.sql_is_secure
+    result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
+    result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
+    result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
+    result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
+    result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
+    result["sql_coalesce_node_type"] = attrs.sql_coalesce_node_type
+    result["sql_coalesce_environment_id"] = attrs.sql_coalesce_environment_id
+    result["sql_coalesce_environment_name"] = attrs.sql_coalesce_environment_name
+    result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
+    result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
+    result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
+    return result
+
+
+# =============================================================================
+# CONVERSION FUNCTIONS
+# =============================================================================
+
+
+def _glue_tag_to_nested(glue_tag: GlueTag) -> GlueTagNested:
+    """Convert flat GlueTag to nested format."""
+    attrs = GlueTagAttributes()
+    _populate_glue_tag_attrs(attrs, glue_tag)
+    # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
+    replace_rels, append_rels, remove_rels = categorize_relationships(
+        glue_tag, _GLUE_TAG_REL_FIELDS, GlueTagRelationshipAttributes
+    )
+    return GlueTagNested(
+        guid=glue_tag.guid,
+        type_name=glue_tag.type_name,
+        status=glue_tag.status,
+        version=glue_tag.version,
+        create_time=glue_tag.create_time,
+        update_time=glue_tag.update_time,
+        created_by=glue_tag.created_by,
+        updated_by=glue_tag.updated_by,
+        classifications=glue_tag.classifications,
+        classification_names=glue_tag.classification_names,
+        meanings=glue_tag.meanings,
+        labels=glue_tag.labels,
+        business_attributes=glue_tag.business_attributes,
+        custom_attributes=glue_tag.custom_attributes,
+        pending_tasks=glue_tag.pending_tasks,
+        proxy=glue_tag.proxy,
+        is_incomplete=glue_tag.is_incomplete,
+        provenance_type=glue_tag.provenance_type,
+        home_id=glue_tag.home_id,
+        depth=glue_tag.depth,
+        immediate_upstream=glue_tag.immediate_upstream,
+        immediate_downstream=glue_tag.immediate_downstream,
+        attributes=attrs,
+        relationship_attributes=replace_rels,
+        append_relationship_attributes=append_rels,
+        remove_relationship_attributes=remove_rels,
+    )
+
+
+def _glue_tag_from_nested(nested: GlueTagNested) -> GlueTag:
+    """Convert nested format to flat GlueTag."""
+    attrs = nested.attributes if nested.attributes is not UNSET else GlueTagAttributes()
+    # Merge relationships from all three buckets
+    merged_rels = merge_relationships(
+        nested.relationship_attributes,
+        nested.append_relationship_attributes,
+        nested.remove_relationship_attributes,
+        _GLUE_TAG_REL_FIELDS,
+        GlueTagRelationshipAttributes,
+    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_glue_tag_attrs(attrs))
+    kwargs.update(merged_rels)
+    return GlueTag(**kwargs)
+
+
+def _glue_tag_to_nested_bytes(glue_tag: GlueTag, serde: Serde) -> bytes:
+    """Convert flat GlueTag to nested JSON bytes."""
+    return serde.encode(_glue_tag_to_nested(glue_tag))
+
+
+def _glue_tag_from_nested_bytes(data: bytes, serde: Serde) -> GlueTag:
+    """Convert nested JSON bytes to flat GlueTag."""
+    nested = serde.decode(data, GlueTagNested)
+    return _glue_tag_from_nested(nested)
+
+
+# ---------------------------------------------------------------------------
+# Deferred field descriptor initialization
+# ---------------------------------------------------------------------------
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+)
+
+GlueTag.GLUE_TAG_TYPE = KeywordField("glueTagType", "glueTagType")
+GlueTag.TAG_ID = KeywordField("tagId", "tagId")
+GlueTag.TAG_ATTRIBUTES = KeywordField("tagAttributes", "tagAttributes")
+GlueTag.TAG_ALLOWED_VALUES = KeywordTextField(
+    "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+)
+GlueTag.MAPPED_CLASSIFICATION_NAME = KeywordField(
+    "mappedClassificationName", "mappedClassificationName"
+)
+GlueTag.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+GlueTag.QUERY_COUNT = NumericField("queryCount", "queryCount")
+GlueTag.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
+GlueTag.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
+GlueTag.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
+GlueTag.DATABASE_NAME = KeywordField("databaseName", "databaseName")
+GlueTag.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
+GlueTag.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
+GlueTag.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
+GlueTag.TABLE_NAME = KeywordField("tableName", "tableName")
+GlueTag.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+GlueTag.VIEW_NAME = KeywordField("viewName", "viewName")
+GlueTag.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+GlueTag.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+GlueTag.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
+GlueTag.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
+GlueTag.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
+GlueTag.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
+GlueTag.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+GlueTag.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
+GlueTag.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+GlueTag.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+GlueTag.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+GlueTag.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+GlueTag.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+GlueTag.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+GlueTag.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+GlueTag.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+GlueTag.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+GlueTag.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+GlueTag.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+GlueTag.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+GlueTag.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+GlueTag.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
+GlueTag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+GlueTag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+GlueTag.ANOMALO_CHECKS = RelationField("anomaloChecks")
+GlueTag.APPLICATION = RelationField("application")
+GlueTag.APPLICATION_FIELD = RelationField("applicationField")
+GlueTag.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+GlueTag.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+GlueTag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+GlueTag.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+GlueTag.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+GlueTag.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+GlueTag.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+GlueTag.METRICS = RelationField("metrics")
+GlueTag.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+GlueTag.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+GlueTag.DBT_MODELS = RelationField("dbtModels")
+GlueTag.SQL_DBT_MODELS = RelationField("sqlDbtModels")
+GlueTag.DBT_TESTS = RelationField("dbtTests")
+GlueTag.DBT_SOURCES = RelationField("dbtSources")
+GlueTag.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
+GlueTag.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+GlueTag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
+GlueTag.MEANINGS = RelationField("meanings")
+GlueTag.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+GlueTag.MC_MONITORS = RelationField("mcMonitors")
+GlueTag.MC_INCIDENTS = RelationField("mcIncidents")
+GlueTag.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+GlueTag.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+GlueTag.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+GlueTag.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+GlueTag.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+GlueTag.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+GlueTag.FILES = RelationField("files")
+GlueTag.LINKS = RelationField("links")
+GlueTag.README = RelationField("readme")
+GlueTag.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+GlueTag.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
+GlueTag.SODA_CHECKS = RelationField("sodaChecks")
+GlueTag.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+GlueTag.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+GlueTag.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
+GlueTag.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+GlueTag.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
