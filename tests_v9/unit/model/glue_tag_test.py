@@ -91,6 +91,15 @@ def test_tag_attachment_serializes_publish_contract_fields():
     assert data["attributes"] == TAG_ATTACHMENT_ATTRIBUTES
 
 
+def test_tag_attachment_has_no_tag_fields_and_validates_for_creation():
+    attachment = TagAttachment(
+        name="OwningTeam", qualified_name=f"{TAG_QN}/{COLUMN_QN}"
+    )
+
+    attachment.validate(for_creation=True)
+    assert not hasattr(attachment, "tag_allowed_values")
+
+
 def test_tag_attachment_decodes_from_atlas_json():
     payload = {"typeName": "TagAttachment", "attributes": TAG_ATTACHMENT_ATTRIBUTES}
 

@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -76,11 +76,6 @@ class TagAttachment(Asset):
     VALUE: ClassVar[Any] = None
     PROPAGATE: ClassVar[Any] = None
     TAG_ATTACHMENT_STRING_VALUE: ClassVar[Any] = None
-    TAG_ID: ClassVar[Any] = None
-    TAG_ATTRIBUTES: ClassVar[Any] = None
-    TAG_ALLOWED_VALUES: ClassVar[Any] = None
-    MAPPED_CLASSIFICATION_NAME: ClassVar[Any] = None
-    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -144,21 +139,6 @@ class TagAttachment(Asset):
 
     tag_attachment_string_value: Union[str, None, UnsetType] = UNSET
     """Represents associated tag value."""
-
-    tag_id: Union[str, None, UnsetType] = UNSET
-    """Unique identifier of the tag in the source system."""
-
-    tag_attributes: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
-    """Attributes associated with the tag in the source system."""
-
-    tag_allowed_values: Union[List[str], None, UnsetType] = UNSET
-    """Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying."""
-
-    mapped_classification_name: Union[str, None, UnsetType] = UNSET
-    """Name of the classification in Atlan that is mapped to this tag."""
-
-    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
-    """Unique identifier of the dataset this asset belongs to."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -300,13 +280,6 @@ class TagAttachment(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
-        if for_creation:
-            if self.tag_id is UNSET:
-                errors.append("tag_id is required for creation")
-            if self.tag_allowed_values is UNSET:
-                errors.append("tag_allowed_values is required for creation")
-            if self.mapped_classification_name is UNSET:
-                errors.append("mapped_classification_name is required for creation")
         if errors:
             raise ValueError(f"TagAttachment validation failed: {errors}")
 
@@ -423,21 +396,6 @@ class TagAttachmentAttributes(AssetAttributes):
 
     tag_attachment_string_value: Union[str, None, UnsetType] = UNSET
     """Represents associated tag value."""
-
-    tag_id: Union[str, None, UnsetType] = UNSET
-    """Unique identifier of the tag in the source system."""
-
-    tag_attributes: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
-    """Attributes associated with the tag in the source system."""
-
-    tag_allowed_values: Union[List[str], None, UnsetType] = UNSET
-    """Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying."""
-
-    mapped_classification_name: Union[str, None, UnsetType] = UNSET
-    """Name of the classification in Atlan that is mapped to this tag."""
-
-    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
-    """Unique identifier of the dataset this asset belongs to."""
 
 
 class TagAttachmentRelationshipAttributes(AssetRelationshipAttributes):
@@ -625,11 +583,6 @@ def _populate_tag_attachment_attrs(
     attrs.value = obj.value
     attrs.propagate = obj.propagate
     attrs.tag_attachment_string_value = obj.tag_attachment_string_value
-    attrs.tag_id = obj.tag_id
-    attrs.tag_attributes = obj.tag_attributes
-    attrs.tag_allowed_values = obj.tag_allowed_values
-    attrs.mapped_classification_name = obj.mapped_classification_name
-    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_tag_attachment_attrs(attrs: TagAttachmentAttributes) -> dict:
@@ -645,11 +598,6 @@ def _extract_tag_attachment_attrs(attrs: TagAttachmentAttributes) -> dict:
     result["value"] = attrs.value
     result["propagate"] = attrs.propagate
     result["tag_attachment_string_value"] = attrs.tag_attachment_string_value
-    result["tag_id"] = attrs.tag_id
-    result["tag_attributes"] = attrs.tag_attributes
-    result["tag_allowed_values"] = attrs.tag_allowed_values
-    result["mapped_classification_name"] = attrs.mapped_classification_name
-    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -789,17 +737,6 @@ TagAttachment.TAG_ATTACHMENT_STRING_VALUE = KeywordTextField(
     "tagAttachmentStringValue",
     "tagAttachmentStringValue",
     "tagAttachmentStringValue.text",
-)
-TagAttachment.TAG_ID = KeywordField("tagId", "tagId")
-TagAttachment.TAG_ATTRIBUTES = KeywordField("tagAttributes", "tagAttributes")
-TagAttachment.TAG_ALLOWED_VALUES = KeywordTextField(
-    "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
-)
-TagAttachment.MAPPED_CLASSIFICATION_NAME = KeywordField(
-    "mappedClassificationName", "mappedClassificationName"
-)
-TagAttachment.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
 )
 TagAttachment.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 TagAttachment.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
