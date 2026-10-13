@@ -1,0 +1,8 @@
+vulnerabilities:
+  - id: CVE-2026-63374
+    purls:
+      - pkg:pypi/anyio@4.12.1
+    statement: >-
+      anyio fixes this from 4.14.2, which needs Python >= 3.10. This package still
+      supports >= 3.9.1, so 3.9 is pinned to 4.12.1 and cannot take the fix.
+      Python 3.10+ resolves 4.15.1. Drop this when 3.9 support goes.
