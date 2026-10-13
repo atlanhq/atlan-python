@@ -223,6 +223,50 @@ jobs:
             echo "aio-files=[]" >> $GITHUB_OUTPUT
           fi
 
+  fresh-install-tests:
+    # A user's install: the built wheel into an empty environment, dependencies
+    # resolved fresh from PyPI the way pip does, no lockfile. The unit suites then
+    # run against that installed package, not the source tree, so a packaging gap
+    # or a dependency release that breaks a Python version shows up here.
+    needs: [check-code-changes, vulnerability-scan]
+    if: needs.check-code-changes.outputs.has-code-changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Build the wheel
+        run: uv build --wheel
+
+      - name: Install the wheel, then the test tools, into an empty environment
+        run: |
+          uv venv
+          uv pip install dist/*.whl
+          uv pip install -r pyproject.toml --group dev
+          rm -rf pyatlan
+
+      - name: Run unit tests against the installed package
+        env:
+          ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
+          ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
+        run: |
+          .venv/bin/python -c "import pyatlan; assert '/.venv/' in pyatlan.__file__, pyatlan.__file__"
+          .venv/bin/pytest tests/unit --force-sugar -vv
+          .venv/bin/pytest tests_v9/unit --force-sugar -vv
+
   integration-tests:
     needs: [check-code-changes, vulnerability-scan, qa-checks-and-unit-tests]
     if: needs.check-code-changes.outputs.has-code-changes == 'true'
