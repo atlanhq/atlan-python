@@ -24,7 +24,16 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Install dependencies
-        run: uv sync --group dev
+        # uv.lock covers 3.10+ only (see [tool.uv] in pyproject.toml);
+        # 3.9 installs from pyproject, the way a 3.9 user does with pip.
+        run: |
+          if [ "${{ matrix.python-version }}" = "3.9" ]; then
+            uv venv
+            uv pip install -r pyproject.toml --group dev -e .
+            echo "UV_NO_SYNC=1" >> "$GITHUB_ENV"
+          else
+            uv sync --group dev
+          fi
 
       - name: QA checks (ruff-format, ruff-lint, mypy)
         run: uv run ./qa-checks

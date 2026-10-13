@@ -56,6 +56,7 @@ cd atlan-python
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install with development dependencies
+# The dev lock needs Python 3.10+. On 3.9: uv venv && uv pip install -r pyproject.toml --group dev -e .
 uv sync --group dev
 
 # Run quality checks
@@ -169,6 +170,7 @@ cd atlan-python
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install development dependencies
+# The dev lock needs Python 3.10+. On 3.9: uv venv && uv pip install -r pyproject.toml --group dev -e .
 uv sync --group dev
 
 # Install pre-commit hooks

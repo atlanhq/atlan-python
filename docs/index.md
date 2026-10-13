@@ -43,6 +43,7 @@ hide:
     ```bash
     git clone https://github.com/atlanhq/atlan-python.git
     cd atlan-python
+    # The dev lock needs Python 3.10+. On 3.9: uv venv && uv pip install -r pyproject.toml --group dev -e .
     uv sync --group dev
     ```
 
@@ -152,6 +153,7 @@ git clone https://github.com/atlanhq/atlan-python.git
 cd atlan-python
 
 # Install dev dependencies
+# The dev lock needs Python 3.10+. On 3.9: uv venv && uv pip install -r pyproject.toml --group dev -e .
 uv sync --group dev
 
 # Run tests
