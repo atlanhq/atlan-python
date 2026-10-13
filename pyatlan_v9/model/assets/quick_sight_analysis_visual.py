@@ -57,6 +57,7 @@ from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .quick_sight_related import (
     RelatedQuickSightAnalysis,
+    RelatedQuickSightAnalysisField,
     RelatedQuickSightAnalysisVisual,
 )
 
@@ -101,6 +102,7 @@ class QuickSightAnalysisVisual(Asset):
     INPUT_TO_PROCESSES: ClassVar[Any] = None
     OUTPUT_FROM_PROCESSES: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_FIELDS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_FROM: ClassVar[Any] = None
     FILES: ClassVar[Any] = None
@@ -206,6 +208,11 @@ class QuickSightAnalysisVisual(Asset):
 
     quick_sight_analysis: Union[RelatedQuickSightAnalysis, None, UnsetType] = UNSET
     """Analysis in which this visual exists."""
+
+    quick_sight_analysis_fields: Union[
+        List[RelatedQuickSightAnalysisField], None, UnsetType
+    ] = UNSET
+    """Fields used by this analysis visual."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
@@ -541,6 +548,11 @@ class QuickSightAnalysisVisualRelationshipAttributes(AssetRelationshipAttributes
     quick_sight_analysis: Union[RelatedQuickSightAnalysis, None, UnsetType] = UNSET
     """Analysis in which this visual exists."""
 
+    quick_sight_analysis_fields: Union[
+        List[RelatedQuickSightAnalysisField], None, UnsetType
+    ] = UNSET
+    """Fields used by this analysis visual."""
+
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
@@ -619,6 +631,7 @@ _QUICK_SIGHT_ANALYSIS_VISUAL_REL_FIELDS: List[str] = [
     "input_to_processes",
     "output_from_processes",
     "quick_sight_analysis",
+    "quick_sight_analysis_fields",
     "user_def_relationship_to",
     "user_def_relationship_from",
     "files",
@@ -722,33 +735,36 @@ def _quick_sight_analysis_visual_from_nested(
         _QUICK_SIGHT_ANALYSIS_VISUAL_REL_FIELDS,
         QuickSightAnalysisVisualRelationshipAttributes,
     )
-    return QuickSightAnalysisVisual(
-        guid=nested.guid,
-        type_name=nested.type_name,
-        status=nested.status,
-        version=nested.version,
-        create_time=nested.create_time,
-        update_time=nested.update_time,
-        created_by=nested.created_by,
-        updated_by=nested.updated_by,
-        classifications=nested.classifications,
-        classification_names=nested.classification_names,
-        meanings=nested.meanings,
-        labels=nested.labels,
-        business_attributes=nested.business_attributes,
-        custom_attributes=nested.custom_attributes,
-        pending_tasks=nested.pending_tasks,
-        proxy=nested.proxy,
-        is_incomplete=nested.is_incomplete,
-        provenance_type=nested.provenance_type,
-        home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
-        **_extract_quick_sight_analysis_visual_attrs(attrs),
-        # Merged relationship attributes
-        **merged_rels,
-    )
+    # Build kwargs so a field carried by both the top level and the merged
+    # relationships (e.g. `meanings`) is passed once, with the relationship
+    # value winning — otherwise the constructor gets a duplicate keyword.
+    kwargs = {
+        "guid": nested.guid,
+        "type_name": nested.type_name,
+        "status": nested.status,
+        "version": nested.version,
+        "create_time": nested.create_time,
+        "update_time": nested.update_time,
+        "created_by": nested.created_by,
+        "updated_by": nested.updated_by,
+        "classifications": nested.classifications,
+        "classification_names": nested.classification_names,
+        "meanings": nested.meanings,
+        "labels": nested.labels,
+        "business_attributes": nested.business_attributes,
+        "custom_attributes": nested.custom_attributes,
+        "pending_tasks": nested.pending_tasks,
+        "proxy": nested.proxy,
+        "is_incomplete": nested.is_incomplete,
+        "provenance_type": nested.provenance_type,
+        "home_id": nested.home_id,
+        "depth": nested.depth,
+        "immediate_upstream": nested.immediate_upstream,
+        "immediate_downstream": nested.immediate_downstream,
+    }
+    kwargs.update(_extract_quick_sight_analysis_visual_attrs(attrs))
+    kwargs.update(merged_rels)
+    return QuickSightAnalysisVisual(**kwargs)
 
 
 def _quick_sight_analysis_visual_to_nested_bytes(
@@ -833,6 +849,9 @@ QuickSightAnalysisVisual.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObje
 QuickSightAnalysisVisual.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 QuickSightAnalysisVisual.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 QuickSightAnalysisVisual.QUICK_SIGHT_ANALYSIS = RelationField("quickSightAnalysis")
+QuickSightAnalysisVisual.QUICK_SIGHT_ANALYSIS_FIELDS = RelationField(
+    "quickSightAnalysisFields"
+)
 QuickSightAnalysisVisual.USER_DEF_RELATIONSHIP_TO = RelationField(
     "userDefRelationshipTo"
 )

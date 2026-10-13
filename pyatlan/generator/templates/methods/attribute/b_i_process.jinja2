@@ -1,0 +1,31 @@
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            name: str,
+            connection_qualified_name: str,
+            inputs: List["Catalog"],
+            outputs: List["Catalog"],
+            process_id: Optional[str] = None,
+            parent: Optional[Process] = None,
+            extra_hash_params: Optional[Set[str]] = None,
+        ) -> BIProcess.Attributes:
+            qualified_name = Process.Attributes.generate_qualified_name(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+                extra_hash_params=extra_hash_params,
+            )
+            connector_name = connection_qualified_name.split("/")[1]
+            return BIProcess.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+                inputs=inputs,
+                outputs=outputs,
+            )

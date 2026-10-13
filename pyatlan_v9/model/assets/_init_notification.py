@@ -8,8 +8,8 @@ Notification module exports.
 This module provides convenient imports for all Notification types and their Related variants.
 """
 
-from .notification import Notification
 from .notification_related import RelatedNotification
+from .notification import Notification
 
 __all__ = [
     "Notification",

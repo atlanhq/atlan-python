@@ -4,17 +4,73 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, Set
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.utils import init_guid
 
 from .process import Process
 
 
 class BIProcess(Process):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        inputs: List["Catalog"],
+        outputs: List["Catalog"],
+        process_id: Optional[str] = None,
+        parent: Optional[Process] = None,
+        extra_hash_params: Optional[Set[str]] = None,
+    ) -> BIProcess:
+        return BIProcess(
+            attributes=BIProcess.Attributes.create(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+                extra_hash_params=extra_hash_params,
+            )
+        )
+
+    @classmethod
+    @init_guid
+    def create(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        inputs: List["Catalog"],
+        outputs: List["Catalog"],
+        process_id: Optional[str] = None,
+        parent: Optional[Process] = None,
+        extra_hash_params: Optional[Set[str]] = None,
+    ) -> BIProcess:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            inputs=inputs,
+            outputs=outputs,
+            process_id=process_id,
+            parent=parent,
+            extra_hash_params=extra_hash_params,
+        )
 
     type_name: str = Field(default="BIProcess", allow_mutation=False)
 
@@ -70,6 +126,37 @@ class BIProcess(Process):
         inputs: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            name: str,
+            connection_qualified_name: str,
+            inputs: List["Catalog"],
+            outputs: List["Catalog"],
+            process_id: Optional[str] = None,
+            parent: Optional[Process] = None,
+            extra_hash_params: Optional[Set[str]] = None,
+        ) -> BIProcess.Attributes:
+            qualified_name = Process.Attributes.generate_qualified_name(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+                extra_hash_params=extra_hash_params,
+            )
+            connector_name = connection_qualified_name.split("/")[1]
+            return BIProcess.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+                inputs=inputs,
+                outputs=outputs,
+            )
 
     attributes: BIProcess.Attributes = Field(
         default_factory=lambda: BIProcess.Attributes(),

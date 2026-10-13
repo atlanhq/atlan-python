@@ -61,4 +61,5 @@ class RelatedNotification(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Notification"
+        if self.type_name is UNSET:
+            self.type_name = "Notification"

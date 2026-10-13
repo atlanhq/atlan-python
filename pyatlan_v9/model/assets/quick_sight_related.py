@@ -25,6 +25,7 @@ __all__ = [
     "RelatedQuickSightDatasetField",
     "RelatedQuickSightFolder",
     "RelatedQuickSightAnalysis",
+    "RelatedQuickSightAnalysisField",
     "RelatedQuickSightAnalysisVisual",
     "RelatedQuickSightDashboard",
 ]
@@ -168,6 +169,34 @@ class RelatedQuickSightAnalysis(RelatedQuickSight):
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
             self.type_name = "QuickSightAnalysis"
+
+
+class RelatedQuickSightAnalysisField(RelatedQuickSight):
+    """
+    Related entity reference for QuickSightAnalysisField assets.
+
+    Extends RelatedQuickSight with QuickSightAnalysisField-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "QuickSightAnalysisField" so it serializes correctly
+
+    quick_sight_analysis_visual_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis visual that uses this field."""
+
+    quick_sight_analysis_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the QuickSight analysis that contains this field's visual."""
+
+    quick_sight_analysis_field_expression: Union[str, None, UnsetType] = UNSET
+    """Formula of this field, when it is a calculated field."""
+
+    quick_sight_analysis_field_data_set_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the analysis dataset this field belongs to."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        if self.type_name is UNSET:
+            self.type_name = "QuickSightAnalysisField"
 
 
 class RelatedQuickSightAnalysisVisual(RelatedQuickSight):

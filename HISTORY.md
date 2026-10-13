@@ -1,3 +1,16 @@
+## 11.4.1 (October 9, 2026)
+
+### New Features
+
+- **Latest asset models (pydantic + `pyatlan_v9`)**: Both model sets are regenerated from the latest typedefs. The pydantic models (`pyatlan.model.assets`) gain the SAP Analytics Cloud types (models, stories, folders, columns), `KafkaTag` and `FabricSemanticModelMeasure`, plus the latest attributes across existing connectors. Both sets gain `assetManagedBy` — the identity of the agent that creates and maintains an asset — and `pyatlan_v9` also gains `knowledgeLinkedFiles` on the glossary types. Nothing is removed.
+- **`Notification` asset model**: Adds the `Notification` asset type and its related enums.
+- **Kafka Confluent app gains Cloud API, Cloud Metrics and Connect Lineage**: The `KafkaConfluent` builder takes `enable_cloud_api` on `basic()` and the `include_cloud_metrics` / `include_connect_lineage` workflow toggles, matching what the app surfaces.
+- **`BIProcess.creator()` in `pyatlan_v9`**: `BIProcess` gains `creator()`, `updater()`, `trim_to_required()` and `generate_qualified_name()`, so BI connectors no longer hand-build the process qualifiedName. The grammar matches `Process`: an explicit `process_id` gives `{connection_qualified_name}/{process_id}`, otherwise the same deterministic hash of inputs and outputs. Clears the application-sdk conformance rule P028 for BI lineage.
+
+### Bug Fixes
+
+- **`BIProcess.creator()` returns a `BIProcess`**: In `pyatlan.model.assets`, `BIProcess.creator()` (and the deprecated `create()`) inherited `Process.creator` and returned a `Process` with `type_name == "Process"`. It now returns a `BIProcess`, building the qualifiedName the same way `ColumnProcess` does.
+
 ## 11.4.0 (September 18, 2026)
 
 ### New Features
