@@ -137,7 +137,7 @@ for asset in response:
 
 ## Project Stats
 
-- :snake: **Python**: 3.10 · 3.11 · 3.12 · 3.13 · 3.14
+- :snake: **Python**: 3.9 · 3.10 · 3.11 · 3.12 · 3.13
 - :package: **Stability**: Production-ready (`5 - Production/Stable`)
 - :scales: **License**: Apache 2.0
 - :rocket: **Async**: Native async/await support

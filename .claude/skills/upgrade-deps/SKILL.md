@@ -9,7 +9,7 @@ Upgrade all dependencies for the pyatlan Python SDK. Follow these steps carefull
 
 ## Context
 
-- The project supports Python >=3.10, so skip any package version that requires Python >=3.11 or higher
+- The project supports Python >=3.9, so skip any package version that requires Python >=3.10 or higher
 - Use `uv` for all Python package operations
 - Workflow files are in `.github/workflows/`
 - Dependencies are managed in `pyproject.toml` and locked in `uv.lock`
@@ -36,8 +36,8 @@ curl -s https://pypi.org/pypi/<package>/<new-version>/json | python3 -c "import 
 ```
 
 **Rules:**
-- If `requires_python` is `>=3.10` or lower (or None) → safe to upgrade
-- If `requires_python` is `>=3.11` or higher → check if an older compatible version exists:
+- If `requires_python` is `>=3.9` or lower (or None) → safe to upgrade
+- If `requires_python` is `>=3.10` or higher → check if an older compatible version exists:
   ```
   curl -s https://pypi.org/pypi/<package>/json | python3 -c "
   import json, sys
@@ -49,8 +49,8 @@ curl -s https://pypi.org/pypi/<package>/<new-version>/json | python3 -c "import 
           print(f'{v}: {rp}')
   "
   ```
-  Pick the highest version that supports Python 3.10. If already at that version, skip it.
-- Packages already conditioned in pyproject.toml with `; python_version >= '3.11'` (like `networkx`) can be upgraded freely since they only install on 3.11+
+  Pick the highest version that supports Python 3.9. If already at that version, skip it.
+- Packages already conditioned in pyproject.toml with `; python_version >= '3.10'` (like `filelock`) can be upgraded freely since they only install on 3.10+
 
 ---
 

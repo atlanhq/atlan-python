@@ -82,7 +82,7 @@ Use git blame and git log on the changed files to understand:
 - Is this a workaround or a root cause fix?
 - Does the change fit the existing codebase architecture?
 - Are there test coverage gaps for new/changed code?
-- Is the change backward compatible? (pyatlan supports Python 3.10+)
+- Is the change backward compatible? (pyatlan supports Python 3.9+)
 - Are there breaking changes to the public API?
 - Do any dependency changes introduce security or compatibility risks?
 

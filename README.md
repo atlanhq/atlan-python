@@ -24,7 +24,7 @@
 
 ## 📊 Project Stats
 
-- 🐍 **Python Versions**: 3.10, 3.11, 3.12, 3.13, 3.14
+- 🐍 **Python Versions**: 3.9, 3.10, 3.11, 3.12, 3.13
 - 📦 **Package Size**: Optimized for fast installation
 - 🚀 **Performance**: Built with modern async/await support
 - 🔧 **Dependencies**: Minimal, modern stack
