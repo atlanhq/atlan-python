@@ -8,7 +8,11 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordTextField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+)
 
 from .core.asset import Asset
 
@@ -43,10 +47,60 @@ class TagAttachment(Asset, type_name="TagAttachment"):
     """
     Represents associated tag value.
     """
+    OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "objectQualifiedName", "objectQualifiedName"
+    )
+    """
+    Qualified name of the asset the source tag is attached to. Read by publish-app; not an Atlas typedef attribute.
+    """
+    OBJECT_TYPE_NAME: ClassVar[KeywordField] = KeywordField(
+        "objectTypeName", "objectTypeName"
+    )
+    """
+    Type name of the asset the source tag is attached to. Read by publish-app; not an Atlas typedef attribute.
+    """
+    SOURCE_TAG_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "sourceTagQualifiedName", "sourceTagQualifiedName"
+    )
+    """
+    Qualified name of the source tag. Read by publish-app; not an Atlas typedef attribute.
+    """
+    SOURCE_TAG_DISPLAY_NAME: ClassVar[KeywordField] = KeywordField(
+        "sourceTagDisplayName", "sourceTagDisplayName"
+    )
+    """
+    Name of the source tag, used as the Atlan tag name. Read by publish-app; not an Atlas typedef attribute.
+    """
+    SOURCE_TAG_TYPE_NAME: ClassVar[KeywordField] = KeywordField(
+        "sourceTagTypeName", "sourceTagTypeName"
+    )
+    """
+    Type name of the source tag, for example GlueTag. Read by publish-app; not an Atlas typedef attribute.
+    """
+    VALUE_TYPE: ClassVar[KeywordField] = KeywordField("valueType", "valueType")
+    """
+    Type of the tag value, for example STRING. Read by publish-app; not an Atlas typedef attribute.
+    """
+    VALUE: ClassVar[KeywordField] = KeywordField("value", "value")
+    """
+    Value of the source tag on the asset. Read by publish-app; not an Atlas typedef attribute.
+    """
+    PROPAGATE: ClassVar[BooleanField] = BooleanField("propagate", "propagate")
+    """
+    Whether the Atlan tag propagates from the asset. Read by publish-app; not an Atlas typedef attribute.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "tag_qualified_name",
         "tag_attachment_string_value",
+        "object_qualified_name",
+        "object_type_name",
+        "source_tag_qualified_name",
+        "source_tag_display_name",
+        "source_tag_type_name",
+        "value_type",
+        "value",
+        "propagate",
     ]
 
     @property
@@ -73,9 +127,105 @@ class TagAttachment(Asset, type_name="TagAttachment"):
             self.attributes = self.Attributes()
         self.attributes.tag_attachment_string_value = tag_attachment_string_value
 
+    @property
+    def object_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.object_qualified_name
+        )
+
+    @object_qualified_name.setter
+    def object_qualified_name(self, object_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.object_qualified_name = object_qualified_name
+
+    @property
+    def object_type_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.object_type_name
+
+    @object_type_name.setter
+    def object_type_name(self, object_type_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.object_type_name = object_type_name
+
+    @property
+    def source_tag_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_tag_qualified_name
+        )
+
+    @source_tag_qualified_name.setter
+    def source_tag_qualified_name(self, source_tag_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.source_tag_qualified_name = source_tag_qualified_name
+
+    @property
+    def source_tag_display_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.source_tag_display_name
+        )
+
+    @source_tag_display_name.setter
+    def source_tag_display_name(self, source_tag_display_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.source_tag_display_name = source_tag_display_name
+
+    @property
+    def source_tag_type_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.source_tag_type_name
+
+    @source_tag_type_name.setter
+    def source_tag_type_name(self, source_tag_type_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.source_tag_type_name = source_tag_type_name
+
+    @property
+    def value_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.value_type
+
+    @value_type.setter
+    def value_type(self, value_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.value_type = value_type
+
+    @property
+    def value(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.value
+
+    @value.setter
+    def value(self, value: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.value = value
+
+    @property
+    def propagate(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.propagate
+
+    @propagate.setter
+    def propagate(self, propagate: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.propagate = propagate
+
     class Attributes(Asset.Attributes):
         tag_qualified_name: Optional[str] = Field(default=None, description="")
         tag_attachment_string_value: Optional[str] = Field(default=None, description="")
+        object_qualified_name: Optional[str] = Field(default=None, description="")
+        object_type_name: Optional[str] = Field(default=None, description="")
+        source_tag_qualified_name: Optional[str] = Field(default=None, description="")
+        source_tag_display_name: Optional[str] = Field(default=None, description="")
+        source_tag_type_name: Optional[str] = Field(default=None, description="")
+        value_type: Optional[str] = Field(default=None, description="")
+        value: Optional[str] = Field(default=None, description="")
+        propagate: Optional[bool] = Field(default=None, description="")
 
     attributes: TagAttachment.Attributes = Field(
         default_factory=lambda: TagAttachment.Attributes(),
