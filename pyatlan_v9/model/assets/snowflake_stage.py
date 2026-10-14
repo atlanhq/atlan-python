@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -36,7 +36,12 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -49,17 +54,27 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 from .sql_related import RelatedSchema
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .snowflake_related import RelatedSnowflakeSemanticLogicalTable, RelatedSnowflakeStage
+from .snowflake_related import (
+    RelatedSnowflakeSemanticLogicalTable,
+    RelatedSnowflakeStage,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SnowflakeStage(Asset):
@@ -210,7 +225,9 @@ class SnowflakeStage(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -297,7 +314,9 @@ class SnowflakeStage(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -306,7 +325,9 @@ class SnowflakeStage(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -321,13 +342,17 @@ class SnowflakeStage(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -357,7 +382,9 @@ class SnowflakeStage(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -369,13 +396,17 @@ class SnowflakeStage(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     sql_stage_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Reference to the parent schema that contains this Snowflake stage, establishing the stage's position in the database hierarchy."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -387,13 +418,19 @@ class SnowflakeStage(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -532,6 +569,7 @@ class SnowflakeStage(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SnowflakeStageAttributes(AssetAttributes):
     """SnowflakeStage-specific attributes for nested API format."""
 
@@ -595,7 +633,9 @@ class SnowflakeStageAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -649,6 +689,7 @@ class SnowflakeStageAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class SnowflakeStageRelationshipAttributes(AssetRelationshipAttributes):
     """SnowflakeStage-specific relationship attributes for nested API format."""
 
@@ -685,7 +726,9 @@ class SnowflakeStageRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -694,7 +737,9 @@ class SnowflakeStageRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -709,13 +754,17 @@ class SnowflakeStageRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -745,7 +794,9 @@ class SnowflakeStageRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -757,13 +808,17 @@ class SnowflakeStageRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     sql_stage_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Reference to the parent schema that contains this Snowflake stage, establishing the stage's position in the database hierarchy."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -775,22 +830,36 @@ class SnowflakeStageRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class SnowflakeStageNested(AssetNested):
     """SnowflakeStage in nested API format for high-performance serialization."""
 
     attributes: Union[SnowflakeStageAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SnowflakeStageRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SnowflakeStageRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SnowflakeStageRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[SnowflakeStageRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        SnowflakeStageRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SnowflakeStageRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -844,11 +913,16 @@ _SNOWFLAKE_STAGE_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-def _populate_snowflake_stage_attrs(attrs: SnowflakeStageAttributes, obj: SnowflakeStage) -> None:
+
+def _populate_snowflake_stage_attrs(
+    attrs: SnowflakeStageAttributes, obj: SnowflakeStage
+) -> None:
     """Populate SnowflakeStage-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.snowflake_stage_external_location = obj.snowflake_stage_external_location
-    attrs.snowflake_stage_external_location_region = obj.snowflake_stage_external_location_region
+    attrs.snowflake_stage_external_location_region = (
+        obj.snowflake_stage_external_location_region
+    )
     attrs.snowflake_stage_storage_integration = obj.snowflake_stage_storage_integration
     attrs.snowflake_stage_type = obj.snowflake_stage_type
     attrs.query_count = obj.query_count
@@ -871,9 +945,13 @@ def _populate_snowflake_stage_attrs(attrs: SnowflakeStageAttributes, obj: Snowfl
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
     attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
@@ -886,12 +964,19 @@ def _populate_snowflake_stage_attrs(attrs: SnowflakeStageAttributes, obj: Snowfl
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_snowflake_stage_attrs(attrs: SnowflakeStageAttributes) -> dict:
     """Extract all SnowflakeStage attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["snowflake_stage_external_location"] = attrs.snowflake_stage_external_location
-    result["snowflake_stage_external_location_region"] = attrs.snowflake_stage_external_location_region
-    result["snowflake_stage_storage_integration"] = attrs.snowflake_stage_storage_integration
+    result["snowflake_stage_external_location"] = (
+        attrs.snowflake_stage_external_location
+    )
+    result["snowflake_stage_external_location_region"] = (
+        attrs.snowflake_stage_external_location_region
+    )
+    result["snowflake_stage_storage_integration"] = (
+        attrs.snowflake_stage_storage_integration
+    )
     result["snowflake_stage_type"] = attrs.snowflake_stage_type
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
@@ -909,14 +994,24 @@ def _extract_snowflake_stage_attrs(attrs: SnowflakeStageAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
     result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
     result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
@@ -929,6 +1024,7 @@ def _extract_snowflake_stage_attrs(attrs: SnowflakeStageAttributes) -> dict:
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
@@ -940,7 +1036,9 @@ def _snowflake_stage_to_nested(snowflake_stage: SnowflakeStage) -> SnowflakeStag
     _populate_snowflake_stage_attrs(attrs, snowflake_stage)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        snowflake_stage, _SNOWFLAKE_STAGE_REL_FIELDS, SnowflakeStageRelationshipAttributes
+        snowflake_stage,
+        _SNOWFLAKE_STAGE_REL_FIELDS,
+        SnowflakeStageRelationshipAttributes,
     )
     return SnowflakeStageNested(
         guid=snowflake_stage.guid,
@@ -971,16 +1069,21 @@ def _snowflake_stage_to_nested(snowflake_stage: SnowflakeStage) -> SnowflakeStag
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _snowflake_stage_from_nested(nested: SnowflakeStageNested) -> SnowflakeStage:
     """Convert nested format to flat SnowflakeStage."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SnowflakeStageAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SnowflakeStageAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SNOWFLAKE_STAGE_REL_FIELDS,
-        SnowflakeStageRelationshipAttributes
+        SnowflakeStageRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -1013,7 +1116,10 @@ def _snowflake_stage_from_nested(nested: SnowflakeStageNested) -> SnowflakeStage
     kwargs.update(merged_rels)
     return SnowflakeStage(**kwargs)
 
-def _snowflake_stage_to_nested_bytes(snowflake_stage: SnowflakeStage, serde: Serde) -> bytes:
+
+def _snowflake_stage_to_nested_bytes(
+    snowflake_stage: SnowflakeStage, serde: Serde
+) -> bytes:
     """Convert flat SnowflakeStage to nested JSON bytes."""
     return serde.encode(_snowflake_stage_to_nested(snowflake_stage))
 
@@ -1022,6 +1128,7 @@ def _snowflake_stage_from_nested_bytes(data: bytes, serde: Serde) -> SnowflakeSt
     """Convert nested JSON bytes to flat SnowflakeStage."""
     nested = serde.decode(data, SnowflakeStageNested)
     return _snowflake_stage_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1034,44 +1141,103 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SnowflakeStage.SNOWFLAKE_STAGE_EXTERNAL_LOCATION = KeywordField("snowflakeStageExternalLocation", "snowflakeStageExternalLocation")
-SnowflakeStage.SNOWFLAKE_STAGE_EXTERNAL_LOCATION_REGION = KeywordField("snowflakeStageExternalLocationRegion", "snowflakeStageExternalLocationRegion")
-SnowflakeStage.SNOWFLAKE_STAGE_STORAGE_INTEGRATION = KeywordField("snowflakeStageStorageIntegration", "snowflakeStageStorageIntegration")
-SnowflakeStage.SNOWFLAKE_STAGE_TYPE = KeywordField("snowflakeStageType", "snowflakeStageType")
+SnowflakeStage.SNOWFLAKE_STAGE_EXTERNAL_LOCATION = KeywordField(
+    "snowflakeStageExternalLocation", "snowflakeStageExternalLocation"
+)
+SnowflakeStage.SNOWFLAKE_STAGE_EXTERNAL_LOCATION_REGION = KeywordField(
+    "snowflakeStageExternalLocationRegion", "snowflakeStageExternalLocationRegion"
+)
+SnowflakeStage.SNOWFLAKE_STAGE_STORAGE_INTEGRATION = KeywordField(
+    "snowflakeStageStorageIntegration", "snowflakeStageStorageIntegration"
+)
+SnowflakeStage.SNOWFLAKE_STAGE_TYPE = KeywordField(
+    "snowflakeStageType", "snowflakeStageType"
+)
 SnowflakeStage.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SnowflakeStage.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 SnowflakeStage.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-SnowflakeStage.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+SnowflakeStage.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 SnowflakeStage.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-SnowflakeStage.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+SnowflakeStage.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 SnowflakeStage.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-SnowflakeStage.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+SnowflakeStage.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 SnowflakeStage.TABLE_NAME = KeywordField("tableName", "tableName")
-SnowflakeStage.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+SnowflakeStage.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 SnowflakeStage.VIEW_NAME = KeywordField("viewName", "viewName")
-SnowflakeStage.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-SnowflakeStage.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-SnowflakeStage.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+SnowflakeStage.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+SnowflakeStage.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+SnowflakeStage.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 SnowflakeStage.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 SnowflakeStage.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-SnowflakeStage.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+SnowflakeStage.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 SnowflakeStage.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-SnowflakeStage.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-SnowflakeStage.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-SnowflakeStage.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-SnowflakeStage.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-SnowflakeStage.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-SnowflakeStage.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
-SnowflakeStage.SQL_COALESCE_LAST_RUN_STATUS = KeywordField("sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus")
-SnowflakeStage.SQL_COALESCE_NODE_STATUS = KeywordField("sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus")
-SnowflakeStage.SQL_COALESCE_LAST_RUN_AT = NumericField("sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt")
-SnowflakeStage.SQL_COALESCE_NODE_TYPE = KeywordField("sqlCoalesceNodeType", "sqlCoalesceNodeType")
-SnowflakeStage.SQL_COALESCE_ENVIRONMENT_ID = KeywordField("sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId")
-SnowflakeStage.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField("sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName.text")
-SnowflakeStage.SQL_COALESCE_PROJECT_ID = KeywordField("sqlCoalesceProjectId", "sqlCoalesceProjectId")
-SnowflakeStage.SQL_COALESCE_PROJECT_NAME = KeywordTextField("sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text")
-SnowflakeStage.SQL_SHARE_QUALIFIED_NAMES = KeywordField("sqlShareQualifiedNames", "sqlShareQualifiedNames")
-SnowflakeStage.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SnowflakeStage.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+SnowflakeStage.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+SnowflakeStage.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+SnowflakeStage.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+SnowflakeStage.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+SnowflakeStage.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+SnowflakeStage.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+SnowflakeStage.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+SnowflakeStage.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+SnowflakeStage.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+SnowflakeStage.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+SnowflakeStage.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+SnowflakeStage.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+SnowflakeStage.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+SnowflakeStage.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
+SnowflakeStage.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SnowflakeStage.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SnowflakeStage.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SnowflakeStage.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -1079,11 +1245,15 @@ SnowflakeStage.APPLICATION = RelationField("application")
 SnowflakeStage.APPLICATION_FIELD = RelationField("applicationField")
 SnowflakeStage.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SnowflakeStage.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SnowflakeStage.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SnowflakeStage.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SnowflakeStage.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SnowflakeStage.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SnowflakeStage.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SnowflakeStage.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SnowflakeStage.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SnowflakeStage.METRICS = RelationField("metrics")
 SnowflakeStage.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SnowflakeStage.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
@@ -1093,7 +1263,9 @@ SnowflakeStage.DBT_TESTS = RelationField("dbtTests")
 SnowflakeStage.DBT_SOURCES = RelationField("dbtSources")
 SnowflakeStage.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 SnowflakeStage.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-SnowflakeStage.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SnowflakeStage.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SnowflakeStage.MEANINGS = RelationField("meanings")
 SnowflakeStage.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SnowflakeStage.MC_MONITORS = RelationField("mcMonitors")
@@ -1109,10 +1281,14 @@ SnowflakeStage.LINKS = RelationField("links")
 SnowflakeStage.README = RelationField("readme")
 SnowflakeStage.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SnowflakeStage.SQL_STAGE_SCHEMA = RelationField("sqlStageSchema")
-SnowflakeStage.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+SnowflakeStage.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 SnowflakeStage.SODA_CHECKS = RelationField("sodaChecks")
 SnowflakeStage.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SnowflakeStage.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
 SnowflakeStage.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
 SnowflakeStage.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
-SnowflakeStage.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
+SnowflakeStage.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

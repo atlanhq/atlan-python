@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -36,7 +36,12 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -50,9 +55,21 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
-from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema, RelatedTable, RelatedTablePartition
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
+from .sql_related import (
+    RelatedColumn,
+    RelatedQuery,
+    RelatedSchema,
+    RelatedTable,
+    RelatedTablePartition,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -61,6 +78,7 @@ from .dynamo_db_related import RelatedDynamoDBLocalSecondaryIndex, RelatedDynamo
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DynamoDBLocalSecondaryIndex(Asset):
@@ -187,25 +205,39 @@ class DynamoDBLocalSecondaryIndex(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    dynamo_db_secondary_index_projection_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBSecondaryIndexProjectionType")
+    dynamo_db_secondary_index_projection_type: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="dynamoDBSecondaryIndexProjectionType")
+    )
     """Specifies attributes that are projected from the DynamoDB table into the index."""
 
-    dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBStatus")
+    dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBStatus"
+    )
     """Status of the DynamoDB asset."""
 
-    dynamo_db_partition_key: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBPartitionKey")
+    dynamo_db_partition_key: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBPartitionKey"
+    )
     """Specifies the partition key of the DynamoDB table or index."""
 
-    dynamo_db_sort_key: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBSortKey")
+    dynamo_db_sort_key: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBSortKey"
+    )
     """Specifies the sort key of the DynamoDB table or index."""
 
-    dynamo_db_read_capacity_units: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBReadCapacityUnits")
+    dynamo_db_read_capacity_units: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBReadCapacityUnits"
+    )
     """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException."""
 
-    dynamo_db_write_capacity_units: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBWriteCapacityUnits")
+    dynamo_db_write_capacity_units: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBWriteCapacityUnits"
+    )
     """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -340,7 +372,9 @@ class DynamoDBLocalSecondaryIndex(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -424,7 +458,9 @@ class DynamoDBLocalSecondaryIndex(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -433,7 +469,9 @@ class DynamoDBLocalSecondaryIndex(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -448,16 +486,22 @@ class DynamoDBLocalSecondaryIndex(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    dynamo_db_table: Union[RelatedDynamoDBTable, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBTable")
+    dynamo_db_table: Union[RelatedDynamoDBTable, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBTable"
+    )
     """DynamoDB local secondary index."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -487,7 +531,9 @@ class DynamoDBLocalSecondaryIndex(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -517,10 +563,14 @@ class DynamoDBLocalSecondaryIndex(Asset):
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -532,13 +582,19 @@ class DynamoDBLocalSecondaryIndex(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -548,9 +604,7 @@ class DynamoDBLocalSecondaryIndex(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -605,7 +659,9 @@ class DynamoDBLocalSecondaryIndex(Asset):
             A new DynamoDBLocalSecondaryIndex instance with only the minimum required fields.
         """
         self.validate()
-        return DynamoDBLocalSecondaryIndex(qualified_name=self.qualified_name, name=self.name)
+        return DynamoDBLocalSecondaryIndex(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     def relate(self) -> "RelatedDynamoDBLocalSecondaryIndex":
         """
@@ -651,7 +707,9 @@ class DynamoDBLocalSecondaryIndex(Asset):
         return _dynamo_db_local_secondary_index_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DynamoDBLocalSecondaryIndex:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DynamoDBLocalSecondaryIndex:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -673,28 +731,43 @@ class DynamoDBLocalSecondaryIndex(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DynamoDBLocalSecondaryIndexAttributes(AssetAttributes):
     """DynamoDBLocalSecondaryIndex-specific attributes for nested API format."""
 
-    dynamo_db_secondary_index_projection_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBSecondaryIndexProjectionType")
+    dynamo_db_secondary_index_projection_type: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="dynamoDBSecondaryIndexProjectionType")
+    )
     """Specifies attributes that are projected from the DynamoDB table into the index."""
 
-    dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBStatus")
+    dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBStatus"
+    )
     """Status of the DynamoDB asset."""
 
-    dynamo_db_partition_key: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBPartitionKey")
+    dynamo_db_partition_key: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBPartitionKey"
+    )
     """Specifies the partition key of the DynamoDB table or index."""
 
-    dynamo_db_sort_key: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBSortKey")
+    dynamo_db_sort_key: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBSortKey"
+    )
     """Specifies the sort key of the DynamoDB table or index."""
 
-    dynamo_db_read_capacity_units: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBReadCapacityUnits")
+    dynamo_db_read_capacity_units: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBReadCapacityUnits"
+    )
     """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException."""
 
-    dynamo_db_write_capacity_units: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBWriteCapacityUnits")
+    dynamo_db_write_capacity_units: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBWriteCapacityUnits"
+    )
     """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -829,7 +902,9 @@ class DynamoDBLocalSecondaryIndexAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -880,6 +955,7 @@ class DynamoDBLocalSecondaryIndexAttributes(AssetAttributes):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+
 class DynamoDBLocalSecondaryIndexRelationshipAttributes(AssetRelationshipAttributes):
     """DynamoDBLocalSecondaryIndex-specific relationship attributes for nested API format."""
 
@@ -916,7 +992,9 @@ class DynamoDBLocalSecondaryIndexRelationshipAttributes(AssetRelationshipAttribu
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -925,7 +1003,9 @@ class DynamoDBLocalSecondaryIndexRelationshipAttributes(AssetRelationshipAttribu
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -940,16 +1020,22 @@ class DynamoDBLocalSecondaryIndexRelationshipAttributes(AssetRelationshipAttribu
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    dynamo_db_table: Union[RelatedDynamoDBTable, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBTable")
+    dynamo_db_table: Union[RelatedDynamoDBTable, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBTable"
+    )
     """DynamoDB local secondary index."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -979,7 +1065,9 @@ class DynamoDBLocalSecondaryIndexRelationshipAttributes(AssetRelationshipAttribu
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -1009,10 +1097,14 @@ class DynamoDBLocalSecondaryIndexRelationshipAttributes(AssetRelationshipAttribu
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -1024,22 +1116,36 @@ class DynamoDBLocalSecondaryIndexRelationshipAttributes(AssetRelationshipAttribu
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class DynamoDBLocalSecondaryIndexNested(AssetNested):
     """DynamoDBLocalSecondaryIndex in nested API format for high-performance serialization."""
 
     attributes: Union[DynamoDBLocalSecondaryIndexAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DynamoDBLocalSecondaryIndexRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DynamoDBLocalSecondaryIndexRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DynamoDBLocalSecondaryIndexRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        DynamoDBLocalSecondaryIndexRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        DynamoDBLocalSecondaryIndexRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DynamoDBLocalSecondaryIndexRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -1099,10 +1205,15 @@ _DYNAMO_DB_LOCAL_SECONDARY_INDEX_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-def _populate_dynamo_db_local_secondary_index_attrs(attrs: DynamoDBLocalSecondaryIndexAttributes, obj: DynamoDBLocalSecondaryIndex) -> None:
+
+def _populate_dynamo_db_local_secondary_index_attrs(
+    attrs: DynamoDBLocalSecondaryIndexAttributes, obj: DynamoDBLocalSecondaryIndex
+) -> None:
     """Populate DynamoDBLocalSecondaryIndex-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.dynamo_db_secondary_index_projection_type = obj.dynamo_db_secondary_index_projection_type
+    attrs.dynamo_db_secondary_index_projection_type = (
+        obj.dynamo_db_secondary_index_projection_type
+    )
     attrs.dynamo_db_status = obj.dynamo_db_status
     attrs.dynamo_db_partition_key = obj.dynamo_db_partition_key
     attrs.dynamo_db_sort_key = obj.dynamo_db_sort_key
@@ -1157,9 +1268,13 @@ def _populate_dynamo_db_local_secondary_index_attrs(attrs: DynamoDBLocalSecondar
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
     attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
@@ -1171,10 +1286,15 @@ def _populate_dynamo_db_local_secondary_index_attrs(attrs: DynamoDBLocalSecondar
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
 
-def _extract_dynamo_db_local_secondary_index_attrs(attrs: DynamoDBLocalSecondaryIndexAttributes) -> dict:
+
+def _extract_dynamo_db_local_secondary_index_attrs(
+    attrs: DynamoDBLocalSecondaryIndexAttributes,
+) -> dict:
     """Extract all DynamoDBLocalSecondaryIndex attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dynamo_db_secondary_index_projection_type"] = attrs.dynamo_db_secondary_index_projection_type
+    result["dynamo_db_secondary_index_projection_type"] = (
+        attrs.dynamo_db_secondary_index_projection_type
+    )
     result["dynamo_db_status"] = attrs.dynamo_db_status
     result["dynamo_db_partition_key"] = attrs.dynamo_db_partition_key
     result["dynamo_db_sort_key"] = attrs.dynamo_db_sort_key
@@ -1225,14 +1345,24 @@ def _extract_dynamo_db_local_secondary_index_attrs(attrs: DynamoDBLocalSecondary
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
     result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
     result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
@@ -1244,18 +1374,25 @@ def _extract_dynamo_db_local_secondary_index_attrs(attrs: DynamoDBLocalSecondary
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _dynamo_db_local_secondary_index_to_nested(dynamo_db_local_secondary_index: DynamoDBLocalSecondaryIndex) -> DynamoDBLocalSecondaryIndexNested:
+def _dynamo_db_local_secondary_index_to_nested(
+    dynamo_db_local_secondary_index: DynamoDBLocalSecondaryIndex,
+) -> DynamoDBLocalSecondaryIndexNested:
     """Convert flat DynamoDBLocalSecondaryIndex to nested format."""
     attrs = DynamoDBLocalSecondaryIndexAttributes()
-    _populate_dynamo_db_local_secondary_index_attrs(attrs, dynamo_db_local_secondary_index)
+    _populate_dynamo_db_local_secondary_index_attrs(
+        attrs, dynamo_db_local_secondary_index
+    )
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        dynamo_db_local_secondary_index, _DYNAMO_DB_LOCAL_SECONDARY_INDEX_REL_FIELDS, DynamoDBLocalSecondaryIndexRelationshipAttributes
+        dynamo_db_local_secondary_index,
+        _DYNAMO_DB_LOCAL_SECONDARY_INDEX_REL_FIELDS,
+        DynamoDBLocalSecondaryIndexRelationshipAttributes,
     )
     return DynamoDBLocalSecondaryIndexNested(
         guid=dynamo_db_local_secondary_index.guid,
@@ -1286,16 +1423,23 @@ def _dynamo_db_local_secondary_index_to_nested(dynamo_db_local_secondary_index: 
         remove_relationship_attributes=remove_rels,
     )
 
-def _dynamo_db_local_secondary_index_from_nested(nested: DynamoDBLocalSecondaryIndexNested) -> DynamoDBLocalSecondaryIndex:
+
+def _dynamo_db_local_secondary_index_from_nested(
+    nested: DynamoDBLocalSecondaryIndexNested,
+) -> DynamoDBLocalSecondaryIndex:
     """Convert nested format to flat DynamoDBLocalSecondaryIndex."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DynamoDBLocalSecondaryIndexAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DynamoDBLocalSecondaryIndexAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DYNAMO_DB_LOCAL_SECONDARY_INDEX_REL_FIELDS,
-        DynamoDBLocalSecondaryIndexRelationshipAttributes
+        DynamoDBLocalSecondaryIndexRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -1328,15 +1472,23 @@ def _dynamo_db_local_secondary_index_from_nested(nested: DynamoDBLocalSecondaryI
     kwargs.update(merged_rels)
     return DynamoDBLocalSecondaryIndex(**kwargs)
 
-def _dynamo_db_local_secondary_index_to_nested_bytes(dynamo_db_local_secondary_index: DynamoDBLocalSecondaryIndex, serde: Serde) -> bytes:
+
+def _dynamo_db_local_secondary_index_to_nested_bytes(
+    dynamo_db_local_secondary_index: DynamoDBLocalSecondaryIndex, serde: Serde
+) -> bytes:
     """Convert flat DynamoDBLocalSecondaryIndex to nested JSON bytes."""
-    return serde.encode(_dynamo_db_local_secondary_index_to_nested(dynamo_db_local_secondary_index))
+    return serde.encode(
+        _dynamo_db_local_secondary_index_to_nested(dynamo_db_local_secondary_index)
+    )
 
 
-def _dynamo_db_local_secondary_index_from_nested_bytes(data: bytes, serde: Serde) -> DynamoDBLocalSecondaryIndex:
+def _dynamo_db_local_secondary_index_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DynamoDBLocalSecondaryIndex:
     """Convert nested JSON bytes to flat DynamoDBLocalSecondaryIndex."""
     nested = serde.decode(data, DynamoDBLocalSecondaryIndexNested)
     return _dynamo_db_local_secondary_index_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1349,89 +1501,218 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DynamoDBLocalSecondaryIndex.DYNAMO_DB_SECONDARY_INDEX_PROJECTION_TYPE = KeywordField("dynamoDBSecondaryIndexProjectionType", "dynamoDBSecondaryIndexProjectionType")
-DynamoDBLocalSecondaryIndex.DYNAMO_DB_STATUS = KeywordField("dynamoDBStatus", "dynamoDBStatus")
-DynamoDBLocalSecondaryIndex.DYNAMO_DB_PARTITION_KEY = KeywordField("dynamoDBPartitionKey", "dynamoDBPartitionKey")
-DynamoDBLocalSecondaryIndex.DYNAMO_DB_SORT_KEY = KeywordField("dynamoDBSortKey", "dynamoDBSortKey")
-DynamoDBLocalSecondaryIndex.DYNAMO_DB_READ_CAPACITY_UNITS = NumericField("dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits")
-DynamoDBLocalSecondaryIndex.DYNAMO_DB_WRITE_CAPACITY_UNITS = NumericField("dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits")
-DynamoDBLocalSecondaryIndex.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
-DynamoDBLocalSecondaryIndex.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+DynamoDBLocalSecondaryIndex.DYNAMO_DB_SECONDARY_INDEX_PROJECTION_TYPE = KeywordField(
+    "dynamoDBSecondaryIndexProjectionType", "dynamoDBSecondaryIndexProjectionType"
+)
+DynamoDBLocalSecondaryIndex.DYNAMO_DB_STATUS = KeywordField(
+    "dynamoDBStatus", "dynamoDBStatus"
+)
+DynamoDBLocalSecondaryIndex.DYNAMO_DB_PARTITION_KEY = KeywordField(
+    "dynamoDBPartitionKey", "dynamoDBPartitionKey"
+)
+DynamoDBLocalSecondaryIndex.DYNAMO_DB_SORT_KEY = KeywordField(
+    "dynamoDBSortKey", "dynamoDBSortKey"
+)
+DynamoDBLocalSecondaryIndex.DYNAMO_DB_READ_CAPACITY_UNITS = NumericField(
+    "dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits"
+)
+DynamoDBLocalSecondaryIndex.DYNAMO_DB_WRITE_CAPACITY_UNITS = NumericField(
+    "dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits"
+)
+DynamoDBLocalSecondaryIndex.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
+DynamoDBLocalSecondaryIndex.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DynamoDBLocalSecondaryIndex.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 DynamoDBLocalSecondaryIndex.ROW_COUNT = NumericField("rowCount", "rowCount")
 DynamoDBLocalSecondaryIndex.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
-DynamoDBLocalSecondaryIndex.TABLE_OBJECT_COUNT = NumericField("tableObjectCount", "tableObjectCount")
+DynamoDBLocalSecondaryIndex.TABLE_OBJECT_COUNT = NumericField(
+    "tableObjectCount", "tableObjectCount"
+)
 DynamoDBLocalSecondaryIndex.ALIAS = KeywordField("alias", "alias")
 DynamoDBLocalSecondaryIndex.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
-DynamoDBLocalSecondaryIndex.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-DynamoDBLocalSecondaryIndex.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
-DynamoDBLocalSecondaryIndex.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
-DynamoDBLocalSecondaryIndex.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
-DynamoDBLocalSecondaryIndex.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
-DynamoDBLocalSecondaryIndex.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
-DynamoDBLocalSecondaryIndex.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
-DynamoDBLocalSecondaryIndex.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
-DynamoDBLocalSecondaryIndex.TABLE_DEFINITION = KeywordField("tableDefinition", "tableDefinition")
-DynamoDBLocalSecondaryIndex.PARTITION_LIST = KeywordField("partitionList", "partitionList")
+DynamoDBLocalSecondaryIndex.IS_QUERY_PREVIEW = BooleanField(
+    "isQueryPreview", "isQueryPreview"
+)
+DynamoDBLocalSecondaryIndex.QUERY_PREVIEW_CONFIG = KeywordField(
+    "queryPreviewConfig", "queryPreviewConfig"
+)
+DynamoDBLocalSecondaryIndex.EXTERNAL_LOCATION = KeywordField(
+    "externalLocation", "externalLocation"
+)
+DynamoDBLocalSecondaryIndex.EXTERNAL_LOCATION_REGION = KeywordField(
+    "externalLocationRegion", "externalLocationRegion"
+)
+DynamoDBLocalSecondaryIndex.EXTERNAL_LOCATION_FORMAT = KeywordField(
+    "externalLocationFormat", "externalLocationFormat"
+)
+DynamoDBLocalSecondaryIndex.IS_PARTITIONED = BooleanField(
+    "isPartitioned", "isPartitioned"
+)
+DynamoDBLocalSecondaryIndex.PARTITION_STRATEGY = KeywordField(
+    "partitionStrategy", "partitionStrategy"
+)
+DynamoDBLocalSecondaryIndex.PARTITION_COUNT = NumericField(
+    "partitionCount", "partitionCount"
+)
+DynamoDBLocalSecondaryIndex.TABLE_DEFINITION = KeywordField(
+    "tableDefinition", "tableDefinition"
+)
+DynamoDBLocalSecondaryIndex.PARTITION_LIST = KeywordField(
+    "partitionList", "partitionList"
+)
 DynamoDBLocalSecondaryIndex.IS_SHARDED = BooleanField("isSharded", "isSharded")
 DynamoDBLocalSecondaryIndex.TABLE_TYPE = KeywordField("tableType", "tableType")
-DynamoDBLocalSecondaryIndex.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
-DynamoDBLocalSecondaryIndex.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
-DynamoDBLocalSecondaryIndex.ICEBERG_CATALOG_SOURCE = KeywordField("icebergCatalogSource", "icebergCatalogSource")
-DynamoDBLocalSecondaryIndex.ICEBERG_CATALOG_TABLE_NAME = KeywordField("icebergCatalogTableName", "icebergCatalogTableName")
-DynamoDBLocalSecondaryIndex.TABLE_IMPALA_PARAMETERS = KeywordField("tableImpalaParameters", "tableImpalaParameters")
-DynamoDBLocalSecondaryIndex.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField("icebergCatalogTableNamespace", "icebergCatalogTableNamespace")
-DynamoDBLocalSecondaryIndex.TABLE_EXTERNAL_VOLUME_NAME = KeywordField("tableExternalVolumeName", "tableExternalVolumeName")
-DynamoDBLocalSecondaryIndex.ICEBERG_TABLE_BASE_LOCATION = KeywordField("icebergTableBaseLocation", "icebergTableBaseLocation")
-DynamoDBLocalSecondaryIndex.TABLE_RETENTION_TIME = NumericField("tableRetentionTime", "tableRetentionTime")
+DynamoDBLocalSecondaryIndex.ICEBERG_CATALOG_NAME = KeywordField(
+    "icebergCatalogName", "icebergCatalogName"
+)
+DynamoDBLocalSecondaryIndex.ICEBERG_TABLE_TYPE = KeywordField(
+    "icebergTableType", "icebergTableType"
+)
+DynamoDBLocalSecondaryIndex.ICEBERG_CATALOG_SOURCE = KeywordField(
+    "icebergCatalogSource", "icebergCatalogSource"
+)
+DynamoDBLocalSecondaryIndex.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
+    "icebergCatalogTableName", "icebergCatalogTableName"
+)
+DynamoDBLocalSecondaryIndex.TABLE_IMPALA_PARAMETERS = KeywordField(
+    "tableImpalaParameters", "tableImpalaParameters"
+)
+DynamoDBLocalSecondaryIndex.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
+    "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
+)
+DynamoDBLocalSecondaryIndex.TABLE_EXTERNAL_VOLUME_NAME = KeywordField(
+    "tableExternalVolumeName", "tableExternalVolumeName"
+)
+DynamoDBLocalSecondaryIndex.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
+    "icebergTableBaseLocation", "icebergTableBaseLocation"
+)
+DynamoDBLocalSecondaryIndex.TABLE_RETENTION_TIME = NumericField(
+    "tableRetentionTime", "tableRetentionTime"
+)
 DynamoDBLocalSecondaryIndex.QUERY_COUNT = NumericField("queryCount", "queryCount")
-DynamoDBLocalSecondaryIndex.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
-DynamoDBLocalSecondaryIndex.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DynamoDBLocalSecondaryIndex.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DynamoDBLocalSecondaryIndex.QUERY_USER_COUNT = NumericField(
+    "queryUserCount", "queryUserCount"
+)
+DynamoDBLocalSecondaryIndex.QUERY_USER_MAP = KeywordField(
+    "queryUserMap", "queryUserMap"
+)
+DynamoDBLocalSecondaryIndex.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DynamoDBLocalSecondaryIndex.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DynamoDBLocalSecondaryIndex.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DynamoDBLocalSecondaryIndex.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DynamoDBLocalSecondaryIndex.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DynamoDBLocalSecondaryIndex.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DynamoDBLocalSecondaryIndex.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DynamoDBLocalSecondaryIndex.TABLE_NAME = KeywordField("tableName", "tableName")
-DynamoDBLocalSecondaryIndex.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DynamoDBLocalSecondaryIndex.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DynamoDBLocalSecondaryIndex.VIEW_NAME = KeywordField("viewName", "viewName")
-DynamoDBLocalSecondaryIndex.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DynamoDBLocalSecondaryIndex.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DynamoDBLocalSecondaryIndex.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DynamoDBLocalSecondaryIndex.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DynamoDBLocalSecondaryIndex.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DynamoDBLocalSecondaryIndex.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DynamoDBLocalSecondaryIndex.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-DynamoDBLocalSecondaryIndex.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DynamoDBLocalSecondaryIndex.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DynamoDBLocalSecondaryIndex.LAST_PROFILED_AT = NumericField(
+    "lastProfiledAt", "lastProfiledAt"
+)
+DynamoDBLocalSecondaryIndex.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DynamoDBLocalSecondaryIndex.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DynamoDBLocalSecondaryIndex.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
-DynamoDBLocalSecondaryIndex.SQL_COALESCE_LAST_RUN_STATUS = KeywordField("sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus")
-DynamoDBLocalSecondaryIndex.SQL_COALESCE_NODE_STATUS = KeywordField("sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus")
-DynamoDBLocalSecondaryIndex.SQL_COALESCE_LAST_RUN_AT = NumericField("sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt")
-DynamoDBLocalSecondaryIndex.SQL_COALESCE_NODE_TYPE = KeywordField("sqlCoalesceNodeType", "sqlCoalesceNodeType")
-DynamoDBLocalSecondaryIndex.SQL_COALESCE_ENVIRONMENT_ID = KeywordField("sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId")
-DynamoDBLocalSecondaryIndex.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField("sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName.text")
-DynamoDBLocalSecondaryIndex.SQL_COALESCE_PROJECT_ID = KeywordField("sqlCoalesceProjectId", "sqlCoalesceProjectId")
-DynamoDBLocalSecondaryIndex.SQL_COALESCE_PROJECT_NAME = KeywordTextField("sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text")
-DynamoDBLocalSecondaryIndex.SQL_SHARE_QUALIFIED_NAMES = KeywordField("sqlShareQualifiedNames", "sqlShareQualifiedNames")
-DynamoDBLocalSecondaryIndex.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-DynamoDBLocalSecondaryIndex.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+DynamoDBLocalSecondaryIndex.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = (
+    NumericField(
+        "sqlAiInsightsPopularBusinessQuestionCount",
+        "sqlAiInsightsPopularBusinessQuestionCount",
+    )
+)
+DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+DynamoDBLocalSecondaryIndex.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+DynamoDBLocalSecondaryIndex.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+DynamoDBLocalSecondaryIndex.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+DynamoDBLocalSecondaryIndex.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+DynamoDBLocalSecondaryIndex.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+DynamoDBLocalSecondaryIndex.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+DynamoDBLocalSecondaryIndex.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+DynamoDBLocalSecondaryIndex.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+DynamoDBLocalSecondaryIndex.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+DynamoDBLocalSecondaryIndex.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
+DynamoDBLocalSecondaryIndex.INPUT_TO_AIRFLOW_TASKS = RelationField(
+    "inputToAirflowTasks"
+)
+DynamoDBLocalSecondaryIndex.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 DynamoDBLocalSecondaryIndex.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DynamoDBLocalSecondaryIndex.APPLICATION = RelationField("application")
 DynamoDBLocalSecondaryIndex.APPLICATION_FIELD = RelationField("applicationField")
 DynamoDBLocalSecondaryIndex.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 DynamoDBLocalSecondaryIndex.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DynamoDBLocalSecondaryIndex.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-DynamoDBLocalSecondaryIndex.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-DynamoDBLocalSecondaryIndex.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DynamoDBLocalSecondaryIndex.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DynamoDBLocalSecondaryIndex.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DynamoDBLocalSecondaryIndex.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+DynamoDBLocalSecondaryIndex.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+DynamoDBLocalSecondaryIndex.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+DynamoDBLocalSecondaryIndex.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DynamoDBLocalSecondaryIndex.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DynamoDBLocalSecondaryIndex.METRICS = RelationField("metrics")
 DynamoDBLocalSecondaryIndex.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DynamoDBLocalSecondaryIndex.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+DynamoDBLocalSecondaryIndex.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 DynamoDBLocalSecondaryIndex.DBT_MODELS = RelationField("dbtModels")
 DynamoDBLocalSecondaryIndex.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 DynamoDBLocalSecondaryIndex.DBT_TESTS = RelationField("dbtTests")
@@ -1439,17 +1720,25 @@ DynamoDBLocalSecondaryIndex.DBT_SOURCES = RelationField("dbtSources")
 DynamoDBLocalSecondaryIndex.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DynamoDBLocalSecondaryIndex.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 DynamoDBLocalSecondaryIndex.DYNAMO_DB_TABLE = RelationField("dynamoDBTable")
-DynamoDBLocalSecondaryIndex.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+DynamoDBLocalSecondaryIndex.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DynamoDBLocalSecondaryIndex.MEANINGS = RelationField("meanings")
-DynamoDBLocalSecondaryIndex.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+DynamoDBLocalSecondaryIndex.KNOWLEDGE_LINKED_FILES = RelationField(
+    "knowledgeLinkedFiles"
+)
 DynamoDBLocalSecondaryIndex.MC_MONITORS = RelationField("mcMonitors")
 DynamoDBLocalSecondaryIndex.MC_INCIDENTS = RelationField("mcIncidents")
 DynamoDBLocalSecondaryIndex.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
 DynamoDBLocalSecondaryIndex.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 DynamoDBLocalSecondaryIndex.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DynamoDBLocalSecondaryIndex.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-DynamoDBLocalSecondaryIndex.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DynamoDBLocalSecondaryIndex.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+DynamoDBLocalSecondaryIndex.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+DynamoDBLocalSecondaryIndex.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 DynamoDBLocalSecondaryIndex.FILES = RelationField("files")
 DynamoDBLocalSecondaryIndex.LINKS = RelationField("links")
 DynamoDBLocalSecondaryIndex.README = RelationField("readme")
@@ -1459,11 +1748,23 @@ DynamoDBLocalSecondaryIndex.ATLAN_SCHEMA = RelationField("atlanSchema")
 DynamoDBLocalSecondaryIndex.DIMENSIONS = RelationField("dimensions")
 DynamoDBLocalSecondaryIndex.FACTS = RelationField("facts")
 DynamoDBLocalSecondaryIndex.PARTITIONS = RelationField("partitions")
-DynamoDBLocalSecondaryIndex.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DynamoDBLocalSecondaryIndex.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+DynamoDBLocalSecondaryIndex.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
+DynamoDBLocalSecondaryIndex.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DynamoDBLocalSecondaryIndex.SODA_CHECKS = RelationField("sodaChecks")
 DynamoDBLocalSecondaryIndex.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-DynamoDBLocalSecondaryIndex.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-DynamoDBLocalSecondaryIndex.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
-DynamoDBLocalSecondaryIndex.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
-DynamoDBLocalSecondaryIndex.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
+DynamoDBLocalSecondaryIndex.OUTPUT_FROM_SPARK_JOBS = RelationField(
+    "outputFromSparkJobs"
+)
+DynamoDBLocalSecondaryIndex.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
+    "sqlInsightOutgoingJoins"
+)
+DynamoDBLocalSecondaryIndex.SQL_INSIGHT_INCOMING_JOINS = RelationField(
+    "sqlInsightIncomingJoins"
+)
+DynamoDBLocalSecondaryIndex.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

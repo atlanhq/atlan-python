@@ -15,9 +15,8 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .access_control_related import RelatedAuthPolicy
@@ -43,15 +42,24 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .data_mesh_related import RelatedDataDomain, RelatedDataProduct, RelatedStakeholder, RelatedStakeholderTitle
+from .data_mesh_related import (
+    RelatedDataDomain,
+    RelatedDataProduct,
+    RelatedStakeholder,
+    RelatedStakeholderTitle,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Stakeholder(Asset):
@@ -189,10 +197,14 @@ class Stakeholder(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -210,7 +222,9 @@ class Stakeholder(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -222,7 +236,9 @@ class Stakeholder(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -358,6 +374,7 @@ class Stakeholder(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class StakeholderAttributes(AssetAttributes):
     """Stakeholder-specific attributes for nested API format."""
 
@@ -409,6 +426,7 @@ class StakeholderAttributes(AssetAttributes):
     is_access_control_enabled: Union[bool, None, UnsetType] = UNSET
     """TBC"""
 
+
 class StakeholderRelationshipAttributes(AssetRelationshipAttributes):
     """Stakeholder-specific relationship attributes for nested API format."""
 
@@ -451,10 +469,14 @@ class StakeholderRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -472,7 +494,9 @@ class StakeholderRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -484,19 +508,27 @@ class StakeholderRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class StakeholderNested(AssetNested):
     """Stakeholder in nested API format for high-performance serialization."""
 
     attributes: Union[StakeholderAttributes, UnsetType] = UNSET
     relationship_attributes: Union[StakeholderRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[StakeholderRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[StakeholderRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        StakeholderRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        StakeholderRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -532,6 +564,7 @@ _STAKEHOLDER_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
+
 def _populate_stakeholder_attrs(attrs: StakeholderAttributes, obj: Stakeholder) -> None:
     """Populate Stakeholder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -552,10 +585,13 @@ def _populate_stakeholder_attrs(attrs: StakeholderAttributes, obj: Stakeholder) 
     attrs.display_preferences = obj.display_preferences
     attrs.is_access_control_enabled = obj.is_access_control_enabled
 
+
 def _extract_stakeholder_attrs(attrs: StakeholderAttributes) -> dict:
     """Extract all Stakeholder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["stakeholder_domain_qualified_name"] = attrs.stakeholder_domain_qualified_name
+    result["stakeholder_domain_qualified_name"] = (
+        attrs.stakeholder_domain_qualified_name
+    )
     result["stakeholder_title_guid"] = attrs.stakeholder_title_guid
     result["persona_groups"] = attrs.persona_groups
     result["persona_users"] = attrs.persona_users
@@ -572,6 +608,7 @@ def _extract_stakeholder_attrs(attrs: StakeholderAttributes) -> dict:
     result["display_preferences"] = attrs.display_preferences
     result["is_access_control_enabled"] = attrs.is_access_control_enabled
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -615,16 +652,19 @@ def _stakeholder_to_nested(stakeholder: Stakeholder) -> StakeholderNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _stakeholder_from_nested(nested: StakeholderNested) -> Stakeholder:
     """Convert nested format to flat Stakeholder."""
-    attrs = nested.attributes if nested.attributes is not UNSET else StakeholderAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else StakeholderAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _STAKEHOLDER_REL_FIELDS,
-        StakeholderRelationshipAttributes
+        StakeholderRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -657,6 +697,7 @@ def _stakeholder_from_nested(nested: StakeholderNested) -> Stakeholder:
     kwargs.update(merged_rels)
     return Stakeholder(**kwargs)
 
+
 def _stakeholder_to_nested_bytes(stakeholder: Stakeholder, serde: Serde) -> bytes:
     """Convert flat Stakeholder to nested JSON bytes."""
     return serde.encode(_stakeholder_to_nested(stakeholder))
@@ -667,6 +708,7 @@ def _stakeholder_from_nested_bytes(data: bytes, serde: Serde) -> Stakeholder:
     nested = serde.decode(data, StakeholderNested)
     return _stakeholder_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -676,29 +718,45 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Stakeholder.STAKEHOLDER_DOMAIN_QUALIFIED_NAME = KeywordField("stakeholderDomainQualifiedName", "stakeholderDomainQualifiedName")
-Stakeholder.STAKEHOLDER_TITLE_GUID = KeywordField("stakeholderTitleGuid", "stakeholderTitleGuid")
+Stakeholder.STAKEHOLDER_DOMAIN_QUALIFIED_NAME = KeywordField(
+    "stakeholderDomainQualifiedName", "stakeholderDomainQualifiedName"
+)
+Stakeholder.STAKEHOLDER_TITLE_GUID = KeywordField(
+    "stakeholderTitleGuid", "stakeholderTitleGuid"
+)
 Stakeholder.PERSONA_GROUPS = KeywordField("personaGroups", "personaGroups")
 Stakeholder.PERSONA_USERS = KeywordField("personaUsers", "personaUsers")
 Stakeholder.ROLE_ID = KeywordField("roleId", "roleId")
 Stakeholder.CHANNEL_LINK = KeywordField("channelLink", "channelLink")
 Stakeholder.DEFAULT_NAVIGATION = KeywordField("defaultNavigation", "defaultNavigation")
 Stakeholder.DENY_ASSET_FILTERS = KeywordField("denyAssetFilters", "denyAssetFilters")
-Stakeholder.DENY_ASSET_METADATA_TYPES = KeywordField("denyAssetMetadataTypes", "denyAssetMetadataTypes")
+Stakeholder.DENY_ASSET_METADATA_TYPES = KeywordField(
+    "denyAssetMetadataTypes", "denyAssetMetadataTypes"
+)
 Stakeholder.DENY_ASSET_TABS = KeywordField("denyAssetTabs", "denyAssetTabs")
 Stakeholder.DENY_ASSET_TYPES = KeywordField("denyAssetTypes", "denyAssetTypes")
-Stakeholder.DENY_CUSTOM_METADATA_GUIDS = KeywordField("denyCustomMetadataGuids", "denyCustomMetadataGuids")
-Stakeholder.DENY_NAVIGATION_PAGES = KeywordField("denyNavigationPages", "denyNavigationPages")
+Stakeholder.DENY_CUSTOM_METADATA_GUIDS = KeywordField(
+    "denyCustomMetadataGuids", "denyCustomMetadataGuids"
+)
+Stakeholder.DENY_NAVIGATION_PAGES = KeywordField(
+    "denyNavigationPages", "denyNavigationPages"
+)
 Stakeholder.DENY_SIDEBAR_TABS = KeywordField("denySidebarTabs", "denySidebarTabs")
-Stakeholder.DISPLAY_PREFERENCES = KeywordField("displayPreferences", "displayPreferences")
-Stakeholder.IS_ACCESS_CONTROL_ENABLED = BooleanField("isAccessControlEnabled", "isAccessControlEnabled")
+Stakeholder.DISPLAY_PREFERENCES = KeywordField(
+    "displayPreferences", "displayPreferences"
+)
+Stakeholder.IS_ACCESS_CONTROL_ENABLED = BooleanField(
+    "isAccessControlEnabled", "isAccessControlEnabled"
+)
 Stakeholder.POLICIES = RelationField("policies")
 Stakeholder.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Stakeholder.APPLICATION = RelationField("application")
 Stakeholder.APPLICATION_FIELD = RelationField("applicationField")
 Stakeholder.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 Stakeholder.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-Stakeholder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+Stakeholder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 Stakeholder.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Stakeholder.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Stakeholder.STAKEHOLDER_DATA_DOMAIN = RelationField("stakeholderDataDomain")
@@ -706,7 +764,9 @@ Stakeholder.STAKEHOLDER_TITLE = RelationField("stakeholderTitle")
 Stakeholder.METRICS = RelationField("metrics")
 Stakeholder.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Stakeholder.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Stakeholder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Stakeholder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Stakeholder.MEANINGS = RelationField("meanings")
 Stakeholder.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Stakeholder.MC_MONITORS = RelationField("mcMonitors")

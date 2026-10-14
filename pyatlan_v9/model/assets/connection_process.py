@@ -14,9 +14,8 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,7 +42,10 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -52,6 +54,7 @@ from .process_related import RelatedConnectionProcess
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ConnectionProcess(Asset):
@@ -115,10 +118,14 @@ class ConnectionProcess(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -142,7 +149,9 @@ class ConnectionProcess(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -154,7 +163,9 @@ class ConnectionProcess(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -252,7 +263,9 @@ class ConnectionProcess(Asset):
         return _connection_process_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> ConnectionProcess:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> ConnectionProcess:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -274,10 +287,12 @@ class ConnectionProcess(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ConnectionProcessAttributes(AssetAttributes):
     """ConnectionProcess-specific attributes for nested API format."""
 
     pass
+
 
 class ConnectionProcessRelationshipAttributes(AssetRelationshipAttributes):
     """ConnectionProcess-specific relationship attributes for nested API format."""
@@ -312,10 +327,14 @@ class ConnectionProcessRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -339,7 +358,9 @@ class ConnectionProcessRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -351,19 +372,29 @@ class ConnectionProcessRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
+
 class ConnectionProcessNested(AssetNested):
     """ConnectionProcess in nested API format for high-performance serialization."""
 
     attributes: Union[ConnectionProcessAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[ConnectionProcessRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ConnectionProcessRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ConnectionProcessRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        ConnectionProcessRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        ConnectionProcessRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ConnectionProcessRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -398,26 +429,35 @@ _CONNECTION_PROCESS_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-def _populate_connection_process_attrs(attrs: ConnectionProcessAttributes, obj: ConnectionProcess) -> None:
+
+def _populate_connection_process_attrs(
+    attrs: ConnectionProcessAttributes, obj: ConnectionProcess
+) -> None:
     """Populate ConnectionProcess-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+
 
 def _extract_connection_process_attrs(attrs: ConnectionProcessAttributes) -> dict:
     """Extract all ConnectionProcess attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _connection_process_to_nested(connection_process: ConnectionProcess) -> ConnectionProcessNested:
+def _connection_process_to_nested(
+    connection_process: ConnectionProcess,
+) -> ConnectionProcessNested:
     """Convert flat ConnectionProcess to nested format."""
     attrs = ConnectionProcessAttributes()
     _populate_connection_process_attrs(attrs, connection_process)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        connection_process, _CONNECTION_PROCESS_REL_FIELDS, ConnectionProcessRelationshipAttributes
+        connection_process,
+        _CONNECTION_PROCESS_REL_FIELDS,
+        ConnectionProcessRelationshipAttributes,
     )
     return ConnectionProcessNested(
         guid=connection_process.guid,
@@ -448,16 +488,23 @@ def _connection_process_to_nested(connection_process: ConnectionProcess) -> Conn
         remove_relationship_attributes=remove_rels,
     )
 
-def _connection_process_from_nested(nested: ConnectionProcessNested) -> ConnectionProcess:
+
+def _connection_process_from_nested(
+    nested: ConnectionProcessNested,
+) -> ConnectionProcess:
     """Convert nested format to flat ConnectionProcess."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ConnectionProcessAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else ConnectionProcessAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CONNECTION_PROCESS_REL_FIELDS,
-        ConnectionProcessRelationshipAttributes
+        ConnectionProcessRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -490,15 +537,21 @@ def _connection_process_from_nested(nested: ConnectionProcessNested) -> Connecti
     kwargs.update(merged_rels)
     return ConnectionProcess(**kwargs)
 
-def _connection_process_to_nested_bytes(connection_process: ConnectionProcess, serde: Serde) -> bytes:
+
+def _connection_process_to_nested_bytes(
+    connection_process: ConnectionProcess, serde: Serde
+) -> bytes:
     """Convert flat ConnectionProcess to nested JSON bytes."""
     return serde.encode(_connection_process_to_nested(connection_process))
 
 
-def _connection_process_from_nested_bytes(data: bytes, serde: Serde) -> ConnectionProcess:
+def _connection_process_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> ConnectionProcess:
     """Convert nested JSON bytes to flat ConnectionProcess."""
     nested = serde.decode(data, ConnectionProcessNested)
     return _connection_process_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -510,13 +563,17 @@ ConnectionProcess.APPLICATION = RelationField("application")
 ConnectionProcess.APPLICATION_FIELD = RelationField("applicationField")
 ConnectionProcess.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 ConnectionProcess.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-ConnectionProcess.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+ConnectionProcess.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ConnectionProcess.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ConnectionProcess.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ConnectionProcess.METRICS = RelationField("metrics")
 ConnectionProcess.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ConnectionProcess.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-ConnectionProcess.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+ConnectionProcess.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 ConnectionProcess.MEANINGS = RelationField("meanings")
 ConnectionProcess.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 ConnectionProcess.MC_MONITORS = RelationField("mcMonitors")

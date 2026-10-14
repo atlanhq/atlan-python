@@ -15,9 +15,8 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -49,7 +48,10 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSchema
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -58,6 +60,7 @@ from .sap_related import RelatedSapDatasphereDataProduct
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SapDatasphereDataProduct(Asset):
@@ -126,7 +129,9 @@ class SapDatasphereDataProduct(Asset):
     sap_datasphere_data_product_space_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Datasphere space whose objects this data product exposes."""
 
-    sap_datasphere_data_product_space_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_datasphere_data_product_space_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Unique name of the Datasphere space whose objects this data product exposes."""
 
     sap_datasphere_data_product_provider_id: Union[str, None, UnsetType] = UNSET
@@ -213,7 +218,9 @@ class SapDatasphereDataProduct(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -222,10 +229,14 @@ class SapDatasphereDataProduct(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -255,7 +266,9 @@ class SapDatasphereDataProduct(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -270,7 +283,9 @@ class SapDatasphereDataProduct(Asset):
     sap_datasphere_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema (Datasphere space) whose objects this data product exposes."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -289,9 +304,7 @@ class SapDatasphereDataProduct(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -340,7 +353,9 @@ class SapDatasphereDataProduct(Asset):
             A new SapDatasphereDataProduct instance with only the minimum required fields.
         """
         self.validate()
-        return SapDatasphereDataProduct(qualified_name=self.qualified_name, name=self.name)
+        return SapDatasphereDataProduct(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     def relate(self) -> "RelatedSapDatasphereDataProduct":
         """
@@ -386,7 +401,9 @@ class SapDatasphereDataProduct(Asset):
         return _sap_datasphere_data_product_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SapDatasphereDataProduct:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SapDatasphereDataProduct:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -408,6 +425,7 @@ class SapDatasphereDataProduct(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SapDatasphereDataProductAttributes(AssetAttributes):
     """SapDatasphereDataProduct-specific attributes for nested API format."""
 
@@ -417,7 +435,9 @@ class SapDatasphereDataProductAttributes(AssetAttributes):
     sap_datasphere_data_product_space_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Datasphere space whose objects this data product exposes."""
 
-    sap_datasphere_data_product_space_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_datasphere_data_product_space_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Unique name of the Datasphere space whose objects this data product exposes."""
 
     sap_datasphere_data_product_provider_id: Union[str, None, UnsetType] = UNSET
@@ -471,6 +491,7 @@ class SapDatasphereDataProductAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class SapDatasphereDataProductRelationshipAttributes(AssetRelationshipAttributes):
     """SapDatasphereDataProduct-specific relationship attributes for nested API format."""
 
@@ -507,7 +528,9 @@ class SapDatasphereDataProductRelationshipAttributes(AssetRelationshipAttributes
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -516,10 +539,14 @@ class SapDatasphereDataProductRelationshipAttributes(AssetRelationshipAttributes
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -549,7 +576,9 @@ class SapDatasphereDataProductRelationshipAttributes(AssetRelationshipAttributes
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -564,7 +593,9 @@ class SapDatasphereDataProductRelationshipAttributes(AssetRelationshipAttributes
     sap_datasphere_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema (Datasphere space) whose objects this data product exposes."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -576,13 +607,21 @@ class SapDatasphereDataProductRelationshipAttributes(AssetRelationshipAttributes
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SapDatasphereDataProductNested(AssetNested):
     """SapDatasphereDataProduct in nested API format for high-performance serialization."""
 
     attributes: Union[SapDatasphereDataProductAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SapDatasphereDataProductRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SapDatasphereDataProductRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SapDatasphereDataProductRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        SapDatasphereDataProductRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        SapDatasphereDataProductRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SapDatasphereDataProductRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -626,21 +665,48 @@ _SAP_DATASPHERE_DATA_PRODUCT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sap_datasphere_data_product_attrs(attrs: SapDatasphereDataProductAttributes, obj: SapDatasphereDataProduct) -> None:
+
+def _populate_sap_datasphere_data_product_attrs(
+    attrs: SapDatasphereDataProductAttributes, obj: SapDatasphereDataProduct
+) -> None:
     """Populate SapDatasphereDataProduct-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_datasphere_data_product_product_id = obj.sap_datasphere_data_product_product_id
-    attrs.sap_datasphere_data_product_space_name = obj.sap_datasphere_data_product_space_name
-    attrs.sap_datasphere_data_product_space_qualified_name = obj.sap_datasphere_data_product_space_qualified_name
-    attrs.sap_datasphere_data_product_provider_id = obj.sap_datasphere_data_product_provider_id
-    attrs.sap_datasphere_data_product_provider_name = obj.sap_datasphere_data_product_provider_name
-    attrs.sap_datasphere_data_product_lifecycle_status = obj.sap_datasphere_data_product_lifecycle_status
-    attrs.sap_datasphere_data_product_contract_type = obj.sap_datasphere_data_product_contract_type
-    attrs.sap_datasphere_data_product_data_shipment = obj.sap_datasphere_data_product_data_shipment
-    attrs.sap_datasphere_data_product_delivery_mode = obj.sap_datasphere_data_product_delivery_mode
-    attrs.sap_datasphere_data_product_delivery_pattern = obj.sap_datasphere_data_product_delivery_pattern
-    attrs.sap_datasphere_data_product_contexts = obj.sap_datasphere_data_product_contexts
-    attrs.sap_datasphere_data_product_terms_of_use = obj.sap_datasphere_data_product_terms_of_use
+    attrs.sap_datasphere_data_product_product_id = (
+        obj.sap_datasphere_data_product_product_id
+    )
+    attrs.sap_datasphere_data_product_space_name = (
+        obj.sap_datasphere_data_product_space_name
+    )
+    attrs.sap_datasphere_data_product_space_qualified_name = (
+        obj.sap_datasphere_data_product_space_qualified_name
+    )
+    attrs.sap_datasphere_data_product_provider_id = (
+        obj.sap_datasphere_data_product_provider_id
+    )
+    attrs.sap_datasphere_data_product_provider_name = (
+        obj.sap_datasphere_data_product_provider_name
+    )
+    attrs.sap_datasphere_data_product_lifecycle_status = (
+        obj.sap_datasphere_data_product_lifecycle_status
+    )
+    attrs.sap_datasphere_data_product_contract_type = (
+        obj.sap_datasphere_data_product_contract_type
+    )
+    attrs.sap_datasphere_data_product_data_shipment = (
+        obj.sap_datasphere_data_product_data_shipment
+    )
+    attrs.sap_datasphere_data_product_delivery_mode = (
+        obj.sap_datasphere_data_product_delivery_mode
+    )
+    attrs.sap_datasphere_data_product_delivery_pattern = (
+        obj.sap_datasphere_data_product_delivery_pattern
+    )
+    attrs.sap_datasphere_data_product_contexts = (
+        obj.sap_datasphere_data_product_contexts
+    )
+    attrs.sap_datasphere_data_product_terms_of_use = (
+        obj.sap_datasphere_data_product_terms_of_use
+    )
     attrs.sap_technical_name = obj.sap_technical_name
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
@@ -650,21 +716,48 @@ def _populate_sap_datasphere_data_product_attrs(attrs: SapDatasphereDataProductA
     attrs.sap_field_order = obj.sap_field_order
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-def _extract_sap_datasphere_data_product_attrs(attrs: SapDatasphereDataProductAttributes) -> dict:
+
+def _extract_sap_datasphere_data_product_attrs(
+    attrs: SapDatasphereDataProductAttributes,
+) -> dict:
     """Extract all SapDatasphereDataProduct attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_datasphere_data_product_product_id"] = attrs.sap_datasphere_data_product_product_id
-    result["sap_datasphere_data_product_space_name"] = attrs.sap_datasphere_data_product_space_name
-    result["sap_datasphere_data_product_space_qualified_name"] = attrs.sap_datasphere_data_product_space_qualified_name
-    result["sap_datasphere_data_product_provider_id"] = attrs.sap_datasphere_data_product_provider_id
-    result["sap_datasphere_data_product_provider_name"] = attrs.sap_datasphere_data_product_provider_name
-    result["sap_datasphere_data_product_lifecycle_status"] = attrs.sap_datasphere_data_product_lifecycle_status
-    result["sap_datasphere_data_product_contract_type"] = attrs.sap_datasphere_data_product_contract_type
-    result["sap_datasphere_data_product_data_shipment"] = attrs.sap_datasphere_data_product_data_shipment
-    result["sap_datasphere_data_product_delivery_mode"] = attrs.sap_datasphere_data_product_delivery_mode
-    result["sap_datasphere_data_product_delivery_pattern"] = attrs.sap_datasphere_data_product_delivery_pattern
-    result["sap_datasphere_data_product_contexts"] = attrs.sap_datasphere_data_product_contexts
-    result["sap_datasphere_data_product_terms_of_use"] = attrs.sap_datasphere_data_product_terms_of_use
+    result["sap_datasphere_data_product_product_id"] = (
+        attrs.sap_datasphere_data_product_product_id
+    )
+    result["sap_datasphere_data_product_space_name"] = (
+        attrs.sap_datasphere_data_product_space_name
+    )
+    result["sap_datasphere_data_product_space_qualified_name"] = (
+        attrs.sap_datasphere_data_product_space_qualified_name
+    )
+    result["sap_datasphere_data_product_provider_id"] = (
+        attrs.sap_datasphere_data_product_provider_id
+    )
+    result["sap_datasphere_data_product_provider_name"] = (
+        attrs.sap_datasphere_data_product_provider_name
+    )
+    result["sap_datasphere_data_product_lifecycle_status"] = (
+        attrs.sap_datasphere_data_product_lifecycle_status
+    )
+    result["sap_datasphere_data_product_contract_type"] = (
+        attrs.sap_datasphere_data_product_contract_type
+    )
+    result["sap_datasphere_data_product_data_shipment"] = (
+        attrs.sap_datasphere_data_product_data_shipment
+    )
+    result["sap_datasphere_data_product_delivery_mode"] = (
+        attrs.sap_datasphere_data_product_delivery_mode
+    )
+    result["sap_datasphere_data_product_delivery_pattern"] = (
+        attrs.sap_datasphere_data_product_delivery_pattern
+    )
+    result["sap_datasphere_data_product_contexts"] = (
+        attrs.sap_datasphere_data_product_contexts
+    )
+    result["sap_datasphere_data_product_terms_of_use"] = (
+        attrs.sap_datasphere_data_product_terms_of_use
+    )
     result["sap_technical_name"] = attrs.sap_technical_name
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
@@ -675,18 +768,23 @@ def _extract_sap_datasphere_data_product_attrs(attrs: SapDatasphereDataProductAt
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sap_datasphere_data_product_to_nested(sap_datasphere_data_product: SapDatasphereDataProduct) -> SapDatasphereDataProductNested:
+def _sap_datasphere_data_product_to_nested(
+    sap_datasphere_data_product: SapDatasphereDataProduct,
+) -> SapDatasphereDataProductNested:
     """Convert flat SapDatasphereDataProduct to nested format."""
     attrs = SapDatasphereDataProductAttributes()
     _populate_sap_datasphere_data_product_attrs(attrs, sap_datasphere_data_product)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sap_datasphere_data_product, _SAP_DATASPHERE_DATA_PRODUCT_REL_FIELDS, SapDatasphereDataProductRelationshipAttributes
+        sap_datasphere_data_product,
+        _SAP_DATASPHERE_DATA_PRODUCT_REL_FIELDS,
+        SapDatasphereDataProductRelationshipAttributes,
     )
     return SapDatasphereDataProductNested(
         guid=sap_datasphere_data_product.guid,
@@ -717,16 +815,23 @@ def _sap_datasphere_data_product_to_nested(sap_datasphere_data_product: SapDatas
         remove_relationship_attributes=remove_rels,
     )
 
-def _sap_datasphere_data_product_from_nested(nested: SapDatasphereDataProductNested) -> SapDatasphereDataProduct:
+
+def _sap_datasphere_data_product_from_nested(
+    nested: SapDatasphereDataProductNested,
+) -> SapDatasphereDataProduct:
     """Convert nested format to flat SapDatasphereDataProduct."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SapDatasphereDataProductAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SapDatasphereDataProductAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_DATASPHERE_DATA_PRODUCT_REL_FIELDS,
-        SapDatasphereDataProductRelationshipAttributes
+        SapDatasphereDataProductRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -759,15 +864,23 @@ def _sap_datasphere_data_product_from_nested(nested: SapDatasphereDataProductNes
     kwargs.update(merged_rels)
     return SapDatasphereDataProduct(**kwargs)
 
-def _sap_datasphere_data_product_to_nested_bytes(sap_datasphere_data_product: SapDatasphereDataProduct, serde: Serde) -> bytes:
+
+def _sap_datasphere_data_product_to_nested_bytes(
+    sap_datasphere_data_product: SapDatasphereDataProduct, serde: Serde
+) -> bytes:
     """Convert flat SapDatasphereDataProduct to nested JSON bytes."""
-    return serde.encode(_sap_datasphere_data_product_to_nested(sap_datasphere_data_product))
+    return serde.encode(
+        _sap_datasphere_data_product_to_nested(sap_datasphere_data_product)
+    )
 
 
-def _sap_datasphere_data_product_from_nested_bytes(data: bytes, serde: Serde) -> SapDatasphereDataProduct:
+def _sap_datasphere_data_product_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SapDatasphereDataProduct:
     """Convert nested JSON bytes to flat SapDatasphereDataProduct."""
     nested = serde.decode(data, SapDatasphereDataProductNested)
     return _sap_datasphere_data_product_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -778,42 +891,99 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_PRODUCT_ID = KeywordField("sapDatasphereDataProductProductId", "sapDatasphereDataProductProductId")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_SPACE_NAME = KeywordField("sapDatasphereDataProductSpaceName", "sapDatasphereDataProductSpaceName")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_SPACE_QUALIFIED_NAME = KeywordField("sapDatasphereDataProductSpaceQualifiedName", "sapDatasphereDataProductSpaceQualifiedName")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_PROVIDER_ID = KeywordField("sapDatasphereDataProductProviderId", "sapDatasphereDataProductProviderId")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_PROVIDER_NAME = KeywordField("sapDatasphereDataProductProviderName", "sapDatasphereDataProductProviderName")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_LIFECYCLE_STATUS = KeywordField("sapDatasphereDataProductLifecycleStatus", "sapDatasphereDataProductLifecycleStatus")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_CONTRACT_TYPE = KeywordField("sapDatasphereDataProductContractType", "sapDatasphereDataProductContractType")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_DATA_SHIPMENT = KeywordField("sapDatasphereDataProductDataShipment", "sapDatasphereDataProductDataShipment")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_DELIVERY_MODE = KeywordField("sapDatasphereDataProductDeliveryMode", "sapDatasphereDataProductDeliveryMode")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_DELIVERY_PATTERN = KeywordField("sapDatasphereDataProductDeliveryPattern", "sapDatasphereDataProductDeliveryPattern")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_CONTEXTS = KeywordField("sapDatasphereDataProductContexts", "sapDatasphereDataProductContexts")
-SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_TERMS_OF_USE = KeywordField("sapDatasphereDataProductTermsOfUse", "sapDatasphereDataProductTermsOfUse")
-SapDatasphereDataProduct.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
-SapDatasphereDataProduct.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
-SapDatasphereDataProduct.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
-SapDatasphereDataProduct.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponentName")
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_PRODUCT_ID = KeywordField(
+    "sapDatasphereDataProductProductId", "sapDatasphereDataProductProductId"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_SPACE_NAME = KeywordField(
+    "sapDatasphereDataProductSpaceName", "sapDatasphereDataProductSpaceName"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_SPACE_QUALIFIED_NAME = (
+    KeywordField(
+        "sapDatasphereDataProductSpaceQualifiedName",
+        "sapDatasphereDataProductSpaceQualifiedName",
+    )
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_PROVIDER_ID = KeywordField(
+    "sapDatasphereDataProductProviderId", "sapDatasphereDataProductProviderId"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_PROVIDER_NAME = KeywordField(
+    "sapDatasphereDataProductProviderName", "sapDatasphereDataProductProviderName"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_LIFECYCLE_STATUS = KeywordField(
+    "sapDatasphereDataProductLifecycleStatus", "sapDatasphereDataProductLifecycleStatus"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_CONTRACT_TYPE = KeywordField(
+    "sapDatasphereDataProductContractType", "sapDatasphereDataProductContractType"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_DATA_SHIPMENT = KeywordField(
+    "sapDatasphereDataProductDataShipment", "sapDatasphereDataProductDataShipment"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_DELIVERY_MODE = KeywordField(
+    "sapDatasphereDataProductDeliveryMode", "sapDatasphereDataProductDeliveryMode"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_DELIVERY_PATTERN = KeywordField(
+    "sapDatasphereDataProductDeliveryPattern", "sapDatasphereDataProductDeliveryPattern"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_CONTEXTS = KeywordField(
+    "sapDatasphereDataProductContexts", "sapDatasphereDataProductContexts"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_TERMS_OF_USE = KeywordField(
+    "sapDatasphereDataProductTermsOfUse", "sapDatasphereDataProductTermsOfUse"
+)
+SapDatasphereDataProduct.SAP_TECHNICAL_NAME = KeywordField(
+    "sapTechnicalName", "sapTechnicalName"
+)
+SapDatasphereDataProduct.SAP_LOGICAL_NAME = KeywordField(
+    "sapLogicalName", "sapLogicalName"
+)
+SapDatasphereDataProduct.SAP_PACKAGE_NAME = KeywordField(
+    "sapPackageName", "sapPackageName"
+)
+SapDatasphereDataProduct.SAP_COMPONENT_NAME = KeywordField(
+    "sapComponentName", "sapComponentName"
+)
 SapDatasphereDataProduct.SAP_DATA_TYPE = KeywordField("sapDataType", "sapDataType")
-SapDatasphereDataProduct.SAP_FIELD_COUNT = NumericField("sapFieldCount", "sapFieldCount")
-SapDatasphereDataProduct.SAP_FIELD_ORDER = NumericField("sapFieldOrder", "sapFieldOrder")
-SapDatasphereDataProduct.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SapDatasphereDataProduct.SAP_FIELD_COUNT = NumericField(
+    "sapFieldCount", "sapFieldCount"
+)
+SapDatasphereDataProduct.SAP_FIELD_ORDER = NumericField(
+    "sapFieldOrder", "sapFieldOrder"
+)
+SapDatasphereDataProduct.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SapDatasphereDataProduct.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SapDatasphereDataProduct.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+SapDatasphereDataProduct.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 SapDatasphereDataProduct.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapDatasphereDataProduct.APPLICATION = RelationField("application")
 SapDatasphereDataProduct.APPLICATION_FIELD = RelationField("applicationField")
 SapDatasphereDataProduct.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SapDatasphereDataProduct.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SapDatasphereDataProduct.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-SapDatasphereDataProduct.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-SapDatasphereDataProduct.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SapDatasphereDataProduct.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SapDatasphereDataProduct.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SapDatasphereDataProduct.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+SapDatasphereDataProduct.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+SapDatasphereDataProduct.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+SapDatasphereDataProduct.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+SapDatasphereDataProduct.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SapDatasphereDataProduct.METRICS = RelationField("metrics")
 SapDatasphereDataProduct.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SapDatasphereDataProduct.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SapDatasphereDataProduct.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SapDatasphereDataProduct.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+SapDatasphereDataProduct.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SapDatasphereDataProduct.MEANINGS = RelationField("meanings")
 SapDatasphereDataProduct.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SapDatasphereDataProduct.MC_MONITORS = RelationField("mcMonitors")
@@ -822,13 +992,19 @@ SapDatasphereDataProduct.PARTIAL_CHILD_FIELDS = RelationField("partialChildField
 SapDatasphereDataProduct.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 SapDatasphereDataProduct.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SapDatasphereDataProduct.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-SapDatasphereDataProduct.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SapDatasphereDataProduct.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+SapDatasphereDataProduct.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+SapDatasphereDataProduct.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 SapDatasphereDataProduct.FILES = RelationField("files")
 SapDatasphereDataProduct.LINKS = RelationField("links")
 SapDatasphereDataProduct.README = RelationField("readme")
 SapDatasphereDataProduct.SAP_DATASPHERE_SCHEMA = RelationField("sapDatasphereSchema")
-SapDatasphereDataProduct.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+SapDatasphereDataProduct.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 SapDatasphereDataProduct.SODA_CHECKS = RelationField("sodaChecks")
 SapDatasphereDataProduct.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SapDatasphereDataProduct.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

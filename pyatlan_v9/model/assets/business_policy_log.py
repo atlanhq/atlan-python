@@ -14,9 +14,8 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,7 +41,10 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -51,6 +53,7 @@ from .business_policy_related import RelatedBusinessPolicyLog
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class BusinessPolicyLog(Asset):
@@ -136,10 +139,14 @@ class BusinessPolicyLog(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -157,7 +164,9 @@ class BusinessPolicyLog(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -169,7 +178,9 @@ class BusinessPolicyLog(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -267,7 +278,9 @@ class BusinessPolicyLog(Asset):
         return _business_policy_log_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> BusinessPolicyLog:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> BusinessPolicyLog:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -289,6 +302,7 @@ class BusinessPolicyLog(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class BusinessPolicyLogAttributes(AssetAttributes):
     """BusinessPolicyLog-specific attributes for nested API format."""
 
@@ -309,6 +323,7 @@ class BusinessPolicyLogAttributes(AssetAttributes):
 
     non_compliant_assets_count: Union[int, None, UnsetType] = UNSET
     """number of non compliant assets in the policy"""
+
 
 class BusinessPolicyLogRelationshipAttributes(AssetRelationshipAttributes):
     """BusinessPolicyLog-specific relationship attributes for nested API format."""
@@ -343,10 +358,14 @@ class BusinessPolicyLogRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -364,7 +383,9 @@ class BusinessPolicyLogRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -376,19 +397,29 @@ class BusinessPolicyLogRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
+
 class BusinessPolicyLogNested(AssetNested):
     """BusinessPolicyLog in nested API format for high-performance serialization."""
 
     attributes: Union[BusinessPolicyLogAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[BusinessPolicyLogRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[BusinessPolicyLogRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[BusinessPolicyLogRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        BusinessPolicyLogRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        BusinessPolicyLogRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        BusinessPolicyLogRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -421,7 +452,10 @@ _BUSINESS_POLICY_LOG_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-def _populate_business_policy_log_attrs(attrs: BusinessPolicyLogAttributes, obj: BusinessPolicyLog) -> None:
+
+def _populate_business_policy_log_attrs(
+    attrs: BusinessPolicyLogAttributes, obj: BusinessPolicyLog
+) -> None:
     """Populate BusinessPolicyLog-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.business_policy_id = obj.business_policy_id
@@ -430,6 +464,7 @@ def _populate_business_policy_log_attrs(attrs: BusinessPolicyLogAttributes, obj:
     attrs.non_governed_assets_count = obj.non_governed_assets_count
     attrs.compliant_assets_count = obj.compliant_assets_count
     attrs.non_compliant_assets_count = obj.non_compliant_assets_count
+
 
 def _extract_business_policy_log_attrs(attrs: BusinessPolicyLogAttributes) -> dict:
     """Extract all BusinessPolicyLog attributes from the attrs struct into a flat dict."""
@@ -442,18 +477,23 @@ def _extract_business_policy_log_attrs(attrs: BusinessPolicyLogAttributes) -> di
     result["non_compliant_assets_count"] = attrs.non_compliant_assets_count
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _business_policy_log_to_nested(business_policy_log: BusinessPolicyLog) -> BusinessPolicyLogNested:
+def _business_policy_log_to_nested(
+    business_policy_log: BusinessPolicyLog,
+) -> BusinessPolicyLogNested:
     """Convert flat BusinessPolicyLog to nested format."""
     attrs = BusinessPolicyLogAttributes()
     _populate_business_policy_log_attrs(attrs, business_policy_log)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        business_policy_log, _BUSINESS_POLICY_LOG_REL_FIELDS, BusinessPolicyLogRelationshipAttributes
+        business_policy_log,
+        _BUSINESS_POLICY_LOG_REL_FIELDS,
+        BusinessPolicyLogRelationshipAttributes,
     )
     return BusinessPolicyLogNested(
         guid=business_policy_log.guid,
@@ -484,16 +524,23 @@ def _business_policy_log_to_nested(business_policy_log: BusinessPolicyLog) -> Bu
         remove_relationship_attributes=remove_rels,
     )
 
-def _business_policy_log_from_nested(nested: BusinessPolicyLogNested) -> BusinessPolicyLog:
+
+def _business_policy_log_from_nested(
+    nested: BusinessPolicyLogNested,
+) -> BusinessPolicyLog:
     """Convert nested format to flat BusinessPolicyLog."""
-    attrs = nested.attributes if nested.attributes is not UNSET else BusinessPolicyLogAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else BusinessPolicyLogAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _BUSINESS_POLICY_LOG_REL_FIELDS,
-        BusinessPolicyLogRelationshipAttributes
+        BusinessPolicyLogRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -526,15 +573,21 @@ def _business_policy_log_from_nested(nested: BusinessPolicyLogNested) -> Busines
     kwargs.update(merged_rels)
     return BusinessPolicyLog(**kwargs)
 
-def _business_policy_log_to_nested_bytes(business_policy_log: BusinessPolicyLog, serde: Serde) -> bytes:
+
+def _business_policy_log_to_nested_bytes(
+    business_policy_log: BusinessPolicyLog, serde: Serde
+) -> bytes:
     """Convert flat BusinessPolicyLog to nested JSON bytes."""
     return serde.encode(_business_policy_log_to_nested(business_policy_log))
 
 
-def _business_policy_log_from_nested_bytes(data: bytes, serde: Serde) -> BusinessPolicyLog:
+def _business_policy_log_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> BusinessPolicyLog:
     """Convert nested JSON bytes to flat BusinessPolicyLog."""
     nested = serde.decode(data, BusinessPolicyLogNested)
     return _business_policy_log_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -545,24 +598,40 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-BusinessPolicyLog.BUSINESS_POLICY_ID = KeywordField("businessPolicyId", "businessPolicyId")
-BusinessPolicyLog.BUSINESS_POLICY_LOG_POLICY_TYPE = KeywordField("businessPolicyLogPolicyType", "businessPolicyLogPolicyType")
-BusinessPolicyLog.GOVERNED_ASSETS_COUNT = NumericField("governedAssetsCount", "governedAssetsCount")
-BusinessPolicyLog.NON_GOVERNED_ASSETS_COUNT = NumericField("nonGovernedAssetsCount", "nonGovernedAssetsCount")
-BusinessPolicyLog.COMPLIANT_ASSETS_COUNT = NumericField("compliantAssetsCount", "compliantAssetsCount")
-BusinessPolicyLog.NON_COMPLIANT_ASSETS_COUNT = NumericField("nonCompliantAssetsCount", "nonCompliantAssetsCount")
+BusinessPolicyLog.BUSINESS_POLICY_ID = KeywordField(
+    "businessPolicyId", "businessPolicyId"
+)
+BusinessPolicyLog.BUSINESS_POLICY_LOG_POLICY_TYPE = KeywordField(
+    "businessPolicyLogPolicyType", "businessPolicyLogPolicyType"
+)
+BusinessPolicyLog.GOVERNED_ASSETS_COUNT = NumericField(
+    "governedAssetsCount", "governedAssetsCount"
+)
+BusinessPolicyLog.NON_GOVERNED_ASSETS_COUNT = NumericField(
+    "nonGovernedAssetsCount", "nonGovernedAssetsCount"
+)
+BusinessPolicyLog.COMPLIANT_ASSETS_COUNT = NumericField(
+    "compliantAssetsCount", "compliantAssetsCount"
+)
+BusinessPolicyLog.NON_COMPLIANT_ASSETS_COUNT = NumericField(
+    "nonCompliantAssetsCount", "nonCompliantAssetsCount"
+)
 BusinessPolicyLog.ANOMALO_CHECKS = RelationField("anomaloChecks")
 BusinessPolicyLog.APPLICATION = RelationField("application")
 BusinessPolicyLog.APPLICATION_FIELD = RelationField("applicationField")
 BusinessPolicyLog.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 BusinessPolicyLog.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-BusinessPolicyLog.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+BusinessPolicyLog.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 BusinessPolicyLog.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 BusinessPolicyLog.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 BusinessPolicyLog.METRICS = RelationField("metrics")
 BusinessPolicyLog.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 BusinessPolicyLog.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-BusinessPolicyLog.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+BusinessPolicyLog.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 BusinessPolicyLog.MEANINGS = RelationField("meanings")
 BusinessPolicyLog.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 BusinessPolicyLog.MC_MONITORS = RelationField("mcMonitors")

@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -36,7 +36,12 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -49,17 +54,27 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 from .sql_related import RelatedSchema
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .snowflake_related import RelatedSnowflakePipe, RelatedSnowflakeSemanticLogicalTable
+from .snowflake_related import (
+    RelatedSnowflakePipe,
+    RelatedSnowflakeSemanticLogicalTable,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SnowflakePipe(Asset):
@@ -206,7 +221,9 @@ class SnowflakePipe(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -293,7 +310,9 @@ class SnowflakePipe(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -302,7 +321,9 @@ class SnowflakePipe(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -317,13 +338,17 @@ class SnowflakePipe(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -353,7 +378,9 @@ class SnowflakePipe(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -365,13 +392,17 @@ class SnowflakePipe(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema in which this Snowflake pipe exists."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -383,13 +414,19 @@ class SnowflakePipe(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -528,6 +565,7 @@ class SnowflakePipe(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SnowflakePipeAttributes(AssetAttributes):
     """SnowflakePipe-specific attributes for nested API format."""
 
@@ -588,7 +626,9 @@ class SnowflakePipeAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -642,6 +682,7 @@ class SnowflakePipeAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class SnowflakePipeRelationshipAttributes(AssetRelationshipAttributes):
     """SnowflakePipe-specific relationship attributes for nested API format."""
 
@@ -678,7 +719,9 @@ class SnowflakePipeRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -687,7 +730,9 @@ class SnowflakePipeRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -702,13 +747,17 @@ class SnowflakePipeRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -738,7 +787,9 @@ class SnowflakePipeRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -750,13 +801,17 @@ class SnowflakePipeRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema in which this Snowflake pipe exists."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -768,22 +823,36 @@ class SnowflakePipeRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class SnowflakePipeNested(AssetNested):
     """SnowflakePipe in nested API format for high-performance serialization."""
 
     attributes: Union[SnowflakePipeAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SnowflakePipeRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SnowflakePipeRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SnowflakePipeRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[SnowflakePipeRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        SnowflakePipeRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SnowflakePipeRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -837,12 +906,19 @@ _SNOWFLAKE_PIPE_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-def _populate_snowflake_pipe_attrs(attrs: SnowflakePipeAttributes, obj: SnowflakePipe) -> None:
+
+def _populate_snowflake_pipe_attrs(
+    attrs: SnowflakePipeAttributes, obj: SnowflakePipe
+) -> None:
     """Populate SnowflakePipe-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.definition = obj.definition
-    attrs.snowflake_pipe_is_auto_ingest_enabled = obj.snowflake_pipe_is_auto_ingest_enabled
-    attrs.snowflake_pipe_notification_channel_name = obj.snowflake_pipe_notification_channel_name
+    attrs.snowflake_pipe_is_auto_ingest_enabled = (
+        obj.snowflake_pipe_is_auto_ingest_enabled
+    )
+    attrs.snowflake_pipe_notification_channel_name = (
+        obj.snowflake_pipe_notification_channel_name
+    )
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -863,9 +939,13 @@ def _populate_snowflake_pipe_attrs(attrs: SnowflakePipeAttributes, obj: Snowflak
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
     attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
@@ -878,12 +958,17 @@ def _populate_snowflake_pipe_attrs(attrs: SnowflakePipeAttributes, obj: Snowflak
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_snowflake_pipe_attrs(attrs: SnowflakePipeAttributes) -> dict:
     """Extract all SnowflakePipe attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["definition"] = attrs.definition
-    result["snowflake_pipe_is_auto_ingest_enabled"] = attrs.snowflake_pipe_is_auto_ingest_enabled
-    result["snowflake_pipe_notification_channel_name"] = attrs.snowflake_pipe_notification_channel_name
+    result["snowflake_pipe_is_auto_ingest_enabled"] = (
+        attrs.snowflake_pipe_is_auto_ingest_enabled
+    )
+    result["snowflake_pipe_notification_channel_name"] = (
+        attrs.snowflake_pipe_notification_channel_name
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -900,14 +985,24 @@ def _extract_snowflake_pipe_attrs(attrs: SnowflakePipeAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
     result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
     result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
@@ -919,6 +1014,7 @@ def _extract_snowflake_pipe_attrs(attrs: SnowflakePipeAttributes) -> dict:
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -962,16 +1058,21 @@ def _snowflake_pipe_to_nested(snowflake_pipe: SnowflakePipe) -> SnowflakePipeNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _snowflake_pipe_from_nested(nested: SnowflakePipeNested) -> SnowflakePipe:
     """Convert nested format to flat SnowflakePipe."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SnowflakePipeAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SnowflakePipeAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SNOWFLAKE_PIPE_REL_FIELDS,
-        SnowflakePipeRelationshipAttributes
+        SnowflakePipeRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -1004,7 +1105,10 @@ def _snowflake_pipe_from_nested(nested: SnowflakePipeNested) -> SnowflakePipe:
     kwargs.update(merged_rels)
     return SnowflakePipe(**kwargs)
 
-def _snowflake_pipe_to_nested_bytes(snowflake_pipe: SnowflakePipe, serde: Serde) -> bytes:
+
+def _snowflake_pipe_to_nested_bytes(
+    snowflake_pipe: SnowflakePipe, serde: Serde
+) -> bytes:
     """Convert flat SnowflakePipe to nested JSON bytes."""
     return serde.encode(_snowflake_pipe_to_nested(snowflake_pipe))
 
@@ -1013,6 +1117,7 @@ def _snowflake_pipe_from_nested_bytes(data: bytes, serde: Serde) -> SnowflakePip
     """Convert nested JSON bytes to flat SnowflakePipe."""
     nested = serde.decode(data, SnowflakePipeNested)
     return _snowflake_pipe_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1026,42 +1131,97 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SnowflakePipe.DEFINITION = KeywordField("definition", "definition")
-SnowflakePipe.SNOWFLAKE_PIPE_IS_AUTO_INGEST_ENABLED = BooleanField("snowflakePipeIsAutoIngestEnabled", "snowflakePipeIsAutoIngestEnabled")
-SnowflakePipe.SNOWFLAKE_PIPE_NOTIFICATION_CHANNEL_NAME = KeywordTextField("snowflakePipeNotificationChannelName", "snowflakePipeNotificationChannelName", "snowflakePipeNotificationChannelName.text")
+SnowflakePipe.SNOWFLAKE_PIPE_IS_AUTO_INGEST_ENABLED = BooleanField(
+    "snowflakePipeIsAutoIngestEnabled", "snowflakePipeIsAutoIngestEnabled"
+)
+SnowflakePipe.SNOWFLAKE_PIPE_NOTIFICATION_CHANNEL_NAME = KeywordTextField(
+    "snowflakePipeNotificationChannelName",
+    "snowflakePipeNotificationChannelName",
+    "snowflakePipeNotificationChannelName.text",
+)
 SnowflakePipe.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SnowflakePipe.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 SnowflakePipe.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-SnowflakePipe.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+SnowflakePipe.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 SnowflakePipe.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-SnowflakePipe.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+SnowflakePipe.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 SnowflakePipe.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-SnowflakePipe.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+SnowflakePipe.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 SnowflakePipe.TABLE_NAME = KeywordField("tableName", "tableName")
-SnowflakePipe.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+SnowflakePipe.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 SnowflakePipe.VIEW_NAME = KeywordField("viewName", "viewName")
-SnowflakePipe.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-SnowflakePipe.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-SnowflakePipe.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+SnowflakePipe.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+SnowflakePipe.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+SnowflakePipe.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 SnowflakePipe.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 SnowflakePipe.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-SnowflakePipe.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+SnowflakePipe.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 SnowflakePipe.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 SnowflakePipe.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-SnowflakePipe.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-SnowflakePipe.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-SnowflakePipe.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-SnowflakePipe.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-SnowflakePipe.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
-SnowflakePipe.SQL_COALESCE_LAST_RUN_STATUS = KeywordField("sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus")
-SnowflakePipe.SQL_COALESCE_NODE_STATUS = KeywordField("sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus")
-SnowflakePipe.SQL_COALESCE_LAST_RUN_AT = NumericField("sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt")
-SnowflakePipe.SQL_COALESCE_NODE_TYPE = KeywordField("sqlCoalesceNodeType", "sqlCoalesceNodeType")
-SnowflakePipe.SQL_COALESCE_ENVIRONMENT_ID = KeywordField("sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId")
-SnowflakePipe.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField("sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName.text")
-SnowflakePipe.SQL_COALESCE_PROJECT_ID = KeywordField("sqlCoalesceProjectId", "sqlCoalesceProjectId")
-SnowflakePipe.SQL_COALESCE_PROJECT_NAME = KeywordTextField("sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text")
-SnowflakePipe.SQL_SHARE_QUALIFIED_NAMES = KeywordField("sqlShareQualifiedNames", "sqlShareQualifiedNames")
-SnowflakePipe.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SnowflakePipe.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+SnowflakePipe.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+SnowflakePipe.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+SnowflakePipe.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+SnowflakePipe.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+SnowflakePipe.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+SnowflakePipe.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+SnowflakePipe.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+SnowflakePipe.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+SnowflakePipe.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+SnowflakePipe.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+SnowflakePipe.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+SnowflakePipe.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+SnowflakePipe.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
+SnowflakePipe.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SnowflakePipe.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SnowflakePipe.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SnowflakePipe.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -1069,7 +1229,9 @@ SnowflakePipe.APPLICATION = RelationField("application")
 SnowflakePipe.APPLICATION_FIELD = RelationField("applicationField")
 SnowflakePipe.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SnowflakePipe.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SnowflakePipe.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SnowflakePipe.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SnowflakePipe.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SnowflakePipe.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SnowflakePipe.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -1083,7 +1245,9 @@ SnowflakePipe.DBT_TESTS = RelationField("dbtTests")
 SnowflakePipe.DBT_SOURCES = RelationField("dbtSources")
 SnowflakePipe.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 SnowflakePipe.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-SnowflakePipe.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SnowflakePipe.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SnowflakePipe.MEANINGS = RelationField("meanings")
 SnowflakePipe.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 SnowflakePipe.MC_MONITORS = RelationField("mcMonitors")
@@ -1099,10 +1263,14 @@ SnowflakePipe.LINKS = RelationField("links")
 SnowflakePipe.README = RelationField("readme")
 SnowflakePipe.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SnowflakePipe.ATLAN_SCHEMA = RelationField("atlanSchema")
-SnowflakePipe.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+SnowflakePipe.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 SnowflakePipe.SODA_CHECKS = RelationField("sodaChecks")
 SnowflakePipe.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SnowflakePipe.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
 SnowflakePipe.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
 SnowflakePipe.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
-SnowflakePipe.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
+SnowflakePipe.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

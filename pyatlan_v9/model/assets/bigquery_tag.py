@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -35,7 +35,12 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -49,8 +54,14 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -59,6 +70,7 @@ from .bigquery_related import RelatedBigqueryTag
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class BigqueryTag(Asset):
@@ -223,7 +235,9 @@ class BigqueryTag(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -307,7 +321,9 @@ class BigqueryTag(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -316,7 +332,9 @@ class BigqueryTag(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -331,13 +349,17 @@ class BigqueryTag(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -367,7 +389,9 @@ class BigqueryTag(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -379,10 +403,14 @@ class BigqueryTag(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -394,13 +422,19 @@ class BigqueryTag(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -524,6 +558,7 @@ class BigqueryTag(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class BigqueryTagAttributes(AssetAttributes):
     """BigqueryTag-specific attributes for nested API format."""
 
@@ -599,7 +634,9 @@ class BigqueryTagAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -650,6 +687,7 @@ class BigqueryTagAttributes(AssetAttributes):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+
 class BigqueryTagRelationshipAttributes(AssetRelationshipAttributes):
     """BigqueryTag-specific relationship attributes for nested API format."""
 
@@ -686,7 +724,9 @@ class BigqueryTagRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -695,7 +735,9 @@ class BigqueryTagRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -710,13 +752,17 @@ class BigqueryTagRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -746,7 +792,9 @@ class BigqueryTagRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -758,10 +806,14 @@ class BigqueryTagRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -773,22 +825,34 @@ class BigqueryTagRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class BigqueryTagNested(AssetNested):
     """BigqueryTag in nested API format for high-performance serialization."""
 
     attributes: Union[BigqueryTagAttributes, UnsetType] = UNSET
     relationship_attributes: Union[BigqueryTagRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[BigqueryTagRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[BigqueryTagRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        BigqueryTagRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        BigqueryTagRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -841,7 +905,10 @@ _BIGQUERY_TAG_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-def _populate_bigquery_tag_attrs(attrs: BigqueryTagAttributes, obj: BigqueryTag) -> None:
+
+def _populate_bigquery_tag_attrs(
+    attrs: BigqueryTagAttributes, obj: BigqueryTag
+) -> None:
     """Populate BigqueryTag-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.bigquery_tag_type = obj.bigquery_tag_type
@@ -872,9 +939,13 @@ def _populate_bigquery_tag_attrs(attrs: BigqueryTagAttributes, obj: BigqueryTag)
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
     attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
@@ -885,6 +956,7 @@ def _populate_bigquery_tag_attrs(attrs: BigqueryTagAttributes, obj: BigqueryTag)
     attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
+
 
 def _extract_bigquery_tag_attrs(attrs: BigqueryTagAttributes) -> dict:
     """Extract all BigqueryTag attributes from the attrs struct into a flat dict."""
@@ -913,14 +985,24 @@ def _extract_bigquery_tag_attrs(attrs: BigqueryTagAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
     result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
     result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
@@ -931,6 +1013,7 @@ def _extract_bigquery_tag_attrs(attrs: BigqueryTagAttributes) -> dict:
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -974,16 +1057,19 @@ def _bigquery_tag_to_nested(bigquery_tag: BigqueryTag) -> BigqueryTagNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _bigquery_tag_from_nested(nested: BigqueryTagNested) -> BigqueryTag:
     """Convert nested format to flat BigqueryTag."""
-    attrs = nested.attributes if nested.attributes is not UNSET else BigqueryTagAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else BigqueryTagAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _BIGQUERY_TAG_REL_FIELDS,
-        BigqueryTagRelationshipAttributes
+        BigqueryTagRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -1016,6 +1102,7 @@ def _bigquery_tag_from_nested(nested: BigqueryTagNested) -> BigqueryTag:
     kwargs.update(merged_rels)
     return BigqueryTag(**kwargs)
 
+
 def _bigquery_tag_to_nested_bytes(bigquery_tag: BigqueryTag, serde: Serde) -> bytes:
     """Convert flat BigqueryTag to nested JSON bytes."""
     return serde.encode(_bigquery_tag_to_nested(bigquery_tag))
@@ -1025,6 +1112,7 @@ def _bigquery_tag_from_nested_bytes(data: bytes, serde: Serde) -> BigqueryTag:
     """Convert nested JSON bytes to flat BigqueryTag."""
     nested = serde.decode(data, BigqueryTagNested)
     return _bigquery_tag_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1038,46 +1126,101 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 BigqueryTag.BIGQUERY_TAG_TYPE = KeywordField("bigqueryTagType", "bigqueryTagType")
-BigqueryTag.BIGQUERY_TAG_HIERARCHY = KeywordField("bigqueryTagHierarchy", "bigqueryTagHierarchy")
-BigqueryTag.BIGQUERY_TAG_TAXONOMY_PROPERTIES = KeywordField("bigqueryTagTaxonomyProperties", "bigqueryTagTaxonomyProperties")
+BigqueryTag.BIGQUERY_TAG_HIERARCHY = KeywordField(
+    "bigqueryTagHierarchy", "bigqueryTagHierarchy"
+)
+BigqueryTag.BIGQUERY_TAG_TAXONOMY_PROPERTIES = KeywordField(
+    "bigqueryTagTaxonomyProperties", "bigqueryTagTaxonomyProperties"
+)
 BigqueryTag.TAG_ID = KeywordField("tagId", "tagId")
 BigqueryTag.TAG_ATTRIBUTES = KeywordField("tagAttributes", "tagAttributes")
-BigqueryTag.TAG_ALLOWED_VALUES = KeywordTextField("tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text")
-BigqueryTag.MAPPED_CLASSIFICATION_NAME = KeywordField("mappedClassificationName", "mappedClassificationName")
-BigqueryTag.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+BigqueryTag.TAG_ALLOWED_VALUES = KeywordTextField(
+    "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+)
+BigqueryTag.MAPPED_CLASSIFICATION_NAME = KeywordField(
+    "mappedClassificationName", "mappedClassificationName"
+)
+BigqueryTag.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 BigqueryTag.QUERY_COUNT = NumericField("queryCount", "queryCount")
 BigqueryTag.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 BigqueryTag.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-BigqueryTag.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+BigqueryTag.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 BigqueryTag.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-BigqueryTag.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+BigqueryTag.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 BigqueryTag.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-BigqueryTag.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+BigqueryTag.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 BigqueryTag.TABLE_NAME = KeywordField("tableName", "tableName")
-BigqueryTag.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+BigqueryTag.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 BigqueryTag.VIEW_NAME = KeywordField("viewName", "viewName")
 BigqueryTag.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-BigqueryTag.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-BigqueryTag.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+BigqueryTag.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+BigqueryTag.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 BigqueryTag.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 BigqueryTag.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-BigqueryTag.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+BigqueryTag.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 BigqueryTag.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 BigqueryTag.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-BigqueryTag.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-BigqueryTag.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-BigqueryTag.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-BigqueryTag.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-BigqueryTag.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
-BigqueryTag.SQL_COALESCE_LAST_RUN_STATUS = KeywordField("sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus")
-BigqueryTag.SQL_COALESCE_NODE_STATUS = KeywordField("sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus")
-BigqueryTag.SQL_COALESCE_LAST_RUN_AT = NumericField("sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt")
-BigqueryTag.SQL_COALESCE_NODE_TYPE = KeywordField("sqlCoalesceNodeType", "sqlCoalesceNodeType")
-BigqueryTag.SQL_COALESCE_ENVIRONMENT_ID = KeywordField("sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId")
-BigqueryTag.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField("sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName.text")
-BigqueryTag.SQL_COALESCE_PROJECT_ID = KeywordField("sqlCoalesceProjectId", "sqlCoalesceProjectId")
-BigqueryTag.SQL_COALESCE_PROJECT_NAME = KeywordTextField("sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text")
-BigqueryTag.SQL_SHARE_QUALIFIED_NAMES = KeywordField("sqlShareQualifiedNames", "sqlShareQualifiedNames")
+BigqueryTag.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+BigqueryTag.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+BigqueryTag.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+BigqueryTag.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+BigqueryTag.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+BigqueryTag.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+BigqueryTag.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+BigqueryTag.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+BigqueryTag.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+BigqueryTag.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+BigqueryTag.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+BigqueryTag.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+BigqueryTag.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+BigqueryTag.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
 BigqueryTag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 BigqueryTag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 BigqueryTag.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -1085,7 +1228,9 @@ BigqueryTag.APPLICATION = RelationField("application")
 BigqueryTag.APPLICATION_FIELD = RelationField("applicationField")
 BigqueryTag.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 BigqueryTag.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-BigqueryTag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+BigqueryTag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 BigqueryTag.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 BigqueryTag.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 BigqueryTag.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -1099,7 +1244,9 @@ BigqueryTag.DBT_TESTS = RelationField("dbtTests")
 BigqueryTag.DBT_SOURCES = RelationField("dbtSources")
 BigqueryTag.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 BigqueryTag.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-BigqueryTag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+BigqueryTag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 BigqueryTag.MEANINGS = RelationField("meanings")
 BigqueryTag.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 BigqueryTag.MC_MONITORS = RelationField("mcMonitors")
@@ -1114,10 +1261,14 @@ BigqueryTag.FILES = RelationField("files")
 BigqueryTag.LINKS = RelationField("links")
 BigqueryTag.README = RelationField("readme")
 BigqueryTag.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-BigqueryTag.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+BigqueryTag.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 BigqueryTag.SODA_CHECKS = RelationField("sodaChecks")
 BigqueryTag.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 BigqueryTag.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
 BigqueryTag.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
 BigqueryTag.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
-BigqueryTag.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
+BigqueryTag.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

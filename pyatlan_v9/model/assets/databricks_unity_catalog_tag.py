@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -36,7 +36,12 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -50,8 +55,14 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -60,6 +71,7 @@ from .databricks_related import RelatedDatabricksUnityCatalogTag
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DatabricksUnityCatalogTag(Asset):
@@ -212,7 +224,9 @@ class DatabricksUnityCatalogTag(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -296,7 +310,9 @@ class DatabricksUnityCatalogTag(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -305,7 +321,9 @@ class DatabricksUnityCatalogTag(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -320,13 +338,17 @@ class DatabricksUnityCatalogTag(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -356,7 +378,9 @@ class DatabricksUnityCatalogTag(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -368,10 +392,14 @@ class DatabricksUnityCatalogTag(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -383,13 +411,19 @@ class DatabricksUnityCatalogTag(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -399,9 +433,7 @@ class DatabricksUnityCatalogTag(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/tag/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/tag/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -454,7 +486,9 @@ class DatabricksUnityCatalogTag(Asset):
             A new DatabricksUnityCatalogTag instance with only the minimum required fields.
         """
         self.validate()
-        return DatabricksUnityCatalogTag(qualified_name=self.qualified_name, name=self.name)
+        return DatabricksUnityCatalogTag(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     def relate(self) -> "RelatedDatabricksUnityCatalogTag":
         """
@@ -500,7 +534,9 @@ class DatabricksUnityCatalogTag(Asset):
         return _databricks_unity_catalog_tag_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DatabricksUnityCatalogTag:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DatabricksUnityCatalogTag:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -521,6 +557,7 @@ class DatabricksUnityCatalogTag(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DatabricksUnityCatalogTagAttributes(AssetAttributes):
     """DatabricksUnityCatalogTag-specific attributes for nested API format."""
@@ -588,7 +625,9 @@ class DatabricksUnityCatalogTagAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -639,6 +678,7 @@ class DatabricksUnityCatalogTagAttributes(AssetAttributes):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+
 class DatabricksUnityCatalogTagRelationshipAttributes(AssetRelationshipAttributes):
     """DatabricksUnityCatalogTag-specific relationship attributes for nested API format."""
 
@@ -675,7 +715,9 @@ class DatabricksUnityCatalogTagRelationshipAttributes(AssetRelationshipAttribute
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -684,7 +726,9 @@ class DatabricksUnityCatalogTagRelationshipAttributes(AssetRelationshipAttribute
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -699,13 +743,17 @@ class DatabricksUnityCatalogTagRelationshipAttributes(AssetRelationshipAttribute
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -735,7 +783,9 @@ class DatabricksUnityCatalogTagRelationshipAttributes(AssetRelationshipAttribute
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -747,10 +797,14 @@ class DatabricksUnityCatalogTagRelationshipAttributes(AssetRelationshipAttribute
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -762,22 +816,36 @@ class DatabricksUnityCatalogTagRelationshipAttributes(AssetRelationshipAttribute
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class DatabricksUnityCatalogTagNested(AssetNested):
     """DatabricksUnityCatalogTag in nested API format for high-performance serialization."""
 
     attributes: Union[DatabricksUnityCatalogTagAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DatabricksUnityCatalogTagRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DatabricksUnityCatalogTagRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DatabricksUnityCatalogTagRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        DatabricksUnityCatalogTagRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        DatabricksUnityCatalogTagRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DatabricksUnityCatalogTagRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -830,7 +898,10 @@ _DATABRICKS_UNITY_CATALOG_TAG_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-def _populate_databricks_unity_catalog_tag_attrs(attrs: DatabricksUnityCatalogTagAttributes, obj: DatabricksUnityCatalogTag) -> None:
+
+def _populate_databricks_unity_catalog_tag_attrs(
+    attrs: DatabricksUnityCatalogTagAttributes, obj: DatabricksUnityCatalogTag
+) -> None:
     """Populate DatabricksUnityCatalogTag-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.tag_id = obj.tag_id
@@ -858,9 +929,13 @@ def _populate_databricks_unity_catalog_tag_attrs(attrs: DatabricksUnityCatalogTa
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
     attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
@@ -872,7 +947,10 @@ def _populate_databricks_unity_catalog_tag_attrs(attrs: DatabricksUnityCatalogTa
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
 
-def _extract_databricks_unity_catalog_tag_attrs(attrs: DatabricksUnityCatalogTagAttributes) -> dict:
+
+def _extract_databricks_unity_catalog_tag_attrs(
+    attrs: DatabricksUnityCatalogTagAttributes,
+) -> dict:
     """Extract all DatabricksUnityCatalogTag attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["tag_id"] = attrs.tag_id
@@ -896,14 +974,24 @@ def _extract_databricks_unity_catalog_tag_attrs(attrs: DatabricksUnityCatalogTag
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
     result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
     result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
@@ -915,18 +1003,23 @@ def _extract_databricks_unity_catalog_tag_attrs(attrs: DatabricksUnityCatalogTag
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _databricks_unity_catalog_tag_to_nested(databricks_unity_catalog_tag: DatabricksUnityCatalogTag) -> DatabricksUnityCatalogTagNested:
+def _databricks_unity_catalog_tag_to_nested(
+    databricks_unity_catalog_tag: DatabricksUnityCatalogTag,
+) -> DatabricksUnityCatalogTagNested:
     """Convert flat DatabricksUnityCatalogTag to nested format."""
     attrs = DatabricksUnityCatalogTagAttributes()
     _populate_databricks_unity_catalog_tag_attrs(attrs, databricks_unity_catalog_tag)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        databricks_unity_catalog_tag, _DATABRICKS_UNITY_CATALOG_TAG_REL_FIELDS, DatabricksUnityCatalogTagRelationshipAttributes
+        databricks_unity_catalog_tag,
+        _DATABRICKS_UNITY_CATALOG_TAG_REL_FIELDS,
+        DatabricksUnityCatalogTagRelationshipAttributes,
     )
     return DatabricksUnityCatalogTagNested(
         guid=databricks_unity_catalog_tag.guid,
@@ -957,16 +1050,23 @@ def _databricks_unity_catalog_tag_to_nested(databricks_unity_catalog_tag: Databr
         remove_relationship_attributes=remove_rels,
     )
 
-def _databricks_unity_catalog_tag_from_nested(nested: DatabricksUnityCatalogTagNested) -> DatabricksUnityCatalogTag:
+
+def _databricks_unity_catalog_tag_from_nested(
+    nested: DatabricksUnityCatalogTagNested,
+) -> DatabricksUnityCatalogTag:
     """Convert nested format to flat DatabricksUnityCatalogTag."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DatabricksUnityCatalogTagAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DatabricksUnityCatalogTagAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABRICKS_UNITY_CATALOG_TAG_REL_FIELDS,
-        DatabricksUnityCatalogTagRelationshipAttributes
+        DatabricksUnityCatalogTagRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -999,15 +1099,23 @@ def _databricks_unity_catalog_tag_from_nested(nested: DatabricksUnityCatalogTagN
     kwargs.update(merged_rels)
     return DatabricksUnityCatalogTag(**kwargs)
 
-def _databricks_unity_catalog_tag_to_nested_bytes(databricks_unity_catalog_tag: DatabricksUnityCatalogTag, serde: Serde) -> bytes:
+
+def _databricks_unity_catalog_tag_to_nested_bytes(
+    databricks_unity_catalog_tag: DatabricksUnityCatalogTag, serde: Serde
+) -> bytes:
     """Convert flat DatabricksUnityCatalogTag to nested JSON bytes."""
-    return serde.encode(_databricks_unity_catalog_tag_to_nested(databricks_unity_catalog_tag))
+    return serde.encode(
+        _databricks_unity_catalog_tag_to_nested(databricks_unity_catalog_tag)
+    )
 
 
-def _databricks_unity_catalog_tag_from_nested_bytes(data: bytes, serde: Serde) -> DatabricksUnityCatalogTag:
+def _databricks_unity_catalog_tag_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DatabricksUnityCatalogTag:
     """Convert nested JSON bytes to flat DatabricksUnityCatalogTag."""
     nested = serde.decode(data, DatabricksUnityCatalogTagNested)
     return _databricks_unity_catalog_tag_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1021,65 +1129,144 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 DatabricksUnityCatalogTag.TAG_ID = KeywordField("tagId", "tagId")
-DatabricksUnityCatalogTag.TAG_ATTRIBUTES = KeywordField("tagAttributes", "tagAttributes")
-DatabricksUnityCatalogTag.TAG_ALLOWED_VALUES = KeywordTextField("tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text")
-DatabricksUnityCatalogTag.MAPPED_CLASSIFICATION_NAME = KeywordField("mappedClassificationName", "mappedClassificationName")
-DatabricksUnityCatalogTag.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+DatabricksUnityCatalogTag.TAG_ATTRIBUTES = KeywordField(
+    "tagAttributes", "tagAttributes"
+)
+DatabricksUnityCatalogTag.TAG_ALLOWED_VALUES = KeywordTextField(
+    "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+)
+DatabricksUnityCatalogTag.MAPPED_CLASSIFICATION_NAME = KeywordField(
+    "mappedClassificationName", "mappedClassificationName"
+)
+DatabricksUnityCatalogTag.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DatabricksUnityCatalogTag.QUERY_COUNT = NumericField("queryCount", "queryCount")
-DatabricksUnityCatalogTag.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
+DatabricksUnityCatalogTag.QUERY_USER_COUNT = NumericField(
+    "queryUserCount", "queryUserCount"
+)
 DatabricksUnityCatalogTag.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DatabricksUnityCatalogTag.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DatabricksUnityCatalogTag.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DatabricksUnityCatalogTag.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DatabricksUnityCatalogTag.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DatabricksUnityCatalogTag.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DatabricksUnityCatalogTag.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DatabricksUnityCatalogTag.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DatabricksUnityCatalogTag.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DatabricksUnityCatalogTag.TABLE_NAME = KeywordField("tableName", "tableName")
-DatabricksUnityCatalogTag.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DatabricksUnityCatalogTag.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DatabricksUnityCatalogTag.VIEW_NAME = KeywordField("viewName", "viewName")
-DatabricksUnityCatalogTag.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DatabricksUnityCatalogTag.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DatabricksUnityCatalogTag.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DatabricksUnityCatalogTag.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DatabricksUnityCatalogTag.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DatabricksUnityCatalogTag.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DatabricksUnityCatalogTag.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-DatabricksUnityCatalogTag.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DatabricksUnityCatalogTag.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DatabricksUnityCatalogTag.LAST_PROFILED_AT = NumericField(
+    "lastProfiledAt", "lastProfiledAt"
+)
+DatabricksUnityCatalogTag.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DatabricksUnityCatalogTag.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DatabricksUnityCatalogTag.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
-DatabricksUnityCatalogTag.SQL_COALESCE_LAST_RUN_STATUS = KeywordField("sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus")
-DatabricksUnityCatalogTag.SQL_COALESCE_NODE_STATUS = KeywordField("sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus")
-DatabricksUnityCatalogTag.SQL_COALESCE_LAST_RUN_AT = NumericField("sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt")
-DatabricksUnityCatalogTag.SQL_COALESCE_NODE_TYPE = KeywordField("sqlCoalesceNodeType", "sqlCoalesceNodeType")
-DatabricksUnityCatalogTag.SQL_COALESCE_ENVIRONMENT_ID = KeywordField("sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId")
-DatabricksUnityCatalogTag.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField("sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName", "sqlCoalesceEnvironmentName.text")
-DatabricksUnityCatalogTag.SQL_COALESCE_PROJECT_ID = KeywordField("sqlCoalesceProjectId", "sqlCoalesceProjectId")
-DatabricksUnityCatalogTag.SQL_COALESCE_PROJECT_NAME = KeywordTextField("sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text")
-DatabricksUnityCatalogTag.SQL_SHARE_QUALIFIED_NAMES = KeywordField("sqlShareQualifiedNames", "sqlShareQualifiedNames")
+DatabricksUnityCatalogTag.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = (
+    NumericField(
+        "sqlAiInsightsPopularBusinessQuestionCount",
+        "sqlAiInsightsPopularBusinessQuestionCount",
+    )
+)
+DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+DatabricksUnityCatalogTag.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+DatabricksUnityCatalogTag.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+DatabricksUnityCatalogTag.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+DatabricksUnityCatalogTag.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+DatabricksUnityCatalogTag.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+DatabricksUnityCatalogTag.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+DatabricksUnityCatalogTag.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+DatabricksUnityCatalogTag.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+DatabricksUnityCatalogTag.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+DatabricksUnityCatalogTag.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
 DatabricksUnityCatalogTag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-DatabricksUnityCatalogTag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+DatabricksUnityCatalogTag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 DatabricksUnityCatalogTag.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DatabricksUnityCatalogTag.APPLICATION = RelationField("application")
 DatabricksUnityCatalogTag.APPLICATION_FIELD = RelationField("applicationField")
 DatabricksUnityCatalogTag.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 DatabricksUnityCatalogTag.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DatabricksUnityCatalogTag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-DatabricksUnityCatalogTag.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-DatabricksUnityCatalogTag.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DatabricksUnityCatalogTag.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DatabricksUnityCatalogTag.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DatabricksUnityCatalogTag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+DatabricksUnityCatalogTag.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+DatabricksUnityCatalogTag.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+DatabricksUnityCatalogTag.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DatabricksUnityCatalogTag.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DatabricksUnityCatalogTag.METRICS = RelationField("metrics")
 DatabricksUnityCatalogTag.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DatabricksUnityCatalogTag.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+DatabricksUnityCatalogTag.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 DatabricksUnityCatalogTag.DBT_MODELS = RelationField("dbtModels")
 DatabricksUnityCatalogTag.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 DatabricksUnityCatalogTag.DBT_TESTS = RelationField("dbtTests")
 DatabricksUnityCatalogTag.DBT_SOURCES = RelationField("dbtSources")
 DatabricksUnityCatalogTag.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DatabricksUnityCatalogTag.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-DatabricksUnityCatalogTag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+DatabricksUnityCatalogTag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DatabricksUnityCatalogTag.MEANINGS = RelationField("meanings")
 DatabricksUnityCatalogTag.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 DatabricksUnityCatalogTag.MC_MONITORS = RelationField("mcMonitors")
@@ -1088,16 +1275,30 @@ DatabricksUnityCatalogTag.PARTIAL_CHILD_FIELDS = RelationField("partialChildFiel
 DatabricksUnityCatalogTag.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 DatabricksUnityCatalogTag.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DatabricksUnityCatalogTag.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-DatabricksUnityCatalogTag.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DatabricksUnityCatalogTag.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+DatabricksUnityCatalogTag.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+DatabricksUnityCatalogTag.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 DatabricksUnityCatalogTag.FILES = RelationField("files")
 DatabricksUnityCatalogTag.LINKS = RelationField("links")
 DatabricksUnityCatalogTag.README = RelationField("readme")
-DatabricksUnityCatalogTag.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DatabricksUnityCatalogTag.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+DatabricksUnityCatalogTag.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
+DatabricksUnityCatalogTag.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DatabricksUnityCatalogTag.SODA_CHECKS = RelationField("sodaChecks")
 DatabricksUnityCatalogTag.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DatabricksUnityCatalogTag.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-DatabricksUnityCatalogTag.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
-DatabricksUnityCatalogTag.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
-DatabricksUnityCatalogTag.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
+DatabricksUnityCatalogTag.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
+    "sqlInsightOutgoingJoins"
+)
+DatabricksUnityCatalogTag.SQL_INSIGHT_INCOMING_JOINS = RelationField(
+    "sqlInsightIncomingJoins"
+)
+DatabricksUnityCatalogTag.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

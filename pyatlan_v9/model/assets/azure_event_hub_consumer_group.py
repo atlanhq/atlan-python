@@ -14,9 +14,8 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -47,7 +46,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
@@ -57,6 +59,7 @@ from .kafka_related import RelatedAzureEventHubConsumerGroup, RelatedKafkaTopic
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AzureEventHubConsumerGroup(Asset):
@@ -106,7 +109,9 @@ class AzureEventHubConsumerGroup(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    kafka_consumer_group_topic_consumption_properties: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    kafka_consumer_group_topic_consumption_properties: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of consumption properties for Kafka topics, for this consumer group."""
 
     kafka_consumer_group_member_count: Union[int, None, UnsetType] = UNSET
@@ -160,7 +165,9 @@ class AzureEventHubConsumerGroup(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -169,10 +176,14 @@ class AzureEventHubConsumerGroup(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -205,7 +216,9 @@ class AzureEventHubConsumerGroup(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -217,7 +230,9 @@ class AzureEventHubConsumerGroup(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -280,7 +295,9 @@ class AzureEventHubConsumerGroup(Asset):
             A new AzureEventHubConsumerGroup instance with only the minimum required fields.
         """
         self.validate()
-        return AzureEventHubConsumerGroup(qualified_name=self.qualified_name, name=self.name)
+        return AzureEventHubConsumerGroup(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     def relate(self) -> "RelatedAzureEventHubConsumerGroup":
         """
@@ -362,7 +379,9 @@ class AzureEventHubConsumerGroup(Asset):
         return _azure_event_hub_consumer_group_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AzureEventHubConsumerGroup:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> AzureEventHubConsumerGroup:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -384,10 +403,13 @@ class AzureEventHubConsumerGroup(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AzureEventHubConsumerGroupAttributes(AssetAttributes):
     """AzureEventHubConsumerGroup-specific attributes for nested API format."""
 
-    kafka_consumer_group_topic_consumption_properties: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    kafka_consumer_group_topic_consumption_properties: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of consumption properties for Kafka topics, for this consumer group."""
 
     kafka_consumer_group_member_count: Union[int, None, UnsetType] = UNSET
@@ -407,6 +429,7 @@ class AzureEventHubConsumerGroupAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class AzureEventHubConsumerGroupRelationshipAttributes(AssetRelationshipAttributes):
     """AzureEventHubConsumerGroup-specific relationship attributes for nested API format."""
@@ -444,7 +467,9 @@ class AzureEventHubConsumerGroupRelationshipAttributes(AssetRelationshipAttribut
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -453,10 +478,14 @@ class AzureEventHubConsumerGroupRelationshipAttributes(AssetRelationshipAttribut
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -489,7 +518,9 @@ class AzureEventHubConsumerGroupRelationshipAttributes(AssetRelationshipAttribut
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -501,7 +532,9 @@ class AzureEventHubConsumerGroupRelationshipAttributes(AssetRelationshipAttribut
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -513,13 +546,21 @@ class AzureEventHubConsumerGroupRelationshipAttributes(AssetRelationshipAttribut
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class AzureEventHubConsumerGroupNested(AssetNested):
     """AzureEventHubConsumerGroup in nested API format for high-performance serialization."""
 
     attributes: Union[AzureEventHubConsumerGroupAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[AzureEventHubConsumerGroupRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[AzureEventHubConsumerGroupRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[AzureEventHubConsumerGroupRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        AzureEventHubConsumerGroupRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        AzureEventHubConsumerGroupRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AzureEventHubConsumerGroupRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -563,41 +604,64 @@ _AZURE_EVENT_HUB_CONSUMER_GROUP_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_azure_event_hub_consumer_group_attrs(attrs: AzureEventHubConsumerGroupAttributes, obj: AzureEventHubConsumerGroup) -> None:
+
+def _populate_azure_event_hub_consumer_group_attrs(
+    attrs: AzureEventHubConsumerGroupAttributes, obj: AzureEventHubConsumerGroup
+) -> None:
     """Populate AzureEventHubConsumerGroup-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.kafka_consumer_group_topic_consumption_properties = obj.kafka_consumer_group_topic_consumption_properties
+    attrs.kafka_consumer_group_topic_consumption_properties = (
+        obj.kafka_consumer_group_topic_consumption_properties
+    )
     attrs.kafka_consumer_group_member_count = obj.kafka_consumer_group_member_count
     attrs.kafka_topic_names = obj.kafka_topic_names
     attrs.kafka_topic_qualified_names = obj.kafka_topic_qualified_names
     attrs.kafka_consumer_group_state = obj.kafka_consumer_group_state
-    attrs.kafka_consumer_group_assigned_partitions = obj.kafka_consumer_group_assigned_partitions
+    attrs.kafka_consumer_group_assigned_partitions = (
+        obj.kafka_consumer_group_assigned_partitions
+    )
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-def _extract_azure_event_hub_consumer_group_attrs(attrs: AzureEventHubConsumerGroupAttributes) -> dict:
+
+def _extract_azure_event_hub_consumer_group_attrs(
+    attrs: AzureEventHubConsumerGroupAttributes,
+) -> dict:
     """Extract all AzureEventHubConsumerGroup attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["kafka_consumer_group_topic_consumption_properties"] = attrs.kafka_consumer_group_topic_consumption_properties
-    result["kafka_consumer_group_member_count"] = attrs.kafka_consumer_group_member_count
+    result["kafka_consumer_group_topic_consumption_properties"] = (
+        attrs.kafka_consumer_group_topic_consumption_properties
+    )
+    result["kafka_consumer_group_member_count"] = (
+        attrs.kafka_consumer_group_member_count
+    )
     result["kafka_topic_names"] = attrs.kafka_topic_names
     result["kafka_topic_qualified_names"] = attrs.kafka_topic_qualified_names
     result["kafka_consumer_group_state"] = attrs.kafka_consumer_group_state
-    result["kafka_consumer_group_assigned_partitions"] = attrs.kafka_consumer_group_assigned_partitions
+    result["kafka_consumer_group_assigned_partitions"] = (
+        attrs.kafka_consumer_group_assigned_partitions
+    )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _azure_event_hub_consumer_group_to_nested(azure_event_hub_consumer_group: AzureEventHubConsumerGroup) -> AzureEventHubConsumerGroupNested:
+def _azure_event_hub_consumer_group_to_nested(
+    azure_event_hub_consumer_group: AzureEventHubConsumerGroup,
+) -> AzureEventHubConsumerGroupNested:
     """Convert flat AzureEventHubConsumerGroup to nested format."""
     attrs = AzureEventHubConsumerGroupAttributes()
-    _populate_azure_event_hub_consumer_group_attrs(attrs, azure_event_hub_consumer_group)
+    _populate_azure_event_hub_consumer_group_attrs(
+        attrs, azure_event_hub_consumer_group
+    )
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        azure_event_hub_consumer_group, _AZURE_EVENT_HUB_CONSUMER_GROUP_REL_FIELDS, AzureEventHubConsumerGroupRelationshipAttributes
+        azure_event_hub_consumer_group,
+        _AZURE_EVENT_HUB_CONSUMER_GROUP_REL_FIELDS,
+        AzureEventHubConsumerGroupRelationshipAttributes,
     )
     return AzureEventHubConsumerGroupNested(
         guid=azure_event_hub_consumer_group.guid,
@@ -628,16 +692,23 @@ def _azure_event_hub_consumer_group_to_nested(azure_event_hub_consumer_group: Az
         remove_relationship_attributes=remove_rels,
     )
 
-def _azure_event_hub_consumer_group_from_nested(nested: AzureEventHubConsumerGroupNested) -> AzureEventHubConsumerGroup:
+
+def _azure_event_hub_consumer_group_from_nested(
+    nested: AzureEventHubConsumerGroupNested,
+) -> AzureEventHubConsumerGroup:
     """Convert nested format to flat AzureEventHubConsumerGroup."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AzureEventHubConsumerGroupAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AzureEventHubConsumerGroupAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AZURE_EVENT_HUB_CONSUMER_GROUP_REL_FIELDS,
-        AzureEventHubConsumerGroupRelationshipAttributes
+        AzureEventHubConsumerGroupRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -670,15 +741,23 @@ def _azure_event_hub_consumer_group_from_nested(nested: AzureEventHubConsumerGro
     kwargs.update(merged_rels)
     return AzureEventHubConsumerGroup(**kwargs)
 
-def _azure_event_hub_consumer_group_to_nested_bytes(azure_event_hub_consumer_group: AzureEventHubConsumerGroup, serde: Serde) -> bytes:
+
+def _azure_event_hub_consumer_group_to_nested_bytes(
+    azure_event_hub_consumer_group: AzureEventHubConsumerGroup, serde: Serde
+) -> bytes:
     """Convert flat AzureEventHubConsumerGroup to nested JSON bytes."""
-    return serde.encode(_azure_event_hub_consumer_group_to_nested(azure_event_hub_consumer_group))
+    return serde.encode(
+        _azure_event_hub_consumer_group_to_nested(azure_event_hub_consumer_group)
+    )
 
 
-def _azure_event_hub_consumer_group_from_nested_bytes(data: bytes, serde: Serde) -> AzureEventHubConsumerGroup:
+def _azure_event_hub_consumer_group_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> AzureEventHubConsumerGroup:
     """Convert nested JSON bytes to flat AzureEventHubConsumerGroup."""
     nested = serde.decode(data, AzureEventHubConsumerGroupNested)
     return _azure_event_hub_consumer_group_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -689,44 +768,85 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AzureEventHubConsumerGroup.KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES = KeywordField("kafkaConsumerGroupTopicConsumptionProperties", "kafkaConsumerGroupTopicConsumptionProperties")
-AzureEventHubConsumerGroup.KAFKA_CONSUMER_GROUP_MEMBER_COUNT = NumericField("kafkaConsumerGroupMemberCount", "kafkaConsumerGroupMemberCount")
-AzureEventHubConsumerGroup.KAFKA_TOPIC_NAMES = KeywordField("kafkaTopicNames", "kafkaTopicNames")
-AzureEventHubConsumerGroup.KAFKA_TOPIC_QUALIFIED_NAMES = KeywordField("kafkaTopicQualifiedNames", "kafkaTopicQualifiedNames")
-AzureEventHubConsumerGroup.KAFKA_CONSUMER_GROUP_STATE = KeywordField("kafkaConsumerGroupState", "kafkaConsumerGroupState")
-AzureEventHubConsumerGroup.KAFKA_CONSUMER_GROUP_ASSIGNED_PARTITIONS = KeywordField("kafkaConsumerGroupAssignedPartitions", "kafkaConsumerGroupAssignedPartitions")
-AzureEventHubConsumerGroup.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+AzureEventHubConsumerGroup.KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES = (
+    KeywordField(
+        "kafkaConsumerGroupTopicConsumptionProperties",
+        "kafkaConsumerGroupTopicConsumptionProperties",
+    )
+)
+AzureEventHubConsumerGroup.KAFKA_CONSUMER_GROUP_MEMBER_COUNT = NumericField(
+    "kafkaConsumerGroupMemberCount", "kafkaConsumerGroupMemberCount"
+)
+AzureEventHubConsumerGroup.KAFKA_TOPIC_NAMES = KeywordField(
+    "kafkaTopicNames", "kafkaTopicNames"
+)
+AzureEventHubConsumerGroup.KAFKA_TOPIC_QUALIFIED_NAMES = KeywordField(
+    "kafkaTopicQualifiedNames", "kafkaTopicQualifiedNames"
+)
+AzureEventHubConsumerGroup.KAFKA_CONSUMER_GROUP_STATE = KeywordField(
+    "kafkaConsumerGroupState", "kafkaConsumerGroupState"
+)
+AzureEventHubConsumerGroup.KAFKA_CONSUMER_GROUP_ASSIGNED_PARTITIONS = KeywordField(
+    "kafkaConsumerGroupAssignedPartitions", "kafkaConsumerGroupAssignedPartitions"
+)
+AzureEventHubConsumerGroup.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 AzureEventHubConsumerGroup.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-AzureEventHubConsumerGroup.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+AzureEventHubConsumerGroup.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 AzureEventHubConsumerGroup.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AzureEventHubConsumerGroup.APPLICATION = RelationField("application")
 AzureEventHubConsumerGroup.APPLICATION_FIELD = RelationField("applicationField")
 AzureEventHubConsumerGroup.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 AzureEventHubConsumerGroup.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AzureEventHubConsumerGroup.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-AzureEventHubConsumerGroup.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-AzureEventHubConsumerGroup.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-AzureEventHubConsumerGroup.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AzureEventHubConsumerGroup.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+AzureEventHubConsumerGroup.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+AzureEventHubConsumerGroup.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+AzureEventHubConsumerGroup.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+AzureEventHubConsumerGroup.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+AzureEventHubConsumerGroup.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 AzureEventHubConsumerGroup.METRICS = RelationField("metrics")
 AzureEventHubConsumerGroup.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-AzureEventHubConsumerGroup.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AzureEventHubConsumerGroup.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+AzureEventHubConsumerGroup.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+AzureEventHubConsumerGroup.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 AzureEventHubConsumerGroup.MEANINGS = RelationField("meanings")
 AzureEventHubConsumerGroup.KAFKA_TOPICS = RelationField("kafkaTopics")
-AzureEventHubConsumerGroup.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
+AzureEventHubConsumerGroup.KNOWLEDGE_LINKED_FILES = RelationField(
+    "knowledgeLinkedFiles"
+)
 AzureEventHubConsumerGroup.MC_MONITORS = RelationField("mcMonitors")
 AzureEventHubConsumerGroup.MC_INCIDENTS = RelationField("mcIncidents")
 AzureEventHubConsumerGroup.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
 AzureEventHubConsumerGroup.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 AzureEventHubConsumerGroup.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 AzureEventHubConsumerGroup.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-AzureEventHubConsumerGroup.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-AzureEventHubConsumerGroup.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+AzureEventHubConsumerGroup.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+AzureEventHubConsumerGroup.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 AzureEventHubConsumerGroup.FILES = RelationField("files")
 AzureEventHubConsumerGroup.LINKS = RelationField("links")
 AzureEventHubConsumerGroup.README = RelationField("readme")
-AzureEventHubConsumerGroup.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+AzureEventHubConsumerGroup.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 AzureEventHubConsumerGroup.SODA_CHECKS = RelationField("sodaChecks")
 AzureEventHubConsumerGroup.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 AzureEventHubConsumerGroup.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

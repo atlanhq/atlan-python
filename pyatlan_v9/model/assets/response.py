@@ -14,9 +14,8 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,7 +41,10 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -51,6 +53,7 @@ from .form_related import RelatedResponse
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Response(Asset):
@@ -124,10 +127,14 @@ class Response(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -145,7 +152,9 @@ class Response(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -157,7 +166,9 @@ class Response(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -277,6 +288,7 @@ class Response(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ResponseAttributes(AssetAttributes):
     """Response-specific attributes for nested API format."""
 
@@ -288,6 +300,7 @@ class ResponseAttributes(AssetAttributes):
 
     response_options: Union[Dict[str, str], None, UnsetType] = UNSET
     """Options of the response to a form."""
+
 
 class ResponseRelationshipAttributes(AssetRelationshipAttributes):
     """Response-specific relationship attributes for nested API format."""
@@ -322,10 +335,14 @@ class ResponseRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -343,7 +360,9 @@ class ResponseRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -355,19 +374,27 @@ class ResponseRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class ResponseNested(AssetNested):
     """Response in nested API format for high-performance serialization."""
 
     attributes: Union[ResponseAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ResponseRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ResponseRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ResponseRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[ResponseRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[ResponseRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -400,12 +427,14 @@ _RESPONSE_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
+
 def _populate_response_attrs(attrs: ResponseAttributes, obj: Response) -> None:
     """Populate Response-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.form_guid = obj.form_guid
     attrs.response_values = obj.response_values
     attrs.response_options = obj.response_options
+
 
 def _extract_response_attrs(attrs: ResponseAttributes) -> dict:
     """Extract all Response attributes from the attrs struct into a flat dict."""
@@ -414,6 +443,7 @@ def _extract_response_attrs(attrs: ResponseAttributes) -> dict:
     result["response_values"] = attrs.response_values
     result["response_options"] = attrs.response_options
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -457,16 +487,19 @@ def _response_to_nested(response: Response) -> ResponseNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _response_from_nested(nested: ResponseNested) -> Response:
     """Convert nested format to flat Response."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ResponseAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ResponseAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _RESPONSE_REL_FIELDS,
-        ResponseRelationshipAttributes
+        ResponseRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -499,6 +532,7 @@ def _response_from_nested(nested: ResponseNested) -> Response:
     kwargs.update(merged_rels)
     return Response(**kwargs)
 
+
 def _response_to_nested_bytes(response: Response, serde: Serde) -> bytes:
     """Convert flat Response to nested JSON bytes."""
     return serde.encode(_response_to_nested(response))
@@ -508,6 +542,7 @@ def _response_from_nested_bytes(data: bytes, serde: Serde) -> Response:
     """Convert nested JSON bytes to flat Response."""
     nested = serde.decode(data, ResponseNested)
     return _response_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -531,7 +566,9 @@ Response.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Response.METRICS = RelationField("metrics")
 Response.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Response.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Response.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Response.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Response.MEANINGS = RelationField("meanings")
 Response.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 Response.MC_MONITORS = RelationField("mcMonitors")

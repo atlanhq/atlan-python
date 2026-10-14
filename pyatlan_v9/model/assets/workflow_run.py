@@ -14,9 +14,8 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,7 +41,10 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -51,6 +53,7 @@ from .workflow_related import RelatedWorkflowRun
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class WorkflowRun(Asset):
@@ -156,10 +159,14 @@ class WorkflowRun(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -177,7 +184,9 @@ class WorkflowRun(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -189,7 +198,9 @@ class WorkflowRun(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -309,6 +320,7 @@ class WorkflowRun(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class WorkflowRunAttributes(AssetAttributes):
     """WorkflowRun-specific attributes for nested API format."""
 
@@ -345,6 +357,7 @@ class WorkflowRunAttributes(AssetAttributes):
     workflow_run_deleted_at: Union[int, None, UnsetType] = UNSET
     """Deletion time of this workflow run."""
 
+
 class WorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     """WorkflowRun-specific relationship attributes for nested API format."""
 
@@ -378,10 +391,14 @@ class WorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -399,7 +416,9 @@ class WorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -411,19 +430,27 @@ class WorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class WorkflowRunNested(AssetNested):
     """WorkflowRun in nested API format for high-performance serialization."""
 
     attributes: Union[WorkflowRunAttributes, UnsetType] = UNSET
     relationship_attributes: Union[WorkflowRunRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[WorkflowRunRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[WorkflowRunRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        WorkflowRunRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        WorkflowRunRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -456,7 +483,10 @@ _WORKFLOW_RUN_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-def _populate_workflow_run_attrs(attrs: WorkflowRunAttributes, obj: WorkflowRun) -> None:
+
+def _populate_workflow_run_attrs(
+    attrs: WorkflowRunAttributes, obj: WorkflowRun
+) -> None:
     """Populate WorkflowRun-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.workflow_run_workflow_guid = obj.workflow_run_workflow_guid
@@ -470,6 +500,7 @@ def _populate_workflow_run_attrs(attrs: WorkflowRunAttributes, obj: WorkflowRun)
     attrs.workflow_run_created_by = obj.workflow_run_created_by
     attrs.workflow_run_updated_by = obj.workflow_run_updated_by
     attrs.workflow_run_deleted_at = obj.workflow_run_deleted_at
+
 
 def _extract_workflow_run_attrs(attrs: WorkflowRunAttributes) -> dict:
     """Extract all WorkflowRun attributes from the attrs struct into a flat dict."""
@@ -486,6 +517,7 @@ def _extract_workflow_run_attrs(attrs: WorkflowRunAttributes) -> dict:
     result["workflow_run_updated_by"] = attrs.workflow_run_updated_by
     result["workflow_run_deleted_at"] = attrs.workflow_run_deleted_at
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -529,16 +561,19 @@ def _workflow_run_to_nested(workflow_run: WorkflowRun) -> WorkflowRunNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _workflow_run_from_nested(nested: WorkflowRunNested) -> WorkflowRun:
     """Convert nested format to flat WorkflowRun."""
-    attrs = nested.attributes if nested.attributes is not UNSET else WorkflowRunAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else WorkflowRunAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _WORKFLOW_RUN_REL_FIELDS,
-        WorkflowRunRelationshipAttributes
+        WorkflowRunRelationshipAttributes,
     )
     # Build kwargs so a field carried by both the top level and the merged
     # relationships (e.g. `meanings`) is passed once, with the relationship
@@ -571,6 +606,7 @@ def _workflow_run_from_nested(nested: WorkflowRunNested) -> WorkflowRun:
     kwargs.update(merged_rels)
     return WorkflowRun(**kwargs)
 
+
 def _workflow_run_to_nested_bytes(workflow_run: WorkflowRun, serde: Serde) -> bytes:
     """Convert flat WorkflowRun to nested JSON bytes."""
     return serde.encode(_workflow_run_to_nested(workflow_run))
@@ -581,6 +617,7 @@ def _workflow_run_from_nested_bytes(data: bytes, serde: Serde) -> WorkflowRun:
     nested = serde.decode(data, WorkflowRunNested)
     return _workflow_run_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -590,29 +627,49 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-WorkflowRun.WORKFLOW_RUN_WORKFLOW_GUID = KeywordField("workflowRunWorkflowGuid", "workflowRunWorkflowGuid")
+WorkflowRun.WORKFLOW_RUN_WORKFLOW_GUID = KeywordField(
+    "workflowRunWorkflowGuid", "workflowRunWorkflowGuid"
+)
 WorkflowRun.WORKFLOW_RUN_TYPE = KeywordField("workflowRunType", "workflowRunType")
-WorkflowRun.WORKFLOW_RUN_ACTION_CHOICES = KeywordField("workflowRunActionChoices", "workflowRunActionChoices")
-WorkflowRun.WORKFLOW_RUN_ON_ASSET_GUID = KeywordField("workflowRunOnAssetGuid", "workflowRunOnAssetGuid")
-WorkflowRun.WORKFLOW_RUN_COMMENT = KeywordField("workflowRunComment", "workflowRunComment")
+WorkflowRun.WORKFLOW_RUN_ACTION_CHOICES = KeywordField(
+    "workflowRunActionChoices", "workflowRunActionChoices"
+)
+WorkflowRun.WORKFLOW_RUN_ON_ASSET_GUID = KeywordField(
+    "workflowRunOnAssetGuid", "workflowRunOnAssetGuid"
+)
+WorkflowRun.WORKFLOW_RUN_COMMENT = KeywordField(
+    "workflowRunComment", "workflowRunComment"
+)
 WorkflowRun.WORKFLOW_RUN_CONFIG = KeywordField("workflowRunConfig", "workflowRunConfig")
 WorkflowRun.WORKFLOW_RUN_STATUS = KeywordField("workflowRunStatus", "workflowRunStatus")
-WorkflowRun.WORKFLOW_RUN_EXPIRES_AT = NumericField("workflowRunExpiresAt", "workflowRunExpiresAt")
-WorkflowRun.WORKFLOW_RUN_CREATED_BY = KeywordField("workflowRunCreatedBy", "workflowRunCreatedBy")
-WorkflowRun.WORKFLOW_RUN_UPDATED_BY = KeywordField("workflowRunUpdatedBy", "workflowRunUpdatedBy")
-WorkflowRun.WORKFLOW_RUN_DELETED_AT = NumericField("workflowRunDeletedAt", "workflowRunDeletedAt")
+WorkflowRun.WORKFLOW_RUN_EXPIRES_AT = NumericField(
+    "workflowRunExpiresAt", "workflowRunExpiresAt"
+)
+WorkflowRun.WORKFLOW_RUN_CREATED_BY = KeywordField(
+    "workflowRunCreatedBy", "workflowRunCreatedBy"
+)
+WorkflowRun.WORKFLOW_RUN_UPDATED_BY = KeywordField(
+    "workflowRunUpdatedBy", "workflowRunUpdatedBy"
+)
+WorkflowRun.WORKFLOW_RUN_DELETED_AT = NumericField(
+    "workflowRunDeletedAt", "workflowRunDeletedAt"
+)
 WorkflowRun.ANOMALO_CHECKS = RelationField("anomaloChecks")
 WorkflowRun.APPLICATION = RelationField("application")
 WorkflowRun.APPLICATION_FIELD = RelationField("applicationField")
 WorkflowRun.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 WorkflowRun.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-WorkflowRun.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+WorkflowRun.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 WorkflowRun.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 WorkflowRun.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 WorkflowRun.METRICS = RelationField("metrics")
 WorkflowRun.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 WorkflowRun.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-WorkflowRun.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+WorkflowRun.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 WorkflowRun.MEANINGS = RelationField("meanings")
 WorkflowRun.KNOWLEDGE_LINKED_FILES = RelationField("knowledgeLinkedFiles")
 WorkflowRun.MC_MONITORS = RelationField("mcMonitors")
