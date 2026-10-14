@@ -14,10 +14,19 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +41,10 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .context_related import RelatedContextRepository
+from .cosmos_mongo_db_related import (
+    RelatedCosmosMongoDBAccount,
+    RelatedCosmosMongoDBDatabase,
+)
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -47,17 +60,6 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .cosmos_mongo_db_related import (
-    RelatedCosmosMongoDBAccount,
-    RelatedCosmosMongoDBDatabase,
-)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -338,6 +340,8 @@ class CosmosMongoDBAccount(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/accounts/[^/]+$")
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this CosmosMongoDBAccount instance.
@@ -362,6 +366,11 @@ class CosmosMongoDBAccount(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"CosmosMongoDBAccount validation failed: {errors}")
 
@@ -393,6 +402,35 @@ class CosmosMongoDBAccount(Asset):
         if self.guid is not UNSET:
             return RelatedCosmosMongoDBAccount(guid=self.guid)
         return RelatedCosmosMongoDBAccount(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+    ) -> "CosmosMongoDBAccount":
+        validate_required_fields(
+            ["name", "connection_qualified_name"],
+            [name, connection_qualified_name],
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/accounts/{name}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "CosmosMongoDBAccount":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "CosmosMongoDBAccount":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
