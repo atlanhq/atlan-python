@@ -21,7 +21,6 @@
         cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(
             set_name=cm_name, attr_name=cm_attribute
         )
-        from pyatlan.model.enums import EntityStatus
 
         return cls(
             name=name,
@@ -50,7 +49,6 @@
         cm_attr_id = await client.custom_metadata_cache.get_attr_id_for_name(
             set_name=cm_name, attr_name=cm_attribute
         )
-        from pyatlan.model.enums import EntityStatus
 
         return cls(
             name=name,

@@ -15,7 +15,6 @@
 
     @classmethod
     def _generate_qualified_name(cls, client: "AtlanClient") -> str:
-        from pyatlan.errors import AtlanError
 
         try:
             username = client.user.get_current().username

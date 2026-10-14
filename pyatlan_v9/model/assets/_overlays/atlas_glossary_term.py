@@ -52,7 +52,6 @@
             )
 
         # Generate qualified name
-        import uuid
 
         qualified_name = f"{name}@{uuid.uuid4()}"
 
