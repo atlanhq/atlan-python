@@ -20,6 +20,14 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -53,7 +61,10 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import RelatedSapDatasphereReplicationFlow
+from .sap_related import (
+    RelatedSapDatasphereDataProduct,
+    RelatedSapDatasphereReplicationFlow,
+)
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeAIModelContext,
@@ -71,14 +82,6 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
 from .sql_related import (
     RelatedCalculationView,
     RelatedDatabase,
@@ -178,6 +181,7 @@ class Schema(Asset):
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
     SAP_DATASPHERE_REPLICATION_FLOWS: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     CALCULATION_VIEWS: ClassVar[Any] = None
     FUNCTIONS: ClassVar[Any] = None
     MATERIALISED_VIEWS: ClassVar[Any] = None
@@ -448,6 +452,11 @@ class Schema(Asset):
         List[RelatedSapDatasphereReplicationFlow], None, UnsetType
     ] = UNSET
     """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose objects from this schema (Datasphere space)."""
 
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
@@ -1011,6 +1020,11 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     ] = UNSET
     """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose objects from this schema (Datasphere space)."""
+
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
 
@@ -1155,6 +1169,7 @@ _SCHEMA_REL_FIELDS: List[str] = [
     "links",
     "readme",
     "sap_datasphere_replication_flows",
+    "sap_datasphere_data_products",
     "calculation_views",
     "functions",
     "materialised_views",
@@ -1516,6 +1531,7 @@ Schema.FILES = RelationField("files")
 Schema.LINKS = RelationField("links")
 Schema.README = RelationField("readme")
 Schema.SAP_DATASPHERE_REPLICATION_FLOWS = RelationField("sapDatasphereReplicationFlows")
+Schema.SAP_DATASPHERE_DATA_PRODUCTS = RelationField("sapDatasphereDataProducts")
 Schema.CALCULATION_VIEWS = RelationField("calculationViews")
 Schema.FUNCTIONS = RelationField("functions")
 Schema.MATERIALISED_VIEWS = RelationField("materialisedViews")

@@ -8,8 +8,8 @@ SkillArtifact module exports.
 This module provides convenient imports for all SkillArtifact types and their Related variants.
 """
 
-from .skill_artifact_related import RelatedSkillArtifact
 from .skill_artifact import SkillArtifact
+from .skill_artifact_related import RelatedSkillArtifact
 
 __all__ = [
     "RelatedSkillArtifact",

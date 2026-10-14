@@ -8,6 +8,12 @@ Snowflake module exports.
 This module provides convenient imports for all Snowflake types and their Related variants.
 """
 
+from .snowflake import Snowflake
+from .snowflake_ai_model_context import SnowflakeAIModelContext
+from .snowflake_ai_model_version import SnowflakeAIModelVersion
+from .snowflake_dynamic_table import SnowflakeDynamicTable
+from .snowflake_listing import SnowflakeListing
+from .snowflake_pipe import SnowflakePipe
 from .snowflake_related import (
     RelatedSnowflake,
     RelatedSnowflakeAIModelContext,
@@ -25,16 +31,15 @@ from .snowflake_related import (
     RelatedSnowflakeStream,
     RelatedSnowflakeTag,
 )
-from .snowflake import Snowflake
-from .snowflake_ai_model_context import SnowflakeAIModelContext
-from .snowflake_ai_model_version import SnowflakeAIModelVersion
-from .snowflake_listing import SnowflakeListing
 from .snowflake_semantic_dimension import SnowflakeSemanticDimension
 from .snowflake_semantic_fact import SnowflakeSemanticFact
 from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable
 from .snowflake_semantic_metric import SnowflakeSemanticMetric
 from .snowflake_semantic_view import SnowflakeSemanticView
 from .snowflake_share import SnowflakeShare
+from .snowflake_stage import SnowflakeStage
+from .snowflake_stream import SnowflakeStream
+from .snowflake_tag import SnowflakeTag
 
 __all__ = [
     "RelatedSnowflake",
@@ -55,11 +60,16 @@ __all__ = [
     "Snowflake",
     "SnowflakeAIModelContext",
     "SnowflakeAIModelVersion",
+    "SnowflakeDynamicTable",
     "SnowflakeListing",
+    "SnowflakePipe",
     "SnowflakeSemanticDimension",
     "SnowflakeSemanticFact",
     "SnowflakeSemanticLogicalTable",
     "SnowflakeSemanticMetric",
     "SnowflakeSemanticView",
     "SnowflakeShare",
+    "SnowflakeStage",
+    "SnowflakeStream",
+    "SnowflakeTag",
 ]
