@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -53,7 +54,7 @@ from .dbt_related import (
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .iceberg_related import RelatedIcebergNamespace
+from .iceberg_related import RelatedIcebergCatalog, RelatedIcebergNamespace
 from .knowledge_related import RelatedKnowledgeFile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -632,6 +633,74 @@ class IcebergNamespace(Asset):
         if self.guid is not UNSET:
             return RelatedIcebergNamespace(guid=self.guid)
         return RelatedIcebergNamespace(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        parent_qualified_name: str,
+    ) -> "IcebergNamespace":
+        """
+        Create a new IcebergNamespace asset.
+
+        Namespaces nest to any depth, so the namespace is named by its parent:
+        the catalog for a top-level namespace, or the enclosing namespace for a
+        nested one. Namespace ``a.b`` in catalog ``cat`` has qualifiedName
+        ``{connection}/cat/a/b``.
+
+        Args:
+            name: Name of this namespace level (the last segment, e.g. ``b`` for ``a.b``)
+            parent_qualified_name: Unique name of the parent catalog or namespace
+
+        Returns:
+            IcebergNamespace instance ready to be created
+
+        Raises:
+            ValueError: If required parameters are missing or invalid
+        """
+        validate_required_fields(
+            ["name", "parent_qualified_name"], [name, parent_qualified_name]
+        )
+        fields = parent_qualified_name.split("/")
+        if len(fields) < 4:
+            raise ValueError(
+                f"Invalid parent_qualified_name: {parent_qualified_name}. "
+                "Expected format: default/connector/connection_id/catalog[/namespace...]"
+            )
+        connection_qualified_name = "/".join(fields[:3])
+        catalog_name = fields[3]
+        catalog_qualified_name = f"{connection_qualified_name}/{catalog_name}"
+        qualified_name = f"{parent_qualified_name}/{name}"
+        path = fields[4:] + [name]
+        return cls(
+            name=name,
+            qualified_name=qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=fields[1],
+            database_name=catalog_name,
+            database_qualified_name=catalog_qualified_name,
+            database=RelatedIcebergCatalog(qualified_name=catalog_qualified_name),
+            iceberg_parent_namespace_qualified_name=(
+                parent_qualified_name if len(path) > 1 else None
+            ),
+            iceberg_namespace_hierarchy=[
+                {
+                    "qualifiedName": "/".join([catalog_qualified_name, *path[:i]]),
+                    "name": path[i - 1],
+                }
+                for i in range(1, len(path) + 1)
+            ],
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "IcebergNamespace":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "IcebergNamespace":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
