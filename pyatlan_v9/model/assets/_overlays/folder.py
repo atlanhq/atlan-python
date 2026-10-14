@@ -1,5 +1,4 @@
 # IMPORT: from pyatlan.utils import validate_required_fields
-# INTERNAL_IMPORT: from pyatlan.model.assets import Collection
 
     @classmethod
     def creator(
@@ -9,7 +8,6 @@
         collection_qualified_name: str | None = None,
         parent_folder_qualified_name: str | None = None,
     ) -> "Folder":
-        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(["name"], [name])
         if not (parent_folder_qualified_name or collection_qualified_name):

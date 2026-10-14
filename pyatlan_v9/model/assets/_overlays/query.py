@@ -1,7 +1,5 @@
 # IMPORT: from pyatlan.model.enums import AtlanConnectorType
 # IMPORT: from pyatlan.utils import validate_required_fields
-# INTERNAL_IMPORT: from pyatlan.model.assets import Collection
-# INTERNAL_IMPORT: from pyatlan.model.assets import Folder
 
     @classmethod
     def creator(
@@ -11,7 +9,6 @@
         collection_qualified_name: str | None = None,
         parent_folder_qualified_name: str | None = None,
     ) -> "Query":
-        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(["name"], [name])
         if not (parent_folder_qualified_name or collection_qualified_name):
@@ -57,7 +54,6 @@
         collection_qualified_name: str,
         parent_qualified_name: str,
     ) -> "Query":
-        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["name", "collection_qualified_name", "parent_qualified_name"],
@@ -83,8 +79,6 @@
     def with_raw_query(self, schema_qualified_name: str, query: str):
         from base64 import b64encode
         from json import dumps
-
-        from pyatlan.model.enums import AtlanConnectorType
 
         _DEFAULT_VARIABLE_SCHEMA = dumps(
             {
