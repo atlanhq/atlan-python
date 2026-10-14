@@ -8,6 +8,12 @@ ADF module exports.
 This module provides convenient imports for all ADF types and their Related variants.
 """
 
+from .adf import ADF
+from .adf_activity import AdfActivity
+from .adf_dataflow import AdfDataflow
+from .adf_dataset import AdfDataset
+from .adf_linkedservice import AdfLinkedservice
+from .adf_pipeline import AdfPipeline
 from .adf_related import (
     RelatedADF,
     RelatedAdfActivity,
@@ -16,12 +22,6 @@ from .adf_related import (
     RelatedAdfLinkedservice,
     RelatedAdfPipeline,
 )
-from .adf import ADF
-from .adf_activity import AdfActivity
-from .adf_dataflow import AdfDataflow
-from .adf_dataset import AdfDataset
-from .adf_linkedservice import AdfLinkedservice
-from .adf_pipeline import AdfPipeline
 
 __all__ = [
     "ADF",

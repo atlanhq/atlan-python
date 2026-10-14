@@ -18,6 +18,13 @@ from typing import Any, ClassVar, Dict, List, Set, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -37,18 +44,11 @@ from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
+from .notification_related import RelatedNotification
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .notification_related import RelatedNotification
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -604,23 +604,30 @@ def _notification_from_nested_bytes(data: bytes, serde: Serde) -> Notification:
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
     TextField,
 )
 
 Notification.NOTIFICATION_STATE = KeywordField("notificationState", "notificationState")
-Notification.NOTIFICATION_RECIPIENT_USERS = KeywordField(
-    "notificationRecipientUsers", "notificationRecipientUsers"
+Notification.NOTIFICATION_RECIPIENT_USERS = KeywordTextField(
+    "notificationRecipientUsers",
+    "notificationRecipientUsers",
+    "notificationRecipientUsers.text",
 )
-Notification.NOTIFICATION_RECIPIENT_GROUPS = KeywordField(
-    "notificationRecipientGroups", "notificationRecipientGroups"
+Notification.NOTIFICATION_RECIPIENT_GROUPS = KeywordTextField(
+    "notificationRecipientGroups",
+    "notificationRecipientGroups",
+    "notificationRecipientGroups.text",
 )
-Notification.NOTIFICATION_RECIPIENT_ROLES = KeywordField(
-    "notificationRecipientRoles", "notificationRecipientRoles"
+Notification.NOTIFICATION_RECIPIENT_ROLES = KeywordTextField(
+    "notificationRecipientRoles",
+    "notificationRecipientRoles",
+    "notificationRecipientRoles.text",
 )
-Notification.NOTIFICATION_LAST_ACTED_BY = KeywordField(
-    "notificationLastActedBy", "notificationLastActedBy"
+Notification.NOTIFICATION_LAST_ACTED_BY = KeywordTextField(
+    "notificationLastActedBy", "notificationLastActedBy", "notificationLastActedBy.text"
 )
 Notification.NOTIFICATION_LAST_ACTED_AT = NumericField(
     "notificationLastActedAt", "notificationLastActedAt"

@@ -8,19 +8,21 @@ Process module exports.
 This module provides convenient imports for all Process types and their Related variants.
 """
 
+from .bi_process import BIProcess
+from .column_process import ColumnProcess
+from .connection_process import ConnectionProcess
+from .process import Process
 from .process_related import (
     RelatedBIProcess,
     RelatedColumnProcess,
     RelatedConnectionProcess,
     RelatedProcess,
 )
-from .process import Process
-from .bi_process import BIProcess
-from .column_process import ColumnProcess
 
 __all__ = [
     "BIProcess",
     "ColumnProcess",
+    "ConnectionProcess",
     "Process",
     "RelatedBIProcess",
     "RelatedColumnProcess",

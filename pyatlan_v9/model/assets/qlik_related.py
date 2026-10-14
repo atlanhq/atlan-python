@@ -237,6 +237,9 @@ class RelatedQlikColumn(RelatedQlik):
     qlik_parent_qualified_name: Union[str, None, UnsetType] = UNSET
     """Parent Qualified name of column."""
 
+    qlik_column_expression: Union[str, None, UnsetType] = UNSET
+    """Formula that defines this calculated dimension, taken from the Qlik field definition that starts with '='."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:

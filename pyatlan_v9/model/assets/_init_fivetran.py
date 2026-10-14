@@ -8,12 +8,9 @@ Fivetran module exports.
 This module provides convenient imports for all Fivetran types and their Related variants.
 """
 
-from .fivetran_related import (
-    RelatedFivetran,
-    RelatedFivetranConnector,
-)
 from .fivetran import Fivetran
 from .fivetran_connector import FivetranConnector
+from .fivetran_related import RelatedFivetran, RelatedFivetranConnector
 
 __all__ = [
     "Fivetran",
