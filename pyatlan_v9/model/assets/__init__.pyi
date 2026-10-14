@@ -139,9 +139,13 @@ __all__ = [
     "RelatedAzureServiceBusSchema",
     "RelatedAzureServiceBusTopic",
     "BigqueryRoutine",
+    "BigqueryTag",
     "RelatedBigqueryRoutine",
     "RelatedBigqueryTag",
     "BusinessPolicy",
+    "BusinessPolicyException",
+    "BusinessPolicyIncident",
+    "BusinessPolicyLog",
     "RelatedBusinessPolicy",
     "RelatedBusinessPolicyException",
     "RelatedBusinessPolicyIncident",
@@ -258,6 +262,7 @@ __all__ = [
     "RelatedDataProduct",
     "RelatedStakeholder",
     "RelatedStakeholderTitle",
+    "Stakeholder",
     "DataQuality",
     "DataQualityRule",
     "DataQualityRuleTemplate",
@@ -276,8 +281,10 @@ __all__ = [
     "DatabricksDashboard",
     "DatabricksExternalLocation",
     "DatabricksExternalLocationPath",
+    "DatabricksGenieAgent",
     "DatabricksMetricView",
     "DatabricksNotebook",
+    "DatabricksUnityCatalogTag",
     "DatabricksVolume",
     "DatabricksVolumePath",
     "RelatedDatabricks",
@@ -286,6 +293,7 @@ __all__ = [
     "RelatedDatabricksDashboard",
     "RelatedDatabricksExternalLocation",
     "RelatedDatabricksExternalLocationPath",
+    "RelatedDatabricksGenieAgent",
     "RelatedDatabricksMetricView",
     "RelatedDatabricksNotebook",
     "RelatedDatabricksUnityCatalogTag",
@@ -357,6 +365,8 @@ __all__ = [
     "RelatedDremioVirtualDataset",
     "DynamoDB",
     "DynamoDBAttribute",
+    "DynamoDBGlobalSecondaryIndex",
+    "DynamoDBLocalSecondaryIndex",
     "DynamoDBSecondaryIndex",
     "DynamoDBTable",
     "RelatedDynamoDB",
@@ -374,6 +384,7 @@ __all__ = [
     "FabricPage",
     "FabricReport",
     "FabricSemanticModel",
+    "FabricSemanticModelMeasure",
     "FabricSemanticModelTable",
     "FabricSemanticModelTableColumn",
     "FabricVisual",
@@ -387,6 +398,7 @@ __all__ = [
     "RelatedFabricPage",
     "RelatedFabricReport",
     "RelatedFabricSemanticModel",
+    "RelatedFabricSemanticModelMeasure",
     "RelatedFabricSemanticModelTable",
     "RelatedFabricSemanticModelTableColumn",
     "RelatedFabricVisual",
@@ -416,6 +428,7 @@ __all__ = [
     "Form",
     "RelatedForm",
     "RelatedResponse",
+    "Response",
     "GCPDataplex",
     "GCPDataplexAspectType",
     "RelatedGCPDataplex",
@@ -426,6 +439,7 @@ __all__ = [
     "RelatedGCS",
     "RelatedGCSBucket",
     "RelatedGCSObject",
+    "GlueTag",
     "RelatedGlueTag",
     "AtlasGlossary",
     "AtlasGlossaryCategory",
@@ -443,10 +457,13 @@ __all__ = [
     "RelatedIcebergColumn",
     "RelatedIcebergNamespace",
     "RelatedIcebergTable",
+    "AzureEventHub",
+    "AzureEventHubConsumerGroup",
     "Kafka",
     "KafkaCluster",
     "KafkaConsumerGroup",
     "KafkaField",
+    "KafkaTag",
     "KafkaTopic",
     "RelatedAzureEventHub",
     "RelatedAzureEventHubConsumerGroup",
@@ -454,6 +471,7 @@ __all__ = [
     "RelatedKafkaCluster",
     "RelatedKafkaConsumerGroup",
     "RelatedKafkaField",
+    "RelatedKafkaTag",
     "RelatedKafkaTopic",
     "Knowledge",
     "KnowledgeFile",
@@ -483,27 +501,7 @@ __all__ = [
     "RelatedLookerQuery",
     "RelatedLookerTile",
     "RelatedLookerView",
-    "AccessControl",
-    "AuthPolicy",
-    "AzureEventHub",
-    "AzureEventHubConsumerGroup",
-    "Badge",
     "BadgeCondition",
-    "Cognite3DModel",
-    "DataContract",
-    "GlueTag",
-    "Persona",
-    "Purpose",
-    "RelatedSuperset",
-    "RelatedSupersetChart",
-    "RelatedSupersetDashboard",
-    "RelatedSupersetDataset",
-    "SnowflakeDynamicTable",
-    "Superset",
-    "SupersetChart",
-    "SupersetDashboard",
-    "SupersetDataset",
-    "TagAttachment",
     "Matillion",
     "MatillionComponent",
     "MatillionGroup",
@@ -638,6 +636,7 @@ __all__ = [
     "RelatedPresetWorkspace",
     "BIProcess",
     "ColumnProcess",
+    "ConnectionProcess",
     "Process",
     "RelatedBIProcess",
     "RelatedColumnProcess",
@@ -650,6 +649,7 @@ __all__ = [
     "QlikDataset",
     "QlikSheet",
     "QlikSpace",
+    "QlikStream",
     "RelatedQlik",
     "RelatedQlikApp",
     "RelatedQlikChart",
@@ -660,6 +660,7 @@ __all__ = [
     "RelatedQlikStream",
     "QuickSight",
     "QuickSightAnalysis",
+    "QuickSightAnalysisField",
     "QuickSightAnalysisVisual",
     "QuickSightDashboard",
     "QuickSightDashboardVisual",
@@ -668,6 +669,7 @@ __all__ = [
     "QuickSightFolder",
     "RelatedQuickSight",
     "RelatedQuickSightAnalysis",
+    "RelatedQuickSightAnalysisField",
     "RelatedQuickSightAnalysisVisual",
     "RelatedQuickSightDashboard",
     "RelatedQuickSightDashboardVisual",
@@ -684,6 +686,7 @@ __all__ = [
     "RelatedRedashVisualization",
     "Referenceable",
     "RelatedReferenceable",
+    "Badge",
     "File",
     "Link",
     "Readme",
@@ -743,6 +746,7 @@ __all__ = [
     "RelatedSAP",
     "RelatedSAPColumnProcess",
     "RelatedSAPProcess",
+    "RelatedSapDatasphereDataProduct",
     "RelatedSapDatasphereReplicationFlow",
     "RelatedSapErpAbapProgram",
     "RelatedSapErpCdsView",
@@ -756,6 +760,7 @@ __all__ = [
     "SAP",
     "SAPColumnProcess",
     "SAPProcess",
+    "SapDatasphereDataProduct",
     "SapDatasphereReplicationFlow",
     "SapErpAbapProgram",
     "SapErpCdsView",
@@ -766,6 +771,16 @@ __all__ = [
     "SapErpTable",
     "SapErpTransactionCode",
     "SapErpView",
+    "RelatedSapAnalyticsCloud",
+    "RelatedSapAnalyticsCloudColumn",
+    "RelatedSapAnalyticsCloudFolder",
+    "RelatedSapAnalyticsCloudModel",
+    "RelatedSapAnalyticsCloudStory",
+    "SapAnalyticsCloud",
+    "SapAnalyticsCloudColumn",
+    "SapAnalyticsCloudFolder",
+    "SapAnalyticsCloudModel",
+    "SapAnalyticsCloudStory",
     "RelatedSAPBW",
     "RelatedSAPBWADSO",
     "RelatedSAPBWADSOField",
@@ -866,13 +881,18 @@ __all__ = [
     "Snowflake",
     "SnowflakeAIModelContext",
     "SnowflakeAIModelVersion",
+    "SnowflakeDynamicTable",
     "SnowflakeListing",
+    "SnowflakePipe",
     "SnowflakeSemanticDimension",
     "SnowflakeSemanticFact",
     "SnowflakeSemanticLogicalTable",
     "SnowflakeSemanticMetric",
     "SnowflakeSemanticView",
     "SnowflakeShare",
+    "SnowflakeStage",
+    "SnowflakeStream",
+    "SnowflakeTag",
     "RelatedSoda",
     "RelatedSodaCheck",
     "Soda",
@@ -968,6 +988,7 @@ __all__ = [
     "RelatedTagAttachment",
     "SourceTag",
     "Tag",
+    "TagAttachment",
     "RelatedTask",
     "Task",
     "RelatedThoughtspot",
@@ -997,6 +1018,7 @@ __all__ = [
     "RelatedWorkflow",
     "RelatedWorkflowRun",
     "Workflow",
+    "WorkflowRun",
     "RelatedWorkflowNotification",
     "WorkflowNotification",
 ]
@@ -1130,10 +1152,10 @@ from .auth_policy import AuthPolicy as AuthPolicy
 from .auth_service import AuthService as AuthService
 from .aws import AWS as AWS
 from .azure import Azure as Azure
-from .azure_event_consumer_group import (
+from .azure_event_hub import AzureEventHub as AzureEventHub
+from .azure_event_hub_consumer_group import (
     AzureEventHubConsumerGroup as AzureEventHubConsumerGroup,
 )
-from .azure_event_hub import AzureEventHub as AzureEventHub
 from .azure_service_bus import AzureServiceBus as AzureServiceBus
 from .azure_service_bus_namespace import (
     AzureServiceBusNamespace as AzureServiceBusNamespace,
@@ -1157,7 +1179,13 @@ from .bi_process import BIProcess as BIProcess
 from .bigquery_related import RelatedBigqueryRoutine as RelatedBigqueryRoutine
 from .bigquery_related import RelatedBigqueryTag as RelatedBigqueryTag
 from .bigquery_routine import BigqueryRoutine as BigqueryRoutine
+from .bigquery_tag import BigqueryTag as BigqueryTag
 from .business_policy import BusinessPolicy as BusinessPolicy
+from .business_policy_exception import (
+    BusinessPolicyException as BusinessPolicyException,
+)
+from .business_policy_incident import BusinessPolicyIncident as BusinessPolicyIncident
+from .business_policy_log import BusinessPolicyLog as BusinessPolicyLog
 from .business_policy_related import RelatedBusinessPolicy as RelatedBusinessPolicy
 from .business_policy_related import (
     RelatedBusinessPolicyException as RelatedBusinessPolicyException,
@@ -1234,6 +1262,7 @@ from .collection import Collection as Collection
 from .column import Column as Column
 from .column_process import ColumnProcess as ColumnProcess
 from .connection import Connection as Connection
+from .connection_process import ConnectionProcess as ConnectionProcess
 from .connection_related import RelatedConnection as RelatedConnection
 from .context import Context as Context
 from .context_artifact import ContextArtifact as ContextArtifact
@@ -1315,6 +1344,7 @@ from .databricks_external_location import (
 from .databricks_external_location_path import (
     DatabricksExternalLocationPath as DatabricksExternalLocationPath,
 )
+from .databricks_genie_agent import DatabricksGenieAgent as DatabricksGenieAgent
 from .databricks_metric_view import DatabricksMetricView as DatabricksMetricView
 from .databricks_notebook import DatabricksNotebook as DatabricksNotebook
 from .databricks_related import RelatedDatabricks as RelatedDatabricks
@@ -1332,6 +1362,9 @@ from .databricks_related import (
     RelatedDatabricksExternalLocationPath as RelatedDatabricksExternalLocationPath,
 )
 from .databricks_related import (
+    RelatedDatabricksGenieAgent as RelatedDatabricksGenieAgent,
+)
+from .databricks_related import (
     RelatedDatabricksMetricView as RelatedDatabricksMetricView,
 )
 from .databricks_related import RelatedDatabricksNotebook as RelatedDatabricksNotebook
@@ -1341,6 +1374,9 @@ from .databricks_related import (
 from .databricks_related import RelatedDatabricksVolume as RelatedDatabricksVolume
 from .databricks_related import (
     RelatedDatabricksVolumePath as RelatedDatabricksVolumePath,
+)
+from .databricks_unity_catalog_tag import (
+    DatabricksUnityCatalogTag as DatabricksUnityCatalogTag,
 )
 from .databricks_volume import DatabricksVolume as DatabricksVolume
 from .databricks_volume_path import DatabricksVolumePath as DatabricksVolumePath
@@ -1412,6 +1448,12 @@ from .dremio_space import DremioSpace as DremioSpace
 from .dremio_virtual_dataset import DremioVirtualDataset as DremioVirtualDataset
 from .dynamo_db import DynamoDB as DynamoDB
 from .dynamo_db_attribute import DynamoDBAttribute as DynamoDBAttribute
+from .dynamo_db_global_secondary_index import (
+    DynamoDBGlobalSecondaryIndex as DynamoDBGlobalSecondaryIndex,
+)
+from .dynamo_db_local_secondary_index import (
+    DynamoDBLocalSecondaryIndex as DynamoDBLocalSecondaryIndex,
+)
 from .dynamo_db_related import RelatedDynamoDB as RelatedDynamoDB
 from .dynamo_db_related import RelatedDynamoDBAttribute as RelatedDynamoDBAttribute
 from .dynamo_db_related import (
@@ -1451,6 +1493,9 @@ from .fabric_related import RelatedFabricPage as RelatedFabricPage
 from .fabric_related import RelatedFabricReport as RelatedFabricReport
 from .fabric_related import RelatedFabricSemanticModel as RelatedFabricSemanticModel
 from .fabric_related import (
+    RelatedFabricSemanticModelMeasure as RelatedFabricSemanticModelMeasure,
+)
+from .fabric_related import (
     RelatedFabricSemanticModelTable as RelatedFabricSemanticModelTable,
 )
 from .fabric_related import (
@@ -1460,6 +1505,9 @@ from .fabric_related import RelatedFabricVisual as RelatedFabricVisual
 from .fabric_related import RelatedFabricWorkspace as RelatedFabricWorkspace
 from .fabric_report import FabricReport as FabricReport
 from .fabric_semantic_model import FabricSemanticModel as FabricSemanticModel
+from .fabric_semantic_model_measure import (
+    FabricSemanticModelMeasure as FabricSemanticModelMeasure,
+)
 from .fabric_semantic_model_table import (
     FabricSemanticModelTable as FabricSemanticModelTable,
 )
@@ -1539,7 +1587,9 @@ from .kafka_related import RelatedKafka as RelatedKafka
 from .kafka_related import RelatedKafkaCluster as RelatedKafkaCluster
 from .kafka_related import RelatedKafkaConsumerGroup as RelatedKafkaConsumerGroup
 from .kafka_related import RelatedKafkaField as RelatedKafkaField
+from .kafka_related import RelatedKafkaTag as RelatedKafkaTag
 from .kafka_related import RelatedKafkaTopic as RelatedKafkaTopic
+from .kafka_tag import KafkaTag as KafkaTag
 from .kafka_topic import KafkaTopic as KafkaTopic
 from .knowledge import Knowledge as Knowledge
 from .knowledge_file import KnowledgeFile as KnowledgeFile
@@ -1759,9 +1809,13 @@ from .qlik_related import RelatedQlikSpace as RelatedQlikSpace
 from .qlik_related import RelatedQlikStream as RelatedQlikStream
 from .qlik_sheet import QlikSheet as QlikSheet
 from .qlik_space import QlikSpace as QlikSpace
+from .qlik_stream import QlikStream as QlikStream
 from .query import Query as Query
 from .quick_sight import QuickSight as QuickSight
 from .quick_sight_analysis import QuickSightAnalysis as QuickSightAnalysis
+from .quick_sight_analysis_field import (
+    QuickSightAnalysisField as QuickSightAnalysisField,
+)
 from .quick_sight_analysis_visual import (
     QuickSightAnalysisVisual as QuickSightAnalysisVisual,
 )
@@ -1774,6 +1828,9 @@ from .quick_sight_dataset_field import QuickSightDatasetField as QuickSightDatas
 from .quick_sight_folder import QuickSightFolder as QuickSightFolder
 from .quick_sight_related import RelatedQuickSight as RelatedQuickSight
 from .quick_sight_related import RelatedQuickSightAnalysis as RelatedQuickSightAnalysis
+from .quick_sight_related import (
+    RelatedQuickSightAnalysisField as RelatedQuickSightAnalysisField,
+)
 from .quick_sight_related import (
     RelatedQuickSightAnalysisVisual as RelatedQuickSightAnalysisVisual,
 )
@@ -1810,6 +1867,7 @@ from .resource_related import RelatedLink as RelatedLink
 from .resource_related import RelatedReadme as RelatedReadme
 from .resource_related import RelatedReadmeTemplate as RelatedReadmeTemplate
 from .resource_related import RelatedResource as RelatedResource
+from .response import Response as Response
 from .s3 import S3 as S3
 from .s3_bucket import S3Bucket as S3Bucket
 from .s3_object import S3Object as S3Object
@@ -1886,7 +1944,34 @@ from .salesforce_related import (
 from .salesforce_related import RelatedSalesforceReport as RelatedSalesforceReport
 from .salesforce_report import SalesforceReport as SalesforceReport
 from .sap import SAP as SAP
+from .sap_analytics_cloud import SapAnalyticsCloud as SapAnalyticsCloud
+from .sap_analytics_cloud_column import (
+    SapAnalyticsCloudColumn as SapAnalyticsCloudColumn,
+)
+from .sap_analytics_cloud_folder import (
+    SapAnalyticsCloudFolder as SapAnalyticsCloudFolder,
+)
+from .sap_analytics_cloud_model import SapAnalyticsCloudModel as SapAnalyticsCloudModel
+from .sap_analytics_cloud_related import (
+    RelatedSapAnalyticsCloud as RelatedSapAnalyticsCloud,
+)
+from .sap_analytics_cloud_related import (
+    RelatedSapAnalyticsCloudColumn as RelatedSapAnalyticsCloudColumn,
+)
+from .sap_analytics_cloud_related import (
+    RelatedSapAnalyticsCloudFolder as RelatedSapAnalyticsCloudFolder,
+)
+from .sap_analytics_cloud_related import (
+    RelatedSapAnalyticsCloudModel as RelatedSapAnalyticsCloudModel,
+)
+from .sap_analytics_cloud_related import (
+    RelatedSapAnalyticsCloudStory as RelatedSapAnalyticsCloudStory,
+)
+from .sap_analytics_cloud_story import SapAnalyticsCloudStory as SapAnalyticsCloudStory
 from .sap_column_process import SAPColumnProcess as SAPColumnProcess
+from .sap_datasphere_data_product import (
+    SapDatasphereDataProduct as SapDatasphereDataProduct,
+)
 from .sap_datasphere_replication_flow import (
     SapDatasphereReplicationFlow as SapDatasphereReplicationFlow,
 )
@@ -1902,6 +1987,9 @@ from .sap_erp_view import SapErpView as SapErpView
 from .sap_process import SAPProcess as SAPProcess
 from .sap_related import RelatedSAP as RelatedSAP
 from .sap_related import RelatedSAPColumnProcess as RelatedSAPColumnProcess
+from .sap_related import (
+    RelatedSapDatasphereDataProduct as RelatedSapDatasphereDataProduct,
+)
 from .sap_related import (
     RelatedSapDatasphereReplicationFlow as RelatedSapDatasphereReplicationFlow,
 )
@@ -2019,6 +2107,7 @@ from .snowflake_ai_model_version import (
 )
 from .snowflake_dynamic_table import SnowflakeDynamicTable as SnowflakeDynamicTable
 from .snowflake_listing import SnowflakeListing as SnowflakeListing
+from .snowflake_pipe import SnowflakePipe as SnowflakePipe
 from .snowflake_related import RelatedSnowflake as RelatedSnowflake
 from .snowflake_related import (
     RelatedSnowflakeAIModelContext as RelatedSnowflakeAIModelContext,
@@ -2062,6 +2151,9 @@ from .snowflake_semantic_metric import (
 )
 from .snowflake_semantic_view import SnowflakeSemanticView as SnowflakeSemanticView
 from .snowflake_share import SnowflakeShare as SnowflakeShare
+from .snowflake_stage import SnowflakeStage as SnowflakeStage
+from .snowflake_stream import SnowflakeStream as SnowflakeStream
+from .snowflake_tag import SnowflakeTag as SnowflakeTag
 from .soda import Soda as Soda
 from .soda_check import SodaCheck as SodaCheck
 from .soda_related import RelatedSoda as RelatedSoda
@@ -2106,6 +2198,7 @@ from .ssrs_related import RelatedSSRSField as RelatedSSRSField
 from .ssrs_related import RelatedSSRSFolder as RelatedSSRSFolder
 from .ssrs_related import RelatedSSRSReport as RelatedSSRSReport
 from .ssrs_report import SSRSReport as SSRSReport
+from .stakeholder import Stakeholder as Stakeholder
 from .starburst import Starburst as Starburst
 from .starburst_dataset import StarburstDataset as StarburstDataset
 from .starburst_dataset_column import StarburstDatasetColumn as StarburstDatasetColumn
@@ -2159,10 +2252,10 @@ from .tableau_workbook import TableauWorkbook as TableauWorkbook
 from .tableau_worksheet import TableauWorksheet as TableauWorksheet
 from .tableau_worksheet_field import TableauWorksheetField as TableauWorksheetField
 from .tag import Tag as Tag
+from .tag_attachment import TagAttachment as TagAttachment
 from .tag_related import RelatedSourceTag as RelatedSourceTag
 from .tag_related import RelatedTag as RelatedTag
 from .tag_related import RelatedTagAttachment as RelatedTagAttachment
-from .tag_attachment import TagAttachment as TagAttachment
 from .task import Task as Task
 from .task_related import RelatedTask as RelatedTask
 from .thoughtspot import Thoughtspot as Thoughtspot
@@ -2203,3 +2296,4 @@ from .workflow_notification_related import (
 )
 from .workflow_related import RelatedWorkflow as RelatedWorkflow
 from .workflow_related import RelatedWorkflowRun as RelatedWorkflowRun
+from .workflow_run import WorkflowRun as WorkflowRun

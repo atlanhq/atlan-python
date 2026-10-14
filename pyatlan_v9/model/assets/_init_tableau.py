@@ -8,6 +8,15 @@ Tableau module exports.
 This module provides convenient imports for all Tableau types and their Related variants.
 """
 
+from .tableau import Tableau
+from .tableau_calculated_field import TableauCalculatedField
+from .tableau_dashboard import TableauDashboard
+from .tableau_dashboard_field import TableauDashboardField
+from .tableau_datasource import TableauDatasource
+from .tableau_datasource_field import TableauDatasourceField
+from .tableau_flow import TableauFlow
+from .tableau_metric import TableauMetric
+from .tableau_project import TableauProject
 from .tableau_related import (
     RelatedTableau,
     RelatedTableauCalculatedField,
@@ -23,15 +32,6 @@ from .tableau_related import (
     RelatedTableauWorksheet,
     RelatedTableauWorksheetField,
 )
-from .tableau import Tableau
-from .tableau_calculated_field import TableauCalculatedField
-from .tableau_dashboard import TableauDashboard
-from .tableau_dashboard_field import TableauDashboardField
-from .tableau_datasource import TableauDatasource
-from .tableau_datasource_field import TableauDatasourceField
-from .tableau_flow import TableauFlow
-from .tableau_metric import TableauMetric
-from .tableau_project import TableauProject
 from .tableau_site import TableauSite
 from .tableau_workbook import TableauWorkbook
 from .tableau_worksheet import TableauWorksheet

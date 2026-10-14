@@ -8,16 +8,11 @@ S3 module exports.
 This module provides convenient imports for all S3 types and their Related variants.
 """
 
-from .s3_related import (
-    RelatedS3,
-    RelatedS3Bucket,
-    RelatedS3Object,
-    RelatedS3Prefix,
-)
 from .s3 import S3
 from .s3_bucket import S3Bucket
 from .s3_object import S3Object
 from .s3_prefix import S3Prefix
+from .s3_related import RelatedS3, RelatedS3Bucket, RelatedS3Object, RelatedS3Prefix
 
 __all__ = [
     "RelatedS3",

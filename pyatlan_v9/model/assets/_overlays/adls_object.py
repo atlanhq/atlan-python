@@ -73,7 +73,6 @@
                 adls_container_qualified_name,
             ],
         )
-        from pyatlan.model.utils import construct_object_key
 
         fields = connection_qualified_name.split("/")
         if len(fields) != 3:

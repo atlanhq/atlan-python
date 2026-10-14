@@ -20,6 +20,13 @@ from typing import Any, ClassVar, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -43,24 +50,17 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .referenceable_related import RelatedReferenceable
-from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .schema_registry_related import RelatedSchemaRegistrySubject
-from .soda_related import RelatedSodaCheck
-from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .qlik_related import (
     RelatedQlikChart,
     RelatedQlikColumn,
     RelatedQlikDataset,
     RelatedQlikSheet,
 )
+from .referenceable_related import RelatedReferenceable
+from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .schema_registry_related import RelatedSchemaRegistrySubject
+from .soda_related import RelatedSodaCheck
+from .spark_related import RelatedSparkJob
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -77,6 +77,7 @@ class QlikColumn(Asset):
     QLIK_DATA_TYPE: ClassVar[Any] = None
     QLIK_COLUMN_TYPE: ClassVar[Any] = None
     QLIK_PARENT_QUALIFIED_NAME: ClassVar[Any] = None
+    QLIK_COLUMN_EXPRESSION: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -134,6 +135,9 @@ class QlikColumn(Asset):
 
     qlik_parent_qualified_name: Union[str, None, UnsetType] = UNSET
     """Parent Qualified name of column."""
+
+    qlik_column_expression: Union[str, None, UnsetType] = UNSET
+    """Formula that defines this calculated dimension, taken from the Qlik field definition that starts with '='."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
     """Identifier of this asset, from Qlik."""
@@ -428,6 +432,9 @@ class QlikColumnAttributes(AssetAttributes):
     qlik_parent_qualified_name: Union[str, None, UnsetType] = UNSET
     """Parent Qualified name of column."""
 
+    qlik_column_expression: Union[str, None, UnsetType] = UNSET
+    """Formula that defines this calculated dimension, taken from the Qlik field definition that starts with '='."""
+
     qlik_id: Union[str, None, UnsetType] = UNSET
     """Identifier of this asset, from Qlik."""
 
@@ -643,6 +650,7 @@ def _populate_qlik_column_attrs(attrs: QlikColumnAttributes, obj: QlikColumn) ->
     attrs.qlik_data_type = obj.qlik_data_type
     attrs.qlik_column_type = obj.qlik_column_type
     attrs.qlik_parent_qualified_name = obj.qlik_parent_qualified_name
+    attrs.qlik_column_expression = obj.qlik_column_expression
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -661,6 +669,7 @@ def _extract_qlik_column_attrs(attrs: QlikColumnAttributes) -> dict:
     result["qlik_data_type"] = attrs.qlik_data_type
     result["qlik_column_type"] = attrs.qlik_column_type
     result["qlik_parent_qualified_name"] = attrs.qlik_parent_qualified_name
+    result["qlik_column_expression"] = attrs.qlik_column_expression
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -780,6 +789,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
     KeywordTextField,
     RelationField,
+    TextField,
 )
 
 QlikColumn.QLIK_COLUMN_NAME = KeywordField("qlikColumnName", "qlikColumnName")
@@ -787,6 +797,9 @@ QlikColumn.QLIK_DATA_TYPE = KeywordField("qlikDataType", "qlikDataType")
 QlikColumn.QLIK_COLUMN_TYPE = KeywordField("qlikColumnType", "qlikColumnType")
 QlikColumn.QLIK_PARENT_QUALIFIED_NAME = KeywordField(
     "qlikParentQualifiedName", "qlikParentQualifiedName"
+)
+QlikColumn.QLIK_COLUMN_EXPRESSION = TextField(
+    "qlikColumnExpression", "qlikColumnExpression"
 )
 QlikColumn.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikColumn.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
