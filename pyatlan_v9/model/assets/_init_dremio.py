@@ -8,6 +8,10 @@ Dremio module exports.
 This module provides convenient imports for all Dremio types and their Related variants.
 """
 
+from .dremio import Dremio
+from .dremio_column import DremioColumn
+from .dremio_folder import DremioFolder
+from .dremio_physical_dataset import DremioPhysicalDataset
 from .dremio_related import (
     RelatedDremio,
     RelatedDremioColumn,
@@ -17,10 +21,6 @@ from .dremio_related import (
     RelatedDremioSpace,
     RelatedDremioVirtualDataset,
 )
-from .dremio import Dremio
-from .dremio_column import DremioColumn
-from .dremio_folder import DremioFolder
-from .dremio_physical_dataset import DremioPhysicalDataset
 from .dremio_source import DremioSource
 from .dremio_space import DremioSpace
 from .dremio_virtual_dataset import DremioVirtualDataset

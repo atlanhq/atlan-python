@@ -1069,13 +1069,13 @@ class Asset(Referenceable):
         "assetSodaLastSyncRunAt", "assetSodaLastSyncRunAt"
     )
     """
-    
+
     """
     ASSET_SODA_LAST_SCAN_AT: ClassVar[NumericField] = NumericField(
         "assetSodaLastScanAt", "assetSodaLastScanAt"
     )
     """
-    
+
     """
     ASSET_SODA_CHECK_STATUSES: ClassVar[TextField] = TextField(
         "assetSodaCheckStatuses", "assetSodaCheckStatuses"
@@ -1087,7 +1087,7 @@ class Asset(Referenceable):
         "assetSodaSourceURL", "assetSodaSourceURL"
     )
     """
-    
+
     """
     ASSET_ICON: ClassVar[TextField] = TextField("assetIcon", "assetIcon")
     """
@@ -1153,7 +1153,7 @@ class Asset(Referenceable):
         "isAIGenerated", "isAIGenerated"
     )
     """
-    
+
     """
     ASSET_COVER_IMAGE: ClassVar[TextField] = TextField(
         "assetCoverImage", "assetCoverImage"
