@@ -19,6 +19,13 @@ from typing import Any, ClassVar, Dict, List, Set, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -43,13 +50,6 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .workflow_notification_related import RelatedWorkflowNotification
 
 # =============================================================================
@@ -699,13 +699,16 @@ def _workflow_notification_from_nested_bytes(
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
     TextField,
 )
 
-WorkflowNotification.WORKFLOW_NOTIFICATION_WORKFLOW_SLUG = KeywordField(
-    "workflowNotificationWorkflowSlug", "workflowNotificationWorkflowSlug"
+WorkflowNotification.WORKFLOW_NOTIFICATION_WORKFLOW_SLUG = KeywordTextField(
+    "workflowNotificationWorkflowSlug",
+    "workflowNotificationWorkflowSlug",
+    "workflowNotificationWorkflowSlug.text",
 )
 WorkflowNotification.WORKFLOW_NOTIFICATION_LAST_PREFLIGHT_RESULT = TextField(
     "workflowNotificationLastPreflightResult", "workflowNotificationLastPreflightResult"
@@ -724,17 +727,23 @@ WorkflowNotification.WORKFLOW_NOTIFICATION_ACTION = KeywordField(
 WorkflowNotification.NOTIFICATION_STATE = KeywordField(
     "notificationState", "notificationState"
 )
-WorkflowNotification.NOTIFICATION_RECIPIENT_USERS = KeywordField(
-    "notificationRecipientUsers", "notificationRecipientUsers"
+WorkflowNotification.NOTIFICATION_RECIPIENT_USERS = KeywordTextField(
+    "notificationRecipientUsers",
+    "notificationRecipientUsers",
+    "notificationRecipientUsers.text",
 )
-WorkflowNotification.NOTIFICATION_RECIPIENT_GROUPS = KeywordField(
-    "notificationRecipientGroups", "notificationRecipientGroups"
+WorkflowNotification.NOTIFICATION_RECIPIENT_GROUPS = KeywordTextField(
+    "notificationRecipientGroups",
+    "notificationRecipientGroups",
+    "notificationRecipientGroups.text",
 )
-WorkflowNotification.NOTIFICATION_RECIPIENT_ROLES = KeywordField(
-    "notificationRecipientRoles", "notificationRecipientRoles"
+WorkflowNotification.NOTIFICATION_RECIPIENT_ROLES = KeywordTextField(
+    "notificationRecipientRoles",
+    "notificationRecipientRoles",
+    "notificationRecipientRoles.text",
 )
-WorkflowNotification.NOTIFICATION_LAST_ACTED_BY = KeywordField(
-    "notificationLastActedBy", "notificationLastActedBy"
+WorkflowNotification.NOTIFICATION_LAST_ACTED_BY = KeywordTextField(
+    "notificationLastActedBy", "notificationLastActedBy", "notificationLastActedBy.text"
 )
 WorkflowNotification.NOTIFICATION_LAST_ACTED_AT = NumericField(
     "notificationLastActedAt", "notificationLastActedAt"
