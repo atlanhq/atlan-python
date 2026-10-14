@@ -33,6 +33,7 @@ __all__ = [
     "RelatedSapErpAbapProgram",
     "RelatedSapErpFioriApp",
     "RelatedSapDatasphereReplicationFlow",
+    "RelatedSapDatasphereDataProduct",
 ]
 
 
@@ -404,3 +405,57 @@ class RelatedSapDatasphereReplicationFlow(RelatedFlowControlOperation):
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
             self.type_name = "SapDatasphereReplicationFlow"
+
+
+class RelatedSapDatasphereDataProduct(RelatedSAP):
+    """
+    Related entity reference for SapDatasphereDataProduct assets.
+
+    Extends RelatedSAP with SapDatasphereDataProduct-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SapDatasphereDataProduct" so it serializes correctly
+
+    sap_datasphere_data_product_product_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier (UUID) of the data product in the SAP Datasphere Data Marketplace."""
+
+    sap_datasphere_data_product_space_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the Datasphere space whose objects this data product exposes."""
+
+    sap_datasphere_data_product_space_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
+    """Unique name of the Datasphere space whose objects this data product exposes."""
+
+    sap_datasphere_data_product_provider_id: Union[str, None, UnsetType] = UNSET
+    """Unique identifier (UUID) of the data provider profile that publishes this data product."""
+
+    sap_datasphere_data_product_provider_name: Union[str, None, UnsetType] = UNSET
+    """Name of the data provider profile that publishes this data product."""
+
+    sap_datasphere_data_product_lifecycle_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of this data product in the Data Marketplace, such as Draft, Listed or Delisted."""
+
+    sap_datasphere_data_product_contract_type: Union[str, None, UnsetType] = UNSET
+    """Type of contract under which this data product is offered, such as Open or Licensed."""
+
+    sap_datasphere_data_product_data_shipment: Union[str, None, UnsetType] = UNSET
+    """Shipment type of this data product, such as Direct or Indirect."""
+
+    sap_datasphere_data_product_delivery_mode: Union[str, None, UnsetType] = UNSET
+    """Delivery mode of this data product, such as Open SQL Schema or Remote Table."""
+
+    sap_datasphere_data_product_delivery_pattern: Union[str, None, UnsetType] = UNSET
+    """Delivery pattern of this data product, such as Full or Delta."""
+
+    sap_datasphere_data_product_contexts: Union[List[str], None, UnsetType] = UNSET
+    """Names of the Data Marketplace contexts to which this data product is assigned."""
+
+    sap_datasphere_data_product_terms_of_use: Union[str, None, UnsetType] = UNSET
+    """Terms of use that consumers accept when they install this data product."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        if self.type_name is UNSET:
+            self.type_name = "SapDatasphereDataProduct"
