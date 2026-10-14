@@ -9,7 +9,9 @@ This module provides convenient imports for all Glue types and their Related var
 """
 
 from .glue_related import RelatedGlueTag
+from .glue_tag import GlueTag
 
 __all__ = [
+    "GlueTag",
     "RelatedGlueTag",
 ]

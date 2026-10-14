@@ -8,6 +8,7 @@ AccessControl module exports.
 This module provides convenient imports for all AccessControl types and their Related variants.
 """
 
+from .access_control import AccessControl
 from .access_control_related import (
     RelatedAccessControl,
     RelatedAuthPolicy,
@@ -15,7 +16,6 @@ from .access_control_related import (
     RelatedPersona,
     RelatedPurpose,
 )
-from .access_control import AccessControl
 from .auth_policy import AuthPolicy
 from .auth_service import AuthService
 from .persona import Persona

@@ -20,7 +20,6 @@
             raise ValueError("name is required")
 
         # Generate a unique qualified name using a simple ID generator
-        import uuid
 
         qualified_name = str(uuid.uuid4().hex[:16])
 

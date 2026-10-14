@@ -54,8 +54,6 @@
                 f"Only one of the following parameters are allowed: {', '.join(param_names)}"
             )
 
-        import uuid
-
         qualified_name = f"{name}@{uuid.uuid4()}"
 
         from msgspec import UNSET as MSGSPEC_UNSET

@@ -11,5 +11,4 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-
 __all__ = []
