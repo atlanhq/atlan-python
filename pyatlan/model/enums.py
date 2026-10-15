@@ -384,6 +384,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     AWS_ECS = ("aws-ecs", AtlanConnectionCategory.ELT)
     AWS_LAMBDA = ("aws-lambda", AtlanConnectionCategory.ELT)
     AWS_SAGEMAKER = ("aws-sagemaker", AtlanConnectionCategory.ELT)
+    AWS_SMUS = ("aws-smus", AtlanConnectionCategory.SAAS)
     CUSTOM = ("custom", AtlanConnectionCategory.CUSTOM)
     SHARED_DRIVE = ("shared-drive", AtlanConnectionCategory.OBJECT_STORE)
     SHARE_POINT = ("share-point", AtlanConnectionCategory.SAAS)
