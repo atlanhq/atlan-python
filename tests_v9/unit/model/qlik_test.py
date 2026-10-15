@@ -168,7 +168,9 @@ def test_sheet_and_chart_space_is_optional(asset_type, parent):
 def test_column_creator_matches_app_qualified_name(
     parent_qn, relationship, expected_qn
 ):
-    sut = QlikColumn.creator(name=FIELD, parent_qualified_name=parent_qn)
+    sut = QlikColumn.creator(
+        name=FIELD, parent_qualified_name=parent_qn, space_qualified_name=SPACE_QN
+    )
 
     assert sut.qualified_name == expected_qn
     assert sut.name == FIELD
@@ -176,10 +178,26 @@ def test_column_creator_matches_app_qualified_name(
     assert sut.qlik_parent_qualified_name == parent_qn
     assert sut.connection_qualified_name == CONNECTION_QN
     assert sut.connector_name == "qlik-sense"
+    assert sut.qlik_space_id == "sp01"
+    assert sut.qlik_space_qualified_name == SPACE_QN
     assert getattr(sut, relationship).unique_attributes == {"qualifiedName": parent_qn}
     for other in {"qlik_sheet", "qlik_chart", "qlik_dataset"} - {relationship}:
         assert not getattr(sut, other)
-    sut.validate()
+    # Any one of the three parents satisfies creation validation; a dataset
+    # column has no app, so the app qualifiedName must not be required.
+    sut.validate(for_creation=True)
+
+
+def test_column_without_parent_fails_creation_validation():
+    sut = QlikColumn(
+        name=FIELD,
+        qualified_name=f"{DATASET_QN}/column/abc",
+        connection_qualified_name=CONNECTION_QN,
+        qlik_space_qualified_name=SPACE_QN,
+    )
+
+    with pytest.raises(ValueError, match="one of qlik_sheet, qlik_chart, qlik_dataset"):
+        sut.validate(for_creation=True)
 
 
 @pytest.mark.parametrize(

@@ -327,12 +327,16 @@ class QlikColumn(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.qlik_sheet is UNSET:
-                errors.append("qlik_sheet is required for creation")
-            if self.qlik_app_qualified_name is UNSET:
-                errors.append("qlik_app_qualified_name is required for creation")
             if self.qlik_space_qualified_name is UNSET:
                 errors.append("qlik_space_qualified_name is required for creation")
+            if (
+                self.qlik_sheet is UNSET
+                and self.qlik_chart is UNSET
+                and self.qlik_dataset is UNSET
+            ):
+                errors.append(
+                    "one of qlik_sheet, qlik_chart, qlik_dataset is required for creation"
+                )
         if errors:
             raise ValueError(f"QlikColumn validation failed: {errors}")
 
@@ -372,6 +376,7 @@ class QlikColumn(Asset):
         *,
         name: str,
         parent_qualified_name: str,
+        space_qualified_name: Union[str, None] = None,
     ) -> "QlikColumn":
         """
         Build a Qlik column under a sheet, chart or dataset.
@@ -381,6 +386,8 @@ class QlikColumn(Asset):
         qualifiedName without the connection (app/<id>/sheet/<id>,
         app/<id>/chart/<id> or dataset/<id>), exactly as atlan-qlik-sense-app
         builds it. The parent type is read from parent_qualified_name.
+        space_qualified_name is optional and only fills the denormalised
+        qlik_space_id / qlik_space_qualified_name of the space or stream.
         """
         validate_required_fields(
             ["name", "parent_qualified_name"], [name, parent_qualified_name]
@@ -423,6 +430,14 @@ class QlikColumn(Asset):
             asset.qlik_dataset = RelatedQlikDataset(
                 qualified_name=parent_qualified_name
             )
+        if space_qualified_name:
+            space_parts = space_qualified_name.rsplit("/", 2)
+            if len(space_parts) != 3 or space_parts[1] not in ("space", "stream"):
+                raise ValueError(
+                    "space_qualified_name must end in /space/<id> or /stream/<id>"
+                )
+            asset.qlik_space_id = space_parts[2]
+            asset.qlik_space_qualified_name = space_qualified_name
         return asset
 
     @classmethod
