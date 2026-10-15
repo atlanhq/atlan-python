@@ -311,8 +311,6 @@ class PowerBIDatasource(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.datasets is UNSET:
-                errors.append("datasets is required for creation")
         if errors:
             raise ValueError(f"PowerBIDatasource validation failed: {errors}")
 

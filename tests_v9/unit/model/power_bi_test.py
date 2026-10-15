@@ -66,7 +66,7 @@ def test_connection_child_creator(asset_type, id_kwarg, expected_qn):
     )
 
     _assert_common(sut, expected_qn)
-    sut.validate(for_creation=asset_type is not PowerBIDatasource)
+    sut.validate(for_creation=True)
 
 
 def test_app_creator_sets_app_id():
