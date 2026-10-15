@@ -19,12 +19,14 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model import looker_qn
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -256,7 +258,7 @@ class LookerModel(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/model/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -325,6 +327,46 @@ class LookerModel(Asset):
         if self.guid is not UNSET:
             return RelatedLookerModel(guid=self.guid)
         return RelatedLookerModel(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        project_qualified_name: str,
+    ) -> "LookerModel":
+        """
+        Create a new LookerModel, keyed as atlan-looker-app keys it.
+
+        Args:
+            name: Name of the LookML model
+            project_qualified_name: Unique name of the project in which the model exists
+
+        Returns:
+            LookerModel instance ready to be created
+        """
+        validate_required_fields(
+            ["name", "project_qualified_name"], [name, project_qualified_name]
+        )
+        model = looker_qn.looker_id(name, "name")
+        parent = looker_qn.parse_project(project_qualified_name)
+        return cls(
+            name=name,
+            qualified_name=f"{project_qualified_name}/model/{model}",
+            connection_qualified_name=parent.connection_qualified_name,
+            connector_name=looker_qn.connector_name(parent.connection_qualified_name),
+            project_name=parent.project_name,
+            project=RelatedLookerProject(qualified_name=project_qualified_name),
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "LookerModel":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "LookerModel":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
