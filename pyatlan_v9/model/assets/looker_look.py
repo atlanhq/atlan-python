@@ -19,12 +19,14 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model import looker_qn
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -297,7 +299,7 @@ class LookerLook(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/look/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -331,10 +333,6 @@ class LookerLook(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.folder is UNSET:
-                errors.append("folder is required for creation")
-            if self.folder_name is UNSET:
-                errors.append("folder_name is required for creation")
         if errors:
             raise ValueError(f"LookerLook validation failed: {errors}")
 
@@ -366,6 +364,61 @@ class LookerLook(Asset):
         if self.guid is not UNSET:
             return RelatedLookerLook(guid=self.guid)
         return RelatedLookerLook(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        look_id: str | int,
+        folder_qualified_name: str | None = None,
+        folder_name: str | None = None,
+    ) -> "LookerLook":
+        """
+        Create a new LookerLook, keyed as atlan-looker-app keys it:
+        ``{connection_qualified_name}/look/{look_id}``.
+
+        Args:
+            name: Name of the look
+            connection_qualified_name: Unique name of the Looker connection
+            look_id: Looker id of the look. A whole float (``11.0``) is written as ``11``.
+            Leading zeros are dropped from a numeric id, as the app does.
+            folder_qualified_name: Unique name of the folder that holds the look, if any
+            folder_name: Name of that folder
+
+        Returns:
+            LookerLook instance ready to be created
+        """
+        validate_required_fields(
+            ["name", "connection_qualified_name", "look_id"],
+            [name, connection_qualified_name, look_id],
+        )
+        connection_qn = looker_qn.connection(connection_qualified_name)
+        source_id = looker_qn.looker_id(look_id, "look_id", numeric=True)
+        look = cls(
+            name=name,
+            qualified_name=f"{connection_qn}/look/{source_id}",
+            connection_qualified_name=connection_qn,
+            connector_name=looker_qn.connector_name(connection_qn),
+        )
+        if folder_qualified_name is not None:
+            looker_qn.parse_folder(folder_qualified_name, connection_qn)
+            look.folder = RelatedLookerFolder(qualified_name=folder_qualified_name)
+            if folder_name is not None:
+                look.folder_name = folder_name
+        elif folder_name is not None:
+            raise ValueError("folder_name requires folder_qualified_name")
+        return look
+
+    @classmethod
+    def create(cls, **kwargs) -> "LookerLook":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "LookerLook":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
