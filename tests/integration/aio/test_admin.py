@@ -22,7 +22,7 @@ GROUP_NAME = f"{MODULE_NAME}"
 
 EMAIL_DOMAIN = "@atlan.com"
 
-_default_group_count: int = 0
+_user_group_count_baseline: int = 0
 
 
 async def create_group_async(
@@ -44,9 +44,11 @@ async def test_retrieve_roles(client: AsyncAtlanClient):
 
 @pytest_asyncio.fixture(scope="module")
 async def group(client: AsyncAtlanClient) -> AsyncGenerator[CreateGroupResponse, None]:
+    global _user_group_count_baseline
     to_create = AtlanGroup.create(GROUP_NAME)
     fixed_user = await client.user.get_by_username(FIXED_USER)
     assert fixed_user
+    _user_group_count_baseline = fixed_user.group_count or 0
     g = await client.group.create(group=to_create, user_ids=[str(fixed_user.id)])
     yield g
     await delete_group_async(client, g.group)
@@ -89,13 +91,9 @@ async def test_create_group(client: AsyncAtlanClient, group: CreateGroupResponse
 async def test_retrieve_all_groups(
     client: AsyncAtlanClient, group: CreateGroupResponse
 ):
-    global _default_group_count
     groups = await client.group.get_all()
     assert groups.records
     assert len(groups.records) >= 1
-    for group1 in groups.records:
-        if group1.is_default():
-            _default_group_count += 1
 
 
 async def test_group_get_all_pagination(client: AsyncAtlanClient):
@@ -257,14 +255,13 @@ async def test_user_get_by_email_and_emails_pagination(client: AsyncAtlanClient)
 async def test_retrieve_existing_user(
     client: AsyncAtlanClient, group: CreateGroupResponse
 ):
-    global _default_group_count
     all_users = await client.user.get_all()
     assert all_users.records
     assert len(all_users.records) >= 1  # type: ignore
     user1 = await client.user.get_by_username(FIXED_USER)
     assert user1
     assert user1.id
-    assert user1.group_count == 1 + _default_group_count
+    assert user1.group_count == _user_group_count_baseline + 1
     response = await client.user.get_by_usernames(usernames=[FIXED_USER])
     assert response
     assert response.records is not None
@@ -351,16 +348,12 @@ async def test_final_user_state(
     client: AsyncAtlanClient,
     group: CreateGroupResponse,
 ):
-    global _default_group_count
     fixed_user = await client.user.get_by_username(FIXED_USER)
     assert fixed_user
     assert fixed_user.id
     response = await client.user.get_groups(fixed_user.id)
-    assert (
-        response.records is None
-        or len(response.records) == 0
-        or len(response.records) == _default_group_count
-    )
+    group_ids = {g.id for g in response.records or []}
+    assert group.group not in group_ids
 
 
 @pytest.mark.order(after="test_final_user_state")
