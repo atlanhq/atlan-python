@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -340,6 +341,67 @@ class SigmaDataElementField(Asset):
         if self.guid is not UNSET:
             return RelatedSigmaDataElementField(guid=self.guid)
         return RelatedSigmaDataElementField(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        data_element_qualified_name: str,
+        data_element_name: str,
+        page_name: str,
+        workbook_name: str,
+        field_id: str,
+    ) -> "SigmaDataElementField":
+        validate_required_fields(
+            [
+                "name",
+                "data_element_qualified_name",
+                "data_element_name",
+                "page_name",
+                "workbook_name",
+                "field_id",
+            ],
+            [
+                name,
+                data_element_qualified_name,
+                data_element_name,
+                page_name,
+                workbook_name,
+                field_id,
+            ],
+        )
+        fields = data_element_qualified_name.split("/")
+        if len(fields) != 6:
+            raise ValueError(
+                f"Invalid data_element_qualified_name: {data_element_qualified_name}. "
+                "Expected format: "
+                "default/sigma/<epoch>/<workbook_id>/<page_id>/<data_element_id>"
+            )
+        return cls(
+            name=name,
+            qualified_name=f"{data_element_qualified_name}/{field_id}",
+            connection_qualified_name="/".join(fields[:3]),
+            connector_name=fields[1],
+            sigma_workbook_qualified_name="/".join(fields[:4]),
+            sigma_workbook_name=workbook_name,
+            sigma_page_qualified_name="/".join(fields[:5]),
+            sigma_page_name=page_name,
+            sigma_data_element_qualified_name=data_element_qualified_name,
+            sigma_data_element_name=data_element_name,
+            sigma_data_element=RelatedSigmaDataElement(
+                qualified_name=data_element_qualified_name
+            ),
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "SigmaDataElementField":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "SigmaDataElementField":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
