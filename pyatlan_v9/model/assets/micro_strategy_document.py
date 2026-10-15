@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -275,7 +276,7 @@ class MicroStrategyDocument(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/documents/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -348,6 +349,54 @@ class MicroStrategyDocument(Asset):
         if self.guid is not UNSET:
             return RelatedMicroStrategyDocument(guid=self.guid)
         return RelatedMicroStrategyDocument(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        micro_strategy_project_qualified_name: str,
+        micro_strategy_project_name: str,
+        micro_strategy_id: str,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "MicroStrategyDocument":
+        validate_required_fields(
+            [
+                "name",
+                "micro_strategy_project_qualified_name",
+                "micro_strategy_project_name",
+                "micro_strategy_id",
+            ],
+            [
+                name,
+                micro_strategy_project_qualified_name,
+                micro_strategy_project_name,
+                micro_strategy_id,
+            ],
+        )
+        fields = micro_strategy_project_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        connection_qn = connection_qualified_name or "/".join(fields[:3])
+        return cls(
+            name=name,
+            qualified_name=f"{micro_strategy_project_qualified_name}/documents/{micro_strategy_id}",
+            connection_qualified_name=connection_qn,
+            connector_name=connector_name,
+            micro_strategy_project_qualified_name=micro_strategy_project_qualified_name,
+            micro_strategy_project_name=micro_strategy_project_name,
+            micro_strategy_project=RelatedMicroStrategyProject(
+                qualified_name=micro_strategy_project_qualified_name
+            ),
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "MicroStrategyDocument":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "MicroStrategyDocument":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
