@@ -314,9 +314,7 @@ class LookerField(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -350,12 +348,6 @@ class LookerField(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.model is UNSET:
-                errors.append("model is required for creation")
-            if self.model_name is UNSET:
-                errors.append("model_name is required for creation")
-            if self.project_name is UNSET:
-                errors.append("project_name is required for creation")
         if errors:
             raise ValueError(f"LookerField validation failed: {errors}")
 

@@ -284,9 +284,7 @@ class LookerTile(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/tile/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """

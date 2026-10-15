@@ -256,7 +256,7 @@ class LookerModel(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/model/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """

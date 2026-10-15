@@ -275,7 +275,7 @@ class LookerDashboard(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/dashboard/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -309,10 +309,6 @@ class LookerDashboard(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.folder is UNSET:
-                errors.append("folder is required for creation")
-            if self.folder_name is UNSET:
-                errors.append("folder_name is required for creation")
         if errors:
             raise ValueError(f"LookerDashboard validation failed: {errors}")
 
