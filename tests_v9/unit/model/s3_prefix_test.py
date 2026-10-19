@@ -108,10 +108,16 @@ def test_parity_bridge_app():
     assert sut.name == name
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="Generated _QUALIFIED_NAME_PATTERN rejects the trailing slash; needs "
-    "qualifiedNameFormula on S3Prefix in atlanhq/models (FND-3846)",
-)
-def test_creator_output_passes_generated_validation():
-    _create("raw/2025/").validate(for_creation=True)
+@pytest.mark.parametrize("prefix", ["raw/", "raw/2025/data/"])
+def test_creator_output_passes_generated_validation(prefix):
+    _create(prefix).validate(for_creation=True)
+
+
+def test_parity_s3_app_literal_qualified_name():
+    sut = S3Prefix.creator(
+        connection_qualified_name="default/s3/1700000000",
+        s3_bucket_name="example-bucket",
+        s3_bucket_qualified_name="default/s3/1700000000/example-bucket",
+        prefix="a/b/",
+    )
+    assert sut.qualified_name == "default/s3/1700000000/example-bucket/a/b/"

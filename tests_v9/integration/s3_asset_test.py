@@ -5,7 +5,7 @@ from typing import Generator
 import pytest
 
 from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.model.assets import Connection, S3Bucket, S3Object
+from pyatlan_v9.model.assets import Connection, S3Bucket, S3Object, S3Prefix
 from pyatlan_v9.model.core import Announcement
 from pyatlan_v9.model.enums import (
     AnnouncementType,
@@ -419,3 +419,70 @@ def test_restore_object_with_name(
     s3object_with_name: S3Object,
 ):
     _assert_restore_object(client, s3object_with_name)
+
+
+ROOT_PREFIX = f"raw_{MODULE_NAME}/"
+NESTED_PREFIX = f"{ROOT_PREFIX}2025/"
+
+
+@pytest.fixture(scope="module")
+def root_prefix(
+    client: AtlanClient, connection: Connection, bucket_with_name: S3Bucket
+) -> Generator[S3Prefix, None, None]:
+    to_create = S3Prefix.creator(
+        connection_qualified_name=connection.qualified_name,
+        s3_bucket_name=bucket_with_name.name,
+        s3_bucket_qualified_name=bucket_with_name.qualified_name,
+        prefix=ROOT_PREFIX,
+    )
+    result = client.asset.save(to_create).assets_created(asset_type=S3Prefix)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=S3Prefix)
+
+
+@pytest.fixture(scope="module")
+def nested_prefix(
+    client: AtlanClient,
+    connection: Connection,
+    bucket_with_name: S3Bucket,
+    root_prefix: S3Prefix,
+) -> Generator[S3Prefix, None, None]:
+    to_create = S3Prefix.creator(
+        connection_qualified_name=connection.qualified_name,
+        s3_bucket_name=bucket_with_name.name,
+        s3_bucket_qualified_name=bucket_with_name.qualified_name,
+        prefix=NESTED_PREFIX,
+    )
+    to_create.s3_parent_prefix = root_prefix.relate()
+    result = client.asset.save(to_create).assets_created(asset_type=S3Prefix)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=S3Prefix)
+
+
+def test_s3_prefix(
+    client: AtlanClient,
+    connection: Connection,
+    bucket_with_name: S3Bucket,
+    root_prefix: S3Prefix,
+    nested_prefix: S3Prefix,
+):
+    assert root_prefix.guid
+    assert (
+        root_prefix.qualified_name == f"{bucket_with_name.qualified_name}/{ROOT_PREFIX}"
+    )
+    assert root_prefix.name == f"raw_{MODULE_NAME}"
+    assert nested_prefix.qualified_name == (
+        f"{bucket_with_name.qualified_name}/{NESTED_PREFIX}"
+    )
+
+    restored = client.asset.get_by_qualified_name(
+        asset_type=S3Prefix,
+        qualified_name=nested_prefix.qualified_name,
+        ignore_relationships=False,
+    )
+    assert restored.guid == nested_prefix.guid
+    assert restored.connection_qualified_name == connection.qualified_name
+    assert restored.s3_bucket_qualified_name == bucket_with_name.qualified_name
+    assert restored.s3_parent_prefix_qualified_name == root_prefix.qualified_name
+    assert restored.s3_bucket.guid == bucket_with_name.guid
+    assert restored.s3_parent_prefix.guid == root_prefix.guid
