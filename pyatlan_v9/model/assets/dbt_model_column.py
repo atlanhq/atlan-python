@@ -23,8 +23,10 @@ from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
+from pyatlan_v9.model.dbt_utils import parse_dbt_env_qualified_name
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -336,7 +338,7 @@ class DbtModelColumn(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+$"
+        r"^.+/account/[^/]+/project/[^/]+/env/[^/]+/[^/]+/[^/]+$"
     )
 
     def validate(self, for_creation: bool = False) -> None:
@@ -371,10 +373,11 @@ class DbtModelColumn(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.dbt_model is UNSET:
-                errors.append("dbt_model is required for creation")
-            if self.dbt_model_qualified_name is UNSET:
-                errors.append("dbt_model_qualified_name is required for creation")
+            if self.dbt_model is UNSET and self.dbt_seed is UNSET:
+                errors.append("one of dbt_model, dbt_seed is required for creation")
+            if self.dbt_model is not UNSET:
+                if self.dbt_model_qualified_name is UNSET:
+                    errors.append("dbt_model_qualified_name is required for creation")
         if errors:
             raise ValueError(f"DbtModelColumn validation failed: {errors}")
 
@@ -406,6 +409,50 @@ class DbtModelColumn(Asset):
         if self.guid is not UNSET:
             return RelatedDbtModelColumn(guid=self.guid)
         return RelatedDbtModelColumn(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        model_qualified_name: str | None = None,
+        seed_qualified_name: str | None = None,
+    ) -> "DbtModelColumn":
+        """Create a column of a dbt model or seed: pass exactly one parent."""
+        validate_required_fields(["name"], [name])
+        if (model_qualified_name is None) == (seed_qualified_name is None):
+            raise ValueError(
+                "Exactly one of model_qualified_name or seed_qualified_name is required"
+            )
+        parent_qualified_name = model_qualified_name or seed_qualified_name
+        parent_arg = "model_qualified_name"
+        if model_qualified_name is None:
+            parent_arg = "seed_qualified_name"
+        parsed = parse_dbt_env_qualified_name(parent_qualified_name, parent_arg)
+        connection_qn, connector_name, parent_unique_id = parsed
+        # atlan-dbt-app sets dbtModelQualifiedName to the parent for seeds too.
+        column = cls(
+            name=name,
+            qualified_name=f"{parent_qualified_name}/{name}",
+            connection_qualified_name=connection_qn,
+            connector_name=connector_name,
+            asset_dbt_unique_id=f"{parent_unique_id}/{name}",
+            dbt_model_qualified_name=parent_qualified_name,
+        )
+        if model_qualified_name is not None:
+            column.dbt_model = RelatedDbtModel(qualified_name=model_qualified_name)
+        else:
+            column.dbt_seed = RelatedDbtSeed(qualified_name=seed_qualified_name)
+        return column
+
+    @classmethod
+    def create(cls, **kwargs) -> "DbtModelColumn":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "DbtModelColumn":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

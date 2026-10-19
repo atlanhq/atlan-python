@@ -460,13 +460,6 @@ class GlueTag(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
-        if for_creation:
-            if self.tag_id is UNSET:
-                errors.append("tag_id is required for creation")
-            if self.tag_allowed_values is UNSET:
-                errors.append("tag_allowed_values is required for creation")
-            if self.mapped_classification_name is UNSET:
-                errors.append("mapped_classification_name is required for creation")
         if errors:
             raise ValueError(f"GlueTag validation failed: {errors}")
 

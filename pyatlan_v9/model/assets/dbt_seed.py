@@ -23,8 +23,10 @@ from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
+from pyatlan_v9.model.dbt_utils import dbt_env_qualified_name
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -314,7 +316,9 @@ class DbtSeed(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/account/[^/]+/project/[^/]+/env/[^/]+/[^/]+$"
+    )
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -348,8 +352,6 @@ class DbtSeed(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.dbt_seed_sql_assets is UNSET:
-                errors.append("dbt_seed_sql_assets is required for creation")
         if errors:
             raise ValueError(f"DbtSeed validation failed: {errors}")
 
@@ -381,6 +383,38 @@ class DbtSeed(Asset):
         if self.guid is not UNSET:
             return RelatedDbtSeed(guid=self.guid)
         return RelatedDbtSeed(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        account_id: str,
+        project_id: str,
+        environment_id: str,
+        unique_id: str,
+    ) -> "DbtSeed":
+        validate_required_fields(["name"], [name])
+        qualified_name, connector_name = dbt_env_qualified_name(
+            connection_qualified_name, account_id, project_id, environment_id, unique_id
+        )
+        return cls(
+            name=name,
+            qualified_name=qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            asset_dbt_unique_id=unique_id,
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "DbtSeed":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "DbtSeed":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

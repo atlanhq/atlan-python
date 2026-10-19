@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
@@ -22,8 +23,10 @@ from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
+from pyatlan_v9.model.dbt_utils import parse_dbt_env_qualified_name
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -333,6 +336,10 @@ class DbtMeasure(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/account/[^/]+/project/[^/]+/env/[^/]+/[^/]+/measure/[^/]+$"
+    )
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this DbtMeasure instance.
@@ -357,6 +364,11 @@ class DbtMeasure(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"DbtMeasure validation failed: {errors}")
 
@@ -388,6 +400,41 @@ class DbtMeasure(Asset):
         if self.guid is not UNSET:
             return RelatedDbtMeasure(guid=self.guid)
         return RelatedDbtMeasure(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        semantic_model_qualified_name: str,
+    ) -> "DbtMeasure":
+        validate_required_fields(["name"], [name])
+        connection_qn, connector_name, semantic_model_unique_id = (
+            parse_dbt_env_qualified_name(
+                semantic_model_qualified_name, "semantic_model_qualified_name"
+            )
+        )
+        return cls(
+            name=name,
+            qualified_name=f"{semantic_model_qualified_name}/measure/{name}",
+            connection_qualified_name=connection_qn,
+            connector_name=connector_name,
+            asset_dbt_unique_id=f"{semantic_model_unique_id}/measure/{name}",
+            dbt_semantic_model_qualified_name=semantic_model_qualified_name,
+            semantic_model=RelatedSemanticModel(
+                type_name="DbtSemanticModel",
+                qualified_name=semantic_model_qualified_name,
+            ),
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "DbtMeasure":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "DbtMeasure":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
