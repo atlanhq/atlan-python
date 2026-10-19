@@ -244,6 +244,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     ATHENA = ("athena", AtlanConnectionCategory.QUERY_ENGINE)
     DATABRICKS = ("databricks", AtlanConnectionCategory.LAKE)
     POWERBI = ("powerbi", AtlanConnectionCategory.BI)
+    FABRIC = ("fabric", AtlanConnectionCategory.BI)
     BIGQUERY = ("bigquery", AtlanConnectionCategory.WAREHOUSE)
     LOOKER = ("looker", AtlanConnectionCategory.BI)
     METABASE = ("metabase", AtlanConnectionCategory.BI)
