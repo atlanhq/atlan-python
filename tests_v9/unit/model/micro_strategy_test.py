@@ -278,3 +278,100 @@ def test_create_alias(asset_type, expected_qn):
     )
 
     assert sut.qualified_name == expected_qn
+
+
+ALL_TYPES = [
+    MicroStrategyProject,
+    MicroStrategyAttribute,
+    MicroStrategyMetric,
+    MicroStrategyFact,
+    MicroStrategyCube,
+    MicroStrategyReport,
+    MicroStrategyDocument,
+    MicroStrategyDossier,
+    MicroStrategyColumn,
+    MicroStrategyVisualization,
+]
+
+
+def test_creators_emit_literal_app_qualified_names():
+    """Byte-for-byte strings from atlan-microstrategy-app, no templating."""
+    project = MicroStrategyProject.creator(
+        name="p",
+        connection_qualified_name="default/microstrategy/1712345678",
+        micro_strategy_id="B7CA92F0",
+    )
+    attribute = MicroStrategyAttribute.creator(
+        name="a",
+        micro_strategy_project_qualified_name=project.qualified_name,
+        micro_strategy_project_name="p",
+        micro_strategy_id="8D679D37",
+    )
+    dossier = MicroStrategyDossier.creator(
+        name="d",
+        micro_strategy_project_qualified_name=project.qualified_name,
+        micro_strategy_project_name="p",
+        micro_strategy_id="27D2CB6C",
+    )
+    column = MicroStrategyColumn.creator(
+        name="c",
+        parent_qualified_name=attribute.qualified_name,
+        micro_strategy_id="attr_45C11FA4",
+    )
+    visualization = MicroStrategyVisualization.creator(
+        name="v",
+        micro_strategy_dossier_qualified_name=dossier.qualified_name,
+        micro_strategy_dossier_name="d",
+        chapter_key="K53",
+        page_key="K66",
+        visualization_key="W71",
+    )
+
+    assert (
+        project.qualified_name == "default/microstrategy/1712345678/projects/B7CA92F0"
+    )
+    assert attribute.qualified_name == (
+        "default/microstrategy/1712345678/projects/B7CA92F0/attributes/8D679D37"
+    )
+    assert column.qualified_name == (
+        "default/microstrategy/1712345678/projects/B7CA92F0/columns/attr_45C11FA4"
+    )
+    assert visualization.qualified_name == (
+        "default/microstrategy/1712345678/projects/B7CA92F0/dossiers/27D2CB6C"
+        "/chapters/K53/pages/K66/visualizations/W71"
+    )
+
+
+@pytest.mark.parametrize("asset_type", ALL_TYPES)
+def test_updater(asset_type):
+    sut = asset_type.updater(qualified_name=PROJECT_QN, name=NAME)
+
+    assert sut.qualified_name == PROJECT_QN
+    assert sut.name == NAME
+
+
+@pytest.mark.parametrize("asset_type", ALL_TYPES)
+@pytest.mark.parametrize(
+    "qualified_name, name, message",
+    [
+        (None, NAME, "qualified_name is required"),
+        (PROJECT_QN, None, "name is required"),
+    ],
+)
+def test_updater_rejects_missing_inputs(asset_type, qualified_name, name, message):
+    with pytest.raises(ValueError, match=message):
+        asset_type.updater(qualified_name=qualified_name, name=name)
+
+
+@pytest.mark.parametrize("asset_type, expected_qn", PROJECT_CHILDREN)
+def test_trim_to_required(asset_type, expected_qn):
+    sut = asset_type.creator(
+        name=NAME,
+        micro_strategy_project_qualified_name=PROJECT_QN,
+        micro_strategy_project_name=PROJECT_NAME,
+        micro_strategy_id=MSTR_ID,
+    ).trim_to_required()
+
+    assert sut.qualified_name == expected_qn
+    assert sut.name == NAME
+    assert not sut.micro_strategy_project
