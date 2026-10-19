@@ -386,7 +386,9 @@ class SigmaDataElement(Asset):
             sigma_workbook_name=workbook_name,
             sigma_page_qualified_name=page_qualified_name,
             sigma_page_name=page_name,
-            sigma_page=RelatedSigmaPage(qualified_name=page_qualified_name),
+            sigma_page=RelatedSigmaPage(
+                unique_attributes={"qualifiedName": page_qualified_name}
+            ),
         )
 
     @classmethod
@@ -394,8 +396,18 @@ class SigmaDataElement(Asset):
         return cls.creator(**kwargs)
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "SigmaDataElement":
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    @classmethod
     def create_for_modification(cls, **kwargs) -> "SigmaDataElement":
         return cls.updater(**kwargs)
+
+    def trim_to_required(self) -> "SigmaDataElement":
+        return SigmaDataElement.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

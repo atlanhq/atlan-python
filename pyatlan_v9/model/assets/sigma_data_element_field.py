@@ -391,7 +391,7 @@ class SigmaDataElementField(Asset):
             sigma_data_element_qualified_name=data_element_qualified_name,
             sigma_data_element_name=data_element_name,
             sigma_data_element=RelatedSigmaDataElement(
-                qualified_name=data_element_qualified_name
+                unique_attributes={"qualifiedName": data_element_qualified_name}
             ),
         )
 
@@ -400,8 +400,18 @@ class SigmaDataElementField(Asset):
         return cls.creator(**kwargs)
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "SigmaDataElementField":
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    @classmethod
     def create_for_modification(cls, **kwargs) -> "SigmaDataElementField":
         return cls.updater(**kwargs)
+
+    def trim_to_required(self) -> "SigmaDataElementField":
+        return SigmaDataElementField.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
