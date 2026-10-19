@@ -27,8 +27,7 @@
             name=path,
             qualified_name=f"{external_location_qualified_name}/{path_hash}",
             connector_name=fields[1],
-            connection_qualified_name=connection_qualified_name
-            or "/".join(fields[:3]),
+            connection_qualified_name=connection_qualified_name or "/".join(fields[:3]),
             databricks_path=path,
             databricks_parent_name="/".join(fields[3:]),
             databricks_parent_qualified_name=external_location_qualified_name,

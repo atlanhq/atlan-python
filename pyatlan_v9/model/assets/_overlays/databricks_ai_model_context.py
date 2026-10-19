@@ -33,7 +33,9 @@
             schema_qualified_name=schema_qualified_name,
             connector_name=fields[1],
             connection_qualified_name=connection_qn,
-            databricks_ai_model_schema=RelatedSchema(qualified_name=schema_qualified_name),
+            databricks_ai_model_schema=RelatedSchema(
+                qualified_name=schema_qualified_name
+            ),
         )
 
     @classmethod
