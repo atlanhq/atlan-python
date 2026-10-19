@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
@@ -25,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -461,6 +463,8 @@ class DatabricksMetricView(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this DatabricksMetricView instance.
@@ -485,6 +489,11 @@ class DatabricksMetricView(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"DatabricksMetricView validation failed: {errors}")
 
@@ -516,6 +525,50 @@ class DatabricksMetricView(Asset):
         if self.guid is not UNSET:
             return RelatedDatabricksMetricView(guid=self.guid)
         return RelatedDatabricksMetricView(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        schema_name: str | None = None,
+        database_name: str | None = None,
+        database_qualified_name: str | None = None,
+        connection_qualified_name: str | None = None,
+    ) -> "DatabricksMetricView":
+        validate_required_fields(
+            ["name", "schema_qualified_name"], [name, schema_qualified_name]
+        )
+        fields = schema_qualified_name.split("/")
+        if len(fields) != 5:
+            raise ValueError(
+                f"Invalid schema_qualified_name: {schema_qualified_name}. "
+                "Expected format: default/connector/connection_id/catalog/schema"
+            )
+        connection_qn = connection_qualified_name or "/".join(fields[:3])
+        db_name = database_name or fields[3]
+        return cls(
+            name=name,
+            qualified_name=f"{schema_qualified_name}/{name}",
+            database_name=db_name,
+            database_qualified_name=database_qualified_name
+            or f"{connection_qn}/{db_name}",
+            schema_name=schema_name or fields[4],
+            schema_qualified_name=schema_qualified_name,
+            connector_name=fields[1],
+            connection_qualified_name=connection_qn,
+            atlan_schema=RelatedSchema(qualified_name=schema_qualified_name),
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "DatabricksMetricView":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "DatabricksMetricView":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

@@ -346,13 +346,6 @@ class DbtTag(Asset):
                 f"qualified_name '{self.qualified_name}' does not match expected "
                 f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
             )
-        if for_creation:
-            if self.tag_id is UNSET:
-                errors.append("tag_id is required for creation")
-            if self.tag_allowed_values is UNSET:
-                errors.append("tag_allowed_values is required for creation")
-            if self.mapped_classification_name is UNSET:
-                errors.append("mapped_classification_name is required for creation")
         if errors:
             raise ValueError(f"DbtTag validation failed: {errors}")
 
