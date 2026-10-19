@@ -61,6 +61,7 @@
             aws_arn=aws_arn,
             s3_bucket_name=s3_bucket_name,
             s3_bucket_qualified_name=s3_bucket_qualified_name,
+            bucket=RelatedS3Bucket(qualified_name=s3_bucket_qualified_name),
         )
 
     @classmethod
@@ -122,6 +123,7 @@
             connector_name=connector_name,
             s3_bucket_name=s3_bucket_name,
             s3_bucket_qualified_name=s3_bucket_qualified_name,
+            bucket=RelatedS3Bucket(qualified_name=s3_bucket_qualified_name),
         )
 
     @classmethod

@@ -5,7 +5,13 @@ from typing import Generator
 import pytest
 
 from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.model.assets import Connection, S3Bucket, S3Object, S3Prefix
+from pyatlan_v9.model.assets import (
+    Connection,
+    RelatedS3Object,
+    S3Bucket,
+    S3Object,
+    S3Prefix,
+)
 from pyatlan_v9.model.core import Announcement
 from pyatlan_v9.model.enums import (
     AnnouncementType,
@@ -191,7 +197,7 @@ def _assert_retrieve_bucket(client, bucket, s3object, with_name=False):
     assert b.certificate_status_message == CERTIFICATE_MESSAGE
     assert b.objects
     assert len(b.objects) == 1
-    assert isinstance(b.objects[0], S3Object)
+    assert isinstance(b.objects[0], RelatedS3Object)
     assert b.objects[0].guid == s3object.guid
     if with_name:
         assert not b.aws_arn

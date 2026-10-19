@@ -306,6 +306,7 @@ class ReferenceableNested(
     is_incomplete: Union[Any, UnsetType] = UNSET
     provenance_type: Union[Any, UnsetType] = UNSET
     home_id: Union[Any, UnsetType] = UNSET
+    delete_handler: Union[Any, UnsetType] = UNSET
     depth: Union[Any, UnsetType] = UNSET
     immediate_upstream: Union[Any, UnsetType] = UNSET
     immediate_downstream: Union[Any, UnsetType] = UNSET
@@ -384,6 +385,7 @@ def _referenceable_to_nested(referenceable: Referenceable) -> ReferenceableNeste
         is_incomplete=referenceable.is_incomplete,
         provenance_type=referenceable.provenance_type,
         home_id=referenceable.home_id,
+        delete_handler=referenceable.delete_handler,
         depth=referenceable.depth,
         immediate_upstream=referenceable.immediate_upstream,
         immediate_downstream=referenceable.immediate_downstream,
@@ -432,6 +434,7 @@ def _referenceable_from_nested(nested: ReferenceableNested) -> Referenceable:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
