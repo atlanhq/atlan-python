@@ -19,12 +19,14 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model import looker_qn
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -275,7 +277,7 @@ class LookerDashboard(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/dashboard/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -309,10 +311,6 @@ class LookerDashboard(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.folder is UNSET:
-                errors.append("folder is required for creation")
-            if self.folder_name is UNSET:
-                errors.append("folder_name is required for creation")
         if errors:
             raise ValueError(f"LookerDashboard validation failed: {errors}")
 
@@ -344,6 +342,60 @@ class LookerDashboard(Asset):
         if self.guid is not UNSET:
             return RelatedLookerDashboard(guid=self.guid)
         return RelatedLookerDashboard(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        dashboard_id: str | int,
+        folder_qualified_name: str | None = None,
+        folder_name: str | None = None,
+    ) -> "LookerDashboard":
+        """
+        Create a new LookerDashboard, keyed as atlan-looker-app keys it:
+        ``{connection_qualified_name}/dashboard/{dashboard_id}``.
+
+        Args:
+            name: Name of the dashboard
+            connection_qualified_name: Unique name of the Looker connection
+            dashboard_id: Looker id of the dashboard. A whole float (``11.0``) is written as ``11``.
+            folder_qualified_name: Unique name of the folder that holds the dashboard, if any
+            folder_name: Name of that folder
+
+        Returns:
+            LookerDashboard instance ready to be created
+        """
+        validate_required_fields(
+            ["name", "connection_qualified_name", "dashboard_id"],
+            [name, connection_qualified_name, dashboard_id],
+        )
+        connection_qn = looker_qn.connection(connection_qualified_name)
+        source_id = looker_qn.looker_id(dashboard_id, "dashboard_id")
+        dashboard = cls(
+            name=name,
+            qualified_name=f"{connection_qn}/dashboard/{source_id}",
+            connection_qualified_name=connection_qn,
+            connector_name=looker_qn.connector_name(connection_qn),
+        )
+        if folder_qualified_name is not None:
+            looker_qn.parse_folder(folder_qualified_name, connection_qn)
+            dashboard.folder = RelatedLookerFolder(qualified_name=folder_qualified_name)
+            if folder_name is not None:
+                dashboard.folder_name = folder_name
+        elif folder_name is not None:
+            raise ValueError("folder_name requires folder_qualified_name")
+        return dashboard
+
+    @classmethod
+    def create(cls, **kwargs) -> "LookerDashboard":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "LookerDashboard":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
