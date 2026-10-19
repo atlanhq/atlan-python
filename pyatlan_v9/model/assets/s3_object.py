@@ -532,6 +532,10 @@ class S3Object(Asset):
         )
 
     @classmethod
+    def create_with_prefix(cls, **kwargs) -> "S3Object":
+        return cls.creator_with_prefix(**kwargs)
+
+    @classmethod
     def updater(cls, *, qualified_name: str, name: str) -> "S3Object":
         """
         Create an S3Object instance for modification.

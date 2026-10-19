@@ -359,6 +359,22 @@ def test_creator_with_prefix(
     assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name
 
 
+def test_create_with_prefix_is_alias_for_creator_with_prefix():
+    """create_with_prefix (kept for pyatlan compatibility) matches creator_with_prefix."""
+    kwargs = dict(
+        name=S3_OBJECT_NAME,
+        connection_qualified_name=S3_CONNECTION_QUALIFIED_NAME,
+        prefix=S3_OBJECT_PREFIX,
+        s3_bucket_name=BUCKET_NAME,
+        s3_bucket_qualified_name=BUCKET_QUALIFIED_NAME,
+    )
+    alias = S3Object.create_with_prefix(**kwargs)
+    expected = S3Object.creator_with_prefix(**kwargs)
+    assert alias.qualified_name == expected.qualified_name
+    assert alias.s3_object_key == expected.s3_object_key
+    assert alias.s3_bucket_qualified_name == expected.s3_bucket_qualified_name
+
+
 @pytest.mark.parametrize(
     "qualified_name, name, message",
     [
