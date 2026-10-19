@@ -239,7 +239,8 @@ def skill_artifact(
     to_create = SkillArtifact.creator(
         skill_qualified_name=skill.qualified_name,
         relative_path="scripts/run.py",
-        file_type="py",
+        # The app maps extensions without an enum value (py, sh) to txt.
+        file_type="txt",
     )
     result = _save(client, to_create, SkillArtifact)
     yield result
