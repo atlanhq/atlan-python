@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
@@ -22,8 +23,10 @@ from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
+from pyatlan_v9.model.dbt_utils import dbt_env_qualified_name
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -313,6 +316,10 @@ class DbtSemanticModel(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/account/[^/]+/project/[^/]+/env/[^/]+/[^/]+$"
+    )
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this DbtSemanticModel instance.
@@ -337,6 +344,11 @@ class DbtSemanticModel(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"DbtSemanticModel validation failed: {errors}")
 
@@ -368,6 +380,38 @@ class DbtSemanticModel(Asset):
         if self.guid is not UNSET:
             return RelatedDbtSemanticModel(guid=self.guid)
         return RelatedDbtSemanticModel(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        account_id: str,
+        project_id: str,
+        environment_id: str,
+        unique_id: str,
+    ) -> "DbtSemanticModel":
+        validate_required_fields(["name"], [name])
+        qualified_name, connector_name = dbt_env_qualified_name(
+            connection_qualified_name, account_id, project_id, environment_id, unique_id
+        )
+        return cls(
+            name=name,
+            qualified_name=qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            asset_dbt_unique_id=unique_id,
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "DbtSemanticModel":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "DbtSemanticModel":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

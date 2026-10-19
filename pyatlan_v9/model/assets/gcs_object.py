@@ -388,8 +388,6 @@ class GCSObject(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.gcs_bucket is UNSET:
                 errors.append("gcs_bucket is required for creation")
-            if self.gcs_bucket_name is UNSET:
-                errors.append("gcs_bucket_name is required for creation")
             if self.gcs_bucket_qualified_name is UNSET:
                 errors.append("gcs_bucket_qualified_name is required for creation")
         if errors:
