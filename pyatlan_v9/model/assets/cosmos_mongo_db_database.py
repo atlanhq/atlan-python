@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -484,7 +485,7 @@ class CosmosMongoDBDatabase(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/databases/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -555,6 +556,47 @@ class CosmosMongoDBDatabase(Asset):
         if self.guid is not UNSET:
             return RelatedCosmosMongoDBDatabase(guid=self.guid)
         return RelatedCosmosMongoDBDatabase(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        cosmos_mongo_db_account_qualified_name: str,
+        connection_qualified_name: str | None = None,
+    ) -> "CosmosMongoDBDatabase":
+        validate_required_fields(
+            ["name", "cosmos_mongo_db_account_qualified_name"],
+            [name, cosmos_mongo_db_account_qualified_name],
+        )
+        if not connection_qualified_name:
+            fields = cosmos_mongo_db_account_qualified_name.split("/")
+            if len(fields) < 5:
+                raise ValueError("cosmos_mongo_db_account_qualified_name is invalid")
+            connection_qualified_name = "/".join(fields[:3])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{cosmos_mongo_db_account_qualified_name}/databases/{name}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            cosmos_mongo_db_account_qualified_name=cosmos_mongo_db_account_qualified_name,
+            cosmos_mongo_db_account=RelatedCosmosMongoDBAccount(
+                unique_attributes={
+                    "qualifiedName": cosmos_mongo_db_account_qualified_name
+                }
+            ),
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "CosmosMongoDBDatabase":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "CosmosMongoDBDatabase":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
