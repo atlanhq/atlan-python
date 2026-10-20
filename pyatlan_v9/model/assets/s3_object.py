@@ -468,6 +468,7 @@ class S3Object(Asset):
             aws_arn=aws_arn,
             s3_bucket_name=s3_bucket_name,
             s3_bucket_qualified_name=s3_bucket_qualified_name,
+            bucket=RelatedS3Bucket(qualified_name=s3_bucket_qualified_name),
         )
 
     @classmethod
@@ -529,7 +530,12 @@ class S3Object(Asset):
             connector_name=connector_name,
             s3_bucket_name=s3_bucket_name,
             s3_bucket_qualified_name=s3_bucket_qualified_name,
+            bucket=RelatedS3Bucket(qualified_name=s3_bucket_qualified_name),
         )
+
+    @classmethod
+    def create_with_prefix(cls, **kwargs) -> "S3Object":
+        return cls.creator_with_prefix(**kwargs)
 
     @classmethod
     def updater(cls, *, qualified_name: str, name: str) -> "S3Object":
@@ -971,6 +977,7 @@ def _s3_object_to_nested(s3_object: S3Object) -> S3ObjectNested:
         is_incomplete=s3_object.is_incomplete,
         provenance_type=s3_object.provenance_type,
         home_id=s3_object.home_id,
+        delete_handler=s3_object.delete_handler,
         depth=s3_object.depth,
         immediate_upstream=s3_object.immediate_upstream,
         immediate_downstream=s3_object.immediate_downstream,
@@ -1017,6 +1024,7 @@ def _s3_object_from_nested(nested: S3ObjectNested) -> S3Object:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

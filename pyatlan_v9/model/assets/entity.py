@@ -199,6 +199,9 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     home_id: Union[str, UnsetType] = UNSET
     """Home identifier for distributed Atlas systems."""
 
+    delete_handler: Union[str, UnsetType] = UNSET
+    """Handler used to delete this entity (e.g. SOFT, HARD, PURGE); set on deleted entities."""
+
     # Lineage-specific fields (only populated in lineage API responses)
     depth: Union[int, None, UnsetType] = UNSET
     """Depth of this asset within lineage. Only available in assets retrieved via lineage."""

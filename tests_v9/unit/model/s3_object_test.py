@@ -359,6 +359,22 @@ def test_creator_with_prefix(
     assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name
 
 
+def test_create_with_prefix_is_alias_for_creator_with_prefix():
+    """create_with_prefix (kept for pyatlan compatibility) matches creator_with_prefix."""
+    kwargs = dict(
+        name=S3_OBJECT_NAME,
+        connection_qualified_name=S3_CONNECTION_QUALIFIED_NAME,
+        prefix=S3_OBJECT_PREFIX,
+        s3_bucket_name=BUCKET_NAME,
+        s3_bucket_qualified_name=BUCKET_QUALIFIED_NAME,
+    )
+    alias = S3Object.create_with_prefix(**kwargs)
+    expected = S3Object.creator_with_prefix(**kwargs)
+    assert alias.qualified_name == expected.qualified_name
+    assert alias.s3_object_key == expected.s3_object_key
+    assert alias.s3_bucket_qualified_name == expected.s3_bucket_qualified_name
+
+
 @pytest.mark.parametrize(
     "qualified_name, name, message",
     [
@@ -388,3 +404,38 @@ def test_trim_to_required():
     ).trim_to_required()
     assert sut.qualified_name == S3_OBJECT_QUALIFIED_NAME
     assert sut.name == S3_OBJECT_NAME
+
+
+def test_creators_set_bucket_relationship():
+    """Both creators link the object to its bucket, as pyatlan's creators do."""
+    by_arn = S3Object.creator(
+        name=S3_OBJECT_NAME,
+        connection_qualified_name=S3_CONNECTION_QUALIFIED_NAME,
+        aws_arn=AWS_ARN,
+        s3_bucket_name=BUCKET_NAME,
+        s3_bucket_qualified_name=BUCKET_QUALIFIED_NAME,
+    )
+    by_prefix = S3Object.creator_with_prefix(
+        name=S3_OBJECT_NAME,
+        connection_qualified_name=S3_CONNECTION_QUALIFIED_NAME,
+        prefix=S3_OBJECT_PREFIX,
+        s3_bucket_name=BUCKET_NAME,
+        s3_bucket_qualified_name=BUCKET_QUALIFIED_NAME,
+    )
+    for sut in (by_arn, by_prefix):
+        assert sut.bucket.qualified_name == BUCKET_QUALIFIED_NAME
+    by_prefix.validate(for_creation=True)
+
+
+def test_delete_handler_round_trips_through_nested_json():
+    """deleteHandler is a top-level Atlas entity field (outside attributes)."""
+    payload = (
+        '{"typeName": "S3Object", "guid": "1234", "status": "DELETED",'
+        ' "deleteHandler": "SOFT",'
+        f' "attributes": {{"qualifiedName": "{S3_OBJECT_QUALIFIED_NAME}",'
+        f' "name": "{S3_OBJECT_NAME}"}}}}'
+    )
+    sut = S3Object.from_json(payload)
+    assert sut.delete_handler == "SOFT"
+    assert sut.status == "DELETED"
+    assert '"deleteHandler":"SOFT"' in sut.to_json()

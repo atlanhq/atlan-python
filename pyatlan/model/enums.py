@@ -400,6 +400,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     SAP_ECC = ("sap-ecc", AtlanConnectionCategory.ERP)
     CLOUDSQL_POSTGRES = ("cloudsql-postgres", AtlanConnectionCategory.DATABASE)
     ALLOYDB_POSTGRES = ("alloydb-postgres", AtlanConnectionCategory.DATABASE)
+    SAGEMAKER = ("sagemaker", AtlanConnectionCategory.SAAS)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
