@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -287,10 +288,6 @@ class FabricActivity(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.fabric_data_pipeline is UNSET:
                 errors.append("fabric_data_pipeline is required for creation")
-            if self.fabric_data_pipeline_qualified_name is UNSET:
-                errors.append(
-                    "fabric_data_pipeline_qualified_name is required for creation"
-                )
         if errors:
             raise ValueError(f"FabricActivity validation failed: {errors}")
 
@@ -322,6 +319,45 @@ class FabricActivity(Asset):
         if self.guid is not UNSET:
             return RelatedFabricActivity(guid=self.guid)
         return RelatedFabricActivity(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        data_pipeline_qualified_name: str,
+    ) -> "FabricActivity":
+        validate_required_fields(
+            ["name", "data_pipeline_qualified_name"],
+            [name, data_pipeline_qualified_name],
+        )
+        fields = data_pipeline_qualified_name.split("/")
+        if len(fields) != 5:
+            raise ValueError(
+                f"Invalid data_pipeline_qualified_name: "
+                f"{data_pipeline_qualified_name}. "
+                "Expected format: "
+                "default/fabric/<epoch>/<workspace_id>/<data_pipeline_id>"
+            )
+        return cls(
+            name=name,
+            qualified_name=f"{data_pipeline_qualified_name}/{name}",
+            connection_qualified_name="/".join(fields[:3]),
+            connector_name=fields[1],
+            asset_space_qualified_name="/".join(fields[:4]),
+            fabric_data_pipeline=RelatedFabricDataPipeline(
+                qualified_name=data_pipeline_qualified_name
+            ),
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "FabricActivity":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "FabricActivity":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
