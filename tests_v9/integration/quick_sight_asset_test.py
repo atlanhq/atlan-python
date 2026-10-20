@@ -6,6 +6,7 @@ from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import (
     Connection,
     QuickSightAnalysis,
+    QuickSightAnalysisField,
     QuickSightAnalysisVisual,
     QuickSightDashboard,
     QuickSightDashboardVisual,
@@ -39,6 +40,9 @@ QUICKSIGHT_DASHBOARD_VISUAL_NAME = f"{MODULE_NAME}-QUICKSIGHT-DASHBOARD-VISUAL"
 QUICKSIGHT_DASHBOARD_VISUAL_ID = f"{MODULE_NAME}-DASHBOARD-VISUAL-ID"
 QUICKSIGHT_ANALYSIS_VISUAL_NAME = f"{MODULE_NAME}-QUICKSIGHT-ANALYSIS-VISUAL"
 QUICKSIGHT_ANALYSIS_VISUAL_ID = f"{MODULE_NAME}-ANALYSIS-VISUAL-ID"
+QUICKSIGHT_ANALYSIS_FIELD_NAME = f"{MODULE_NAME}-QUICKSIGHT-ANALYSIS-FIELD"
+QUICKSIGHT_ANALYSIS_FIELD_ID = f"{MODULE_NAME}-ANALYSIS-FIELD-ID"
+QUICKSIGHT_ANALYSIS_FIELD_EXPRESSION = "abs({amount}+5000)"
 QUICKSIGHT_SHEET_NAME = f"{MODULE_NAME}-QUICKSIGHT-SHEET-NAME"
 QUICKSIGHT_SHEET_ID = f"{MODULE_NAME}-SHEET-ID"
 QUICK_SIGHT_DESCRIPTION = "Automated testing of the Python SDK."
@@ -164,6 +168,27 @@ def quick_sight_analysis_visual(
     result = response.assets_created(asset_type=QuickSightAnalysisVisual)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=QuickSightAnalysisVisual)
+
+
+@pytest.fixture(scope="module")
+def quick_sight_analysis_field(
+    client: AtlanClient,
+    connection: Connection,
+    quick_sight_analysis_visual: QuickSightAnalysisVisual,
+) -> Generator[QuickSightAnalysisField, None, None]:
+    assert connection.qualified_name
+    to_create = QuickSightAnalysisField.creator(
+        name=QUICKSIGHT_ANALYSIS_FIELD_NAME,
+        quick_sight_id=QUICKSIGHT_ANALYSIS_FIELD_ID,
+        quick_sight_analysis_visual_qualified_name=str(
+            quick_sight_analysis_visual.qualified_name
+        ),
+        quick_sight_analysis_field_expression=QUICKSIGHT_ANALYSIS_FIELD_EXPRESSION,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=QuickSightAnalysisField)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=QuickSightAnalysisField)
 
 
 @pytest.fixture(scope="module")
@@ -438,3 +463,58 @@ def test_sight_dashboard_visual(
     assert asset.name == QUICKSIGHT_DASHBOARD_VISUAL_NAME
     assert asset.description == QUICK_SIGHT_DESCRIPTION
     assert asset.qualified_name == quick_sight_dashboard_visual.qualified_name
+
+
+def test_sight_analysis_field(
+    client: AtlanClient,
+    connection: Connection,
+    quick_sight_analysis_field: QuickSightAnalysisField,
+    quick_sight_analysis_visual: QuickSightAnalysisVisual,
+    quick_sight_analysis: QuickSightAnalysis,
+):
+    assert quick_sight_analysis_field
+    assert quick_sight_analysis_field.guid
+    assert (
+        quick_sight_analysis_field.qualified_name
+        == f"{quick_sight_analysis_visual.qualified_name}/{QUICKSIGHT_ANALYSIS_FIELD_ID}"
+    )
+    assert quick_sight_analysis_field.name == QUICKSIGHT_ANALYSIS_FIELD_NAME
+    assert quick_sight_analysis_field.quick_sight_id == QUICKSIGHT_ANALYSIS_FIELD_ID
+    assert (
+        quick_sight_analysis_field.connection_qualified_name
+        == connection.qualified_name
+    )
+    assert (
+        quick_sight_analysis_field.connector_name == AtlanConnectorType.QUICKSIGHT.value
+    )
+    assert (
+        quick_sight_analysis_field.quick_sight_analysis_visual_qualified_name
+        == quick_sight_analysis_visual.qualified_name
+    )
+    assert (
+        quick_sight_analysis_field.quick_sight_analysis_qualified_name
+        == quick_sight_analysis.qualified_name
+    )
+
+    to_update = quick_sight_analysis_field.updater(
+        name=quick_sight_analysis_field.name,
+        qualified_name=quick_sight_analysis_field.qualified_name,
+    )
+    to_update.description = QUICK_SIGHT_DESCRIPTION
+    response = client.asset.save(to_update)
+    assert response and response.mutated_entities
+
+    asset = client.asset.get_by_qualified_name(
+        qualified_name=quick_sight_analysis_field.qualified_name,
+        asset_type=QuickSightAnalysisField,
+        ignore_relationships=False,
+    )
+    assert asset
+    assert asset.name == QUICKSIGHT_ANALYSIS_FIELD_NAME
+    assert asset.description == QUICK_SIGHT_DESCRIPTION
+    assert (
+        asset.quick_sight_analysis_field_expression
+        == QUICKSIGHT_ANALYSIS_FIELD_EXPRESSION
+    )
+    assert asset.quick_sight_analysis_visual
+    assert asset.quick_sight_analysis_visual.guid == quick_sight_analysis_visual.guid
