@@ -45,7 +45,7 @@
             schema_name=namespace_path[-1],
             schema_qualified_name=namespace_qualified_name,
             atlan_schema=RelatedIcebergNamespace(
-                qualified_name=namespace_qualified_name
+                unique_attributes={"qualifiedName": namespace_qualified_name}
             ),
             iceberg_parent_namespace_qualified_name=(
                 namespace_qualified_name if len(namespace_path) > 1 else None
@@ -66,5 +66,13 @@
         return cls.creator(**kwargs)
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "IcebergTable":
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    @classmethod
     def create_for_modification(cls, **kwargs) -> "IcebergTable":
         return cls.updater(**kwargs)
+
+    def trim_to_required(self) -> "IcebergTable":
+        return IcebergTable.updater(qualified_name=self.qualified_name, name=self.name)

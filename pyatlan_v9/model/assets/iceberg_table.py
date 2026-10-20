@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
@@ -584,6 +585,8 @@ class IcebergTable(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this IcebergTable instance.
@@ -608,6 +611,11 @@ class IcebergTable(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"IcebergTable validation failed: {errors}")
 
@@ -684,7 +692,7 @@ class IcebergTable(Asset):
             schema_name=namespace_path[-1],
             schema_qualified_name=namespace_qualified_name,
             atlan_schema=RelatedIcebergNamespace(
-                qualified_name=namespace_qualified_name
+                unique_attributes={"qualifiedName": namespace_qualified_name}
             ),
             iceberg_parent_namespace_qualified_name=(
                 namespace_qualified_name if len(namespace_path) > 1 else None
@@ -705,8 +713,16 @@ class IcebergTable(Asset):
         return cls.creator(**kwargs)
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "IcebergTable":
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    @classmethod
     def create_for_modification(cls, **kwargs) -> "IcebergTable":
         return cls.updater(**kwargs)
+
+    def trim_to_required(self) -> "IcebergTable":
+        return IcebergTable.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

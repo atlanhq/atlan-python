@@ -42,5 +42,13 @@
         return cls.creator(**kwargs)
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "IcebergCatalog":
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    @classmethod
     def create_for_modification(cls, **kwargs) -> "IcebergCatalog":
         return cls.updater(**kwargs)
+
+    def trim_to_required(self) -> "IcebergCatalog":
+        return IcebergCatalog.updater(qualified_name=self.qualified_name, name=self.name)

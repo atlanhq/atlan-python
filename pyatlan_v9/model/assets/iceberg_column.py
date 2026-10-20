@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
@@ -834,6 +835,8 @@ class IcebergColumn(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this IcebergColumn instance.
@@ -858,6 +861,11 @@ class IcebergColumn(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if for_creation:
             if self.order is UNSET:
                 errors.append("order is required for creation")
@@ -968,7 +976,9 @@ class IcebergColumn(Asset):
             schema_qualified_name=namespace_qualified_name,
             table_name=fields[-1],
             table_qualified_name=table_qualified_name,
-            table=RelatedIcebergTable(qualified_name=table_qualified_name),
+            table=RelatedIcebergTable(
+                unique_attributes={"qualifiedName": table_qualified_name}
+            ),
             column_depth_level=len(parent_path) + 1,
             iceberg_parent_namespace_qualified_name=(
                 namespace_qualified_name if len(namespace_path) > 1 else None
@@ -1001,8 +1011,16 @@ class IcebergColumn(Asset):
         return cls.creator(**kwargs)
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "IcebergColumn":
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    @classmethod
     def create_for_modification(cls, **kwargs) -> "IcebergColumn":
         return cls.updater(**kwargs)
+
+    def trim_to_required(self) -> "IcebergColumn":
+        return IcebergColumn.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

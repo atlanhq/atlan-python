@@ -48,9 +48,13 @@
             connector_name=fields[1],
             database_name=catalog_name,
             database_qualified_name=catalog_qualified_name,
-            database=RelatedIcebergCatalog(qualified_name=catalog_qualified_name),
+            database=RelatedIcebergCatalog(
+                unique_attributes={"qualifiedName": catalog_qualified_name}
+            ),
+            # Matches atlan-iceberg-app: the first namespace segment, not the
+            # immediate parent, for any nested namespace.
             iceberg_parent_namespace_qualified_name=(
-                parent_qualified_name if len(path) > 1 else None
+                f"{catalog_qualified_name}/{path[0]}" if len(path) > 1 else None
             ),
             iceberg_namespace_hierarchy=[
                 {
@@ -66,5 +70,13 @@
         return cls.creator(**kwargs)
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "IcebergNamespace":
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    @classmethod
     def create_for_modification(cls, **kwargs) -> "IcebergNamespace":
         return cls.updater(**kwargs)
+
+    def trim_to_required(self) -> "IcebergNamespace":
+        return IcebergNamespace.updater(qualified_name=self.qualified_name, name=self.name)
