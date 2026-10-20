@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -282,7 +283,7 @@ class QlikDataset(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/dataset/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -351,6 +352,57 @@ class QlikDataset(Asset):
         if self.guid is not UNSET:
             return RelatedQlikDataset(guid=self.guid)
         return RelatedQlikDataset(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        qlik_id: str,
+        space_qualified_name: str,
+    ) -> "QlikDataset":
+        """
+        Build a Qlik dataset; qualifiedName is {connection}/dataset/{qlik_id}.
+
+        space_qualified_name is the qualifiedName of the QlikSpace
+        ({connection}/space/{id}) or QlikStream ({connection}/stream/{id})
+        the dataset lives in. Its segment decides which type the qlik_space
+        relationship points at.
+        """
+        validate_required_fields(
+            ["name", "qlik_id", "space_qualified_name"],
+            [name, qlik_id, space_qualified_name],
+        )
+        space_parts = space_qualified_name.rsplit("/", 2)
+        if len(space_parts) != 3 or space_parts[1] not in ("space", "stream"):
+            raise ValueError(
+                "space_qualified_name must end in /space/<id> or /stream/<id>"
+            )
+        connection_qualified_name, space_kind, space_id = space_parts
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/dataset/{qlik_id}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            qlik_id=qlik_id,
+            qlik_space_id=space_id,
+            qlik_space_qualified_name=space_qualified_name,
+            qlik_space=RelatedQlikSpace(
+                type_name="QlikStream" if space_kind == "stream" else "QlikSpace",
+                qualified_name=space_qualified_name,
+            ),
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "QlikDataset":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "QlikDataset":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

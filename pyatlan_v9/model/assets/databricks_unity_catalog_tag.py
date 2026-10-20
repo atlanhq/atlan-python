@@ -20,6 +20,14 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -36,6 +44,7 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .databricks_related import RelatedDatabricksUnityCatalogTag
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
@@ -59,14 +68,6 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .databricks_related import RelatedDatabricksUnityCatalogTag
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -464,13 +465,6 @@ class DatabricksUnityCatalogTag(Asset):
                 f"qualified_name '{self.qualified_name}' does not match expected "
                 f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
             )
-        if for_creation:
-            if self.tag_id is UNSET:
-                errors.append("tag_id is required for creation")
-            if self.tag_allowed_values is UNSET:
-                errors.append("tag_allowed_values is required for creation")
-            if self.mapped_classification_name is UNSET:
-                errors.append("mapped_classification_name is required for creation")
         if errors:
             raise ValueError(f"DatabricksUnityCatalogTag validation failed: {errors}")
 
@@ -504,6 +498,38 @@ class DatabricksUnityCatalogTag(Asset):
         if self.guid is not UNSET:
             return RelatedDatabricksUnityCatalogTag(guid=self.guid)
         return RelatedDatabricksUnityCatalogTag(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        allowed_values: list[str] | None = None,
+    ) -> "DatabricksUnityCatalogTag":
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        tag = cls(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/tag/{name}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+        )
+        if allowed_values is not None:
+            tag.tag_allowed_values = allowed_values
+        return tag
+
+    @classmethod
+    def create(cls, **kwargs) -> "DatabricksUnityCatalogTag":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "DatabricksUnityCatalogTag":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

@@ -43,3 +43,27 @@ TABLEAU_DASHBOARD_QUALIFIED_NAME = (
 TABLEAU_WORKSHEET_QUALIFIED_NAME = (
     f"{TABLEAU_WORKBOOK_QUALIFIED_NAME}/{TABLEAU_WORKSHEET_ID}"
 )
+
+# Power BI (FND-3852): literal qualifiedNames as atlan-powerbi-app emits them
+POWERBI_CONNECTION_QUALIFIED_NAME = "default/powerbi/1712345678"
+POWERBI_WORKSPACE_ID = "0f1e2d3c-4b5a-4978-8a9b-0c1d2e3f4a5b"
+POWERBI_WORKSPACE_QUALIFIED_NAME = (
+    "default/powerbi/1712345678/0f1e2d3c-4b5a-4978-8a9b-0c1d2e3f4a5b"
+)
+POWERBI_DATASET_QUALIFIED_NAME = (
+    "default/powerbi/1712345678/0f1e2d3c-4b5a-4978-8a9b-0c1d2e3f4a5b"
+    "/9a8b7c6d-1111-4e2f-8a3b-4c5d6e7f8a9b"
+)
+POWERBI_TABLE_QUALIFIED_NAME = (
+    "default/powerbi/1712345678/0f1e2d3c-4b5a-4978-8a9b-0c1d2e3f4a5b"
+    "/9a8b7c6d-1111-4e2f-8a3b-4c5d6e7f8a9b/Sales"
+)
+POWERBI_REPORT_QUALIFIED_NAME = (
+    "default/powerbi/1712345678/0f1e2d3c-4b5a-4978-8a9b-0c1d2e3f4a5b"
+    "/5e6f7a8b-2222-4c3d-9e4f-5a6b7c8d9e0f"
+)
+POWERBI_DATAFLOW_QUALIFIED_NAME = (
+    "default/powerbi/1712345678/0f1e2d3c-4b5a-4978-8a9b-0c1d2e3f4a5b"
+    "/3c4d5e6f-3333-4a5b-8c6d-7e8f9a0b1c2d"
+)
+POWERBI_NAME = "Quarterly Sales"
