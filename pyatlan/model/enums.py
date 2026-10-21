@@ -298,6 +298,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     MONGODB = ("mongodb", AtlanConnectionCategory.DATABASE)
     COSMOS = ("cosmos", AtlanConnectionCategory.DATABASE)
     COSMOSNOSQL = ("cosmosnosql", AtlanConnectionCategory.DATABASE)
+    CASSANDRA = ("cassandra", AtlanConnectionCategory.DATABASE)
     GREENPLUM = ("greenplum", AtlanConnectionCategory.WAREHOUSE)
     MONETDB = ("monetdb", AtlanConnectionCategory.WAREHOUSE)
     ALLOYDB = ("alloydb", AtlanConnectionCategory.DATABASE)

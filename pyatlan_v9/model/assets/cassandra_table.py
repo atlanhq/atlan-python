@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -416,6 +417,43 @@ class CassandraTable(Asset):
         if self.guid is not UNSET:
             return RelatedCassandraTable(guid=self.guid)
         return RelatedCassandraTable(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        keyspace_qualified_name: str,
+        connection_qualified_name: str | None = None,
+    ) -> "CassandraTable":
+        validate_required_fields(
+            ["name", "keyspace_qualified_name"], [name, keyspace_qualified_name]
+        )
+        fields = keyspace_qualified_name.split("/")
+        if len(fields) < 4:
+            raise ValueError(
+                "keyspace_qualified_name must be {connection_qualified_name}/{keyspace}"
+            )
+        connection_qualified_name = connection_qualified_name or "/".join(fields[:3])
+        return cls(
+            name=name,
+            qualified_name=f"{keyspace_qualified_name}/{name}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=fields[1],
+            cassandra_keyspace_name=fields[-1],
+            cassandra_keyspace=RelatedCassandraKeyspace(
+                qualified_name=keyspace_qualified_name
+            ),
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "CassandraTable":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "CassandraTable":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
