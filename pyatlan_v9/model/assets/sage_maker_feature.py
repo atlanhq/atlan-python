@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -330,7 +331,7 @@ class SageMakerFeature(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -403,6 +404,53 @@ class SageMakerFeature(Asset):
         if self.guid is not UNSET:
             return RelatedSageMakerFeature(guid=self.guid)
         return RelatedSageMakerFeature(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        feature_group_qualified_name: str,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "SageMakerFeature":
+        """Create a new SageMakerFeature asset."""
+        validate_required_fields(
+            ["name", "feature_group_qualified_name"],
+            [name, feature_group_qualified_name],
+        )
+        # A feature group qualifiedName is {connection_qn}/{aws_region}/{group_name}.
+        parts = feature_group_qualified_name.split("/")
+        if len(parts) < 5:
+            raise ValueError("feature_group_qualified_name is invalid")
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:-2])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{feature_group_qualified_name}/{name}",
+            sage_maker_feature_group_name=parts[-1],
+            sage_maker_feature_group_qualified_name=feature_group_qualified_name,
+            aws_region=parts[-2],
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            sage_maker_feature_group=RelatedSageMakerFeatureGroup(
+                unique_attributes={"qualifiedName": feature_group_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "SageMakerFeature":
+        """Create a SageMakerFeature instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "SageMakerFeature":
+        """Return only fields required for update operations."""
+        return SageMakerFeature.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -835,6 +883,7 @@ def _sage_maker_feature_to_nested(
         is_incomplete=sage_maker_feature.is_incomplete,
         provenance_type=sage_maker_feature.provenance_type,
         home_id=sage_maker_feature.home_id,
+        delete_handler=sage_maker_feature.delete_handler,
         depth=sage_maker_feature.depth,
         immediate_upstream=sage_maker_feature.immediate_upstream,
         immediate_downstream=sage_maker_feature.immediate_downstream,
@@ -883,6 +932,7 @@ def _sage_maker_feature_from_nested(nested: SageMakerFeatureNested) -> SageMaker
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
