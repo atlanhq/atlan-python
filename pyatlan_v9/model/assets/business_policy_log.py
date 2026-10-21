@@ -18,6 +18,13 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -29,6 +36,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .business_policy_related import RelatedBusinessPolicyLog
 from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -41,14 +49,6 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .business_policy_related import RelatedBusinessPolicyLog
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -515,6 +515,7 @@ def _business_policy_log_to_nested(
         is_incomplete=business_policy_log.is_incomplete,
         provenance_type=business_policy_log.provenance_type,
         home_id=business_policy_log.home_id,
+        delete_handler=business_policy_log.delete_handler,
         depth=business_policy_log.depth,
         immediate_upstream=business_policy_log.immediate_upstream,
         immediate_downstream=business_policy_log.immediate_downstream,
@@ -565,6 +566,7 @@ def _business_policy_log_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
