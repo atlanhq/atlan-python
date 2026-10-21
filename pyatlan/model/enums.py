@@ -338,6 +338,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     MONTE_CARLO = ("monte-carlo", AtlanConnectionCategory.DATA_QUALITY)
     SODA = ("soda", AtlanConnectionCategory.DATA_QUALITY)
     MATILLION = ("matillion", AtlanConnectionCategory.ELT)
+    AZURE_DATA_FACTORY = ("azure-data-factory", AtlanConnectionCategory.ELT)
     AIVEN_KAFKA = ("aiven-kafka", AtlanConnectionCategory.EVENT_BUS)
     AMAZON_MSK = ("amazon-msk", AtlanConnectionCategory.EVENT_BUS)
     APACHE_KAFKA = ("apache-kafka", AtlanConnectionCategory.EVENT_BUS)
