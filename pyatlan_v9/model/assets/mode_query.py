@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -273,9 +274,7 @@ class ModeQuery(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/queries/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -311,8 +310,6 @@ class ModeQuery(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.mode_report is UNSET:
                 errors.append("mode_report is required for creation")
-            if self.mode_report_name is UNSET:
-                errors.append("mode_report_name is required for creation")
             if self.mode_report_qualified_name is UNSET:
                 errors.append("mode_report_qualified_name is required for creation")
             if self.mode_workspace_name is UNSET:
@@ -350,6 +347,71 @@ class ModeQuery(Asset):
         if self.guid is not UNSET:
             return RelatedModeQuery(guid=self.guid)
         return RelatedModeQuery(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        mode_token: str,
+        mode_report_qualified_name: str,
+        mode_report_name: str,
+        mode_workspace_name: str,
+        mode_workspace_qualified_name: Union[str, None] = None,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "ModeQuery":
+        """Create a new ModeQuery asset."""
+        validate_required_fields(
+            [
+                "name",
+                "mode_token",
+                "mode_report_qualified_name",
+                "mode_report_name",
+                "mode_workspace_name",
+            ],
+            [
+                name,
+                mode_token,
+                mode_report_qualified_name,
+                mode_report_name,
+                mode_workspace_name,
+            ],
+        )
+        # A report qualifiedName is {connection_qn}/workspaces/{ws}/reports/{report_token}.
+        parts = mode_report_qualified_name.split("/")
+        if len(parts) < 7 or parts[-2] != "reports" or parts[-4] != "workspaces":
+            raise ValueError("mode_report_qualified_name is invalid")
+        if not mode_workspace_qualified_name:
+            mode_workspace_qualified_name = "/".join(parts[:-2])
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:-4])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            mode_token=mode_token,
+            qualified_name=f"{mode_report_qualified_name}/queries/{mode_token}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            mode_workspace_qualified_name=mode_workspace_qualified_name,
+            mode_workspace_name=mode_workspace_name,
+            mode_report_qualified_name=mode_report_qualified_name,
+            mode_report_name=mode_report_name,
+            mode_report=RelatedModeReport(
+                unique_attributes={"qualifiedName": mode_report_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "ModeQuery":
+        """Create a ModeQuery instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "ModeQuery":
+        """Return only fields required for update operations."""
+        return ModeQuery.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -687,6 +749,7 @@ def _mode_query_to_nested(mode_query: ModeQuery) -> ModeQueryNested:
         is_incomplete=mode_query.is_incomplete,
         provenance_type=mode_query.provenance_type,
         home_id=mode_query.home_id,
+        delete_handler=mode_query.delete_handler,
         depth=mode_query.depth,
         immediate_upstream=mode_query.immediate_upstream,
         immediate_downstream=mode_query.immediate_downstream,
@@ -733,6 +796,7 @@ def _mode_query_from_nested(nested: ModeQueryNested) -> ModeQuery:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
