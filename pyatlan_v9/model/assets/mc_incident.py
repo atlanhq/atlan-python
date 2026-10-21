@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -269,7 +270,7 @@ class MCIncident(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -303,8 +304,6 @@ class MCIncident(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.mc_monitor is UNSET:
-                errors.append("mc_monitor is required for creation")
         if errors:
             raise ValueError(f"MCIncident validation failed: {errors}")
 
@@ -336,6 +335,54 @@ class MCIncident(Asset):
         if self.guid is not UNSET:
             return RelatedMCIncident(guid=self.guid)
         return RelatedMCIncident(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        mc_incident_id: str,
+        connection_qualified_name: str,
+        mc_monitor_qualified_name: Union[str, None] = None,
+    ) -> "MCIncident":
+        """Create a new MCIncident asset."""
+        validate_required_fields(
+            ["name", "mc_incident_id", "connection_qualified_name"],
+            [name, mc_incident_id, connection_qualified_name],
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        mc_monitor: Union[RelatedMCMonitor, UnsetType] = UNSET
+        if mc_monitor_qualified_name:
+            # A monitor qualifiedName is {connection_qn}/{namespace}/{monitor_id}.
+            prefix = f"{connection_qualified_name}/"
+            parts = mc_monitor_qualified_name.split("/")
+            if not mc_monitor_qualified_name.startswith(prefix):
+                raise ValueError("mc_monitor_qualified_name is invalid")
+            if len(parts) != len(fields) + 2:
+                raise ValueError("mc_monitor_qualified_name is invalid")
+            mc_monitor = RelatedMCMonitor(
+                unique_attributes={"qualifiedName": mc_monitor_qualified_name}
+            )
+        return cls(
+            name=name,
+            mc_incident_id=mc_incident_id,
+            qualified_name=f"{connection_qualified_name}/{mc_incident_id}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            mc_monitor=mc_monitor,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "MCIncident":
+        """Create a MCIncident instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "MCIncident":
+        """Return only fields required for update operations."""
+        return MCIncident.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -668,6 +715,7 @@ def _mc_incident_to_nested(mc_incident: MCIncident) -> MCIncidentNested:
         is_incomplete=mc_incident.is_incomplete,
         provenance_type=mc_incident.provenance_type,
         home_id=mc_incident.home_id,
+        delete_handler=mc_incident.delete_handler,
         depth=mc_incident.depth,
         immediate_upstream=mc_incident.immediate_upstream,
         immediate_downstream=mc_incident.immediate_downstream,
@@ -714,6 +762,7 @@ def _mc_incident_from_nested(nested: MCIncidentNested) -> MCIncident:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
