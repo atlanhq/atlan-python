@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -249,7 +250,7 @@ class DomoDatasetColumn(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/column/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -318,6 +319,51 @@ class DomoDatasetColumn(Asset):
         if self.guid is not UNSET:
             return RelatedDomoDatasetColumn(guid=self.guid)
         return RelatedDomoDatasetColumn(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        domo_dataset_qualified_name: str,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "DomoDatasetColumn":
+        """Create a new DomoDatasetColumn asset."""
+        validate_required_fields(
+            ["name", "domo_dataset_qualified_name"],
+            [name, domo_dataset_qualified_name],
+        )
+        # A dataset qualifiedName is {connection_qn}/dataset/{domo_id}.
+        parts = domo_dataset_qualified_name.split("/")
+        if len(parts) < 5:
+            raise ValueError("domo_dataset_qualified_name is invalid")
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:3])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{domo_dataset_qualified_name}/column/{name}",
+            domo_dataset_qualified_name=domo_dataset_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            domo_dataset=RelatedDomoDataset(
+                unique_attributes={"qualifiedName": domo_dataset_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "DomoDatasetColumn":
+        """Create a DomoDatasetColumn instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "DomoDatasetColumn":
+        """Return only fields required for update operations."""
+        return DomoDatasetColumn.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
