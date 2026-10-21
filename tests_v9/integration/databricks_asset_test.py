@@ -22,6 +22,7 @@ from pyatlan_v9.model.assets import (
     DatabricksUnityCatalogTag,
     DatabricksVolume,
     DatabricksVolumePath,
+    Function,
     Schema,
     Skill,
     SkillArtifact,
@@ -94,6 +95,18 @@ def metric_view(
     result = _save(client, to_create, DatabricksMetricView)
     yield result
     delete_asset(client, guid=result.guid, asset_type=DatabricksMetricView)
+
+
+@pytest.fixture(scope="module")
+def function(client: AtlanClient, schema: Schema) -> Generator[Function, None, None]:
+    to_create = Function.creator(
+        name=f"function_{MODULE_NAME}",
+        schema_qualified_name=schema.qualified_name,
+        function_language="SQL",
+    )
+    result = _save(client, to_create, Function)
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=Function)
 
 
 @pytest.fixture(scope="module")
@@ -251,6 +264,7 @@ def skill_artifact(
     "fixture_name, asset_type, rel",
     [
         ("metric_view", DatabricksMetricView, "atlan_schema"),
+        ("function", Function, "function_schema"),
         ("volume", DatabricksVolume, "databricks_volume_schema"),
         ("ai_model", DatabricksAIModelContext, "databricks_ai_model_schema"),
     ],
