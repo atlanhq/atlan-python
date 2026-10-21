@@ -16,6 +16,7 @@ from pyatlan.model.enums import (
     EntityStatus,
     FileType,
     LineageDirection,
+    LineageType,
 )
 from pyatlan.model.fields.atlan_fields import (
     AtlanField,
@@ -930,6 +931,22 @@ class TestFluentLineage:
         assert request.entity_filters is None
         assert request.entity_traversal_filters is None
         assert request.relationship_traversal_filters is None
+        assert request.lineage_type is None
+
+    def test_request_omits_lineage_type_by_default(self, sut: FluentLineage):
+        body = json.loads(sut.request.json(by_alias=True, exclude_unset=True))
+
+        assert "lineageType" not in body
+
+    @pytest.mark.parametrize("lineage_type", list(LineageType))
+    def test_request_sends_lineage_type(self, lineage_type: LineageType):
+        request = FluentLineage(
+            starting_guid=GOOD_GUID, lineage_type=lineage_type
+        ).request
+        body = json.loads(request.json(by_alias=True, exclude_unset=True))
+
+        assert request.lineage_type == lineage_type
+        assert body["lineageType"] == lineage_type.value
 
     @pytest.mark.parametrize(
         "starting_guid, depth, direction, size, exclude_meanings, exclude_atlan_tags, includes_on_results, "
@@ -1078,6 +1095,11 @@ class TestFluentLineage:
                 r"ATLAN-PYTHON-400-048 Invalid parameter type for exclude_meanings should be bool",
             ),
             (
+                "lineage_type",
+                "ProductAssetLineage",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_type should be LineageType",
+            ),
+            (
                 "include_on_results",
                 1,
                 r"ATLAN-PYTHON-400-048 Invalid parameter type for field should be str or AtlanField",
@@ -1116,6 +1138,7 @@ class TestFluentLineage:
             ("size", 12),
             ("exclude_atlan_tags", True),
             ("exclude_meanings", True),
+            ("lineage_type", LineageType.PRODUCT_ASSET_LINEAGE),
         ],
     )
     def test_method_with_valid_parameter(self, method, value, sut: FluentLineage):

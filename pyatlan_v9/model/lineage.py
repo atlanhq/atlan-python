@@ -7,8 +7,9 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
 import msgspec
+from msgspec import UNSET, UnsetType
 
-from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
+from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection, LineageType
 from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
 
 # ---------------------------------------------------------------------------
@@ -167,6 +168,10 @@ class LineageListRequest(msgspec.Struct, kw_only=True):
     immediate_neighbors: Optional[bool] = msgspec.field(
         default=None, name="immediateNeighbours"
     )
+    # UNSET, not None: an explicit null would override the server's default type.
+    lineage_type: Union[LineageType, UnsetType] = msgspec.field(
+        default=UNSET, name="lineageType"
+    )
 
     @staticmethod
     def create(guid: str) -> "LineageListRequest":
@@ -223,6 +228,7 @@ class FluentLineage:
         assets_condition: FilterList.Condition = FilterList.Condition.AND,
         where_relationships: Optional[Union[List[LineageFilter], LineageFilter]] = None,
         relationships_condition: FilterList.Condition = FilterList.Condition.AND,
+        lineage_type: Optional[LineageType] = None,
     ):
         self._depth: int = depth
         self._direction: LineageDirection = direction
@@ -247,6 +253,7 @@ class FluentLineage:
             where_relationships
         )
         self._relationships_condition: FilterList.Condition = relationships_condition
+        self._lineage_type: Optional[LineageType] = lineage_type
 
     @staticmethod
     def _to_list(value):
@@ -289,6 +296,12 @@ class FluentLineage:
         validate_type(name="immediate_neighbors", _type=bool, value=immediate_neighbors)
         clone = self._clone()
         clone._immediate_neighbors = immediate_neighbors
+        return clone
+
+    def lineage_type(self, lineage_type: LineageType) -> "FluentLineage":
+        validate_type(name="lineage_type", _type=LineageType, value=lineage_type)
+        clone = self._clone()
+        clone._lineage_type = lineage_type
         return clone
 
     def include_on_results(self, field: Union[str, AtlanField]) -> "FluentLineage":
@@ -370,6 +383,8 @@ class FluentLineage:
             request.exclude_meanings = self._exclude_meanings
         if self._immediate_neighbors is not None:
             request.immediate_neighbors = self._immediate_neighbors
+        if self._lineage_type is not None:
+            request.lineage_type = self._lineage_type
         if self._includes_in_results:
             criteria = [
                 EntityFilter(
