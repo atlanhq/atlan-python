@@ -26,7 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
+from pyatlan_v9.utils import init_guid, resolve_sql_parents, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -500,14 +500,6 @@ class View(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.atlan_schema is UNSET:
                 errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(f"View validation failed: {errors}")
 
@@ -566,42 +558,43 @@ class View(Asset):
         Returns:
             New View instance with all fields populated
 
+        Without ``connection_qualified_name``, ``schema_qualified_name`` must have the standard
+        5 segments (default/connector/connection_id/database/schema) and the other parents are
+        derived from it. With ``connection_qualified_name``, parents of any depth are accepted.
+
         Raises:
             ValueError: If required parameters are missing or invalid
         """
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
         )
-
-        # Validate schema_qualified_name format: default/connector/connection_id/database/schema
-        fields = schema_qualified_name.split("/")
-        if len(fields) != 5:
-            raise ValueError(
-                f"Invalid schema_qualified_name: {schema_qualified_name}. "
-                "Expected format: default/connector/connection_id/database/schema"
-            )
-
-        # Derive other fields from schema_qualified_name
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
-        )
-        db_name = database_name or fields[3]
-        sch_name = schema_name or fields[4]
-        db_qualified_name = database_qualified_name or f"{connection_qn}/{db_name}"
-        qualified_name = f"{schema_qualified_name}/{name}"
-
-        return cls(
-            name=name,
-            qualified_name=qualified_name,
-            database_name=db_name,
-            database_qualified_name=db_qualified_name,
-            schema_name=sch_name,
+        (
+            connection_qn,
+            connector_name,
+            db_name,
+            db_qualified_name,
+            sch_name,
+            sch_qualified_name,
+        ) = resolve_sql_parents(
             schema_qualified_name=schema_qualified_name,
+            schema_name=schema_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        view = cls(
+            name=name,
+            qualified_name=f"{sch_qualified_name}/{name}",
+            schema_name=sch_name,
+            schema_qualified_name=sch_qualified_name,
             connector_name=connector_name,
             connection_qualified_name=connection_qn,
-            atlan_schema=RelatedSchema(qualified_name=schema_qualified_name),
+            atlan_schema=RelatedSchema(qualified_name=sch_qualified_name),
         )
+        if db_qualified_name is not None:
+            view.database_name = db_name
+            view.database_qualified_name = db_qualified_name
+        return view
 
     @classmethod
     def updater(cls, *, qualified_name: str, name: str) -> "View":

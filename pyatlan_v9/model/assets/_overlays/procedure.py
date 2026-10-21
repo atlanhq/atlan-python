@@ -1,4 +1,4 @@
-# INTERNAL_IMPORT: from pyatlan.utils import init_guid, validate_required_fields
+# INTERNAL_IMPORT: from pyatlan.utils import init_guid, resolve_sql_parents, validate_required_fields
 
     @classmethod
     @init_guid
@@ -17,35 +17,34 @@
             ["name", "definition", "schema_qualified_name"],
             [name, definition, schema_qualified_name],
         )
-
-        fields = schema_qualified_name.split("/")
-        if len(fields) != 5:
-            raise ValueError(
-                f"Invalid schema_qualified_name: {schema_qualified_name}. "
-                "Expected format: default/connector/connection_id/database/schema"
-            )
-
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
+        (
+            connection_qn,
+            connector_name,
+            db_name,
+            db_qualified_name,
+            sch_name,
+            sch_qualified_name,
+        ) = resolve_sql_parents(
+            schema_qualified_name=schema_qualified_name,
+            schema_name=schema_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            connection_qualified_name=connection_qualified_name,
         )
-        db_name = database_name or fields[3]
-        sch_name = schema_name or fields[4]
-        db_qualified_name = database_qualified_name or f"{connection_qn}/{db_name}"
-        qualified_name = f"{schema_qualified_name}/_procedures_/{name}"
-
-        return cls(
+        procedure = cls(
             name=name,
             definition=definition,
-            qualified_name=qualified_name,
-            database_name=db_name,
-            database_qualified_name=db_qualified_name,
+            qualified_name=f"{sch_qualified_name}/_procedures_/{name}",
             schema_name=sch_name,
-            schema_qualified_name=schema_qualified_name,
+            schema_qualified_name=sch_qualified_name,
             connector_name=connector_name,
             connection_qualified_name=connection_qn,
-            atlan_schema=RelatedSchema(qualified_name=schema_qualified_name),
+            atlan_schema=RelatedSchema(qualified_name=sch_qualified_name),
         )
+        if db_qualified_name is not None:
+            procedure.database_name = db_name
+            procedure.database_qualified_name = db_qualified_name
+        return procedure
 
     @classmethod
     def updater(
