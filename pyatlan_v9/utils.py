@@ -3,6 +3,8 @@
 
 """Utility functions for pyatlan_v9."""
 
+from __future__ import annotations
+
 import random
 from functools import wraps
 
