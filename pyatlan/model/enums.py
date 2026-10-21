@@ -401,6 +401,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     DOCUMENTDB = ("documentdb", AtlanConnectionCategory.DATABASE)
     AI = ("ai", AtlanConnectionCategory.AI)
     SAP_ECC = ("sap-ecc", AtlanConnectionCategory.ERP)
+    SAP_S4 = ("sap-s4", AtlanConnectionCategory.ERP)
     CLOUDSQL_POSTGRES = ("cloudsql-postgres", AtlanConnectionCategory.DATABASE)
     ALLOYDB_POSTGRES = ("alloydb-postgres", AtlanConnectionCategory.DATABASE)
     SAGEMAKER = ("sagemaker", AtlanConnectionCategory.SAAS)
