@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
@@ -24,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -229,6 +231,10 @@ class GCPDataplexAspectType(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/aspect-type/projects/[^/]+/locations/[^/]+/aspectTypes/[^/]+$"
+    )
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this GCPDataplexAspectType instance.
@@ -253,6 +259,11 @@ class GCPDataplexAspectType(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"GCPDataplexAspectType validation failed: {errors}")
 
@@ -284,6 +295,70 @@ class GCPDataplexAspectType(Asset):
         if self.guid is not UNSET:
             return RelatedGCPDataplexAspectType(guid=self.guid)
         return RelatedGCPDataplexAspectType(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        resource_name: str,
+        connection_qualified_name: str,
+    ) -> "GCPDataplexAspectType":
+        """
+        Builds the minimal object necessary to create a GCPDataplexAspectType.
+
+        ``resource_name`` is the full GCP resource name,
+        ``projects/{project}/locations/{location}/aspectTypes/{id}``. The qualifiedName
+        is ``{connection_qualified_name}/aspect-type/{resource_name}`` and the name is
+        the aspect type id, as atlan-dataplex-app emits them.
+        """
+        validate_required_fields(
+            ["resource_name", "connection_qualified_name"],
+            [resource_name, connection_qualified_name],
+        )
+        parts = resource_name.split("/")
+        if (
+            len(parts) != 6
+            or parts[0] != "projects"
+            or parts[2] != "locations"
+            or parts[4] != "aspectTypes"
+            or not all(part.strip() for part in parts)
+        ):
+            raise ValueError(
+                f"Invalid resource_name: {resource_name}. "
+                "Expected format: projects/{project}/locations/{location}/aspectTypes/{id}"
+            )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=parts[5],
+            qualified_name=f"{connection_qualified_name}/aspect-type/{resource_name}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            gcp_dataplex_aspect_type_resource_name=resource_name,
+            gcp_dataplex_aspect_type_project=parts[1],
+            gcp_dataplex_aspect_type_location=parts[3],
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "GCPDataplexAspectType":
+        """Create a GCPDataplexAspectType instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "GCPDataplexAspectType":
+        """Return only fields required for update operations."""
+        return GCPDataplexAspectType.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
+
+    @classmethod
+    def create(cls, **kwargs) -> "GCPDataplexAspectType":
+        return cls.creator(**kwargs)
+
+    @classmethod
+    def create_for_modification(cls, **kwargs) -> "GCPDataplexAspectType":
+        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -607,6 +682,7 @@ def _gcp_dataplex_aspect_type_to_nested(
         is_incomplete=gcp_dataplex_aspect_type.is_incomplete,
         provenance_type=gcp_dataplex_aspect_type.provenance_type,
         home_id=gcp_dataplex_aspect_type.home_id,
+        delete_handler=gcp_dataplex_aspect_type.delete_handler,
         depth=gcp_dataplex_aspect_type.depth,
         immediate_upstream=gcp_dataplex_aspect_type.immediate_upstream,
         immediate_downstream=gcp_dataplex_aspect_type.immediate_downstream,
@@ -657,6 +733,7 @@ def _gcp_dataplex_aspect_type_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

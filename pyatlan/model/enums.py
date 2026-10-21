@@ -268,6 +268,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     API = ("api", AtlanConnectionCategory.API)
     DYNAMODB = ("dynamodb", AtlanConnectionCategory.WAREHOUSE)
     GCS = ("gcs", AtlanConnectionCategory.OBJECT_STORE)
+    DATAPLEX = ("dataplex", AtlanConnectionCategory.SAAS)
     HIVE = ("hive", AtlanConnectionCategory.WAREHOUSE)
     SAPHANA = ("sap-hana", AtlanConnectionCategory.WAREHOUSE)
     ADLS = ("adls", AtlanConnectionCategory.OBJECT_STORE)
