@@ -26,7 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
+from pyatlan_v9.utils import init_guid, resolve_sql_parents, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -592,16 +592,6 @@ class Table(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.atlan_schema is UNSET:
-                errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(f"Table validation failed: {errors}")
 
@@ -640,7 +630,7 @@ class Table(Asset):
         cls,
         *,
         name: str,
-        schema_qualified_name: str,
+        schema_qualified_name: str | None = None,
         schema_name: str | None = None,
         database_name: str | None = None,
         database_qualified_name: str | None = None,
@@ -648,6 +638,12 @@ class Table(Asset):
     ) -> "Table":
         """
         Create a new Table asset.
+
+        Without ``connection_qualified_name``, ``schema_qualified_name`` must have the standard
+        5 segments (default/connector/connection_id/database/schema) and the other parents are
+        derived from it. With ``connection_qualified_name``, parents of any depth are accepted,
+        and ``schema_qualified_name`` may be omitted for a table directly under the connection
+        (qualifiedName ``{connection_qualified_name}/{name}``).
 
         Args:
             name: Name of the table
@@ -663,37 +659,37 @@ class Table(Asset):
         Raises:
             ValueError: If required parameters are missing or invalid
         """
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
-
-        fields = schema_qualified_name.split("/")
-        if len(fields) != 5:
-            raise ValueError(
-                f"Invalid schema_qualified_name: {schema_qualified_name}. "
-                "Expected format: default/connector/connection_id/database/schema"
-            )
-
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
-        )
-        db_name = database_name or fields[3]
-        sch_name = schema_name or fields[4]
-        db_qualified_name = database_qualified_name or f"{connection_qn}/{db_name}"
-        qualified_name = f"{schema_qualified_name}/{name}"
-
-        return cls(
-            name=name,
-            qualified_name=qualified_name,
-            database_name=db_name,
-            database_qualified_name=db_qualified_name,
-            schema_name=sch_name,
+        validate_required_fields(["name"], [name])
+        if schema_qualified_name is None and connection_qualified_name is None:
+            raise ValueError("schema_qualified_name is required")
+        (
+            connection_qn,
+            connector_name,
+            db_name,
+            db_qualified_name,
+            sch_name,
+            sch_qualified_name,
+        ) = resolve_sql_parents(
             schema_qualified_name=schema_qualified_name,
+            schema_name=schema_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        table = cls(
+            name=name,
+            qualified_name=f"{sch_qualified_name or connection_qn}/{name}",
             connector_name=connector_name,
             connection_qualified_name=connection_qn,
-            atlan_schema=RelatedSchema(qualified_name=schema_qualified_name),
         )
+        if db_qualified_name is not None:
+            table.database_name = db_name
+            table.database_qualified_name = db_qualified_name
+        if sch_qualified_name is not None:
+            table.schema_name = sch_name
+            table.schema_qualified_name = sch_qualified_name
+            table.atlan_schema = RelatedSchema(qualified_name=sch_qualified_name)
+        return table
 
     @classmethod
     def create(cls, *, name: str, schema_qualified_name: str) -> "Table":

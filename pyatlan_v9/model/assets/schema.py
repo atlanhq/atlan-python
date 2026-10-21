@@ -26,7 +26,11 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
+from pyatlan_v9.utils import (
+    init_guid,
+    resolve_database_parent,
+    validate_required_fields,
+)
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -584,12 +588,6 @@ class Schema(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.database is UNSET:
-                errors.append("database is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(f"Schema validation failed: {errors}")
 
@@ -628,12 +626,18 @@ class Schema(Asset):
         cls,
         *,
         name: str,
-        database_qualified_name: str,
+        database_qualified_name: str | None = None,
         database_name: str | None = None,
         connection_qualified_name: str | None = None,
     ) -> "Schema":
         """
         Create a new Schema asset with auto-derived fields.
+
+        Without ``connection_qualified_name``, ``database_qualified_name`` must have the standard
+        4 segments (default/connector/connection_id/database) and the other parents are derived
+        from it. With ``connection_qualified_name``, a database of any depth is accepted, and
+        ``database_qualified_name`` may be omitted for a schema directly under the connection
+        (qualifiedName ``{connection_qualified_name}/{name}``).
 
         Args:
             name: Simple name of the schema
@@ -647,35 +651,27 @@ class Schema(Asset):
         Raises:
             ValueError: If required parameters are missing or invalid
         """
-        validate_required_fields(
-            ["name", "database_qualified_name"], [name, database_qualified_name]
-        )
-
-        # Validate database_qualified_name format: default/connector/connection_id/database
-        fields = database_qualified_name.split("/")
-        if len(fields) != 4:
-            raise ValueError(
-                f"Invalid database_qualified_name: {database_qualified_name}. "
-                "Expected format: default/connector/connection_id/database"
+        validate_required_fields(["name"], [name])
+        if database_qualified_name is None and connection_qualified_name is None:
+            raise ValueError("database_qualified_name is required")
+        connection_qn, connector_name, db_name, db_qualified_name = (
+            resolve_database_parent(
+                database_qualified_name=database_qualified_name,
+                database_name=database_name,
+                connection_qualified_name=connection_qualified_name,
             )
-
-        # Derive other fields from database_qualified_name
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
         )
-        db_name = database_name or fields[3]
-        qualified_name = f"{database_qualified_name}/{name}"
-
-        return cls(
+        sch = cls(
             name=name,
-            qualified_name=qualified_name,
-            database_name=db_name,
-            database_qualified_name=database_qualified_name,
+            qualified_name=f"{db_qualified_name or connection_qn}/{name}",
             connector_name=connector_name,
             connection_qualified_name=connection_qn,
-            database=RelatedDatabase(qualified_name=database_qualified_name),
         )
+        if db_qualified_name is not None:
+            sch.database_name = db_name
+            sch.database_qualified_name = db_qualified_name
+            sch.database = RelatedDatabase(qualified_name=db_qualified_name)
+        return sch
 
     @classmethod
     def updater(cls, *, qualified_name: str, name: str) -> "Schema":
