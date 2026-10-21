@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
@@ -24,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -228,6 +230,8 @@ class RedashDashboard(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/dashboards/[^/]+$")
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this RedashDashboard instance.
@@ -252,6 +256,11 @@ class RedashDashboard(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"RedashDashboard validation failed: {errors}")
 
@@ -283,6 +292,41 @@ class RedashDashboard(Asset):
         if self.guid is not UNSET:
             return RelatedRedashDashboard(guid=self.guid)
         return RelatedRedashDashboard(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        slug: str,
+        connection_qualified_name: str,
+    ) -> "RedashDashboard":
+        """Create a new RedashDashboard asset."""
+        validate_required_fields(
+            ["name", "slug", "connection_qualified_name"],
+            [name, slug, connection_qualified_name],
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/dashboards/{slug}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "RedashDashboard":
+        """Create a RedashDashboard instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "RedashDashboard":
+        """Return only fields required for update operations."""
+        return RedashDashboard.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -577,6 +621,7 @@ def _redash_dashboard_to_nested(
         is_incomplete=redash_dashboard.is_incomplete,
         provenance_type=redash_dashboard.provenance_type,
         home_id=redash_dashboard.home_id,
+        delete_handler=redash_dashboard.delete_handler,
         depth=redash_dashboard.depth,
         immediate_upstream=redash_dashboard.immediate_upstream,
         immediate_downstream=redash_dashboard.immediate_downstream,
@@ -625,6 +670,7 @@ def _redash_dashboard_from_nested(nested: RedashDashboardNested) -> RedashDashbo
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

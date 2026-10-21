@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -241,7 +242,9 @@ class RedashVisualization(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/visualizations/[^/]+$"
+    )
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -312,6 +315,59 @@ class RedashVisualization(Asset):
         if self.guid is not UNSET:
             return RelatedRedashVisualization(guid=self.guid)
         return RelatedRedashVisualization(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        visualization_id: Union[str, int],
+        redash_query_qualified_name: str,
+        redash_query_name: str,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "RedashVisualization":
+        """Create a new RedashVisualization asset."""
+        validate_required_fields(
+            [
+                "name",
+                "visualization_id",
+                "redash_query_qualified_name",
+                "redash_query_name",
+            ],
+            [name, visualization_id, redash_query_qualified_name, redash_query_name],
+        )
+        # A query qualifiedName is {connection_qn}/queries/{query_id}.
+        parts = redash_query_qualified_name.split("/")
+        if len(parts) < 5 or parts[-2] != "queries":
+            raise ValueError("redash_query_qualified_name is invalid")
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:-2])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/visualizations/{visualization_id}",
+            redash_query_qualified_name=redash_query_qualified_name,
+            redash_query_name=redash_query_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            redash_query=RelatedRedashQuery(
+                unique_attributes={"qualifiedName": redash_query_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "RedashVisualization":
+        """Create a RedashVisualization instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "RedashVisualization":
+        """Return only fields required for update operations."""
+        return RedashVisualization.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -620,6 +676,7 @@ def _redash_visualization_to_nested(
         is_incomplete=redash_visualization.is_incomplete,
         provenance_type=redash_visualization.provenance_type,
         home_id=redash_visualization.home_id,
+        delete_handler=redash_visualization.delete_handler,
         depth=redash_visualization.depth,
         immediate_upstream=redash_visualization.immediate_upstream,
         immediate_downstream=redash_visualization.immediate_downstream,
@@ -670,6 +727,7 @@ def _redash_visualization_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
