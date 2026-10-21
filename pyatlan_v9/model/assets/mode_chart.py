@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -265,9 +266,7 @@ class ModeChart(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/charts/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -301,14 +300,6 @@ class ModeChart(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.mode_query is UNSET:
-                errors.append("mode_query is required for creation")
-            if self.mode_query_name is UNSET:
-                errors.append("mode_query_name is required for creation")
-            if self.mode_query_qualified_name is UNSET:
-                errors.append("mode_query_qualified_name is required for creation")
-            if self.mode_report_name is UNSET:
-                errors.append("mode_report_name is required for creation")
             if self.mode_report_qualified_name is UNSET:
                 errors.append("mode_report_qualified_name is required for creation")
             if self.mode_workspace_name is UNSET:
@@ -346,6 +337,70 @@ class ModeChart(Asset):
         if self.guid is not UNSET:
             return RelatedModeChart(guid=self.guid)
         return RelatedModeChart(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        mode_token: str,
+        mode_report_qualified_name: str,
+        mode_workspace_name: str,
+        mode_query_qualified_name: Union[str, None] = None,
+        mode_workspace_qualified_name: Union[str, None] = None,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "ModeChart":
+        """Create a new ModeChart asset (its qualifiedName sits under the report)."""
+        validate_required_fields(
+            ["name", "mode_token", "mode_report_qualified_name", "mode_workspace_name"],
+            [name, mode_token, mode_report_qualified_name, mode_workspace_name],
+        )
+        # A report qualifiedName is {connection_qn}/workspaces/{ws}/reports/{report_token}.
+        parts = mode_report_qualified_name.split("/")
+        if len(parts) < 7 or parts[-2] != "reports" or parts[-4] != "workspaces":
+            raise ValueError("mode_report_qualified_name is invalid")
+        if mode_query_qualified_name:
+            query_prefix = f"{mode_report_qualified_name}/queries/"
+            query_token = mode_query_qualified_name[len(query_prefix) :]
+            if (
+                not mode_query_qualified_name.startswith(query_prefix)
+                or not query_token
+                or "/" in query_token
+            ):
+                raise ValueError("mode_query_qualified_name is invalid")
+        if not mode_workspace_qualified_name:
+            mode_workspace_qualified_name = "/".join(parts[:-2])
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:-4])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            mode_token=mode_token,
+            qualified_name=f"{mode_report_qualified_name}/charts/{mode_token}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            mode_workspace_qualified_name=mode_workspace_qualified_name,
+            mode_workspace_name=mode_workspace_name,
+            mode_report_qualified_name=mode_report_qualified_name,
+            mode_query_qualified_name=mode_query_qualified_name or UNSET,
+            mode_query=RelatedModeQuery(
+                unique_attributes={"qualifiedName": mode_query_qualified_name}
+            )
+            if mode_query_qualified_name
+            else UNSET,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "ModeChart":
+        """Create a ModeChart instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "ModeChart":
+        """Return only fields required for update operations."""
+        return ModeChart.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -674,6 +729,7 @@ def _mode_chart_to_nested(mode_chart: ModeChart) -> ModeChartNested:
         is_incomplete=mode_chart.is_incomplete,
         provenance_type=mode_chart.provenance_type,
         home_id=mode_chart.home_id,
+        delete_handler=mode_chart.delete_handler,
         depth=mode_chart.depth,
         immediate_upstream=mode_chart.immediate_upstream,
         immediate_downstream=mode_chart.immediate_downstream,
@@ -720,6 +776,7 @@ def _mode_chart_from_nested(nested: ModeChartNested) -> ModeChart:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
