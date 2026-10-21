@@ -298,6 +298,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     SQLITE = ("sqlite", AtlanConnectionCategory.DATABASE)
     ROCKSET = ("rockset", AtlanConnectionCategory.WAREHOUSE)
     MONGODB = ("mongodb", AtlanConnectionCategory.DATABASE)
+    MONGO = ("mongo", AtlanConnectionCategory.DATABASE)
     COSMOS = ("cosmos", AtlanConnectionCategory.DATABASE)
     COSMOSNOSQL = ("cosmosnosql", AtlanConnectionCategory.DATABASE)
     CASSANDRA = ("cassandra", AtlanConnectionCategory.DATABASE)
