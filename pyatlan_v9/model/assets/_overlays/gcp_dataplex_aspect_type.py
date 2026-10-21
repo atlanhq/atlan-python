@@ -45,6 +45,18 @@
         )
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "GCPDataplexAspectType":
+        """Create a GCPDataplexAspectType instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "GCPDataplexAspectType":
+        """Return only fields required for update operations."""
+        return GCPDataplexAspectType.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
+
+    @classmethod
     def create(cls, **kwargs) -> "GCPDataplexAspectType":
         return cls.creator(**kwargs)
 

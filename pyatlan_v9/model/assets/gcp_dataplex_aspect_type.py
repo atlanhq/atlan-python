@@ -341,6 +341,18 @@ class GCPDataplexAspectType(Asset):
         )
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "GCPDataplexAspectType":
+        """Create a GCPDataplexAspectType instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "GCPDataplexAspectType":
+        """Return only fields required for update operations."""
+        return GCPDataplexAspectType.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
+
+    @classmethod
     def create(cls, **kwargs) -> "GCPDataplexAspectType":
         return cls.creator(**kwargs)
 
@@ -670,6 +682,7 @@ def _gcp_dataplex_aspect_type_to_nested(
         is_incomplete=gcp_dataplex_aspect_type.is_incomplete,
         provenance_type=gcp_dataplex_aspect_type.provenance_type,
         home_id=gcp_dataplex_aspect_type.home_id,
+        delete_handler=gcp_dataplex_aspect_type.delete_handler,
         depth=gcp_dataplex_aspect_type.depth,
         immediate_upstream=gcp_dataplex_aspect_type.immediate_upstream,
         immediate_downstream=gcp_dataplex_aspect_type.immediate_downstream,
@@ -720,6 +733,7 @@ def _gcp_dataplex_aspect_type_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

@@ -643,6 +643,18 @@ class BigqueryRoutine(Asset):
         )
 
     @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "BigqueryRoutine":
+        """Create a BigqueryRoutine instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "BigqueryRoutine":
+        """Return only fields required for update operations."""
+        return BigqueryRoutine.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
+
+    @classmethod
     def create(cls, **kwargs) -> "BigqueryRoutine":
         return cls.creator(**kwargs)
 
@@ -1271,6 +1283,7 @@ def _bigquery_routine_to_nested(
         is_incomplete=bigquery_routine.is_incomplete,
         provenance_type=bigquery_routine.provenance_type,
         home_id=bigquery_routine.home_id,
+        delete_handler=bigquery_routine.delete_handler,
         depth=bigquery_routine.depth,
         immediate_upstream=bigquery_routine.immediate_upstream,
         immediate_downstream=bigquery_routine.immediate_downstream,
@@ -1319,6 +1332,7 @@ def _bigquery_routine_from_nested(nested: BigqueryRoutineNested) -> BigqueryRout
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
