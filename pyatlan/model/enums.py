@@ -2167,6 +2167,13 @@ class LineageDirection(str, Enum):
     BOTH = "BOTH"
 
 
+class LineageType(str, Enum):
+    """Graph a lineage request traverses: assets via processes (the default), or data products via their port assets."""
+
+    DATASET_PROCESS_LINEAGE = "DatasetProcessLineage"
+    PRODUCT_ASSET_LINEAGE = "ProductAssetLineage"
+
+
 class PersonaGlossaryAction(str, Enum):
     CREATE = "persona-glossary-create"
     READ = "persona-glossary-read"

@@ -17,7 +17,12 @@ else:
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject, SearchRequest
-from pyatlan.model.enums import AtlanComparisonOperator, EntityStatus, LineageDirection
+from pyatlan.model.enums import (
+    AtlanComparisonOperator,
+    EntityStatus,
+    LineageDirection,
+    LineageType,
+)
 from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
 from pyatlan.utils import validate_type
 
@@ -306,6 +311,11 @@ class LineageListRequest(SearchRequest):
         description="Whether to include immediate neighbors of "
         "the starting asset in the response (true), or not (false).",
     )
+    lineage_type: Optional[LineageType] = Field(
+        default=None,
+        description="Graph to traverse. Leave unset for process lineage between assets (the server default); "
+        "use PRODUCT_ASSET_LINEAGE to traverse lineage between data products.",
+    )
 
     @staticmethod
     def create(
@@ -357,6 +367,7 @@ class FluentLineage:
         assets_condition: FilterList.Condition = FilterList.Condition.AND,
         where_relationships: Optional[Union[List[LineageFilter], LineageFilter]] = None,
         relationships_condition: FilterList.Condition = FilterList.Condition.AND,
+        lineage_type: Optional[LineageType] = None,
     ):
         """
         Create a FluentLineage request.
@@ -386,6 +397,8 @@ class FluentLineage:
         Any relationships excluded by the filters will exclude all assets and relationships beyond, as well
         :param relationships_condition: whether the `where_relationships` criteria
         should be combined (AND) or any matching is sufficient (OR)
+        :param lineage_type: graph to traverse; leave unset for process lineage between assets,
+        or use PRODUCT_ASSET_LINEAGE for lineage between data products
         """
 
         self._depth: int = depth
@@ -411,6 +424,7 @@ class FluentLineage:
             where_relationships
         )
         self._relationships_condition: FilterList.Condition = relationships_condition
+        self._lineage_type: Optional[LineageType] = lineage_type
 
     @staticmethod
     def _to_list(value):
@@ -495,6 +509,19 @@ class FluentLineage:
         validate_type(name="immediate_neighbors", _type=bool, value=immediate_neighbors)
         clone = self._clone()
         clone._immediate_neighbors = immediate_neighbors
+        return clone
+
+    def lineage_type(self, lineage_type: LineageType) -> "FluentLineage":
+        """
+        Adds the lineage_type to traverse the lineage.
+
+        :param lineage_type: graph to traverse; PRODUCT_ASSET_LINEAGE
+        traverses lineage between data products
+        :returns: the FluentLineage with this lineage_type criterion added
+        """
+        validate_type(name="lineage_type", _type=LineageType, value=lineage_type)
+        clone = self._clone()
+        clone._lineage_type = lineage_type
         return clone
 
     def include_on_results(self, field: Union[str, AtlanField]) -> "FluentLineage":
@@ -638,6 +665,8 @@ class FluentLineage:
             request.exclude_meanings = self._exclude_meanings
         if self._immediate_neighbors is not None:
             request.immediate_neighbors = self._immediate_neighbors
+        if self._lineage_type is not None:
+            request.lineage_type = self._lineage_type
         if self._includes_in_results:
             criteria = [
                 EntityFilter(
