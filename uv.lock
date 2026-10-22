@@ -102,7 +102,7 @@ wheels = [
 
 [[package]]
 name = "authlib"
-version = "1.6.9"
+version = "1.6.12"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version < '3.10' and platform_python_implementation == 'CPython'",
@@ -110,14 +110,14 @@ resolution-markers = [
 dependencies = [
     { name = "cryptography", marker = "python_full_version < '3.10' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/af/98/00d3dd826d46959ad8e32af2dbb2398868fd9fd0683c26e56d0789bd0e68/authlib-1.6.9.tar.gz", hash = "sha256:d8f2421e7e5980cc1ddb4e32d3f5fa659cfaf60d8eaf3281ebed192e4ab74f04", size = 165134, upload-time = "2026-03-02T07:44:01.998Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/30/6691fdc63b35f54a5a65e04fa1e59d827f4d4e8f4a39678ba7d3088ce0c8/authlib-1.6.12.tar.gz", hash = "sha256:0656d8482f28fc8221929d5f35b2bde5d13e10555ebc06b4561b0d622e83b1bd", size = 165368, upload-time = "2026-05-04T08:11:31.826Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/53/23/b65f568ed0c22f1efacb744d2db1a33c8068f384b8c9b482b52ebdbc3ef6/authlib-1.6.9-py2.py3-none-any.whl", hash = "sha256:f08b4c14e08f0861dc18a32357b33fbcfd2ea86cfe3fe149484b4d764c4a0ac3", size = 244197, upload-time = "2026-03-02T07:44:00.307Z" },
+    { url = "https://files.pythonhosted.org/packages/cd/51/9b0b5cd4cf683a02db937a6f9bbebcdc9c56558a7bb3763ce7d3512103c3/authlib-1.6.12-py2.py3-none-any.whl", hash = "sha256:e9229ad7fde610b139dd12f5edbe97eab9ee78bfb85691247e767727850b99ab", size = 244473, upload-time = "2026-05-04T08:11:30.354Z" },
 ]
 
 [[package]]
 name = "authlib"
-version = "1.7.2"
+version = "1.9.1"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version == '3.14.*' and platform_python_implementation == 'CPython'",
@@ -128,9 +128,9 @@ dependencies = [
     { name = "cryptography", marker = "python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
     { name = "joserfc", marker = "python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/36/98/7d93f30d029643c0275dbc0bd6d5a6f670661ee6c9a94d93af7ab4887600/authlib-1.7.2.tar.gz", hash = "sha256:2cea25fefcd4e7173bdf1372c0afc265c8034b23a8cd5dcb6a9164b826c64231", size = 176511, upload-time = "2026-05-06T08:10:23.116Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c9/dc/087c08741a98d234c9b98beef8a28d3c309f814d14b6156422c5815bf6d6/authlib-1.9.1.tar.gz", hash = "sha256:5c7d9848f47cac340f060f76ae0bc09b59f5c8e89cc1bb032d4370a0c55b5974", size = 182700, upload-time = "2026-10-14T14:17:52.307Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fb/95/adcb68e20c34162e9135f370d6e31737719c2b6f94bc953fe7ed1f10fe21/authlib-1.7.2-py2.py3-none-any.whl", hash = "sha256:3e1faedc9d87e7d56a164eca3ccb6ace0d61b94abe83e92242f8dc8bba9b4a9f", size = 259548, upload-time = "2026-05-06T08:10:21.436Z" },
+    { url = "https://files.pythonhosted.org/packages/39/44/a46089266de32a0d809023b6bf31b80a1f26a46954446a7ce695a565cbea/authlib-1.9.1-py2.py3-none-any.whl", hash = "sha256:8b9be8b1e5174dcbf5520e984f1a22dc2edae5b6e40a61d4cedbf86b97e9e69b", size = 266042, upload-time = "2026-10-14T14:17:50.695Z" },
 ]
 
 [[package]]
@@ -2568,8 +2568,8 @@ wheels = [
 name = "pyatlan"
 source = { editable = "." }
 dependencies = [
-    { name = "authlib", version = "1.6.9", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' and platform_python_implementation == 'CPython'" },
-    { name = "authlib", version = "1.7.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
+    { name = "authlib", version = "1.6.12", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' and platform_python_implementation == 'CPython'" },
+    { name = "authlib", version = "1.9.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
     { name = "httpx", marker = "python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
     { name = "httpx-retries", version = "0.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' and platform_python_implementation == 'CPython'" },
     { name = "httpx-retries", version = "0.6.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
@@ -2611,7 +2611,7 @@ dev = [
     { name = "ruff", marker = "python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
     { name = "twine", marker = "python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
     { name = "types-authlib", version = "1.6.7.20260208", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' and platform_python_implementation == 'CPython'" },
-    { name = "types-authlib", version = "1.6.11.20260518", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
+    { name = "types-authlib", version = "1.8.0.20260911", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
     { name = "types-retry", marker = "python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
     { name = "types-setuptools", version = "81.0.0.20260209", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' and platform_python_implementation == 'CPython'" },
     { name = "types-setuptools", version = "83.0.0.20260716", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
@@ -2635,7 +2635,7 @@ docs = [
 [package.metadata]
 requires-dist = [
     { name = "authlib", marker = "python_full_version < '3.10'", specifier = "~=1.6.9" },
-    { name = "authlib", marker = "python_full_version >= '3.10'", specifier = "~=1.7.2" },
+    { name = "authlib", marker = "python_full_version >= '3.10'", specifier = "~=1.9.1" },
     { name = "httpx", specifier = "~=0.28.1" },
     { name = "httpx-retries", marker = "python_full_version < '3.10'", specifier = "~=0.4.6" },
     { name = "httpx-retries", marker = "python_full_version >= '3.10'", specifier = "~=0.6.0" },
@@ -2677,7 +2677,7 @@ dev = [
     { name = "ruff", specifier = "~=0.15.22" },
     { name = "twine", specifier = "~=6.2.0" },
     { name = "types-authlib", marker = "python_full_version < '3.10'", specifier = "~=1.6.7.20260208" },
-    { name = "types-authlib", marker = "python_full_version >= '3.10'", specifier = "~=1.6.11.20260518" },
+    { name = "types-authlib", marker = "python_full_version >= '3.10'", specifier = "~=1.8.0.20260911" },
     { name = "types-retry", specifier = "~=0.9.9.20250322" },
     { name = "types-setuptools", marker = "python_full_version < '3.10'", specifier = "~=81.0.0.20260209" },
     { name = "types-setuptools", marker = "python_full_version >= '3.10'", specifier = "~=83.0.0.20260716" },
@@ -3461,7 +3461,7 @@ wheels = [
 
 [[package]]
 name = "types-authlib"
-version = "1.6.11.20260518"
+version = "1.8.0.20260911"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version == '3.14.*' and platform_python_implementation == 'CPython'",
@@ -3471,9 +3471,9 @@ resolution-markers = [
 dependencies = [
     { name = "cryptography", marker = "python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9e/30/19a552613eda35189e13784693cf98374153700378d6082cd89e35c96ae2/types_authlib-1.6.11.20260518.tar.gz", hash = "sha256:15b9a257e849e740241baa2113dd868c1b295cdc32449e54b109e9fc0105b556", size = 47147, upload-time = "2026-05-18T06:06:40.793Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/d8/e78ecbe9a5a077f5ccfec1f284ace4e8ae55ce204ec8bd1b00d86a83974a/types_authlib-1.8.0.20260911.tar.gz", hash = "sha256:cde5e55bca5e908438facc8fc701197bf540af880dff7b8ca8cf40a08258a62a", size = 51835, upload-time = "2026-09-11T06:45:26.216Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/75/62/503ca34fd9d92a79694fa2f1b6897f1603c5d9e4aa86b219b232de204578/types_authlib-1.6.11.20260518-py3-none-any.whl", hash = "sha256:e9c873dbc61d87f57cda25b8eb6d35610eb1cae2f5f2b74a8faf94c5e5f01b90", size = 104066, upload-time = "2026-05-18T06:06:39.553Z" },
+    { url = "https://files.pythonhosted.org/packages/e2/65/d9206c38d65602867f15bda7836b1248295b31f3187a09cc1f6195539ebe/types_authlib-1.8.0.20260911-py3-none-any.whl", hash = "sha256:0617c4a2361a605144bae0850f70c18edd5265abec11af66235a02a1b415444e", size = 111525, upload-time = "2026-09-11T06:45:25.033Z" },
 ]
 
 [[package]]

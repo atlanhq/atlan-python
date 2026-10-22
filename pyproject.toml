@@ -44,7 +44,8 @@ dependencies = [
     "httpx-retries~=0.4.6; python_version < '3.10'",
     "httpx-retries~=0.6.0; python_version >= '3.10'",
     "authlib~=1.6.9; python_version < '3.10'",
-    "authlib~=1.7.2; python_version >= '3.10'",
+    # 1.9.1 fixes CVE-2026-96760 (signature-verification bypass)
+    "authlib~=1.9.1; python_version >= '3.10'",
     "msgspec~=0.20.0; python_version < '3.10'",
     "msgspec~=0.21.1; python_version >= '3.10'",
 ]
@@ -70,7 +71,7 @@ dev = [
     "types-setuptools~=81.0.0.20260209; python_version < '3.10'",
     "types-setuptools~=83.0.0.20260716; python_version >= '3.10'",
     "types-Authlib~=1.6.7.20260208; python_version < '3.10'",
-    "types-Authlib~=1.6.11.20260518; python_version >= '3.10'",
+    "types-Authlib~=1.8.0.20260911; python_version >= '3.10'",
     "jaraco-context~=6.1.0",
     "filelock~=3.32.0; python_version >= '3.10'",
     "virtualenv~=21.7.0",
