@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
@@ -25,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -462,6 +464,8 @@ class DremioSpace(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this DremioSpace instance.
@@ -486,6 +490,11 @@ class DremioSpace(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"DremioSpace validation failed: {errors}")
 
@@ -517,6 +526,45 @@ class DremioSpace(Asset):
         if self.guid is not UNSET:
             return RelatedDremioSpace(guid=self.guid)
         return RelatedDremioSpace(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+    ) -> "DremioSpace":
+        """
+        Create a new DremioSpace asset.
+
+        qualifiedName is {connection_qualified_name}/{name}, the Dremio path of
+        the space under the connection, exactly as atlan-dremio-app builds it.
+        """
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        qualified_name = f"{connection_qualified_name}/{name}"
+        return cls(
+            name=name,
+            qualified_name=qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            dremio_space_qualified_name=qualified_name,
+            dremio_space_name=name,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "DremioSpace":
+        """Create a DremioSpace instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "DremioSpace":
+        """Return only fields required for update operations."""
+        return DremioSpace.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1076,6 +1124,7 @@ def _dremio_space_to_nested(dremio_space: DremioSpace) -> DremioSpaceNested:
         is_incomplete=dremio_space.is_incomplete,
         provenance_type=dremio_space.provenance_type,
         home_id=dremio_space.home_id,
+        delete_handler=dremio_space.delete_handler,
         depth=dremio_space.depth,
         immediate_upstream=dremio_space.immediate_upstream,
         immediate_downstream=dremio_space.immediate_downstream,
@@ -1122,6 +1171,7 @@ def _dremio_space_from_nested(nested: DremioSpaceNested) -> DremioSpace:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
