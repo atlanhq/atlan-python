@@ -475,14 +475,6 @@ class SnowflakeTag(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.atlan_schema is UNSET:
                 errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(f"SnowflakeTag validation failed: {errors}")
 
@@ -1047,6 +1039,7 @@ def _snowflake_tag_to_nested(snowflake_tag: SnowflakeTag) -> SnowflakeTagNested:
         is_incomplete=snowflake_tag.is_incomplete,
         provenance_type=snowflake_tag.provenance_type,
         home_id=snowflake_tag.home_id,
+        delete_handler=snowflake_tag.delete_handler,
         depth=snowflake_tag.depth,
         immediate_upstream=snowflake_tag.immediate_upstream,
         immediate_downstream=snowflake_tag.immediate_downstream,
@@ -1095,6 +1088,7 @@ def _snowflake_tag_from_nested(nested: SnowflakeTagNested) -> SnowflakeTag:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

@@ -20,6 +20,13 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -52,6 +59,10 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .snowflake_related import (
+    RelatedSnowflakeSemanticLogicalTable,
+    RelatedSnowflakeStage,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_insight_related import (
@@ -59,17 +70,6 @@ from .sql_insight_related import (
     RelatedSqlInsightJoin,
 )
 from .sql_related import RelatedSchema
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .snowflake_related import (
-    RelatedSnowflakeSemanticLogicalTable,
-    RelatedSnowflakeStage,
-)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -478,14 +478,6 @@ class SnowflakeStage(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.sql_stage_schema is UNSET:
                 errors.append("sql_stage_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(f"SnowflakeStage validation failed: {errors}")
 
@@ -1060,6 +1052,7 @@ def _snowflake_stage_to_nested(snowflake_stage: SnowflakeStage) -> SnowflakeStag
         is_incomplete=snowflake_stage.is_incomplete,
         provenance_type=snowflake_stage.provenance_type,
         home_id=snowflake_stage.home_id,
+        delete_handler=snowflake_stage.delete_handler,
         depth=snowflake_stage.depth,
         immediate_upstream=snowflake_stage.immediate_upstream,
         immediate_downstream=snowflake_stage.immediate_downstream,
@@ -1108,6 +1101,7 @@ def _snowflake_stage_from_nested(nested: SnowflakeStageNested) -> SnowflakeStage
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

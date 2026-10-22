@@ -548,14 +548,6 @@ class SnowflakeSemanticLogicalTable(Asset):
                 errors.append(
                     "snowflake_semantic_view_qualified_name is required for creation"
                 )
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(
                 f"SnowflakeSemanticLogicalTable validation failed: {errors}"
@@ -1218,6 +1210,7 @@ def _snowflake_semantic_logical_table_to_nested(
         is_incomplete=snowflake_semantic_logical_table.is_incomplete,
         provenance_type=snowflake_semantic_logical_table.provenance_type,
         home_id=snowflake_semantic_logical_table.home_id,
+        delete_handler=snowflake_semantic_logical_table.delete_handler,
         depth=snowflake_semantic_logical_table.depth,
         immediate_upstream=snowflake_semantic_logical_table.immediate_upstream,
         immediate_downstream=snowflake_semantic_logical_table.immediate_downstream,
@@ -1268,6 +1261,7 @@ def _snowflake_semantic_logical_table_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

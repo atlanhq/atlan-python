@@ -528,14 +528,6 @@ class Function(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.function_schema is UNSET:
                 errors.append("function_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(f"Function validation failed: {errors}")
 
@@ -1162,6 +1154,7 @@ def _function_to_nested(function: Function) -> FunctionNested:
         is_incomplete=function.is_incomplete,
         provenance_type=function.provenance_type,
         home_id=function.home_id,
+        delete_handler=function.delete_handler,
         depth=function.depth,
         immediate_upstream=function.immediate_upstream,
         immediate_downstream=function.immediate_downstream,
@@ -1208,6 +1201,7 @@ def _function_from_nested(nested: FunctionNested) -> Function:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
