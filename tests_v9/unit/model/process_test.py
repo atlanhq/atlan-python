@@ -3,6 +3,9 @@
 
 """Unit tests for Process model in pyatlan_v9."""
 
+import os
+import subprocess
+import sys
 from hashlib import md5
 
 import pytest
@@ -259,3 +262,54 @@ def test_process_attributes_generate_qualified_name(
         )
         == expected_value
     )
+
+
+@pytest.mark.parametrize("process_id", ["", "   "])
+def test_creator_with_blank_process_id_raises_value_error(process_id):
+    """A blank process_id is rejected instead of silently falling back to the hash."""
+    with pytest.raises(ValueError, match="process_id cannot be blank"):
+        Process.creator(
+            name=PROCESS_NAME,
+            connection_qualified_name=PROCESS_QUALIFIED_NAME,
+            process_id=process_id,
+            inputs=[Catalog(guid="123")],
+            outputs=[Catalog(guid="456")],
+        )
+
+
+def test_generate_qualified_name_sorts_extra_hash_params():
+    """extra_hash_params feed the hash in sorted order, independent of set order."""
+    qualified_name = Process.generate_qualified_name(
+        name=PROCESS_NAME,
+        connection_qualified_name=PROCESS_QUALIFIED_NAME,
+        inputs=[Catalog(guid="123")],
+        outputs=[Catalog(guid="456")],
+        extra_hash_params={"zeta", "alpha", "mid"},
+    )
+    seed = f"{PROCESS_NAME}{PROCESS_QUALIFIED_NAME}123456alphamidzeta"
+    # deepcode ignore InsecureHash/test: this is not used for generating security keys
+    assert (
+        qualified_name == f"{PROCESS_QUALIFIED_NAME}/{md5(seed.encode()).hexdigest()}"
+    )
+
+
+def test_generate_qualified_name_is_stable_across_hash_seeds():
+    """The hash fallback gives the same qualified name under any PYTHONHASHSEED."""
+    script = (
+        "from pyatlan_v9.model import Catalog, Process\n"
+        "print(Process.generate_qualified_name(name='p', connection_qualified_name='default/s3/1',"
+        " inputs=[Catalog(guid='i')], outputs=[Catalog(guid='o')],"
+        " extra_hash_params={'a', 'b', 'c', 'd', 'e'}))\n"
+    )
+    results = set()
+    for seed in ("0", "1", "2", "3"):
+        env = {**os.environ, "PYTHONHASHSEED": seed}
+        out = subprocess.run(
+            [sys.executable, "-c", script],
+            env=env,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        results.add(out.stdout.strip())
+    assert len(results) == 1

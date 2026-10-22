@@ -351,12 +351,25 @@ class Process(Asset):
         process_id: Union[str, None] = None,
         extra_hash_params: Union[set[str], None] = None,
     ) -> str:
-        """Generate process qualified name using explicit process_id or deterministic hash."""
+        """Generate process qualified name using explicit process_id or deterministic hash.
+
+        When process_id is None, the name is an MD5 hash of name, connection,
+        parent guid, input/output guids and (sorted) extra_hash_params. Only
+        guids feed the hash: inputs/outputs referenced by qualifiedName add
+        nothing, so same-named processes in one connection collide. Pass
+        process_id in that case.
+
+        :raises ValueError: if process_id is given but empty or whitespace
+        """
         validate_required_fields(
             ["name", "connection_qualified_name", "inputs", "outputs"],
             [name, connection_qualified_name, inputs, outputs],
         )
-        if process_id and process_id.strip():
+        if process_id is not None:
+            if not process_id.strip():
+                raise ValueError(
+                    "process_id cannot be blank; omit it (None) to use the hash fallback"
+                )
             return f"{connection_qualified_name}/{process_id}"
         buffer = StringIO()
         buffer.write(name)
@@ -373,7 +386,7 @@ class Process(Asset):
             if guid:
                 buffer.write(guid)
         if extra_hash_params:
-            for param in extra_hash_params:
+            for param in sorted(extra_hash_params):
                 buffer.write(param)
         hash_seed = buffer.getvalue()
         buffer.close()

@@ -127,3 +127,29 @@ def test_trim_to_required():
     ).trim_to_required()
     assert test_bp.name == BI_PROCESS_NAME
     assert test_bp.qualified_name == BI_PROCESS_QUALIFIED_NAME
+
+
+@pytest.mark.parametrize("process_id", ["", "   "])
+def test_creator_with_blank_process_id_raises_value_error(process_id: str):
+    """A blank process_id is rejected instead of silently falling back to the hash."""
+    with pytest.raises(ValueError, match="process_id cannot be blank"):
+        BIProcess.creator(
+            name=BI_PROCESS_NAME,
+            connection_qualified_name=BI_PROCESS_CONNECTION_QUALIFIED_NAME,
+            inputs=[MetabaseQuestion()],
+            outputs=[MetabaseDashboard()],
+            process_id=process_id,
+        )
+
+
+def test_generate_qualified_name_sorts_extra_hash_params():
+    """Set iteration order does not affect the hash fallback."""
+    kwargs: dict[str, Any] = dict(
+        name=BI_PROCESS_NAME,
+        connection_qualified_name=BI_PROCESS_CONNECTION_QUALIFIED_NAME,
+        inputs=[MetabaseQuestion(guid="123")],
+        outputs=[MetabaseDashboard(guid="456")],
+    )
+    assert BIProcess.generate_qualified_name(
+        **kwargs, extra_hash_params={"b", "a", "c"}
+    ) == BIProcess.generate_qualified_name(**kwargs, extra_hash_params={"c", "b", "a"})
