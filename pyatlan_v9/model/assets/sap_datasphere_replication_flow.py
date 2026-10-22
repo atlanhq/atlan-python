@@ -75,6 +75,14 @@ class SapDatasphereReplicationFlow(Asset):
     SAP_DATASPHERE_REPLICATION_FLOW_TARGET_CONNECTION: ClassVar[Any] = None
     SAP_DATASPHERE_REPLICATION_FLOW_LOAD_TYPE: ClassVar[Any] = None
     SAP_DATASPHERE_REPLICATION_FLOW_DATASET_COUNT: ClassVar[Any] = None
+    SAP_TECHNICAL_NAME: ClassVar[Any] = None
+    SAP_LOGICAL_NAME: ClassVar[Any] = None
+    SAP_PACKAGE_NAME: ClassVar[Any] = None
+    SAP_COMPONENT_NAME: ClassVar[Any] = None
+    SAP_DATA_TYPE: ClassVar[Any] = None
+    SAP_FIELD_COUNT: ClassVar[Any] = None
+    SAP_FIELD_ORDER: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     FLOW_STARTED_AT: ClassVar[Any] = None
     FLOW_FINISHED_AT: ClassVar[Any] = None
     FLOW_STATUS: ClassVar[Any] = None
@@ -152,6 +160,30 @@ class SapDatasphereReplicationFlow(Asset):
 
     sap_datasphere_replication_flow_dataset_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets moved by this replication flow."""
+
+    sap_technical_name: Union[str, None, UnsetType] = UNSET
+    """Technical identifier for SAP data objects, used for integration and internal reference."""
+
+    sap_logical_name: Union[str, None, UnsetType] = UNSET
+    """Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts."""
+
+    sap_package_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SAP package, representing a logical grouping of related SAP data objects."""
+
+    sap_component_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SAP component, representing a specific functional area in SAP."""
+
+    sap_data_type: Union[str, None, UnsetType] = UNSET
+    """SAP-specific data types."""
+
+    sap_field_count: Union[int, None, UnsetType] = UNSET
+    """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
+
+    sap_field_order: Union[int, None, UnsetType] = UNSET
+    """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
@@ -482,6 +514,30 @@ class SapDatasphereReplicationFlowAttributes(AssetAttributes):
     sap_datasphere_replication_flow_dataset_count: Union[int, None, UnsetType] = UNSET
     """Number of datasets moved by this replication flow."""
 
+    sap_technical_name: Union[str, None, UnsetType] = UNSET
+    """Technical identifier for SAP data objects, used for integration and internal reference."""
+
+    sap_logical_name: Union[str, None, UnsetType] = UNSET
+    """Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts."""
+
+    sap_package_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SAP package, representing a logical grouping of related SAP data objects."""
+
+    sap_component_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SAP component, representing a specific functional area in SAP."""
+
+    sap_data_type: Union[str, None, UnsetType] = UNSET
+    """SAP-specific data types."""
+
+    sap_field_count: Union[int, None, UnsetType] = UNSET
+    """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
+
+    sap_field_order: Union[int, None, UnsetType] = UNSET
+    """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
 
@@ -744,6 +800,14 @@ def _populate_sap_datasphere_replication_flow_attrs(
     attrs.sap_datasphere_replication_flow_dataset_count = (
         obj.sap_datasphere_replication_flow_dataset_count
     )
+    attrs.sap_technical_name = obj.sap_technical_name
+    attrs.sap_logical_name = obj.sap_logical_name
+    attrs.sap_package_name = obj.sap_package_name
+    attrs.sap_component_name = obj.sap_component_name
+    attrs.sap_data_type = obj.sap_data_type
+    attrs.sap_field_count = obj.sap_field_count
+    attrs.sap_field_order = obj.sap_field_order
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.flow_started_at = obj.flow_started_at
     attrs.flow_finished_at = obj.flow_finished_at
     attrs.flow_status = obj.flow_status
@@ -783,6 +847,14 @@ def _extract_sap_datasphere_replication_flow_attrs(
     result["sap_datasphere_replication_flow_dataset_count"] = (
         attrs.sap_datasphere_replication_flow_dataset_count
     )
+    result["sap_technical_name"] = attrs.sap_technical_name
+    result["sap_logical_name"] = attrs.sap_logical_name
+    result["sap_package_name"] = attrs.sap_package_name
+    result["sap_component_name"] = attrs.sap_component_name
+    result["sap_data_type"] = attrs.sap_data_type
+    result["sap_field_count"] = attrs.sap_field_count
+    result["sap_field_order"] = attrs.sap_field_order
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["flow_started_at"] = attrs.flow_started_at
     result["flow_finished_at"] = attrs.flow_finished_at
     result["flow_status"] = attrs.flow_status
@@ -962,6 +1034,28 @@ SapDatasphereReplicationFlow.SAP_DATASPHERE_REPLICATION_FLOW_DATASET_COUNT = (
         "sapDatasphereReplicationFlowDatasetCount",
         "sapDatasphereReplicationFlowDatasetCount",
     )
+)
+SapDatasphereReplicationFlow.SAP_TECHNICAL_NAME = KeywordField(
+    "sapTechnicalName", "sapTechnicalName"
+)
+SapDatasphereReplicationFlow.SAP_LOGICAL_NAME = KeywordField(
+    "sapLogicalName", "sapLogicalName"
+)
+SapDatasphereReplicationFlow.SAP_PACKAGE_NAME = KeywordField(
+    "sapPackageName", "sapPackageName"
+)
+SapDatasphereReplicationFlow.SAP_COMPONENT_NAME = KeywordField(
+    "sapComponentName", "sapComponentName"
+)
+SapDatasphereReplicationFlow.SAP_DATA_TYPE = KeywordField("sapDataType", "sapDataType")
+SapDatasphereReplicationFlow.SAP_FIELD_COUNT = NumericField(
+    "sapFieldCount", "sapFieldCount"
+)
+SapDatasphereReplicationFlow.SAP_FIELD_ORDER = NumericField(
+    "sapFieldOrder", "sapFieldOrder"
+)
+SapDatasphereReplicationFlow.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
 )
 SapDatasphereReplicationFlow.FLOW_STARTED_AT = NumericField(
     "flowStartedAt", "flowStartedAt"
