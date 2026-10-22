@@ -1,3 +1,24 @@
+## 11.5.0 (October 22, 2026)
+
+### New Features
+
+- **`GlueTag` and the `TagAttachment` source tag contract (CONNECT-2796)**: Adds the `GlueTag` asset (supertypes `Tag`, `SQL`) with `glueTagType` and the `GlueTagType` enum (`property`, `resource_tag`, `lf_tag`) to both `pyatlan.model.assets` and `pyatlan_v9`, and adds `TagAttachment` to `pyatlan_v9`. In both packages `TagAttachment` now carries the eight source tag fields publish-app reads (`objectQualifiedName`, `objectTypeName`, `sourceTagQualifiedName`, `sourceTagDisplayName`, `sourceTagTypeName`, `valueType`, `value`, `propagate`), so connectors map tags through a model instead of hand-written dicts.
+- **New connector types**: `AtlanConnectorType.AWS_SMUS` (`aws-smus`, SaaS) for AWS SageMaker Unified Studio, so `Connection.creator()` no longer needs `CREATE_CUSTOM` for it; plus `FABRIC`, `SAGEMAKER` and the Cosmos MongoDB connector types.
+- **Data product lineage (AICHAT-1984)**: `LineageListRequest` and `FluentLineage` gain `lineage_type`, with the `LineageType` enum (`DATASET_PROCESS_LINEAGE`, `PRODUCT_ASSET_LINEAGE`). Lineage for a `DataProduct` came back empty because the default lineage type treats a product as an unconnected node; `PRODUCT_ASSET_LINEAGE` returns what the product Lineage tab shows. Unset by default, so existing requests are unchanged. Same in `pyatlan_v9`.
+- **Latest asset models (pydantic + `pyatlan_v9`)**: Both model sets are regenerated from the latest typedefs. `pyatlan_v9` gains `AzureEventHubConsumerGroup`, `BigqueryTag`, `DatabricksUnityCatalogTag`, `ConnectionProcess`, `QlikStream`, the DynamoDB secondary index types and the business policy exception, incident and log types; the pydantic models pick up the latest attributes across the Cosmos MongoDB, Databricks, Snowflake AI model, Fabric and Power BI types. Nothing is removed.
+
+### Experimental: pyatlan_v9
+
+- **`creator()` for more than 130 asset types across 23 connectors**: Cognos (10), Cosmos MongoDB (3), Iceberg (4), Salesforce (5), QuickSight analysis field, Sigma (7), Soda check, SAP HANA calculation view, MicroStrategy (10), Looker (9), Tableau (10), dbt (11), Microsoft Fabric (11), Power BI (12), Databricks, Qlik Sense (7), Cassandra (5), Dataplex (2), Redash (3), Domo (4), ThoughtSpot (6), Mode (5), and the shared `TagAttachment`, `S3Prefix` and `FlowControlOperation` types. Each creator reproduces the qualifiedName its connector app already builds, so no asset changes identity, and each comes with `updater()` / `trim_to_required()` and per-type tests.
+- **SQL creators accept non-standard depths and nested columns (FND-3887)**: With `connection_qualified_name` given, `Table`, `View`, `MaterialisedView`, `Procedure`, `Column` and `Schema` accept parents of any depth (Fabric's six segments, Db2 z/OS's four). `Table` can be schema-less and `Schema` database-less, so `schema_qualified_name` / `database_qualified_name` are now optional keywords. `Column.creator` takes `parent_column=` for nested columns (setting depth, hierarchy and the parent relationship) and accepts `MongoDBCollection` and `DocumentDBCollection` parents. Behaviour change: `Column.creator(parent_type=Column)` without `parent_column` now raises "parent_column is required when parent_type is Column".
+- **Process creators are stricter and deterministic (FND-3888)**: `Process`, `ColumnProcess` and `BIProcess` raise `ValueError` on an empty or whitespace `process_id` instead of silently falling back to the hash identity (`None` still hashes). `extra_hash_params` is read in sorted order, so a hash over two or more params no longer depends on `PYTHONHASHSEED`.
+- **Model overlays are lint-clean once injected (FND-3933)**: The hand-written overlays now match what the repo's pre-commit hooks produce, so model sync PRs carry only real model changes.
+
+### QOL Improvements
+
+- **Dependencies refreshed**: authlib 1.6.12 (Python 3.9) / 1.9.1 (3.10+), virtualenv 21.14.7, certifi 2026.10.19, idna 3.15, and the rest of the lock.
+- **CI**: The Trivy `uv.lock` gate ignores anyio CVE-2026-63374 for the Python 3.9 lock entry only, the same way the pip-audit step already did. The fixed anyio needs Python 3.10, which 3.10+ already resolves; 3.9 stays supported.
+
 ## 11.4.1 (October 9, 2026)
 
 ### New Features
