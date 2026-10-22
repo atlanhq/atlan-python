@@ -337,6 +337,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     SISENSE = ("sisense", AtlanConnectionCategory.BI)
     MONTE_CARLO = ("monte-carlo", AtlanConnectionCategory.DATA_QUALITY)
     SODA = ("soda", AtlanConnectionCategory.DATA_QUALITY)
+    ANOMALO = ("anomalo", AtlanConnectionCategory.DATA_QUALITY)
     MATILLION = ("matillion", AtlanConnectionCategory.ELT)
     AIVEN_KAFKA = ("aiven-kafka", AtlanConnectionCategory.EVENT_BUS)
     AMAZON_MSK = ("amazon-msk", AtlanConnectionCategory.EVENT_BUS)
