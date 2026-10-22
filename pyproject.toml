@@ -44,7 +44,7 @@ dependencies = [
     "httpx-retries~=0.4.6; python_version < '3.10'",
     "httpx-retries~=0.6.0; python_version >= '3.10'",
     "authlib~=1.6.12; python_version < '3.10'",
-    "authlib~=1.9.1; python_version >= '3.10'",
+    "authlib==1.9.1; python_version >= '3.10'",
     "msgspec~=0.20.0; python_version < '3.10'",
     "msgspec~=0.21.1; python_version >= '3.10'",
 ]
