@@ -6,7 +6,15 @@ from typing import Generator
 import pytest
 
 from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.model.assets import Connection, KafkaConsumerGroup, KafkaTopic
+from pyatlan_v9.model.assets import (
+    Connection,
+    KafkaCluster,
+    KafkaConsumerGroup,
+    KafkaField,
+    KafkaTopic,
+    SchemaRegistrySubject,
+    SchemaRegistryVersion,
+)
 from pyatlan_v9.model.core import Announcement
 from pyatlan_v9.model.enums import (
     AnnouncementType,
@@ -21,6 +29,10 @@ MODULE_NAME = TestId.make_unique("KAFKA")
 
 KAKFA_TOPIC_NAME = f"test_topic_{MODULE_NAME}"
 KAKFA_CONSUMER_GROUP_NAME = f"test_consumer_group_{MODULE_NAME}"
+KAFKA_CLUSTER_NAME = f"test_cluster_{MODULE_NAME}"
+KAFKA_FIELD_PARENT_NAME = "customer"
+KAFKA_FIELD_NAME = "customer.city"
+SCHEMA_REGISTRY_SUBJECT_NAME = f"test_subject_{MODULE_NAME}-value"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 
 ANNOUNCEMENT_TITLE = "Python SDK testing."
@@ -213,3 +225,164 @@ def test_restore_kafka_consumer_group(
     assert restored.guid == consumer_group.guid
     assert restored.status == EntityStatus.ACTIVE
     assert restored.qualified_name == consumer_group.qualified_name
+
+
+@pytest.fixture(scope="module")
+def kafka_cluster(
+    client: AtlanClient, connection: Connection
+) -> Generator[KafkaCluster, None, None]:
+    assert connection.qualified_name
+    to_create = KafkaCluster.creator(
+        name=KAFKA_CLUSTER_NAME, connection_qualified_name=connection.qualified_name
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=KafkaCluster)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=KafkaCluster)
+
+
+def test_kafka_cluster(
+    client: AtlanClient, connection: Connection, kafka_cluster: KafkaCluster
+):
+    assert kafka_cluster.guid
+    assert (
+        kafka_cluster.qualified_name
+        == f"{connection.qualified_name}/cluster/{KAFKA_CLUSTER_NAME}"
+    )
+    assert kafka_cluster.name == KAFKA_CLUSTER_NAME
+    assert kafka_cluster.connector_name == AtlanConnectorType.KAFKA
+    assert kafka_cluster.connection_qualified_name == connection.qualified_name
+
+
+@pytest.fixture(scope="module")
+def kafka_parent_field(
+    client: AtlanClient, kafka_topic: KafkaTopic
+) -> Generator[KafkaField, None, None]:
+    assert kafka_topic.qualified_name
+    to_create = KafkaField.creator(
+        name=KAFKA_FIELD_PARENT_NAME,
+        kafka_topic_qualified_name=kafka_topic.qualified_name,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=KafkaField)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=KafkaField)
+
+
+@pytest.fixture(scope="module")
+def kafka_field(
+    client: AtlanClient, kafka_topic: KafkaTopic, kafka_parent_field: KafkaField
+) -> Generator[KafkaField, None, None]:
+    assert kafka_topic.qualified_name
+    to_create = KafkaField.creator(
+        name=KAFKA_FIELD_NAME,
+        kafka_topic_qualified_name=kafka_topic.qualified_name,
+        parent_field_path=KAFKA_FIELD_PARENT_NAME,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=KafkaField)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=KafkaField)
+
+
+def test_kafka_field(
+    client: AtlanClient,
+    connection: Connection,
+    kafka_topic: KafkaTopic,
+    kafka_parent_field: KafkaField,
+    kafka_field: KafkaField,
+):
+    assert kafka_parent_field.guid
+    assert (
+        kafka_parent_field.qualified_name
+        == f"{kafka_topic.qualified_name}/field/{KAFKA_FIELD_PARENT_NAME}"
+    )
+    assert kafka_field.guid
+    assert (
+        kafka_field.qualified_name
+        == f"{kafka_topic.qualified_name}/field/{KAFKA_FIELD_NAME}"
+    )
+    assert kafka_field.name == KAFKA_FIELD_NAME
+    assert kafka_field.connector_name == AtlanConnectorType.KAFKA
+    assert kafka_field.connection_qualified_name == connection.qualified_name
+
+    assert kafka_field.qualified_name
+    retrieved = client.asset.get_by_qualified_name(
+        asset_type=KafkaField,
+        qualified_name=kafka_field.qualified_name,
+        ignore_relationships=False,
+    )
+    assert retrieved.guid == kafka_field.guid
+    assert retrieved.kafka_topic_qualified_name == kafka_topic.qualified_name
+    assert (
+        retrieved.kafka_parent_field_qualified_name == kafka_parent_field.qualified_name
+    )
+    assert retrieved.kafka_parent_field_name == KAFKA_FIELD_PARENT_NAME
+    assert retrieved.kafka_topic
+    assert retrieved.kafka_topic.guid == kafka_topic.guid
+
+
+@pytest.fixture(scope="module")
+def schema_registry_subject(
+    client: AtlanClient, connection: Connection
+) -> Generator[SchemaRegistrySubject, None, None]:
+    # SchemaRegistrySubject has no creator yet; build it as atlan-kafka-app does.
+    assert connection.qualified_name
+    to_create = SchemaRegistrySubject(
+        name=SCHEMA_REGISTRY_SUBJECT_NAME,
+        qualified_name=f"{connection.qualified_name}/subject/{SCHEMA_REGISTRY_SUBJECT_NAME}",
+        connection_qualified_name=connection.qualified_name,
+        connector_name=AtlanConnectorType.KAFKA.value,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=SchemaRegistrySubject)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=SchemaRegistrySubject)
+
+
+@pytest.fixture(scope="module")
+def schema_registry_version(
+    client: AtlanClient, schema_registry_subject: SchemaRegistrySubject
+) -> Generator[SchemaRegistryVersion, None, None]:
+    assert schema_registry_subject.qualified_name
+    to_create = SchemaRegistryVersion.creator(
+        schema_registry_version_number=1,
+        schema_registry_subject_qualified_name=schema_registry_subject.qualified_name,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=SchemaRegistryVersion)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=SchemaRegistryVersion)
+
+
+def test_schema_registry_version(
+    client: AtlanClient,
+    connection: Connection,
+    schema_registry_subject: SchemaRegistrySubject,
+    schema_registry_version: SchemaRegistryVersion,
+):
+    assert schema_registry_version.guid
+    assert (
+        schema_registry_version.qualified_name
+        == f"{schema_registry_subject.qualified_name}/version/1"
+    )
+    assert schema_registry_version.name == f"{SCHEMA_REGISTRY_SUBJECT_NAME}.v1"
+    assert schema_registry_version.connector_name == AtlanConnectorType.KAFKA
+    assert (
+        schema_registry_version.connection_qualified_name == connection.qualified_name
+    )
+
+    assert schema_registry_version.qualified_name
+    retrieved = client.asset.get_by_qualified_name(
+        asset_type=SchemaRegistryVersion,
+        qualified_name=schema_registry_version.qualified_name,
+        ignore_relationships=False,
+    )
+    assert retrieved.guid == schema_registry_version.guid
+    assert retrieved.schema_registry_version_number == "1"
+    assert (
+        retrieved.schema_registry_subject_qualified_name
+        == schema_registry_subject.qualified_name
+    )
+    assert retrieved.schema_registry_subject
+    assert retrieved.schema_registry_subject.guid == schema_registry_subject.guid
