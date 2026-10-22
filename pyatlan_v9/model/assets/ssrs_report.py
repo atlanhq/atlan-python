@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -305,9 +306,7 @@ class SSRSReport(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -341,8 +340,6 @@ class SSRSReport(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.ssrs_folder is UNSET:
-                errors.append("ssrs_folder is required for creation")
         if errors:
             raise ValueError(f"SSRSReport validation failed: {errors}")
 
@@ -374,6 +371,50 @@ class SSRSReport(Asset):
         if self.guid is not UNSET:
             return RelatedSSRSReport(guid=self.guid)
         return RelatedSSRSReport(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        folder_qualified_name: Union[str, None] = None,
+    ) -> "SSRSReport":
+        """Create a new SSRSReport asset, at the root or in a folder."""
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        if folder_qualified_name is not None and not (
+            folder_qualified_name.startswith(f"{connection_qualified_name}/")
+        ):
+            raise ValueError("folder_qualified_name is invalid")
+        parent_qualified_name = folder_qualified_name or connection_qualified_name
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        # atlan-ssrs-app strips spaces from each qualifiedName segment.
+        return cls(
+            name=name,
+            qualified_name=f"{parent_qualified_name}/{name.replace(' ', '')}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            ssrs_parent_folder_qualified_name=folder_qualified_name or UNSET,
+            ssrs_folder=RelatedSSRSFolder(
+                unique_attributes={"qualifiedName": folder_qualified_name}
+            )
+            if folder_qualified_name
+            else UNSET,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "SSRSReport":
+        """Create an SSRSReport instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "SSRSReport":
+        """Return only fields required for update operations."""
+        return SSRSReport.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -751,6 +792,7 @@ def _ssrs_report_to_nested(ssrs_report: SSRSReport) -> SSRSReportNested:
         is_incomplete=ssrs_report.is_incomplete,
         provenance_type=ssrs_report.provenance_type,
         home_id=ssrs_report.home_id,
+        delete_handler=ssrs_report.delete_handler,
         depth=ssrs_report.depth,
         immediate_upstream=ssrs_report.immediate_upstream,
         immediate_downstream=ssrs_report.immediate_downstream,
@@ -797,6 +839,7 @@ def _ssrs_report_from_nested(nested: SSRSReportNested) -> SSRSReport:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
