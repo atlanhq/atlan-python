@@ -11,7 +11,7 @@ def test_cloudsql_postgres_miner_inputs_defaults():
     i = CloudsqlPostgresMinerInputs()
     assert CloudsqlPostgresMinerInputs._APP_ID == "cloudsql-postgres-miner"
     assert CloudsqlPostgresMinerInputs._ENTRYPOINT == "miner"
-    assert i.redact_sql_text is False
+    assert i.redact_sql_text == "false"
 
 
 def test_cloudsql_postgres_miner_builder_payload():

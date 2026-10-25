@@ -681,14 +681,16 @@ _REDACTING = [
 
 
 @pytest.mark.parametrize("cls", _REDACTING, ids=[c.__name__ for c in _REDACTING])
-def test_redact_sql_text_is_a_bool_input(cls):
-    """The CloudSQL and AlloyDB configmaps declare "redact-sql-text" as
-    `conditional` with a boolean widget. The typed input must still be a bool:
-    with a str-ish annotation pydantic would coerce True into the string "True"
-    and the workflow would carry a value the worker cannot read as a toggle."""
-    inputs = cls._INPUTS_CLASS(redact_sql_text=True)
-    assert inputs.redact_sql_text is True
-    assert cls._INPUTS_CLASS().redact_sql_text is False
+def test_redact_sql_text_is_a_string_toggle_on_the_wire(cls):
+    """The CloudSQL and AlloyDB input contracts type "redact_sql_text" as a
+    string (default "false") even though the UI shows a toggle; the server
+    rejects a real boolean ("expected string, but got boolean"). The builder
+    takes a bool and encodes it the way the UI stores it."""
+    assert cls._INPUTS_CLASS().redact_sql_text == "false"
+    on = cls(Mock()).connection(name="c", admin_users=["u"]).redact_sql_text(True)
+    assert on.preview()["redact_sql_text"] == "true"
+    off = cls(Mock()).connection(name="c", admin_users=["u"]).redact_sql_text(False)
+    assert off.preview()["redact_sql_text"] == "false"
 
 
 @pytest.mark.parametrize("cls", _REDACTING, ids=[c.__name__ for c in _REDACTING])
@@ -712,16 +714,20 @@ def test_load_then_redact_sql_text_update_turns_the_toggle_on(cls):
     cls(client).load("slug-r").redact_sql_text(True).update()
 
     inp = client.app.update.call_args.kwargs["inputs"]
-    assert inp["redact_sql_text"] is True
+    assert inp["redact_sql_text"] == "true"
     assert inp["connection_qualified_name"] == qn
     assert inp["connection"]["attributes"]["qualifiedName"] == qn
 
 
-def test_generator_types_a_boolean_widget_as_bool_whatever_the_contract_says():
-    from pyatlan.generator.generate_apps import _py_type
+def test_generator_encodes_a_boolean_widget_over_a_string_contract_as_a_string():
+    from pyatlan.generator.generate_apps import _default_repr, _py_type
 
-    assert _py_type({"type": "conditional", "ui": {"widget": "boolean"}}) == "bool"
-    assert _py_type({"type": "boolean", "ui": {"widget": "boolean"}}) == "bool"
+    toggle = {"type": "conditional", "default": False, "ui": {"widget": "boolean"}}
+    assert _py_type(toggle) == "str"
+    assert _default_repr(toggle) == "'false'"
+    real_bool = {"type": "boolean", "default": True, "ui": {"widget": "boolean"}}
+    assert _py_type(real_bool) == "bool"
+    assert _default_repr(real_bool) == "True"
     assert _py_type({"type": "conditional", "ui": {"widget": "json"}}) == (
         "Union[Dict[str, Any], str]"
     )

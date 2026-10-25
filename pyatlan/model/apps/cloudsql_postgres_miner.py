@@ -24,7 +24,7 @@ class CloudsqlPostgresMinerInputs(AppInput):
     agent_json: Optional[Any] = None
 
     # Step 3 · Metadata (only fields the UI surfaces)
-    redact_sql_text: bool = Field(False, alias="redact-sql-text")
+    redact_sql_text: str = Field("false", alias="redact-sql-text")
     """Redact SQL Text — Replaces string and numeric literals in mined query text with placeholders, in memory, before anything is written to disk. Queries that can't be parsed are kept as-is. Query structure and lineage are preserved. Note: Increases mining runtime."""
 
 
@@ -52,7 +52,7 @@ class CloudsqlPostgresMiner(AppBuilder):
     # ── Step 3 · Metadata ──
     def redact_sql_text(self, enabled: bool = True) -> "CloudsqlPostgresMiner":
         """Redact SQL Text — Replaces string and numeric literals in mined query text with placeholders, in memory, before anything is written to disk. Queries that can't be parsed are kept as-is. Query structure and lineage are preserved. Note: Increases mining runtime."""
-        self._metadata["redact-sql-text"] = enabled
+        self._metadata["redact-sql-text"] = "true" if enabled else "false"
         return self
 
 

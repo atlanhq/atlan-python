@@ -15,7 +15,7 @@ def test_atlan_alloydb_postgres_inputs_defaults():
     assert i.exclude_filter == "{}"
     assert i.include_filter == "{}"
     assert i.temp_table_regex == ""
-    assert i.redact_sql_text is False
+    assert i.redact_sql_text == "false"
 
 
 def test_atlan_alloydb_postgres_builder_payload():

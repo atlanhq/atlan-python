@@ -33,7 +33,7 @@ class AtlanAlloydbPostgresInputs(AppInput):
     """Include Metadata — Only the selected databases and schemas will be extracted. Exclude gets preference over include for common databases and schemas, if present, in the config."""
     temp_table_regex: str = Field("", alias="temp-table-regex")
     """Exclude regex for tables & views — Regex of tables & views to ignore. Defaults to empty string"""
-    redact_sql_text: bool = Field(False, alias="redact-sql-text")
+    redact_sql_text: str = Field("false", alias="redact-sql-text")
     """Redact SQL Text — Replaces string and numeric literals in extracted SQL definitions with placeholders, in memory, before anything is written to disk. SQL that can't be parsed is kept as-is. Query structure and lineage are preserved. Note: Increases extraction runtime."""
 
 
@@ -211,7 +211,7 @@ class AtlanAlloydbPostgres(AppBuilder):
 
     def redact_sql_text(self, enabled: bool = True) -> "AtlanAlloydbPostgres":
         """Redact SQL Text — Replaces string and numeric literals in extracted SQL definitions with placeholders, in memory, before anything is written to disk. SQL that can't be parsed is kept as-is. Query structure and lineage are preserved. Note: Increases extraction runtime."""
-        self._metadata["redact-sql-text"] = enabled
+        self._metadata["redact-sql-text"] = "true" if enabled else "false"
         return self
 
 

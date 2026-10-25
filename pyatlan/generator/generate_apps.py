@@ -182,13 +182,19 @@ def _module_name(app_id: str, entrypoint: str) -> str:
     return base
 
 
+def _is_string_toggle(spec: Dict[str, Any]) -> bool:
+    """A boolean widget over a non-boolean contract type. The CloudSQL and
+    AlloyDB apps declare "redact-sql-text" as `conditional` in the configmap and
+    as a *string* in the input contract (default "false"); the UI stores
+    "true"/"false" and the contract rejects a real boolean. The builder method
+    still takes a bool and encodes it."""
+    return _ui(spec).get("widget") == "boolean" and spec.get("type") != "boolean"
+
+
 def _py_type(spec: Dict[str, Any]) -> str:
     t = spec.get("type")
-    # A toggle is a bool whatever the contract calls it: the CloudSQL and AlloyDB
-    # apps declare "redact-sql-text" as `conditional` (shown per extraction
-    # method) with a boolean widget, and the builder method already takes a bool.
-    if _ui(spec).get("widget") == "boolean":
-        return "bool"
+    if _is_string_toggle(spec):
+        return "str"
     if t in _PRIMITIVE:
         return _PRIMITIVE[t]
     if t == "conditional":  # configmap conditional fields are usually filters/strings
@@ -430,6 +436,8 @@ def _placeholder_default(spec: Dict[str, Any]) -> Any:
 
 
 def _default_repr(spec: Dict[str, Any]) -> str:
+    if _is_string_toggle(spec):
+        return repr("true" if spec.get("default") in (True, "true") else "false")
     if "default" in spec and spec["default"] is not None:
         return repr(spec["default"])
     enum = spec.get("enum")
@@ -626,7 +634,10 @@ def _render_metadata_method(
     docstring = f'        """{doc}"""' if doc else ""
     if widget == "boolean":
         sig = f'    def {mname}(self, enabled: bool = True) -> "{{cls}}":'
-        body = f'        self._metadata["{key}"] = enabled'
+        if _is_string_toggle(spec):
+            body = f'        self._metadata["{key}"] = "true" if enabled else "false"'
+        else:
+            body = f'        self._metadata["{key}"] = enabled'
         sample = "True"
     elif widget == "sqltree":
         sig = (
