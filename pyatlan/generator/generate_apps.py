@@ -87,6 +87,11 @@ MANIFEST: List[Tuple[str, Optional[str]]] = [
     ("atlan-dynamodb", None),
     ("atlan-sigma", None),
     ("mongodbatlas-atlas", None),
+    # CloudSQL + AlloyDB (AICHAT-2025): generated from e2e-aws-main, where the
+    # apps are installed; kept here so a regeneration elsewhere does not drop them.
+    ("atlan-cloudsql-postgres", "crawler"),
+    ("cloudsql-postgres-miner", "miner"),
+    ("atlan-alloydb-postgres", "alloydb-postgres"),
     # CSA "uber app" utilities (AICHAT-1588): the legacy Argo templates are gone
     # on v3-only tenants, so the typed path must target the native app.
     ("csa-uber-asset-export-basic", "asset-export-basic"),
@@ -179,6 +184,11 @@ def _module_name(app_id: str, entrypoint: str) -> str:
 
 def _py_type(spec: Dict[str, Any]) -> str:
     t = spec.get("type")
+    # A toggle is a bool whatever the contract calls it: the CloudSQL and AlloyDB
+    # apps declare "redact-sql-text" as `conditional` (shown per extraction
+    # method) with a boolean widget, and the builder method already takes a bool.
+    if _ui(spec).get("widget") == "boolean":
+        return "bool"
     if t in _PRIMITIVE:
         return _PRIMITIVE[t]
     if t == "conditional":  # configmap conditional fields are usually filters/strings

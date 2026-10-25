@@ -668,3 +668,60 @@ def test_load_update_applies_multiple_field_changes():
     assert inp["credential_guid"] == "" and "credential" not in inp
     assert inp["atlas_auth_type"] == "internal"
     assert "user-id" not in inp
+
+
+# ── CloudSQL / AlloyDB: enable query redaction on existing workflows (AICHAT-2025)
+
+
+_REDACTING = [
+    apps.AtlanCloudsqlPostgresCrawler,
+    apps.CloudsqlPostgresMiner,
+    apps.AtlanAlloydbPostgres,
+]
+
+
+@pytest.mark.parametrize("cls", _REDACTING, ids=[c.__name__ for c in _REDACTING])
+def test_redact_sql_text_is_a_bool_input(cls):
+    """The CloudSQL and AlloyDB configmaps declare "redact-sql-text" as
+    `conditional` with a boolean widget. The typed input must still be a bool:
+    with a str-ish annotation pydantic would coerce True into the string "True"
+    and the workflow would carry a value the worker cannot read as a toggle."""
+    inputs = cls._INPUTS_CLASS(redact_sql_text=True)
+    assert inputs.redact_sql_text is True
+    assert cls._INPUTS_CLASS().redact_sql_text is False
+
+
+@pytest.mark.parametrize("cls", _REDACTING, ids=[c.__name__ for c in _REDACTING])
+def test_load_then_redact_sql_text_update_turns_the_toggle_on(cls):
+    """The customer case: hundreds of existing workflows that pre-date the
+    toggle. load(slug).redact_sql_text(True).update() must send the toggle on
+    while carrying the connection through untouched, for the crawler and the
+    miner alike (the setting is configured separately on each)."""
+    from types import SimpleNamespace
+
+    qn = f"default/{cls._CONNECTOR_NAME}/1700000000"
+    current = cls(Mock()).connection(qualified_name=qn).preview()
+    current.pop("redact_sql_text", None)  # an older workflow never stored it
+    client = Mock()
+    client.app.get.return_value.dict.return_value = {
+        "dag": {"extract": {"inputs": {"args": current}}}
+    }
+    client.app.get_input_contract.return_value = SimpleNamespace(properties={})
+    client.app.update.return_value = Mock(version=2)
+
+    cls(client).load("slug-r").redact_sql_text(True).update()
+
+    inp = client.app.update.call_args.kwargs["inputs"]
+    assert inp["redact_sql_text"] is True
+    assert inp["connection_qualified_name"] == qn
+    assert inp["connection"]["attributes"]["qualifiedName"] == qn
+
+
+def test_generator_types_a_boolean_widget_as_bool_whatever_the_contract_says():
+    from pyatlan.generator.generate_apps import _py_type
+
+    assert _py_type({"type": "conditional", "ui": {"widget": "boolean"}}) == "bool"
+    assert _py_type({"type": "boolean", "ui": {"widget": "boolean"}}) == "bool"
+    assert _py_type({"type": "conditional", "ui": {"widget": "json"}}) == (
+        "Union[Dict[str, Any], str]"
+    )
