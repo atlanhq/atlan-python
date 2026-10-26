@@ -1,3 +1,11 @@
+## 11.6.0 (October 26, 2026)
+
+### New Features
+
+- **Cloud SQL for PostgreSQL and AlloyDB app builders (AICHAT-2025)**: `pyatlan.model.apps` gains `AtlanCloudsqlPostgresCrawler` (basic, IAM user, IAM service account and Workload Identity Federation auth), `CloudsqlPostgresMiner` (mines an existing connection's query history) and `AtlanAlloydbPostgres` (basic, IAM user and IAM service account auth), generated from the apps' UI configmaps. Each carries `redact_sql_text()`, and the existing `load(slug).update()` path turns Redact SQL Text on for workflows that pre-date the toggle, keeping the connection and credential reference. The generator now encodes a boolean widget over a string contract as the `"true"`/`"false"` the server expects.
+- **Search scoped to the caller's full access**: `IndexSearchRequest` gains `scope_to_user_access` (`scopeToUserAccess`), alongside `enable_full_restriction`. When `True`, the server returns the union of assets the caller's enabled personas and purposes grant, in one request; admins stay unscoped. Unset by default, so existing requests are unchanged.
+- **Latest `pyatlan_v9` models**: Resynced from `atlanhq/models`, adding `SAPDatasphereReplicationFlow` and the SAP component, data type, field count and order, logical name, package name and technical name attributes on the SAP related types. Nothing is removed.
+
 ## 11.5.0 (October 22, 2026)
 
 ### New Features
