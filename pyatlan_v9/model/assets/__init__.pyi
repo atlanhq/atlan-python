@@ -752,6 +752,8 @@ __all__ = [
     "RelatedSapErpCdsView",
     "RelatedSapErpColumn",
     "RelatedSapErpComponent",
+    "RelatedSapErpDataSource",
+    "RelatedSapErpDataSourceField",
     "RelatedSapErpFioriApp",
     "RelatedSapErpFunctionModule",
     "RelatedSapErpTable",
@@ -766,6 +768,8 @@ __all__ = [
     "SapErpCdsView",
     "SapErpColumn",
     "SapErpComponent",
+    "SapErpDataSource",
+    "SapErpDataSourceField",
     "SapErpFioriApp",
     "SapErpFunctionModule",
     "SapErpTable",
@@ -1979,6 +1983,8 @@ from .sap_erp_abap_program import SapErpAbapProgram as SapErpAbapProgram
 from .sap_erp_cds_view import SapErpCdsView as SapErpCdsView
 from .sap_erp_column import SapErpColumn as SapErpColumn
 from .sap_erp_component import SapErpComponent as SapErpComponent
+from .sap_erp_data_source import SapErpDataSource as SapErpDataSource
+from .sap_erp_data_source_field import SapErpDataSourceField as SapErpDataSourceField
 from .sap_erp_fiori_app import SapErpFioriApp as SapErpFioriApp
 from .sap_erp_function_module import SapErpFunctionModule as SapErpFunctionModule
 from .sap_erp_table import SapErpTable as SapErpTable
@@ -1997,6 +2003,8 @@ from .sap_related import RelatedSapErpAbapProgram as RelatedSapErpAbapProgram
 from .sap_related import RelatedSapErpCdsView as RelatedSapErpCdsView
 from .sap_related import RelatedSapErpColumn as RelatedSapErpColumn
 from .sap_related import RelatedSapErpComponent as RelatedSapErpComponent
+from .sap_related import RelatedSapErpDataSource as RelatedSapErpDataSource
+from .sap_related import RelatedSapErpDataSourceField as RelatedSapErpDataSourceField
 from .sap_related import RelatedSapErpFioriApp as RelatedSapErpFioriApp
 from .sap_related import RelatedSapErpFunctionModule as RelatedSapErpFunctionModule
 from .sap_related import RelatedSapErpTable as RelatedSapErpTable

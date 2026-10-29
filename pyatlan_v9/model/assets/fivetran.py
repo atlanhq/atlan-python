@@ -105,13 +105,13 @@ class Fivetran(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
     fivetran_workflow_name: Union[str, None, UnsetType] = UNSET
-    """Name of the atlan fivetran workflow that updated this asset"""
+    """Name of the atlan fivetran workflow that updated this asset."""
 
     fivetran_last_sync_status: Union[str, None, UnsetType] = UNSET
     """Status of the latest sync on Fivetran."""
 
     fivetran_last_sync_records_updated: Union[int, None, UnsetType] = UNSET
-    """Number of records updated in the latest sync on Fivetran"""
+    """Number of records updated in the latest sync on Fivetran."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -344,13 +344,13 @@ class FivetranAttributes(AssetAttributes):
     """Fivetran-specific attributes for nested API format."""
 
     fivetran_workflow_name: Union[str, None, UnsetType] = UNSET
-    """Name of the atlan fivetran workflow that updated this asset"""
+    """Name of the atlan fivetran workflow that updated this asset."""
 
     fivetran_last_sync_status: Union[str, None, UnsetType] = UNSET
     """Status of the latest sync on Fivetran."""
 
     fivetran_last_sync_records_updated: Union[int, None, UnsetType] = UNSET
-    """Number of records updated in the latest sync on Fivetran"""
+    """Number of records updated in the latest sync on Fivetran."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""

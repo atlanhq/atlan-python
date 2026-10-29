@@ -33,6 +33,8 @@ __all__ = [
     "RelatedSapErpFioriApp",
     "RelatedSapDatasphereReplicationFlow",
     "RelatedSapDatasphereDataProduct",
+    "RelatedSapErpDataSource",
+    "RelatedSapErpDataSourceField",
 ]
 
 
@@ -458,3 +460,99 @@ class RelatedSapDatasphereDataProduct(RelatedSAP):
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
             self.type_name = "SapDatasphereDataProduct"
+
+
+class RelatedSapErpDataSource(RelatedSAP):
+    """
+    Related entity reference for SapErpDataSource assets.
+
+    Extends RelatedSAP with SapErpDataSource-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SapErpDataSource" so it serializes correctly
+
+    sap_erp_data_source_type: Union[str, None, UnsetType] = UNSET
+    """Type of the DataSource: transaction data, master data attributes, texts or hierarchies."""
+
+    sap_erp_data_source_extraction_method: Union[str, None, UnsetType] = UNSET
+    """Raw extraction method code of the DataSource, such as V, F1, F2, D or CO."""
+
+    sap_erp_data_source_extraction_method_text: Union[str, None, UnsetType] = UNSET
+    """Readable label of the extraction method of the DataSource."""
+
+    sap_erp_data_source_extract_structure: Union[str, None, UnsetType] = UNSET
+    """Name of the extract structure that defines the fields delivered by the DataSource."""
+
+    sap_erp_data_source_extractor: Union[str, None, UnsetType] = UNSET
+    """Name of the extractor object (function module, view, table, class or InfoSet) that reads data for the DataSource."""
+
+    sap_erp_data_source_extractor_type: Union[str, None, UnsetType] = UNSET
+    """Kind of the extractor object: FM, VIEW, TABLE, CLASS or INFOSET."""
+
+    sap_erp_data_source_provider_context: Union[str, None, UnsetType] = UNSET
+    """Provider context through which the DataSource is exposed, such as SAPI."""
+
+    sap_erp_data_source_logical_system: Union[str, None, UnsetType] = UNSET
+    """Logical system name of the source client that owns the DataSource."""
+
+    sap_erp_data_source_logical_system_aliases: Union[List[str], None, UnsetType] = (
+        UNSET
+    )
+    """Other logical system names recorded for the DataSource in the source system."""
+
+    sap_erp_data_source_is_custom: Union[bool, None, UnsetType] = UNSET
+    """When true, the DataSource is customer-built rather than delivered by SAP."""
+
+    sap_erp_data_source_upstream_tier: Union[str, None, UnsetType] = UNSET
+    """Confidence tier of the upstream lineage of the DataSource: A, B, C or UNRESOLVED."""
+
+    sap_erp_data_source_scope_reasons: Union[List[str], None, UnsetType] = UNSET
+    """Reasons for which the DataSource was included in the crawl, such as an active delta initialisation or ODP subscription."""
+
+    sap_erp_data_source_delivery_path: Union[str, None, UnsetType] = UNSET
+    """Path by which the DataSource delivers data: ODP, CLASSIC or BOTH."""
+
+    sap_erp_data_source_is_odp_enabled: Union[bool, None, UnsetType] = UNSET
+    """When true, the DataSource is released for the Operational Data Provisioning (ODP) framework."""
+
+    sap_erp_data_source_last_confirmed_at: Union[int, None, UnsetType] = UNSET
+    """Day on which the source system last confirmed delivery activity for the DataSource."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        if self.type_name is UNSET:
+            self.type_name = "SapErpDataSource"
+
+
+class RelatedSapErpDataSourceField(RelatedSAP):
+    """
+    Related entity reference for SapErpDataSourceField assets.
+
+    Extends RelatedSAP with SapErpDataSourceField-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SapErpDataSourceField" so it serializes correctly
+
+    sap_erp_data_source_field_data_source_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
+    """Unique name of the SAP ERP DataSource to which this field belongs."""
+
+    sap_erp_data_source_field_data_element: Union[str, None, UnsetType] = UNSET
+    """Data element of the field, which gives it its semantic meaning in the SAP ABAP Dictionary."""
+
+    sap_erp_data_source_field_domain: Union[str, None, UnsetType] = UNSET
+    """Domain of the data element of the field, which defines its technical type and value range."""
+
+    sap_erp_data_source_field_length: Union[int, None, UnsetType] = UNSET
+    """Length of the field in characters or digits."""
+
+    sap_erp_data_source_field_is_primary: Union[bool, None, UnsetType] = UNSET
+    """When true, the field is part of the key of the DataSource. Empty when the source system does not say."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        if self.type_name is UNSET:
+            self.type_name = "SapErpDataSourceField"
