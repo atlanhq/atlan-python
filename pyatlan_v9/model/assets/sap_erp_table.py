@@ -50,7 +50,12 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent, RelatedSapErpTable
+from .sap_related import (
+    RelatedSapErpColumn,
+    RelatedSapErpComponent,
+    RelatedSapErpDataSource,
+    RelatedSapErpTable,
+)
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -108,6 +113,7 @@ class SapErpTable(Asset):
     SAP_ERP_COLUMNS: ClassVar[Any] = None
     SAP_ERP_COMPONENT: ClassVar[Any] = None
     SAP_ERP_RELATED_TABLES: ClassVar[Any] = None
+    SAP_ERP_SETUP_TABLE_DATA_SOURCES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
@@ -246,6 +252,11 @@ class SapErpTable(Asset):
 
     sap_erp_related_tables: Union[List[RelatedSapErpTable], None, UnsetType] = UNSET
     """SAP ERP Tables that are related to this SAP ERP Table."""
+
+    sap_erp_setup_table_data_sources: Union[
+        List[RelatedSapErpDataSource], None, UnsetType
+    ] = UNSET
+    """SAP ERP DataSources that fill this table as their setup table."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -517,6 +528,11 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_related_tables: Union[List[RelatedSapErpTable], None, UnsetType] = UNSET
     """SAP ERP Tables that are related to this SAP ERP Table."""
 
+    sap_erp_setup_table_data_sources: Union[
+        List[RelatedSapErpDataSource], None, UnsetType
+    ] = UNSET
+    """SAP ERP DataSources that fill this table as their setup table."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -583,6 +599,7 @@ _SAP_ERP_TABLE_REL_FIELDS: List[str] = [
     "sap_erp_columns",
     "sap_erp_component",
     "sap_erp_related_tables",
+    "sap_erp_setup_table_data_sources",
     "schema_registry_subjects",
     "soda_checks",
     "input_to_spark_jobs",
@@ -783,6 +800,9 @@ SapErpTable.README = RelationField("readme")
 SapErpTable.SAP_ERP_COLUMNS = RelationField("sapErpColumns")
 SapErpTable.SAP_ERP_COMPONENT = RelationField("sapErpComponent")
 SapErpTable.SAP_ERP_RELATED_TABLES = RelationField("sapErpRelatedTables")
+SapErpTable.SAP_ERP_SETUP_TABLE_DATA_SOURCES = RelationField(
+    "sapErpSetupTableDataSources"
+)
 SapErpTable.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SapErpTable.SODA_CHECKS = RelationField("sodaChecks")
 SapErpTable.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")

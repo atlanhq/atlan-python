@@ -87,6 +87,10 @@ class FivetranConnector(Asset):
     FIVETRAN_CONNECTOR_DESTINATION_NAME: ClassVar[Any] = None
     FIVETRAN_CONNECTOR_DESTINATION_TYPE: ClassVar[Any] = None
     FIVETRAN_CONNECTOR_DESTINATION_URL: ClassVar[Any] = None
+    FIVETRAN_CONNECTOR_SOURCE_HOST: ClassVar[Any] = None
+    FIVETRAN_CONNECTOR_SOURCE_DATABASE: ClassVar[Any] = None
+    FIVETRAN_CONNECTOR_SOURCE_LOCATION: ClassVar[Any] = None
+    FIVETRAN_CONNECTOR_SOURCE_PATH: ClassVar[Any] = None
     FIVETRAN_CONNECTOR_SYNC_SETUP_ON: ClassVar[Any] = None
     FIVETRAN_CONNECTOR_SYNC_FREQUENCY: ClassVar[Any] = None
     FIVETRAN_CONNECTOR_SYNC_PAUSED: ClassVar[Any] = None
@@ -151,13 +155,13 @@ class FivetranConnector(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
     fivetran_connector_last_sync_id: Union[str, None, UnsetType] = UNSET
-    """ID of the latest sync"""
+    """ID of the latest sync."""
 
     fivetran_connector_last_sync_started_at: Union[int, None, UnsetType] = UNSET
-    """Timestamp (epoch) when the latest sync started on Fivetran, in milliseconds"""
+    """Timestamp (epoch) when the latest sync started on Fivetran, in milliseconds."""
 
     fivetran_connector_last_sync_finished_at: Union[int, None, UnsetType] = UNSET
-    """Timestamp (epoch) when the latest sync finished on Fivetran, in milliseconds"""
+    """Timestamp (epoch) when the latest sync finished on Fivetran, in milliseconds."""
 
     fivetran_connector_last_sync_reason: Union[str, None, UnsetType] = UNSET
     """Failure reason for the latest sync on Fivetran. If status is FAILURE, this is the description of the reason why the sync failed. If status is FAILURE_WITH_TASK, this is the description of the Error. If status is RESCHEDULED, this is the description of the reason why the sync is rescheduled."""
@@ -166,48 +170,48 @@ class FivetranConnector(Asset):
     """Failure task type for the latest sync on Fivetran. If status is FAILURE_WITH_TASK or RESCHEDULED, this field displays the type of the Error that caused the failure or rescheduling, respectively, e.g., reconnect, update_service_account, etc."""
 
     fivetran_connector_last_sync_rescheduled_at: Union[int, None, UnsetType] = UNSET
-    """Timestamp (epoch) at which the latest sync is rescheduled at on Fivetran"""
+    """Timestamp (epoch) at which the latest sync is rescheduled at on Fivetran."""
 
     fivetran_connector_last_sync_tables_synced: Union[int, None, UnsetType] = UNSET
-    """Number of tables synced in the latest sync on Fivetran"""
+    """Number of tables synced in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_extract_time_seconds: Union[float, None, UnsetType] = (
         UNSET
     )
-    """Extract time in seconds in the latest sync on fivetran"""
+    """Extract time in seconds in the latest sync on fivetran."""
 
     fivetran_connector_last_sync_extract_volume_megabytes: Union[
         float, None, UnsetType
     ] = UNSET
-    """Extracted data volume in metabytes in the latest sync on Fivetran"""
+    """Extracted data volume in metabytes in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_load_time_seconds: Union[float, None, UnsetType] = (
         UNSET
     )
-    """Load time in seconds in the latest sync on Fivetran"""
+    """Load time in seconds in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_load_volume_megabytes: Union[
         float, None, UnsetType
     ] = UNSET
-    """Loaded data volume in metabytes in the latest sync on Fivetran"""
+    """Loaded data volume in metabytes in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_process_time_seconds: Union[float, None, UnsetType] = (
         UNSET
     )
-    """Process time in seconds in the latest sync on Fivetran"""
+    """Process time in seconds in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_process_volume_megabytes: Union[
         float, None, UnsetType
     ] = UNSET
-    """Process volume in metabytes in the latest sync on Fivetran"""
+    """Process volume in metabytes in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_total_time_seconds: Union[float, None, UnsetType] = (
         UNSET
     )
-    """Total sync time in seconds in the latest sync on Fivetran"""
+    """Total sync time in seconds in the latest sync on Fivetran."""
 
     fivetran_connector_name: Union[str, None, UnsetType] = UNSET
-    """Connector name added by the user on Fivetran"""
+    """Connector name added by the user on Fivetran."""
 
     fivetran_connector_type: Union[str, None, UnsetType] = UNSET
     """Type of connector on Fivetran. Eg: snowflake, google_analytics, notion etc."""
@@ -215,10 +219,10 @@ class FivetranConnector(Asset):
     fivetran_connector_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranConnectorURL"
     )
-    """URL to open the connector details on Fivetran"""
+    """URL to open the connector details on Fivetran."""
 
     fivetran_connector_destination_name: Union[str, None, UnsetType] = UNSET
-    """Destination name added by the user on Fivetran"""
+    """Destination name added by the user on Fivetran."""
 
     fivetran_connector_destination_type: Union[str, None, UnsetType] = UNSET
     """Type of destination on Fivetran. Eg: redshift, bigquery etc."""
@@ -226,84 +230,96 @@ class FivetranConnector(Asset):
     fivetran_connector_destination_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranConnectorDestinationURL"
     )
-    """URL to open the destination details on Fivetran"""
+    """URL to open the destination details on Fivetran."""
+
+    fivetran_connector_source_host: Union[str, None, UnsetType] = UNSET
+    """Host of the source system (database or SFTP/FTP server) this connector reads from."""
+
+    fivetran_connector_source_database: Union[str, None, UnsetType] = UNSET
+    """Database of the source system this connector reads from."""
+
+    fivetran_connector_source_location: Union[str, None, UnsetType] = UNSET
+    """Location of the source data: folder URL, bucket, storage account/container, or instance URL."""
+
+    fivetran_connector_source_path: Union[str, None, UnsetType] = UNSET
+    """Folder prefix inside the source location."""
 
     fivetran_connector_sync_setup_on: Union[int, None, UnsetType] = UNSET
-    """Timestamp (epoch) on which the connector was setup on Fivetran, in milliseconds"""
+    """Timestamp (epoch) on which the connector was setup on Fivetran, in milliseconds."""
 
     fivetran_connector_sync_frequency: Union[str, None, UnsetType] = UNSET
-    """Sync frequency for the connector in number of hours. Eg: Every 6 hours"""
+    """Sync frequency for the connector in number of hours. Eg: Every 6 hours."""
 
     fivetran_connector_sync_paused: Union[bool, None, UnsetType] = UNSET
-    """Boolean to indicate whether the sync for this connector is paused or not"""
+    """Boolean to indicate whether the sync for this connector is paused or not."""
 
     fivetran_connector_sync_setup_user_full_name: Union[str, None, UnsetType] = UNSET
-    """Full name of the user who setup the connector on Fivetran"""
+    """Full name of the user who setup the connector on Fivetran."""
 
     fivetran_connector_sync_setup_user_email: Union[str, None, UnsetType] = UNSET
-    """Email ID of the user who setpu the connector on Fivetran"""
+    """Email ID of the user who setpu the connector on Fivetran."""
 
     fivetran_connector_monthly_active_rows_free: Union[int, None, UnsetType] = UNSET
-    """Free Monthly Active Rows used by the connector in the past month"""
+    """Free Monthly Active Rows used by the connector in the past month."""
 
     fivetran_connector_monthly_active_rows_paid: Union[int, None, UnsetType] = UNSET
-    """Paid Monthly Active Rows used by the connector in the past month"""
+    """Paid Monthly Active Rows used by the connector in the past month."""
 
     fivetran_connector_monthly_active_rows_total: Union[int, None, UnsetType] = UNSET
-    """Total Monthly Active Rows used by the connector in the past month"""
+    """Total Monthly Active Rows used by the connector in the past month."""
 
     fivetran_connector_monthly_active_rows_change_percentage_free: Union[
         float, None, UnsetType
     ] = UNSET
-    """Increase in the percentage of free MAR compared to the previous month"""
+    """Increase in the percentage of free MAR compared to the previous month."""
 
     fivetran_connector_monthly_active_rows_change_percentage_paid: Union[
         float, None, UnsetType
     ] = UNSET
-    """Increase in the percentage of paid MAR compared to the previous month"""
+    """Increase in the percentage of paid MAR compared to the previous month."""
 
     fivetran_connector_monthly_active_rows_change_percentage_total: Union[
         float, None, UnsetType
     ] = UNSET
-    """Increase in the percentage of total MAR compared to the previous month"""
+    """Increase in the percentage of total MAR compared to the previous month."""
 
     fivetran_connector_monthly_active_rows_free_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
-    """Percentage of the account's total free MAR used by this connector"""
+    """Percentage of the account's total free MAR used by this connector."""
 
     fivetran_connector_monthly_active_rows_paid_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
-    """Percentage of the account's total paid MAR used by this connector"""
+    """Percentage of the account's total paid MAR used by this connector."""
 
     fivetran_connector_monthly_active_rows_total_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
-    """Percentage of the account's total MAR used by this connector"""
+    """Percentage of the account's total MAR used by this connector."""
 
     fivetran_connector_total_tables_synced: Union[int, None, UnsetType] = UNSET
-    """Total number of tables synced by this connector"""
+    """Total number of tables synced by this connector."""
 
     fivetran_connector_top_tables_by_mar: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranConnectorTopTablesByMAR"
     )
-    """Total five tables sorted by MAR synced by this connector"""
+    """Total five tables sorted by MAR synced by this connector."""
 
     fivetran_connector_usage_cost: Union[float, None, UnsetType] = UNSET
-    """Total usage cost by this destination"""
+    """Total usage cost by this destination."""
 
     fivetran_connector_credits_used: Union[float, None, UnsetType] = UNSET
-    """Total credits used by this destination"""
+    """Total credits used by this destination."""
 
     fivetran_workflow_name: Union[str, None, UnsetType] = UNSET
-    """Name of the atlan fivetran workflow that updated this asset"""
+    """Name of the atlan fivetran workflow that updated this asset."""
 
     fivetran_last_sync_status: Union[str, None, UnsetType] = UNSET
     """Status of the latest sync on Fivetran."""
 
     fivetran_last_sync_records_updated: Union[int, None, UnsetType] = UNSET
-    """Number of records updated in the latest sync on Fivetran"""
+    """Number of records updated in the latest sync on Fivetran."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -358,7 +374,7 @@ class FivetranConnector(Asset):
     """Rules where this dataset is referenced."""
 
     processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
-    """Processes related to this Fivetran connector"""
+    """Processes related to this Fivetran connector."""
 
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
@@ -541,13 +557,13 @@ class FivetranConnectorAttributes(AssetAttributes):
     """FivetranConnector-specific attributes for nested API format."""
 
     fivetran_connector_last_sync_id: Union[str, None, UnsetType] = UNSET
-    """ID of the latest sync"""
+    """ID of the latest sync."""
 
     fivetran_connector_last_sync_started_at: Union[int, None, UnsetType] = UNSET
-    """Timestamp (epoch) when the latest sync started on Fivetran, in milliseconds"""
+    """Timestamp (epoch) when the latest sync started on Fivetran, in milliseconds."""
 
     fivetran_connector_last_sync_finished_at: Union[int, None, UnsetType] = UNSET
-    """Timestamp (epoch) when the latest sync finished on Fivetran, in milliseconds"""
+    """Timestamp (epoch) when the latest sync finished on Fivetran, in milliseconds."""
 
     fivetran_connector_last_sync_reason: Union[str, None, UnsetType] = UNSET
     """Failure reason for the latest sync on Fivetran. If status is FAILURE, this is the description of the reason why the sync failed. If status is FAILURE_WITH_TASK, this is the description of the Error. If status is RESCHEDULED, this is the description of the reason why the sync is rescheduled."""
@@ -556,48 +572,48 @@ class FivetranConnectorAttributes(AssetAttributes):
     """Failure task type for the latest sync on Fivetran. If status is FAILURE_WITH_TASK or RESCHEDULED, this field displays the type of the Error that caused the failure or rescheduling, respectively, e.g., reconnect, update_service_account, etc."""
 
     fivetran_connector_last_sync_rescheduled_at: Union[int, None, UnsetType] = UNSET
-    """Timestamp (epoch) at which the latest sync is rescheduled at on Fivetran"""
+    """Timestamp (epoch) at which the latest sync is rescheduled at on Fivetran."""
 
     fivetran_connector_last_sync_tables_synced: Union[int, None, UnsetType] = UNSET
-    """Number of tables synced in the latest sync on Fivetran"""
+    """Number of tables synced in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_extract_time_seconds: Union[float, None, UnsetType] = (
         UNSET
     )
-    """Extract time in seconds in the latest sync on fivetran"""
+    """Extract time in seconds in the latest sync on fivetran."""
 
     fivetran_connector_last_sync_extract_volume_megabytes: Union[
         float, None, UnsetType
     ] = UNSET
-    """Extracted data volume in metabytes in the latest sync on Fivetran"""
+    """Extracted data volume in metabytes in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_load_time_seconds: Union[float, None, UnsetType] = (
         UNSET
     )
-    """Load time in seconds in the latest sync on Fivetran"""
+    """Load time in seconds in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_load_volume_megabytes: Union[
         float, None, UnsetType
     ] = UNSET
-    """Loaded data volume in metabytes in the latest sync on Fivetran"""
+    """Loaded data volume in metabytes in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_process_time_seconds: Union[float, None, UnsetType] = (
         UNSET
     )
-    """Process time in seconds in the latest sync on Fivetran"""
+    """Process time in seconds in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_process_volume_megabytes: Union[
         float, None, UnsetType
     ] = UNSET
-    """Process volume in metabytes in the latest sync on Fivetran"""
+    """Process volume in metabytes in the latest sync on Fivetran."""
 
     fivetran_connector_last_sync_total_time_seconds: Union[float, None, UnsetType] = (
         UNSET
     )
-    """Total sync time in seconds in the latest sync on Fivetran"""
+    """Total sync time in seconds in the latest sync on Fivetran."""
 
     fivetran_connector_name: Union[str, None, UnsetType] = UNSET
-    """Connector name added by the user on Fivetran"""
+    """Connector name added by the user on Fivetran."""
 
     fivetran_connector_type: Union[str, None, UnsetType] = UNSET
     """Type of connector on Fivetran. Eg: snowflake, google_analytics, notion etc."""
@@ -605,10 +621,10 @@ class FivetranConnectorAttributes(AssetAttributes):
     fivetran_connector_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranConnectorURL"
     )
-    """URL to open the connector details on Fivetran"""
+    """URL to open the connector details on Fivetran."""
 
     fivetran_connector_destination_name: Union[str, None, UnsetType] = UNSET
-    """Destination name added by the user on Fivetran"""
+    """Destination name added by the user on Fivetran."""
 
     fivetran_connector_destination_type: Union[str, None, UnsetType] = UNSET
     """Type of destination on Fivetran. Eg: redshift, bigquery etc."""
@@ -616,84 +632,96 @@ class FivetranConnectorAttributes(AssetAttributes):
     fivetran_connector_destination_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranConnectorDestinationURL"
     )
-    """URL to open the destination details on Fivetran"""
+    """URL to open the destination details on Fivetran."""
+
+    fivetran_connector_source_host: Union[str, None, UnsetType] = UNSET
+    """Host of the source system (database or SFTP/FTP server) this connector reads from."""
+
+    fivetran_connector_source_database: Union[str, None, UnsetType] = UNSET
+    """Database of the source system this connector reads from."""
+
+    fivetran_connector_source_location: Union[str, None, UnsetType] = UNSET
+    """Location of the source data: folder URL, bucket, storage account/container, or instance URL."""
+
+    fivetran_connector_source_path: Union[str, None, UnsetType] = UNSET
+    """Folder prefix inside the source location."""
 
     fivetran_connector_sync_setup_on: Union[int, None, UnsetType] = UNSET
-    """Timestamp (epoch) on which the connector was setup on Fivetran, in milliseconds"""
+    """Timestamp (epoch) on which the connector was setup on Fivetran, in milliseconds."""
 
     fivetran_connector_sync_frequency: Union[str, None, UnsetType] = UNSET
-    """Sync frequency for the connector in number of hours. Eg: Every 6 hours"""
+    """Sync frequency for the connector in number of hours. Eg: Every 6 hours."""
 
     fivetran_connector_sync_paused: Union[bool, None, UnsetType] = UNSET
-    """Boolean to indicate whether the sync for this connector is paused or not"""
+    """Boolean to indicate whether the sync for this connector is paused or not."""
 
     fivetran_connector_sync_setup_user_full_name: Union[str, None, UnsetType] = UNSET
-    """Full name of the user who setup the connector on Fivetran"""
+    """Full name of the user who setup the connector on Fivetran."""
 
     fivetran_connector_sync_setup_user_email: Union[str, None, UnsetType] = UNSET
-    """Email ID of the user who setpu the connector on Fivetran"""
+    """Email ID of the user who setpu the connector on Fivetran."""
 
     fivetran_connector_monthly_active_rows_free: Union[int, None, UnsetType] = UNSET
-    """Free Monthly Active Rows used by the connector in the past month"""
+    """Free Monthly Active Rows used by the connector in the past month."""
 
     fivetran_connector_monthly_active_rows_paid: Union[int, None, UnsetType] = UNSET
-    """Paid Monthly Active Rows used by the connector in the past month"""
+    """Paid Monthly Active Rows used by the connector in the past month."""
 
     fivetran_connector_monthly_active_rows_total: Union[int, None, UnsetType] = UNSET
-    """Total Monthly Active Rows used by the connector in the past month"""
+    """Total Monthly Active Rows used by the connector in the past month."""
 
     fivetran_connector_monthly_active_rows_change_percentage_free: Union[
         float, None, UnsetType
     ] = UNSET
-    """Increase in the percentage of free MAR compared to the previous month"""
+    """Increase in the percentage of free MAR compared to the previous month."""
 
     fivetran_connector_monthly_active_rows_change_percentage_paid: Union[
         float, None, UnsetType
     ] = UNSET
-    """Increase in the percentage of paid MAR compared to the previous month"""
+    """Increase in the percentage of paid MAR compared to the previous month."""
 
     fivetran_connector_monthly_active_rows_change_percentage_total: Union[
         float, None, UnsetType
     ] = UNSET
-    """Increase in the percentage of total MAR compared to the previous month"""
+    """Increase in the percentage of total MAR compared to the previous month."""
 
     fivetran_connector_monthly_active_rows_free_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
-    """Percentage of the account's total free MAR used by this connector"""
+    """Percentage of the account's total free MAR used by this connector."""
 
     fivetran_connector_monthly_active_rows_paid_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
-    """Percentage of the account's total paid MAR used by this connector"""
+    """Percentage of the account's total paid MAR used by this connector."""
 
     fivetran_connector_monthly_active_rows_total_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
-    """Percentage of the account's total MAR used by this connector"""
+    """Percentage of the account's total MAR used by this connector."""
 
     fivetran_connector_total_tables_synced: Union[int, None, UnsetType] = UNSET
-    """Total number of tables synced by this connector"""
+    """Total number of tables synced by this connector."""
 
     fivetran_connector_top_tables_by_mar: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranConnectorTopTablesByMAR"
     )
-    """Total five tables sorted by MAR synced by this connector"""
+    """Total five tables sorted by MAR synced by this connector."""
 
     fivetran_connector_usage_cost: Union[float, None, UnsetType] = UNSET
-    """Total usage cost by this destination"""
+    """Total usage cost by this destination."""
 
     fivetran_connector_credits_used: Union[float, None, UnsetType] = UNSET
-    """Total credits used by this destination"""
+    """Total credits used by this destination."""
 
     fivetran_workflow_name: Union[str, None, UnsetType] = UNSET
-    """Name of the atlan fivetran workflow that updated this asset"""
+    """Name of the atlan fivetran workflow that updated this asset."""
 
     fivetran_last_sync_status: Union[str, None, UnsetType] = UNSET
     """Status of the latest sync on Fivetran."""
 
     fivetran_last_sync_records_updated: Union[int, None, UnsetType] = UNSET
-    """Number of records updated in the latest sync on Fivetran"""
+    """Number of records updated in the latest sync on Fivetran."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -752,7 +780,7 @@ class FivetranConnectorRelationshipAttributes(AssetRelationshipAttributes):
     """Rules where this dataset is referenced."""
 
     processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
-    """Processes related to this Fivetran connector"""
+    """Processes related to this Fivetran connector."""
 
     gcp_dataplex_aspect_type_metadata_entities: Union[
         List[RelatedGCPDataplexAspectType], None, UnsetType
@@ -922,6 +950,10 @@ def _populate_fivetran_connector_attrs(
     attrs.fivetran_connector_destination_name = obj.fivetran_connector_destination_name
     attrs.fivetran_connector_destination_type = obj.fivetran_connector_destination_type
     attrs.fivetran_connector_destination_url = obj.fivetran_connector_destination_url
+    attrs.fivetran_connector_source_host = obj.fivetran_connector_source_host
+    attrs.fivetran_connector_source_database = obj.fivetran_connector_source_database
+    attrs.fivetran_connector_source_location = obj.fivetran_connector_source_location
+    attrs.fivetran_connector_source_path = obj.fivetran_connector_source_path
     attrs.fivetran_connector_sync_setup_on = obj.fivetran_connector_sync_setup_on
     attrs.fivetran_connector_sync_frequency = obj.fivetran_connector_sync_frequency
     attrs.fivetran_connector_sync_paused = obj.fivetran_connector_sync_paused
@@ -1027,6 +1059,14 @@ def _extract_fivetran_connector_attrs(attrs: FivetranConnectorAttributes) -> dic
     result["fivetran_connector_destination_url"] = (
         attrs.fivetran_connector_destination_url
     )
+    result["fivetran_connector_source_host"] = attrs.fivetran_connector_source_host
+    result["fivetran_connector_source_database"] = (
+        attrs.fivetran_connector_source_database
+    )
+    result["fivetran_connector_source_location"] = (
+        attrs.fivetran_connector_source_location
+    )
+    result["fivetran_connector_source_path"] = attrs.fivetran_connector_source_path
     result["fivetran_connector_sync_setup_on"] = attrs.fivetran_connector_sync_setup_on
     result["fivetran_connector_sync_frequency"] = (
         attrs.fivetran_connector_sync_frequency
@@ -1274,6 +1314,18 @@ FivetranConnector.FIVETRAN_CONNECTOR_DESTINATION_TYPE = KeywordField(
 )
 FivetranConnector.FIVETRAN_CONNECTOR_DESTINATION_URL = KeywordField(
     "fivetranConnectorDestinationURL", "fivetranConnectorDestinationURL"
+)
+FivetranConnector.FIVETRAN_CONNECTOR_SOURCE_HOST = KeywordField(
+    "fivetranConnectorSourceHost", "fivetranConnectorSourceHost"
+)
+FivetranConnector.FIVETRAN_CONNECTOR_SOURCE_DATABASE = KeywordField(
+    "fivetranConnectorSourceDatabase", "fivetranConnectorSourceDatabase"
+)
+FivetranConnector.FIVETRAN_CONNECTOR_SOURCE_LOCATION = KeywordField(
+    "fivetranConnectorSourceLocation", "fivetranConnectorSourceLocation"
+)
+FivetranConnector.FIVETRAN_CONNECTOR_SOURCE_PATH = KeywordField(
+    "fivetranConnectorSourcePath", "fivetranConnectorSourcePath"
 )
 FivetranConnector.FIVETRAN_CONNECTOR_SYNC_SETUP_ON = NumericField(
     "fivetranConnectorSyncSetupOn", "fivetranConnectorSyncSetupOn"
