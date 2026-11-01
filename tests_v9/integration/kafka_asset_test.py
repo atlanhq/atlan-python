@@ -102,10 +102,15 @@ def test_kafka_consumer_group(
     assert consumer_group.qualified_name
     assert consumer_group.name == KAKFA_CONSUMER_GROUP_NAME
     assert consumer_group.connector_name == AtlanConnectorType.KAFKA
+    # kafkaTopicQualifiedNames is includeInNotification=false, so the save
+    # response omits it; check the persisted value instead.
+    retrieved = client.asset.get_by_guid(
+        consumer_group.guid, asset_type=KafkaConsumerGroup
+    )
     assert (
         kafka_topic.qualified_name
-        and consumer_group.kafka_topic_qualified_names
-        and kafka_topic.qualified_name in consumer_group.kafka_topic_qualified_names
+        and retrieved.kafka_topic_qualified_names
+        and kafka_topic.qualified_name in retrieved.kafka_topic_qualified_names
     )
 
 
