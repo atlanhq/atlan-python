@@ -12,7 +12,7 @@ on:
 
 jobs:
   check-code-changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       has-code-changes: ${{ steps.filter.outputs.has-code-changes }}
     steps:
@@ -50,7 +50,7 @@ jobs:
   vulnerability-scan:
     needs: [check-code-changes]
     if: needs.check-code-changes.outputs.has-code-changes == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         # Specify version as a string
@@ -98,7 +98,7 @@ jobs:
             inputs: .
 
   check-aio-changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       run-async-tests: ${{ steps.check-conditions.outputs.run-async-tests }}
     steps:
@@ -131,7 +131,7 @@ jobs:
           fi
 
   check-v9-integration-label:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       run-v9-integration: ${{ steps.check-label.outputs.run-v9-integration }}
     steps:
@@ -155,7 +155,7 @@ jobs:
   qa-checks-and-unit-tests:
     needs: [check-code-changes, vulnerability-scan]
     if: needs.check-code-changes.outputs.has-code-changes == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       files: ${{ steps.distribute-integration-test-files.outputs.files }}
       aio-files: ${{ steps.distribute-aio-test-files.outputs.aio-files }}
@@ -217,7 +217,7 @@ jobs:
   integration-tests:
     needs: [check-code-changes, vulnerability-scan, qa-checks-and-unit-tests]
     if: needs.check-code-changes.outputs.has-code-changes == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -257,7 +257,7 @@ jobs:
 
   async-integration-tests:
     needs: [check-code-changes, vulnerability-scan, qa-checks-and-unit-tests, check-aio-changes]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Only run if code changed AND (AIO changes detected or manual trigger)
     if: needs.check-code-changes.outputs.has-code-changes == 'true' && needs.check-aio-changes.outputs.run-async-tests == 'true'
     strategy:
@@ -303,7 +303,7 @@ jobs:
   v9-qa-checks-and-unit-tests:
     needs: [check-code-changes, vulnerability-scan]
     if: needs.check-code-changes.outputs.has-code-changes == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
@@ -337,7 +337,7 @@ jobs:
     if: >-
       needs.check-code-changes.outputs.has-code-changes == 'true' &&
       needs.check-v9-integration-label.outputs.run-v9-integration == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       v9-files: ${{ steps.distribute-v9-files.outputs.v9-files }}
       v9-aio-files: ${{ steps.distribute-v9-aio-files.outputs.v9-aio-files }}
@@ -377,7 +377,7 @@ jobs:
   v9-integration-tests:
     needs: [v9-prepare-integration-tests]
     if: needs.v9-prepare-integration-tests.outputs.v9-files != '[]'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -413,7 +413,7 @@ jobs:
   v9-async-integration-tests:
     needs: [v9-prepare-integration-tests]
     if: needs.v9-prepare-integration-tests.outputs.v9-aio-files != '[]'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
