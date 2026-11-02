@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
@@ -25,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -460,6 +462,8 @@ class MongoDBDatabase(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this MongoDBDatabase instance.
@@ -484,6 +488,11 @@ class MongoDBDatabase(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"MongoDBDatabase validation failed: {errors}")
 
@@ -515,6 +524,40 @@ class MongoDBDatabase(Asset):
         if self.guid is not UNSET:
             return RelatedMongoDBDatabase(guid=self.guid)
         return RelatedMongoDBDatabase(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+    ) -> "MongoDBDatabase":
+        """Create a new MongoDBDatabase asset."""
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connector_name=connector_name,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "MongoDBDatabase":
+        """Create a MongoDBDatabase instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "MongoDBDatabase":
+        """Return only fields required for update operations."""
+        return MongoDBDatabase.updater(
+            qualified_name=self.qualified_name,
+            name=self.name,
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1079,6 +1122,7 @@ def _mongo_db_database_to_nested(
         is_incomplete=mongo_db_database.is_incomplete,
         provenance_type=mongo_db_database.provenance_type,
         home_id=mongo_db_database.home_id,
+        delete_handler=mongo_db_database.delete_handler,
         depth=mongo_db_database.depth,
         immediate_upstream=mongo_db_database.immediate_upstream,
         immediate_downstream=mongo_db_database.immediate_downstream,
@@ -1127,6 +1171,7 @@ def _mongo_db_database_from_nested(nested: MongoDBDatabaseNested) -> MongoDBData
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

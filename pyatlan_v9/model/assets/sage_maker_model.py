@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .ai_related import RelatedAIModel
 from .airflow_related import RelatedAirflowTask
@@ -363,7 +364,7 @@ class SageMakerModel(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -430,6 +431,57 @@ class SageMakerModel(Asset):
         if self.guid is not UNSET:
             return RelatedSageMakerModel(guid=self.guid)
         return RelatedSageMakerModel(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        version: str,
+        model_group_qualified_name: str,
+        name: Union[str, None] = None,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "SageMakerModel":
+        """Create a new SageMakerModel (a versioned model package) asset."""
+        validate_required_fields(
+            ["version", "model_group_qualified_name"],
+            [version, model_group_qualified_name],
+        )
+        # A model group qualifiedName is {connection_qn}/{aws_region}/{group_name}.
+        parts = model_group_qualified_name.split("/")
+        if len(parts) < 5:
+            raise ValueError("model_group_qualified_name is invalid")
+        model_group_name = parts[-1]
+        aws_region = parts[-2]
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:-2])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name or f"{model_group_name}/{version}",
+            qualified_name=f"{model_group_qualified_name}/{version}",
+            sage_maker_model_version=version,
+            sage_maker_model_model_group_name=model_group_name,
+            sage_maker_model_model_group_qualified_name=model_group_qualified_name,
+            aws_region=aws_region,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            sage_maker_model_group=RelatedSageMakerModelGroup(
+                unique_attributes={"qualifiedName": model_group_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "SageMakerModel":
+        """Create a SageMakerModel instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "SageMakerModel":
+        """Return only fields required for update operations."""
+        return SageMakerModel.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -893,6 +945,7 @@ def _sage_maker_model_to_nested(
         is_incomplete=sage_maker_model.is_incomplete,
         provenance_type=sage_maker_model.provenance_type,
         home_id=sage_maker_model.home_id,
+        delete_handler=sage_maker_model.delete_handler,
         depth=sage_maker_model.depth,
         immediate_upstream=sage_maker_model.immediate_upstream,
         immediate_downstream=sage_maker_model.immediate_downstream,
@@ -941,6 +994,7 @@ def _sage_maker_model_from_nested(nested: SageMakerModelNested) -> SageMakerMode
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

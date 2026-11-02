@@ -8,7 +8,15 @@ Connection -> Metadata); see ``pyatlan.generator.generate_apps``.
 
 from pyatlan.model.apps._base import AppBuilder, AppInput
 from pyatlan.model.apps.anaplan import Anaplan, AnaplanInputs
+from pyatlan.model.apps.atlan_alloydb_postgres import (
+    AtlanAlloydbPostgres,
+    AtlanAlloydbPostgresInputs,
+)
 from pyatlan.model.apps.atlan_athena import AtlanAthena, AtlanAthenaInputs
+from pyatlan.model.apps.atlan_cloudsql_postgres_crawler import (
+    AtlanCloudsqlPostgresCrawler,
+    AtlanCloudsqlPostgresCrawlerInputs,
+)
 from pyatlan.model.apps.atlan_dbt import AtlanDbt, AtlanDbtInputs
 from pyatlan.model.apps.atlan_dynamodb import AtlanDynamodb, AtlanDynamodbInputs
 from pyatlan.model.apps.atlan_glue import AtlanGlue, AtlanGlueInputs
@@ -31,6 +39,10 @@ from pyatlan.model.apps.atlan_tableau import AtlanTableau, AtlanTableauInputs
 from pyatlan.model.apps.atlan_trino import AtlanTrino, AtlanTrinoInputs
 from pyatlan.model.apps.bigquery_crawler import BigqueryCrawler, BigqueryCrawlerInputs
 from pyatlan.model.apps.bigquery_miner import BigqueryMiner, BigqueryMinerInputs
+from pyatlan.model.apps.cloudsql_postgres_miner import (
+    CloudsqlPostgresMiner,
+    CloudsqlPostgresMinerInputs,
+)
 from pyatlan.model.apps.csa_uber_asset_export_basic import (
     CsaUberAssetExportBasic,
     CsaUberAssetExportBasicInputs,
@@ -131,4 +143,10 @@ __all__ = [
     "TeradataCrawlerInputs",
     "TeradataMiner",
     "TeradataMinerInputs",
+    "AtlanAlloydbPostgres",
+    "AtlanAlloydbPostgresInputs",
+    "AtlanCloudsqlPostgresCrawler",
+    "AtlanCloudsqlPostgresCrawlerInputs",
+    "CloudsqlPostgresMiner",
+    "CloudsqlPostgresMinerInputs",
 ]

@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -332,9 +333,7 @@ class SageMakerModelDeployment(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -368,8 +367,6 @@ class SageMakerModelDeployment(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.sage_maker_model is UNSET:
-                errors.append("sage_maker_model is required for creation")
         if errors:
             raise ValueError(f"SageMakerModelDeployment validation failed: {errors}")
 
@@ -403,6 +400,42 @@ class SageMakerModelDeployment(Asset):
         if self.guid is not UNSET:
             return RelatedSageMakerModelDeployment(guid=self.guid)
         return RelatedSageMakerModelDeployment(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        aws_region: str,
+        connection_qualified_name: str,
+    ) -> "SageMakerModelDeployment":
+        """Create a new SageMakerModelDeployment asset."""
+        validate_required_fields(
+            ["name", "aws_region", "connection_qualified_name"],
+            [name, aws_region, connection_qualified_name],
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/{aws_region}/{name}",
+            aws_region=aws_region,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "SageMakerModelDeployment":
+        """Create a SageMakerModelDeployment instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "SageMakerModelDeployment":
+        """Return only fields required for update operations."""
+        return SageMakerModelDeployment.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -845,6 +878,7 @@ def _sage_maker_model_deployment_to_nested(
         is_incomplete=sage_maker_model_deployment.is_incomplete,
         provenance_type=sage_maker_model_deployment.provenance_type,
         home_id=sage_maker_model_deployment.home_id,
+        delete_handler=sage_maker_model_deployment.delete_handler,
         depth=sage_maker_model_deployment.depth,
         immediate_upstream=sage_maker_model_deployment.immediate_upstream,
         immediate_downstream=sage_maker_model_deployment.immediate_downstream,
@@ -895,6 +929,7 @@ def _sage_maker_model_deployment_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

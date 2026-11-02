@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -344,6 +345,87 @@ class UnstructuredFolder(Asset):
         if self.guid is not UNSET:
             return RelatedUnstructuredFolder(guid=self.guid)
         return RelatedUnstructuredFolder(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        unstructured_container_qualified_name: str,
+        unstructured_parent_folder_qualified_name: Union[str, None] = None,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "UnstructuredFolder":
+        """Create a new UnstructuredFolder asset, at the container root or under a parent folder."""
+        validate_required_fields(
+            ["name", "unstructured_container_qualified_name"],
+            [name, unstructured_container_qualified_name],
+        )
+        # A container qualifiedName is {connection_qn}/{container_name}.
+        container_qn = unstructured_container_qualified_name
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(container_qn.split("/")[:3])
+        if not container_qn.startswith(f"{connection_qualified_name}/"):
+            raise ValueError("unstructured_container_qualified_name is invalid")
+        container_name = container_qn[len(connection_qualified_name) + 1 :]
+        if not container_name:
+            raise ValueError("unstructured_container_qualified_name is invalid")
+        parent_path = ""
+        if unstructured_parent_folder_qualified_name:
+            # A folder qualifiedName is {container_qn}/[{ancestor_path}/]{folder_name}.
+            if not unstructured_parent_folder_qualified_name.startswith(
+                f"{container_qn}/"
+            ):
+                raise ValueError("unstructured_parent_folder_qualified_name is invalid")
+            parent_path = unstructured_parent_folder_qualified_name[
+                len(container_qn) + 1 :
+            ]
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        asset = cls(
+            name=name,
+            qualified_name=f"{container_qn}/{parent_path}/{name}"
+            if parent_path
+            else f"{container_qn}/{name}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            unstructured_container_name=container_name,
+            unstructured_container_qualified_name=container_qn,
+            unstructured_container=RelatedUnstructuredContainer(
+                unique_attributes={"qualifiedName": container_qn}
+            ),
+        )
+        if parent_path:
+            # Ancestor folders, nearest first, as atlan-bridge-app emits them.
+            segments = parent_path.split("/")
+            asset.unstructured_parent_folder_qualified_name = (
+                unstructured_parent_folder_qualified_name
+            )
+            asset.unstructured_parent_folder = RelatedUnstructuredFolder(
+                unique_attributes={
+                    "qualifiedName": unstructured_parent_folder_qualified_name
+                }
+            )
+            asset.unstructured_folder_hierarchy = [
+                {
+                    "qualifiedName": f"{container_qn}/{'/'.join(segments[:end])}",
+                    "name": segments[end - 1],
+                }
+                for end in range(len(segments), 0, -1)
+            ]
+        return asset
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "UnstructuredFolder":
+        """Create an UnstructuredFolder instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "UnstructuredFolder":
+        """Return only fields required for update operations."""
+        return UnstructuredFolder.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -688,6 +770,7 @@ def _unstructured_folder_to_nested(
         is_incomplete=unstructured_folder.is_incomplete,
         provenance_type=unstructured_folder.provenance_type,
         home_id=unstructured_folder.home_id,
+        delete_handler=unstructured_folder.delete_handler,
         depth=unstructured_folder.depth,
         immediate_upstream=unstructured_folder.immediate_upstream,
         immediate_downstream=unstructured_folder.immediate_downstream,
@@ -738,6 +821,7 @@ def _unstructured_folder_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

@@ -18,6 +18,13 @@ from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -33,6 +40,7 @@ from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .form_related import RelatedResponse
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -41,14 +49,6 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .form_related import RelatedResponse
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -478,6 +478,7 @@ def _response_to_nested(response: Response) -> ResponseNested:
         is_incomplete=response.is_incomplete,
         provenance_type=response.provenance_type,
         home_id=response.home_id,
+        delete_handler=response.delete_handler,
         depth=response.depth,
         immediate_upstream=response.immediate_upstream,
         immediate_downstream=response.immediate_downstream,
@@ -524,6 +525,7 @@ def _response_from_nested(nested: ResponseNested) -> Response:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
@@ -547,10 +549,7 @@ def _response_from_nested_bytes(data: bytes, serde: Serde) -> Response:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
 Response.FORM_GUID = KeywordField("formGuid", "formGuid")
 Response.RESPONSE_VALUES = KeywordField("responseValues", "responseValues")

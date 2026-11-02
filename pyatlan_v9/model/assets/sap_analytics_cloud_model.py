@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -343,9 +344,7 @@ class SapAnalyticsCloudModel(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -379,8 +378,6 @@ class SapAnalyticsCloudModel(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.sap_analytics_cloud_folder is UNSET:
-                errors.append("sap_analytics_cloud_folder is required for creation")
         if errors:
             raise ValueError(f"SapAnalyticsCloudModel validation failed: {errors}")
 
@@ -414,6 +411,76 @@ class SapAnalyticsCloudModel(Asset):
         if self.guid is not UNSET:
             return RelatedSapAnalyticsCloudModel(guid=self.guid)
         return RelatedSapAnalyticsCloudModel(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        resource_id: Union[str, None] = None,
+        model_id: Union[str, None] = None,
+        connection_qualified_name: Union[str, None] = None,
+        parent_folder_qualified_name: Union[str, None] = None,
+        parent_folder_name: Union[str, None] = None,
+    ) -> "SapAnalyticsCloudModel":
+        """
+        Create a new SapAnalyticsCloudModel asset.
+
+        An Import model is a file-repository resource, named by its
+        resource_id under the folder that directly contains it (pass
+        parent_folder_qualified_name) or under the connection when it has no
+        folder. A Live model is not a file-repository resource: it has no
+        folder and is named by its model_id under the connection.
+        """
+        validate_required_fields(["name"], [name])
+        if not resource_id and not model_id:
+            raise ValueError("One of resource_id or model_id is required")
+        if parent_folder_qualified_name:
+            # A folder qualifiedName is {connection_qn}/{resource_id}[/{resource_id}...].
+            parts = parent_folder_qualified_name.split("/")
+            if len(parts) < 4:
+                raise ValueError("parent_folder_qualified_name is invalid")
+            if not connection_qualified_name:
+                connection_qualified_name = "/".join(parts[:3])
+        validate_required_fields(
+            ["connection_qualified_name"], [connection_qualified_name]
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        parent_qualified_name = (
+            parent_folder_qualified_name or connection_qualified_name
+        )
+        return cls(
+            name=name,
+            sap_analytics_cloud_resource_id=resource_id or UNSET,
+            sap_analytics_cloud_model_id=model_id or UNSET,
+            qualified_name=f"{parent_qualified_name}/{resource_id or model_id}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            sap_analytics_cloud_parent_folder_qualified_name=parent_folder_qualified_name
+            or UNSET,
+            sap_analytics_cloud_parent_folder_name=parent_folder_name
+            if parent_folder_name is not None
+            else UNSET,
+            sap_analytics_cloud_folder=RelatedSapAnalyticsCloudFolder(
+                unique_attributes={"qualifiedName": parent_folder_qualified_name}
+            )
+            if parent_folder_qualified_name
+            else UNSET,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "SapAnalyticsCloudModel":
+        """Create a SapAnalyticsCloudModel instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "SapAnalyticsCloudModel":
+        """Return only fields required for update operations."""
+        return SapAnalyticsCloudModel.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -890,6 +957,7 @@ def _sap_analytics_cloud_model_to_nested(
         is_incomplete=sap_analytics_cloud_model.is_incomplete,
         provenance_type=sap_analytics_cloud_model.provenance_type,
         home_id=sap_analytics_cloud_model.home_id,
+        delete_handler=sap_analytics_cloud_model.delete_handler,
         depth=sap_analytics_cloud_model.depth,
         immediate_upstream=sap_analytics_cloud_model.immediate_upstream,
         immediate_downstream=sap_analytics_cloud_model.immediate_downstream,
@@ -940,6 +1008,7 @@ def _sap_analytics_cloud_model_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
