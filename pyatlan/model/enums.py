@@ -251,6 +251,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     COGNOS = ("cognos", AtlanConnectionCategory.BI)
     DREMIO = ("dremio", AtlanConnectionCategory.DATABASE)
     DOMO = ("domo", AtlanConnectionCategory.BI)
+    SSRS = ("ssrs", AtlanConnectionCategory.BI)
     SALESFORCE = ("salesforce", AtlanConnectionCategory.SAAS)
     DATAVERSE = ("dataverse", AtlanConnectionCategory.SAAS)
     MYSQL = ("mysql", AtlanConnectionCategory.WAREHOUSE)
