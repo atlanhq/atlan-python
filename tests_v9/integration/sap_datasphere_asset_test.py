@@ -97,14 +97,12 @@ def test_replication_flow(
     assert replication_flow.connection_qualified_name == connection.qualified_name
     assert replication_flow.connector_name == AtlanConnectorType.SAP_DATASPHERE.value
 
+    # No `attributes=`: that routes through index search, which is eventually
+    # consistent and can miss an asset saved a moment ago. The direct API is not.
     retrieved = client.asset.get_by_qualified_name(
         qualified_name=replication_flow.qualified_name,
         asset_type=SapDatasphereReplicationFlow,
-        attributes=[
-            "sapDatasphereReplicationFlowSpaceName",
-            "sapDatasphereReplicationFlowSpaceQualifiedName",
-            "sapDatasphereSchema",
-        ],
+        ignore_relationships=False,
     )
     assert retrieved.guid == replication_flow.guid
     assert retrieved.sap_datasphere_replication_flow_space_name == SPACE_NAME
