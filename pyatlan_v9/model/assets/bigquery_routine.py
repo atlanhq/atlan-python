@@ -546,14 +546,6 @@ class BigqueryRoutine(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.atlan_schema is UNSET:
                 errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
             if self.definition is UNSET:
                 errors.append("definition is required for creation")
         if errors:

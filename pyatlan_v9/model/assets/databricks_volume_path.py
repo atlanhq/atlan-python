@@ -472,14 +472,6 @@ class DatabricksVolumePath(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.databricks_volume is UNSET:
                 errors.append("databricks_volume is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(f"DatabricksVolumePath validation failed: {errors}")
 
@@ -1109,6 +1101,7 @@ def _databricks_volume_path_to_nested(
         is_incomplete=databricks_volume_path.is_incomplete,
         provenance_type=databricks_volume_path.provenance_type,
         home_id=databricks_volume_path.home_id,
+        delete_handler=databricks_volume_path.delete_handler,
         depth=databricks_volume_path.depth,
         immediate_upstream=databricks_volume_path.immediate_upstream,
         immediate_downstream=databricks_volume_path.immediate_downstream,
@@ -1159,6 +1152,7 @@ def _databricks_volume_path_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
