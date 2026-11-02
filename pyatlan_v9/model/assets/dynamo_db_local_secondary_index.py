@@ -20,6 +20,13 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -42,6 +49,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .dynamo_db_related import RelatedDynamoDBLocalSecondaryIndex, RelatedDynamoDBTable
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -66,14 +74,6 @@ from .sql_related import (
     RelatedTable,
     RelatedTablePartition,
 )
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .dynamo_db_related import RelatedDynamoDBLocalSecondaryIndex, RelatedDynamoDBTable
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -1414,6 +1414,7 @@ def _dynamo_db_local_secondary_index_to_nested(
         is_incomplete=dynamo_db_local_secondary_index.is_incomplete,
         provenance_type=dynamo_db_local_secondary_index.provenance_type,
         home_id=dynamo_db_local_secondary_index.home_id,
+        delete_handler=dynamo_db_local_secondary_index.delete_handler,
         depth=dynamo_db_local_secondary_index.depth,
         immediate_upstream=dynamo_db_local_secondary_index.immediate_upstream,
         immediate_downstream=dynamo_db_local_secondary_index.immediate_downstream,
@@ -1464,6 +1465,7 @@ def _dynamo_db_local_secondary_index_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

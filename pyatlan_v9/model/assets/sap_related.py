@@ -16,7 +16,6 @@ from typing import Dict, List, Union
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
-from .flow_related import RelatedFlowControlOperation
 from .referenceable_related import RelatedReferenceable
 
 __all__ = [
@@ -367,11 +366,11 @@ class RelatedSapErpFioriApp(RelatedSAP):
             self.type_name = "SapErpFioriApp"
 
 
-class RelatedSapDatasphereReplicationFlow(RelatedFlowControlOperation):
+class RelatedSapDatasphereReplicationFlow(RelatedSAP):
     """
     Related entity reference for SapDatasphereReplicationFlow assets.
 
-    Extends RelatedFlowControlOperation with SapDatasphereReplicationFlow-specific attributes.
+    Extends RelatedSAP with SapDatasphereReplicationFlow-specific attributes.
     """
 
     # type_name inherited from parent with default=UNSET
