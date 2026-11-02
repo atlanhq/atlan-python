@@ -1,4 +1,8 @@
 # Copyright 2024 Atlan Pte. Ltd.
+from typing import Dict, List
+
+__PYATLAN_ASSETS__: Dict[str, List[str]]
+__PYATLAN_SUPER_TYPES__: Dict[str, List[str]]
 
 __all__ = [
     "Referenceable",
