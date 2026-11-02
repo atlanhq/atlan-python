@@ -8,8 +8,10 @@ typedef lists (see ``pyatlan.generator.class_generator``). An Atlas type can hav
 ``class SAPProcess(SAP)``, so ``issubclass(SAPProcess, Process)`` is ``False`` even though
 the class carries every ``Process`` attribute.
 
-These helpers answer from the full Atlas supertype list instead, so code that needs to know
-"is this a Process?" gets the same answer Atlas would give.
+These helpers answer from the full Atlas supertype list instead, which the class generator
+writes into ``pyatlan.model.assets`` as ``__PYATLAN_SUPER_TYPES__``. For a type that list
+does not cover (or before models are regenerated with it), they fall back to the generated
+class's Python parent, which is never worse than ``issubclass``.
 
 Example::
 
@@ -21,18 +23,21 @@ Example::
     is_subtype_of("SAPProcess", "SAP")    # True
 """
 
+import importlib
 from functools import lru_cache
 from typing import Dict, FrozenSet, List, Tuple, Type, Union
 
 TypeOrName = Union[str, Type]
 
 
-def _super_types() -> Dict[str, List[str]]:
+def _assets_module():
     # Imported lazily: pyatlan.model.assets loads asset classes on demand, and some asset
     # modules import pyatlan.model helpers at import time.
-    from pyatlan.model.assets import __PYATLAN_SUPER_TYPES__
+    return importlib.import_module("pyatlan.model.assets")
 
-    return __PYATLAN_SUPER_TYPES__
+
+def _super_types() -> Dict[str, List[str]]:
+    return getattr(_assets_module(), "__PYATLAN_SUPER_TYPES__", {})
 
 
 def _name(type_or_name: TypeOrName) -> str:
@@ -41,26 +46,44 @@ def _name(type_or_name: TypeOrName) -> str:
     return type_or_name.__name__
 
 
+def _python_parents(type_name: str) -> Tuple[str, ...]:
+    assets = _assets_module()
+    asset_names = {
+        name
+        for names in getattr(assets, "__PYATLAN_ASSETS__", {}).values()
+        for name in names
+    }
+    if type_name not in asset_names:
+        return ()
+    cls = getattr(assets, type_name)
+    return tuple(
+        base.__name__ for base in cls.__bases__ if base.__name__ in asset_names
+    )
+
+
 def get_super_types(type_or_name: TypeOrName) -> Tuple[str, ...]:
     """Direct Atlas supertypes of a type, in typedef order.
 
     :param type_or_name: asset class (e.g. ``SAPProcess``) or type name (``"SAPProcess"``)
     :returns: the type's direct supertypes; empty for ``Referenceable`` and unknown types
     """
-    return tuple(_super_types().get(_name(type_or_name), ()))
+    name = _name(type_or_name)
+    super_types = _super_types()
+    if name in super_types:
+        return tuple(super_types[name])
+    return _python_parents(name)
 
 
 @lru_cache(maxsize=None)
 def _ancestors(type_name: str) -> FrozenSet[str]:
-    super_types = _super_types()
     seen: set = set()
-    pending = list(super_types.get(type_name, ()))
+    pending = list(get_super_types(type_name))
     while pending:
         current = pending.pop()
         if current in seen:
             continue
         seen.add(current)
-        pending.extend(super_types.get(current, ()))
+        pending.extend(get_super_types(current))
     return frozenset(seen)
 
 
