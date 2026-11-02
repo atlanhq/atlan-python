@@ -6,3 +6,31 @@ vulnerabilities:
       anyio fixes this from 4.14.2, which needs Python >= 3.10. This package still
       supports >= 3.9.1, so 3.9 is pinned to 4.12.1 and cannot take the fix.
       Python 3.10+ resolves 4.15.1. Drop this when 3.9 support goes.
+  - id: CVE-2026-96760
+    purls:
+      - pkg:pypi/authlib@1.6.12
+    statement: >-
+      authlib fixes this from 1.9.0/1.9.1, which need Python >= 3.10. This package
+      still supports >= 3.9.1, so 3.9 is pinned to 1.6.12 and cannot take the fix.
+      Python 3.10+ resolves 1.9.1. Drop this when 3.9 support goes.
+  - id: CVE-2026-114615
+    purls:
+      - pkg:pypi/authlib@1.6.12
+    statement: >-
+      authlib fixes this from 1.9.0/1.9.1, which need Python >= 3.10. This package
+      still supports >= 3.9.1, so 3.9 is pinned to 1.6.12 and cannot take the fix.
+      Python 3.10+ resolves 1.9.1. Drop this when 3.9 support goes.
+  - id: CVE-2026-114616
+    purls:
+      - pkg:pypi/authlib@1.6.12
+    statement: >-
+      authlib fixes this from 1.9.0/1.9.1, which need Python >= 3.10. This package
+      still supports >= 3.9.1, so 3.9 is pinned to 1.6.12 and cannot take the fix.
+      Python 3.10+ resolves 1.9.1. Drop this when 3.9 support goes.
+  - id: CVE-2026-116672
+    purls:
+      - pkg:pypi/authlib@1.6.12
+    statement: >-
+      authlib fixes this from 1.9.0/1.9.1, which need Python >= 3.10. This package
+      still supports >= 3.9.1, so 3.9 is pinned to 1.6.12 and cannot take the fix.
+      Python 3.10+ resolves 1.9.1. Drop this when 3.9 support goes.
