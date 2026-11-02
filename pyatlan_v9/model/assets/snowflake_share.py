@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -480,8 +481,6 @@ class SnowflakeShare(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.snowflake_listing is UNSET:
-                errors.append("snowflake_listing is required for creation")
         if errors:
             raise ValueError(f"SnowflakeShare validation failed: {errors}")
 
@@ -513,6 +512,54 @@ class SnowflakeShare(Asset):
         if self.guid is not UNSET:
             return RelatedSnowflakeShare(guid=self.guid)
         return RelatedSnowflakeShare(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        owner_account: str,
+        connection_qualified_name: str,
+        kind: Union[str, None] = None,
+        snowflake_listing_qualified_name: Union[str, None] = None,
+    ) -> "SnowflakeShare":
+        """Create a new SnowflakeShare asset."""
+        validate_required_fields(
+            ["name", "owner_account", "connection_qualified_name"],
+            [name, owner_account, connection_qualified_name],
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/share/{owner_account}/{name}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            snowflake_share_owner_account=owner_account,
+            snowflake_share_kind=kind if kind is not None else UNSET,
+            snowflake_listing=(
+                RelatedSnowflakeListing(
+                    unique_attributes={
+                        "qualifiedName": snowflake_listing_qualified_name
+                    }
+                )
+                if snowflake_listing_qualified_name
+                else UNSET
+            ),
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "SnowflakeShare":
+        """Create a SnowflakeShare instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "SnowflakeShare":
+        """Return only fields required for update operations."""
+        return SnowflakeShare.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1055,6 +1102,7 @@ def _snowflake_share_to_nested(snowflake_share: SnowflakeShare) -> SnowflakeShar
         is_incomplete=snowflake_share.is_incomplete,
         provenance_type=snowflake_share.provenance_type,
         home_id=snowflake_share.home_id,
+        delete_handler=snowflake_share.delete_handler,
         depth=snowflake_share.depth,
         immediate_upstream=snowflake_share.immediate_upstream,
         immediate_downstream=snowflake_share.immediate_downstream,
@@ -1103,6 +1151,7 @@ def _snowflake_share_from_nested(nested: SnowflakeShareNested) -> SnowflakeShare
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
