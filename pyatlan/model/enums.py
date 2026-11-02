@@ -388,6 +388,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     SAP_GIGYA = ("sap-gigya", AtlanConnectionCategory.SAAS)
     SAP_HYBRIS = ("sap-hybris", AtlanConnectionCategory.SAAS)
     SAP_ANALYTICS_CLOUD = ("sapanalyticscloud", AtlanConnectionCategory.BI)
+    SAP_DATASPHERE = ("sapdatasphere", AtlanConnectionCategory.WAREHOUSE)
     IBM_DB2 = ("ibmdb2", AtlanConnectionCategory.DATABASE)
     APP = ("app", AtlanConnectionCategory.APP)
     BIGID = ("bigid", AtlanConnectionCategory.SAAS)
