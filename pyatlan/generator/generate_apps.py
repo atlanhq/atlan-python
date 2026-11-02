@@ -87,6 +87,11 @@ MANIFEST: List[Tuple[str, Optional[str]]] = [
     ("atlan-dynamodb", None),
     ("atlan-sigma", None),
     ("mongodbatlas-atlas", None),
+    # CloudSQL + AlloyDB (AICHAT-2025): generated from e2e-aws-main, where the
+    # apps are installed; kept here so a regeneration elsewhere does not drop them.
+    ("atlan-cloudsql-postgres", "crawler"),
+    ("cloudsql-postgres-miner", "miner"),
+    ("atlan-alloydb-postgres", "alloydb-postgres"),
     # CSA "uber app" utilities (AICHAT-1588): the legacy Argo templates are gone
     # on v3-only tenants, so the typed path must target the native app.
     ("csa-uber-asset-export-basic", "asset-export-basic"),
@@ -177,8 +182,19 @@ def _module_name(app_id: str, entrypoint: str) -> str:
     return base
 
 
+def _is_string_toggle(spec: Dict[str, Any]) -> bool:
+    """A boolean widget over a non-boolean contract type. The CloudSQL and
+    AlloyDB apps declare "redact-sql-text" as `conditional` in the configmap and
+    as a *string* in the input contract (default "false"); the UI stores
+    "true"/"false" and the contract rejects a real boolean. The builder method
+    still takes a bool and encodes it."""
+    return _ui(spec).get("widget") == "boolean" and spec.get("type") != "boolean"
+
+
 def _py_type(spec: Dict[str, Any]) -> str:
     t = spec.get("type")
+    if _is_string_toggle(spec):
+        return "str"
     if t in _PRIMITIVE:
         return _PRIMITIVE[t]
     if t == "conditional":  # configmap conditional fields are usually filters/strings
@@ -420,6 +436,8 @@ def _placeholder_default(spec: Dict[str, Any]) -> Any:
 
 
 def _default_repr(spec: Dict[str, Any]) -> str:
+    if _is_string_toggle(spec):
+        return repr("true" if spec.get("default") in (True, "true") else "false")
     if "default" in spec and spec["default"] is not None:
         return repr(spec["default"])
     enum = spec.get("enum")
@@ -616,7 +634,10 @@ def _render_metadata_method(
     docstring = f'        """{doc}"""' if doc else ""
     if widget == "boolean":
         sig = f'    def {mname}(self, enabled: bool = True) -> "{{cls}}":'
-        body = f'        self._metadata["{key}"] = enabled'
+        if _is_string_toggle(spec):
+            body = f'        self._metadata["{key}"] = "true" if enabled else "false"'
+        else:
+            body = f'        self._metadata["{key}"] = enabled'
         sample = "True"
     elif widget == "sqltree":
         sig = (

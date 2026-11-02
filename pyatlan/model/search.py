@@ -2055,6 +2055,17 @@ class IndexSearchRequest(SearchRequest):
         ),
         alias="enableFullRestriction",
     )
+    scope_to_user_access: Optional[bool] = Field(
+        default=None,
+        description=(
+            "Whether to scope search results to the caller's own access (`True`) "
+            "or not (`False`). When `True`, the server derives the caller's enabled "
+            "personas and purposes and returns the union of assets they grant "
+            "(admins are left unscoped). By default this is None and standard "
+            "access controls apply."
+        ),
+        alias="scopeToUserAccess",
+    )
     request_metadata: Optional[IndexSearchRequestMetadata] = Field(
         default_factory=lambda: IndexSearchRequestMetadata(
             # Set this to `False` to prevent the frequent
