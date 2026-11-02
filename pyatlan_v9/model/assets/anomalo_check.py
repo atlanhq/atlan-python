@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
@@ -24,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -272,6 +274,10 @@ class AnomaloCheck(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+/check/[^/]+$"
+    )
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this AnomaloCheck instance.
@@ -296,6 +302,11 @@ class AnomaloCheck(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"AnomaloCheck validation failed: {errors}")
 
@@ -327,6 +338,72 @@ class AnomaloCheck(Asset):
         if self.guid is not UNSET:
             return RelatedAnomaloCheck(guid=self.guid)
         return RelatedAnomaloCheck(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        warehouse_id: Union[int, str],
+        table_id: str,
+        check_id: str,
+        linked_asset_qualified_name: Union[str, None] = None,
+        linked_asset_type_name: str = "Table",
+    ) -> "AnomaloCheck":
+        """
+        Create a new AnomaloCheck asset.
+
+        :param name: name of the check
+        :param connection_qualified_name: unique name of the Anomalo connection
+        :param warehouse_id: Anomalo id of the warehouse the checked table is in
+        :param table_id: Anomalo id of the checked table
+        :param check_id: Anomalo (static) id of the check
+        :param linked_asset_qualified_name: (optional) unique name of the asset in Atlan the check runs on
+        :param linked_asset_type_name: type of the linked asset (default: Table)
+        :returns: AnomaloCheck asset with the provided details
+        """
+        validate_required_fields(
+            [
+                "name",
+                "connection_qualified_name",
+                "warehouse_id",
+                "table_id",
+                "check_id",
+            ],
+            [name, connection_qualified_name, warehouse_id, table_id, check_id],
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        check = cls(
+            name=name,
+            qualified_name=(
+                f"{connection_qualified_name}/{warehouse_id}/{table_id}"
+                f"/check/{check_id}"
+            ),
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+        )
+        if linked_asset_qualified_name:
+            check.anomalo_check_linked_asset_qualified_name = (
+                linked_asset_qualified_name
+            )
+            check.anomalo_check_asset = RelatedAsset(
+                type_name=linked_asset_type_name,
+                unique_attributes={"qualifiedName": linked_asset_qualified_name},
+            )
+        return check
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "AnomaloCheck":
+        """Create an AnomaloCheck instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "AnomaloCheck":
+        """Return only fields required for update operations."""
+        return AnomaloCheck.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -681,6 +758,7 @@ def _anomalo_check_to_nested(anomalo_check: AnomaloCheck) -> AnomaloCheckNested:
         is_incomplete=anomalo_check.is_incomplete,
         provenance_type=anomalo_check.provenance_type,
         home_id=anomalo_check.home_id,
+        delete_handler=anomalo_check.delete_handler,
         depth=anomalo_check.depth,
         immediate_upstream=anomalo_check.immediate_upstream,
         immediate_downstream=anomalo_check.immediate_downstream,
@@ -729,6 +807,7 @@ def _anomalo_check_from_nested(nested: AnomaloCheckNested) -> AnomaloCheck:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
