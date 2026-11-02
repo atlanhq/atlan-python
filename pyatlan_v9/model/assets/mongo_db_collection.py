@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -682,10 +683,6 @@ class MongoDBCollection(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.mongo_db_database is UNSET:
                 errors.append("mongo_db_database is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(f"MongoDBCollection validation failed: {errors}")
 
@@ -717,6 +714,52 @@ class MongoDBCollection(Asset):
         if self.guid is not UNSET:
             return RelatedMongoDBCollection(guid=self.guid)
         return RelatedMongoDBCollection(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        database_qualified_name: str,
+        database_name: str | None = None,
+        connection_qualified_name: str | None = None,
+    ) -> "MongoDBCollection":
+        """Create a new MongoDBCollection asset."""
+        validate_required_fields(
+            ["name", "database_qualified_name"], [name, database_qualified_name]
+        )
+        parts = database_qualified_name.split("/")
+        if len(parts) < 4:
+            raise ValueError("database_qualified_name is invalid")
+        database_name = database_name or parts[-1]
+        connection_qualified_name = connection_qualified_name or "/".join(parts[:3])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{database_qualified_name}/{name}",
+            connector_name=connector_name,
+            mongo_db_database=RelatedMongoDBDatabase(
+                unique_attributes={"qualifiedName": database_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "MongoDBCollection":
+        """Create a MongoDBCollection instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "MongoDBCollection":
+        """Return only fields required for update operations."""
+        return MongoDBCollection.updater(
+            qualified_name=self.qualified_name,
+            name=self.name,
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1520,6 +1563,7 @@ def _mongo_db_collection_to_nested(
         is_incomplete=mongo_db_collection.is_incomplete,
         provenance_type=mongo_db_collection.provenance_type,
         home_id=mongo_db_collection.home_id,
+        delete_handler=mongo_db_collection.delete_handler,
         depth=mongo_db_collection.depth,
         immediate_upstream=mongo_db_collection.immediate_upstream,
         immediate_downstream=mongo_db_collection.immediate_downstream,
@@ -1570,6 +1614,7 @@ def _mongo_db_collection_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

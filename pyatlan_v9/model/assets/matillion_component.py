@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -265,9 +266,7 @@ class MatillionComponent(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
-    )
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/component/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -338,6 +337,66 @@ class MatillionComponent(Asset):
         if self.guid is not UNSET:
             return RelatedMatillionComponent(guid=self.guid)
         return RelatedMatillionComponent(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        matillion_component_id: str,
+        matillion_job_qualified_name: str,
+        matillion_job_name: str,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "MatillionComponent":
+        """Create a new MatillionComponent asset."""
+        validate_required_fields(
+            [
+                "name",
+                "matillion_component_id",
+                "matillion_job_qualified_name",
+                "matillion_job_name",
+            ],
+            [
+                name,
+                matillion_component_id,
+                matillion_job_qualified_name,
+                matillion_job_name,
+            ],
+        )
+        # A job qualifiedName is {connection_qn}/job/{job_id}.
+        parts = matillion_job_qualified_name.split("/")
+        if len(parts) < 5:
+            raise ValueError("matillion_job_qualified_name is invalid")
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:3])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        # Components are keyed flat under the connection, not under their job.
+        return cls(
+            name=name,
+            matillion_component_id=matillion_component_id,
+            qualified_name=f"{connection_qualified_name}/component/{matillion_component_id}",
+            matillion_job_qualified_name=matillion_job_qualified_name,
+            matillion_job_name=matillion_job_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            matillion_job=RelatedMatillionJob(
+                unique_attributes={"qualifiedName": matillion_job_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "MatillionComponent":
+        """Create a MatillionComponent instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "MatillionComponent":
+        """Return only fields required for update operations."""
+        return MatillionComponent.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -685,6 +744,7 @@ def _matillion_component_to_nested(
         is_incomplete=matillion_component.is_incomplete,
         provenance_type=matillion_component.provenance_type,
         home_id=matillion_component.home_id,
+        delete_handler=matillion_component.delete_handler,
         depth=matillion_component.depth,
         immediate_upstream=matillion_component.immediate_upstream,
         immediate_downstream=matillion_component.immediate_downstream,
@@ -735,6 +795,7 @@ def _matillion_component_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

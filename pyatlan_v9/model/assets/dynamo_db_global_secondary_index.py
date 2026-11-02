@@ -20,6 +20,14 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -42,6 +50,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .dynamo_db_related import RelatedDynamoDBGlobalSecondaryIndex, RelatedDynamoDBTable
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .knowledge_related import RelatedKnowledgeFile
@@ -66,14 +75,6 @@ from .sql_related import (
     RelatedTable,
     RelatedTablePartition,
 )
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .dynamo_db_related import RelatedDynamoDBGlobalSecondaryIndex, RelatedDynamoDBTable
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -604,7 +605,7 @@ class DynamoDBGlobalSecondaryIndex(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/_gsi_/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -679,6 +680,56 @@ class DynamoDBGlobalSecondaryIndex(Asset):
         if self.guid is not UNSET:
             return RelatedDynamoDBGlobalSecondaryIndex(guid=self.guid)
         return RelatedDynamoDBGlobalSecondaryIndex(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        table_qualified_name: str,
+        table_name: Union[str, None] = None,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "DynamoDBGlobalSecondaryIndex":
+        """Create a new DynamoDBGlobalSecondaryIndex asset."""
+        validate_required_fields(
+            ["name", "table_qualified_name"], [name, table_qualified_name]
+        )
+        # A table qualifiedName is {connection_qn}/{table_name}.
+        parts = table_qualified_name.split("/")
+        if len(parts) < 4:
+            raise ValueError("table_qualified_name is invalid")
+        if not table_name:
+            table_name = parts[-1]
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:3])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{table_qualified_name}/_gsi_/{name}",
+            table_name=table_name,
+            table_qualified_name=table_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            dynamo_db_table=RelatedDynamoDBTable(
+                unique_attributes={"qualifiedName": table_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(
+        cls, *, qualified_name: str, name: str
+    ) -> "DynamoDBGlobalSecondaryIndex":
+        """Create a DynamoDBGlobalSecondaryIndex instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "DynamoDBGlobalSecondaryIndex":
+        """Return only fields required for update operations."""
+        return DynamoDBGlobalSecondaryIndex.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1416,6 +1467,7 @@ def _dynamo_db_global_secondary_index_to_nested(
         is_incomplete=dynamo_db_global_secondary_index.is_incomplete,
         provenance_type=dynamo_db_global_secondary_index.provenance_type,
         home_id=dynamo_db_global_secondary_index.home_id,
+        delete_handler=dynamo_db_global_secondary_index.delete_handler,
         depth=dynamo_db_global_secondary_index.depth,
         immediate_upstream=dynamo_db_global_secondary_index.immediate_upstream,
         immediate_downstream=dynamo_db_global_secondary_index.immediate_downstream,
@@ -1466,6 +1518,7 @@ def _dynamo_db_global_secondary_index_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
