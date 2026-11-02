@@ -14,6 +14,8 @@ This module provides:
 
 from __future__ import annotations
 
+import hashlib
+import re
 from typing import Any, ClassVar, List, Union
 
 import msgspec
@@ -25,6 +27,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -427,6 +430,8 @@ class FivetranConnector(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+$")
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this FivetranConnector instance.
@@ -451,6 +456,11 @@ class FivetranConnector(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"FivetranConnector validation failed: {errors}")
 
@@ -482,6 +492,68 @@ class FivetranConnector(Asset):
         if self.guid is not UNSET:
             return RelatedFivetranConnector(guid=self.guid)
         return RelatedFivetranConnector(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connector_id: str,
+        destination_id: str,
+        connection_qualified_name: str,
+    ) -> "FivetranConnector":
+        """
+        Create a new FivetranConnector asset.
+
+        The qualified name mirrors atlan-fivetran-app:
+        ``{connection_qualified_name}/{sha1(connector_id + "-" + destination_id)}``.
+
+        Args:
+            name: Display name of the connector.
+            connector_id: Fivetran connector (connection) ID.
+            destination_id: Fivetran destination (group) ID.
+            connection_qualified_name: Qualified name of the Fivetran connection.
+
+        Returns:
+            A new FivetranConnector instance.
+        """
+        validate_required_fields(
+            ["name", "connector_id", "destination_id", "connection_qualified_name"],
+            [name, connector_id, destination_id, connection_qualified_name],
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        connector_hash = hashlib.sha1(  # noqa: S324
+            f"{connector_id}-{destination_id}".encode("utf-8")
+        ).hexdigest()
+        connector_url = (
+            f"https://fivetran.com/dashboard/connectors/{connector_id}"
+            f"/status?groupId={destination_id}"
+        )
+        return cls(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/{connector_hash}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            fivetran_connector_url=connector_url,
+            fivetran_connector_destination_url=(
+                f"https://fivetran.com/dashboard/warehouse?groupId={destination_id}"
+            ),
+            source_url=connector_url,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "FivetranConnector":
+        """Create a FivetranConnector instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "FivetranConnector":
+        """Return only fields required for update operations."""
+        return FivetranConnector.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1119,6 +1191,7 @@ def _fivetran_connector_to_nested(
         is_incomplete=fivetran_connector.is_incomplete,
         provenance_type=fivetran_connector.provenance_type,
         home_id=fivetran_connector.home_id,
+        delete_handler=fivetran_connector.delete_handler,
         depth=fivetran_connector.depth,
         immediate_upstream=fivetran_connector.immediate_upstream,
         immediate_downstream=fivetran_connector.immediate_downstream,
@@ -1169,6 +1242,7 @@ def _fivetran_connector_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

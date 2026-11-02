@@ -96,10 +96,15 @@ def test_event_hub_consumer_group(
     assert consumer_group.qualified_name
     assert consumer_group.name == EVENT_HUB_CONSUMER_GROUP_NAME
     assert consumer_group.connector_name == AtlanConnectorType.AZURE_EVENT_HUB
+    # kafkaTopicQualifiedNames is includeInNotification=false, so the save
+    # response omits it; check the persisted value instead.
+    retrieved = client.asset.get_by_guid(
+        consumer_group.guid, asset_type=AzureEventHubConsumerGroup
+    )
     assert (
         event_hub.qualified_name
-        and consumer_group.kafka_topic_qualified_names
-        and event_hub.qualified_name in consumer_group.kafka_topic_qualified_names
+        and retrieved.kafka_topic_qualified_names
+        and event_hub.qualified_name in retrieved.kafka_topic_qualified_names
     )
 
 

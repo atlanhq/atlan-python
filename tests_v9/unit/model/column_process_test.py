@@ -152,3 +152,17 @@ def test_trim_to_required():
     ).trim_to_required()
     assert test_cp.name == CP_NAME
     assert test_cp.qualified_name == CP_QUALIFIED_NAME
+
+
+@pytest.mark.parametrize("process_id", ["", "   "])
+def test_creator_with_blank_process_id_raises_value_error(process_id: str):
+    """A blank process_id is rejected instead of silently falling back to the hash."""
+    with pytest.raises(ValueError, match="process_id cannot be blank"):
+        ColumnProcess.creator(
+            name=CP_NAME,
+            connection_qualified_name=CP_CONNECTION_QUALIFIED_NAME,
+            inputs=[Column()],
+            outputs=[Column()],
+            process_id=process_id,
+            parent=Process(),
+        )
