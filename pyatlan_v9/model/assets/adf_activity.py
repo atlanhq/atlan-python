@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .adf_related import (
     RelatedAdfActivity,
@@ -331,7 +332,7 @@ class AdfActivity(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/activities/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -400,6 +401,53 @@ class AdfActivity(Asset):
         if self.guid is not UNSET:
             return RelatedAdfActivity(guid=self.guid)
         return RelatedAdfActivity(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        adf_pipeline_qualified_name: str,
+        adf_factory_name: Union[str, None] = None,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "AdfActivity":
+        """Create a new AdfActivity asset."""
+        validate_required_fields(
+            ["name", "adf_pipeline_qualified_name"],
+            [name, adf_pipeline_qualified_name],
+        )
+        # A pipeline qualifiedName is {connection_qn}/factory/{factory}/pipeline/{pipeline}.
+        parts = adf_pipeline_qualified_name.split("/")
+        if len(parts) != 7 or parts[3] != "factory" or parts[5] != "pipeline":
+            raise ValueError("adf_pipeline_qualified_name is invalid")
+        if not adf_factory_name:
+            adf_factory_name = parts[4]
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:3])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{adf_pipeline_qualified_name}/activities/{name}",
+            adf_pipeline_qualified_name=adf_pipeline_qualified_name,
+            adf_factory_name=adf_factory_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            adf_pipeline=RelatedAdfPipeline(
+                unique_attributes={"qualifiedName": adf_pipeline_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "AdfActivity":
+        """Create an AdfActivity instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "AdfActivity":
+        """Return only fields required for update operations."""
+        return AdfActivity.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -805,6 +853,7 @@ def _adf_activity_to_nested(adf_activity: AdfActivity) -> AdfActivityNested:
         is_incomplete=adf_activity.is_incomplete,
         provenance_type=adf_activity.provenance_type,
         home_id=adf_activity.home_id,
+        delete_handler=adf_activity.delete_handler,
         depth=adf_activity.depth,
         immediate_upstream=adf_activity.immediate_upstream,
         immediate_downstream=adf_activity.immediate_downstream,
@@ -851,6 +900,7 @@ def _adf_activity_from_nested(nested: AdfActivityNested) -> AdfActivity:
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,

@@ -541,14 +541,6 @@ class DatabricksAIModelContext(Asset):
         if for_creation:
             if self.connection_qualified_name is UNSET:
                 errors.append("connection_qualified_name is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
         if errors:
             raise ValueError(f"DatabricksAIModelContext validation failed: {errors}")
 
@@ -1252,6 +1244,7 @@ def _databricks_ai_model_context_to_nested(
         is_incomplete=databricks_ai_model_context.is_incomplete,
         provenance_type=databricks_ai_model_context.provenance_type,
         home_id=databricks_ai_model_context.home_id,
+        delete_handler=databricks_ai_model_context.delete_handler,
         depth=databricks_ai_model_context.depth,
         immediate_upstream=databricks_ai_model_context.immediate_upstream,
         immediate_downstream=databricks_ai_model_context.immediate_downstream,
@@ -1302,6 +1295,7 @@ def _databricks_ai_model_context_from_nested(
         "is_incomplete": nested.is_incomplete,
         "provenance_type": nested.provenance_type,
         "home_id": nested.home_id,
+        "delete_handler": nested.delete_handler,
         "depth": nested.depth,
         "immediate_upstream": nested.immediate_upstream,
         "immediate_downstream": nested.immediate_downstream,
