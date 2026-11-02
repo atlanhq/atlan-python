@@ -26,6 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -604,7 +605,7 @@ class DynamoDBLocalSecondaryIndex(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/_lsi_/[^/]+$")
 
     def validate(self, for_creation: bool = False) -> None:
         """
@@ -677,6 +678,56 @@ class DynamoDBLocalSecondaryIndex(Asset):
         if self.guid is not UNSET:
             return RelatedDynamoDBLocalSecondaryIndex(guid=self.guid)
         return RelatedDynamoDBLocalSecondaryIndex(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        table_qualified_name: str,
+        table_name: Union[str, None] = None,
+        connection_qualified_name: Union[str, None] = None,
+    ) -> "DynamoDBLocalSecondaryIndex":
+        """Create a new DynamoDBLocalSecondaryIndex asset."""
+        validate_required_fields(
+            ["name", "table_qualified_name"], [name, table_qualified_name]
+        )
+        # A table qualifiedName is {connection_qn}/{table_name}.
+        parts = table_qualified_name.split("/")
+        if len(parts) < 4:
+            raise ValueError("table_qualified_name is invalid")
+        if not table_name:
+            table_name = parts[-1]
+        if not connection_qualified_name:
+            connection_qualified_name = "/".join(parts[:3])
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        return cls(
+            name=name,
+            qualified_name=f"{table_qualified_name}/_lsi_/{name}",
+            table_name=table_name,
+            table_qualified_name=table_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+            dynamo_db_table=RelatedDynamoDBTable(
+                unique_attributes={"qualifiedName": table_qualified_name}
+            ),
+        )
+
+    @classmethod
+    def updater(
+        cls, *, qualified_name: str, name: str
+    ) -> "DynamoDBLocalSecondaryIndex":
+        """Create a DynamoDBLocalSecondaryIndex instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "DynamoDBLocalSecondaryIndex":
+        """Return only fields required for update operations."""
+        return DynamoDBLocalSecondaryIndex.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
