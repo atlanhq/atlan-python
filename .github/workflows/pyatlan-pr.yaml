@@ -86,6 +86,18 @@ jobs:
             if [ "${{ matrix.python-version }}" = "3.9" ]; then
               echo 'GHSA-5p39-cfhj-2xmp'
               echo 'GHSA-82r6-8w77-94w6'
+              # authlib fixes these from 1.8.0-1.9.1, which need Python >= 3.10.
+              # 3.9 is pinned to 1.6.12 and cannot take the fixes. Drop these
+              # when 3.9 support goes.
+              echo 'PYSEC-2026-4354'
+              echo 'PYSEC-2026-4355'
+              echo 'PYSEC-2026-4356'
+              echo 'PYSEC-2026-4357'
+              echo 'PYSEC-2026-4358'
+              echo 'PYSEC-2026-4359'
+              echo 'PYSEC-2026-4360'
+              echo 'GHSA-6v38-4h7w-rj9h'
+              echo 'GHSA-c73q-w75p-j82v'
             fi
             echo 'IGNORE_EOF'
           } >> "$GITHUB_ENV"
