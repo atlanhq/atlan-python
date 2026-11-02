@@ -96,7 +96,9 @@ def test_mc_incident(
 ):
     assert mc_incident.guid
     retrieved = client.asset.get_by_qualified_name(
-        f"{connection.qualified_name}/{INCIDENT_ID}", asset_type=MCIncident
+        f"{connection.qualified_name}/{INCIDENT_ID}",
+        asset_type=MCIncident,
+        ignore_relationships=False,
     )
     assert retrieved.guid == mc_incident.guid
     assert retrieved.name == mc_incident.name
@@ -113,7 +115,9 @@ def test_mc_incident_without_monitor(
 ):
     assert mc_alert.guid
     retrieved = client.asset.get_by_qualified_name(
-        f"{connection.qualified_name}/{ALERT_ID}", asset_type=MCIncident
+        f"{connection.qualified_name}/{ALERT_ID}",
+        asset_type=MCIncident,
+        ignore_relationships=False,
     )
     assert retrieved.guid == mc_alert.guid
     assert retrieved.mc_incident_id == ALERT_ID
