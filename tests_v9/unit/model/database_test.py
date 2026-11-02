@@ -219,3 +219,22 @@ def test_creator_with_guid():
     assert database.guid is not None
     assert isinstance(database.guid, str)
     assert database.guid.startswith("-")
+
+
+# Non-standard depths (FND-3887). Each qualifiedName is the literal string the
+# connector app emits today.
+
+
+def test_creator_qualified_name_matches_pattern():
+    sut = Database.creator(
+        name="sample_db", connection_qualified_name="default/glue/1700000000"
+    )
+
+    assert sut.qualified_name == "default/glue/1700000000/sample_db"
+    sut.validate(for_creation=True)
+
+
+def test_validate_rejects_connection_only_qualified_name():
+    sut = Database(name="sample_db", qualified_name="sample_db")
+    with pytest.raises(ValueError, match="does not match expected pattern"):
+        sut.validate()

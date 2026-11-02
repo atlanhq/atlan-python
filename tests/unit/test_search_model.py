@@ -327,6 +327,34 @@ def test_index_search_request_with_enable_full_restriction():
     assert "enableFullRestriction" not in json_str_none
 
 
+def test_index_search_request_with_scope_to_user_access():
+    """Test IndexSearchRequest with scopeToUserAccess parameter."""
+    dsl = DSL(
+        query=Term(field="__typeName.keyword", value="Schema"),
+        post_filter=Term(field="databaseName.keyword", value="ATLAN_SAMPLE_DATA"),
+    )
+
+    # Test with scope_to_user_access=True
+    request = IndexSearchRequest(
+        dsl=dsl, attributes=["schemaName", "databaseName"], scope_to_user_access=True
+    )
+    json_str = request.json(by_alias=True, exclude_none=True)
+    assert "scopeToUserAccess" in json_str
+    assert '"scopeToUserAccess": true' in json_str
+
+    # Test with scope_to_user_access=False
+    request_false = IndexSearchRequest(
+        dsl=dsl, attributes=["schemaName"], scope_to_user_access=False
+    )
+    json_str_false = request_false.json(by_alias=True, exclude_none=True)
+    assert '"scopeToUserAccess": false' in json_str_false
+
+    # Test without the parameter (should not appear in JSON)
+    request_none = IndexSearchRequest(dsl=dsl, attributes=["schemaName"])
+    json_str_none = request_none.json(by_alias=True, exclude_none=True)
+    assert "scopeToUserAccess" not in json_str_none
+
+
 def test_audit_search_request():
     dsl = DSL(
         query=Term(field="__typeName.keyword", value="Schema"),

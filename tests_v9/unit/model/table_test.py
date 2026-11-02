@@ -250,3 +250,124 @@ def test_sql_fields():
     assert table.database_qualified_name == DATABASE_QUALIFIED_NAME
     assert table.schema_name == SCHEMA_NAME
     assert table.schema_qualified_name == SCHEMA_QUALIFIED_NAME
+
+
+# Non-standard depths (FND-3887). Each qualifiedName is the literal string the
+# connector app emits today.
+
+FABRIC_CONNECTION_QN = "default/fabric/1700000000"
+FABRIC_DATABASE_QN = "default/fabric/1700000000/ws-1234/lh-5678"
+FABRIC_SCHEMA_QN = "default/fabric/1700000000/ws-1234/lh-5678/dbo"
+
+
+def test_creator_fabric_six_segment_parents():
+    sut = Table.creator(
+        name="sales",
+        schema_qualified_name=FABRIC_SCHEMA_QN,
+        database_name="Lakehouse",
+        database_qualified_name=FABRIC_DATABASE_QN,
+        connection_qualified_name=FABRIC_CONNECTION_QN,
+    )
+
+    assert sut.qualified_name == "default/fabric/1700000000/ws-1234/lh-5678/dbo/sales"
+    assert sut.connector_name == "fabric"
+    assert sut.connection_qualified_name == FABRIC_CONNECTION_QN
+    assert sut.database_name == "Lakehouse"
+    assert sut.database_qualified_name == FABRIC_DATABASE_QN
+    assert sut.schema_name == "dbo"
+    assert sut.schema_qualified_name == FABRIC_SCHEMA_QN
+    assert sut.atlan_schema.unique_attributes["qualifiedName"] == FABRIC_SCHEMA_QN
+    sut.validate(for_creation=True)
+
+
+def test_creator_explicit_connection_on_standard_depth_derives_parents():
+    sut = Table.creator(
+        name="sales",
+        schema_qualified_name=SCHEMA_QUALIFIED_NAME,
+        connection_qualified_name=CONNECTION_QUALIFIED_NAME,
+    )
+
+    assert sut.database_name == DATABASE_NAME
+    assert sut.database_qualified_name == DATABASE_QUALIFIED_NAME
+    assert sut.schema_name == SCHEMA_NAME
+
+
+def test_creator_explicit_schema_without_database():
+    sut = Table.creator(
+        name="sales",
+        schema_qualified_name="default/db2zos/1700000000/PAYROLL",
+        connection_qualified_name="default/db2zos/1700000000",
+    )
+
+    assert sut.qualified_name == "default/db2zos/1700000000/PAYROLL/sales"
+    assert sut.schema_name == "PAYROLL"
+    assert sut.database_name is UNSET
+    assert sut.database_qualified_name is UNSET
+    sut.validate(for_creation=True)
+
+
+@pytest.mark.parametrize(
+    "kwargs, message",
+    [
+        (
+            {"connection_qualified_name": "default/fabric/1700000001"},
+            "schema_qualified_name is invalid",
+        ),
+        (
+            {
+                "connection_qualified_name": FABRIC_CONNECTION_QN,
+                "database_qualified_name": "default/fabric/1700000000/ws-9999/lh-5678",
+            },
+            "schema_qualified_name is invalid",
+        ),
+        (
+            {"connection_qualified_name": FABRIC_CONNECTION_QN, "schema_name": " "},
+            "schema_name cannot be blank",
+        ),
+        (
+            {"connection_qualified_name": "default/fabric"},
+            "connection_qualified_name is invalid",
+        ),
+        ({}, "Invalid schema_qualified_name"),
+    ],
+)
+def test_creator_explicit_parents_invalid(kwargs: dict, message: str):
+    with pytest.raises(ValueError, match=message):
+        Table.creator(
+            name="sales",
+            schema_qualified_name=FABRIC_SCHEMA_QN,
+            **kwargs,
+        )
+
+
+# Non-standard depths (FND-3887). Each qualifiedName is the literal string the
+# connector app emits today.
+
+
+def test_creator_schema_less_table():
+    sut = Table.creator(
+        name="Workers",
+        connection_qualified_name="default/workdayprismanalytics/1700000000",
+    )
+
+    assert sut.qualified_name == "default/workdayprismanalytics/1700000000/Workers"
+    assert sut.connector_name == "workdayprismanalytics"
+    assert sut.connection_qualified_name == "default/workdayprismanalytics/1700000000"
+    assert sut.atlan_schema is UNSET
+    assert sut.schema_name is UNSET
+    assert sut.database_name is UNSET
+    sut.validate(for_creation=True)
+
+
+def test_creator_requires_schema_or_connection():
+    with pytest.raises(ValueError, match="schema_qualified_name is required"):
+        Table.creator(name="Workers")
+
+
+def test_creator_schema_name_without_schema_qualified_name():
+    with pytest.raises(ValueError, match="schema_name requires schema_qualified_name"):
+        Table.creator(
+            name="Workers",
+            schema_name="dbo",
+            connection_qualified_name="default/workdayprismanalytics/1700000000",
+        )

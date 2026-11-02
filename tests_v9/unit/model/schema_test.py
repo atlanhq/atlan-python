@@ -254,3 +254,65 @@ def test_sql_fields():
 
     assert schema.database_name == DATABASE_NAME
     assert schema.database_qualified_name == DATABASE_QUALIFIED_NAME
+
+
+# Non-standard depths (FND-3887). Each qualifiedName is the literal string the
+# connector app emits today.
+
+
+def test_creator_without_database():
+    sut = Schema.creator(
+        name="PAYROLL", connection_qualified_name="default/db2zos/1700000000"
+    )
+
+    assert sut.qualified_name == "default/db2zos/1700000000/PAYROLL"
+    assert sut.connector_name == "db2zos"
+    assert sut.database is UNSET
+    assert sut.database_name is UNSET
+    sut.validate(for_creation=True)
+
+
+def test_creator_fabric_five_segment_database():
+    sut = Schema.creator(
+        name="dbo",
+        database_qualified_name="default/fabric/1700000000/ws-1234/lh-5678",
+        database_name="Lakehouse",
+        connection_qualified_name="default/fabric/1700000000",
+    )
+
+    assert sut.qualified_name == "default/fabric/1700000000/ws-1234/lh-5678/dbo"
+    assert sut.database_name == "Lakehouse"
+    assert sut.database.unique_attributes["qualifiedName"] == (
+        "default/fabric/1700000000/ws-1234/lh-5678"
+    )
+    sut.validate(for_creation=True)
+
+
+@pytest.mark.parametrize(
+    "kwargs, message",
+    [
+        ({}, "database_qualified_name is required"),
+        (
+            {
+                "database_qualified_name": "default/fabric/1700000001/ws/lh",
+                "connection_qualified_name": "default/fabric/1700000000",
+            },
+            "database_qualified_name is invalid",
+        ),
+        (
+            {"database_name": "x", "connection_qualified_name": "default/db2zos/1"},
+            "database_name requires database_qualified_name",
+        ),
+        (
+            {"database_qualified_name": "default/fabric/1/ws/lh"},
+            "Invalid database_qualified_name",
+        ),
+        (
+            {"connection_qualified_name": "  "},
+            "connection_qualified_name cannot be blank",
+        ),
+    ],
+)
+def test_creator_explicit_parents_invalid(kwargs: dict, message: str):
+    with pytest.raises(ValueError, match=message):
+        Schema.creator(name="dbo", **kwargs)
