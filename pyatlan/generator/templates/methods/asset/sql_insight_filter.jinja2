@@ -1,0 +1,62 @@
+    @staticmethod
+    def generate_qualified_name(*, column_qualified_name: str, operator: str) -> str:
+        """
+        Derive the deterministic qualifiedName for a SqlInsightFilter, identical to
+        the SQL-Intelligence miner's formula — so a human-confirmed filter and a
+        later mined observation of the same filter converge on one entity instead
+        of duplicating:
+
+        ``column_qn || '/filter/' || md5(operator)``
+
+        Note this hangs off the COLUMN, not the dataset: filters sit one level
+        deeper than joins and business questions.
+
+        :param column_qualified_name: unique name of the column being filtered
+        :param operator: the filter operator, e.g. ``IN``, ``=``, ``BETWEEN``
+        :returns: the deterministic qualifiedName for the filter entity
+        """
+        digest = hashlib.md5(  # noqa: S324 (miner-compatible identity, not crypto)
+            operator.encode()
+        ).hexdigest()
+        return f"{column_qualified_name}/filter/{digest}"
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        column: Column,
+        operator: str,
+        predicate_sql: Optional[str] = None,
+        when_to_use: Optional[str] = None,
+        common_values: Optional[Set[str]] = None,
+        name: Optional[str] = None,
+    ) -> SqlInsightFilter:
+        """
+        Create a SqlInsightFilter on a column, carrying both the string
+        qualified-name attributes (the dataset attribute is how the asset page's
+        Usage & Intelligence tab finds filters) and the column relationship edge —
+        plus a deterministic, miner-identical qualifiedName so repeated
+        confirmation or a later mined observation converges on the same entity.
+
+        :param column: the column being filtered, e.g.
+            ``Column.ref_by_qualified_name(...)`` or a search result — must carry
+            its qualifiedName
+        :param operator: the filter operator, e.g. ``IN``, ``=``, ``BETWEEN``.
+            The qualifiedName is derived from this, so two filters on the same
+            column with the same operator are ONE entity
+        :param predicate_sql: optional SQL predicate the filter applies
+        :param when_to_use: optional guidance on when this filter should be used
+        :param common_values: optional set of values commonly filtered on
+        :param name: optional display name (defaults to "<COLUMN> <OPERATOR>")
+        :returns: the minimal request to create the SqlInsightFilter
+        """
+        attributes = SqlInsightFilter.Attributes.creator(
+            column=column,
+            operator=operator,
+            predicate_sql=predicate_sql,
+            when_to_use=when_to_use,
+            common_values=common_values,
+            name=name,
+        )
+        return cls(attributes=attributes)
