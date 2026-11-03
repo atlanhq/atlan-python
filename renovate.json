@@ -81,6 +81,36 @@
         "depName = \"pytest-asyncio\" and currentValue = \"~=1.2.0\""
       ],
       "enabled": false
+    },
+    {
+      "description": "Auto-merge dev and docs dependency updates (the [dependency-groups] in pyproject.toml) once every check is green. They never reach pyatlan's consumers: the published wheel carries only [project].dependencies. With platformAutomerge off (rule above), Renovate merges the PR itself, and only when every status and check run on the branch is green: unit/QA on 3.9\u20133.14, the vulnerability scans and the integration tests. A red or still-pending check blocks the merge. Majors stay reviewed (the preset gives them their own branch, and nothing here auto-merges them).",
+      "matchManagers": [
+        "pep621"
+      ],
+      "matchDepTypes": [
+        "dependency-groups"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Split runtime dependencies ([project].dependencies) out of the preset's single 'non-critical python dependencies' group. pyatlan is a published library, so a range change there changes what application-sdk and every connector may resolve. Those PRs stay reviewed. They need their own group because Renovate auto-merges a group only when every member auto-merges, so one shared group would keep the dev/docs PR from auto-merging.",
+      "matchManagers": [
+        "pep621"
+      ],
+      "matchDepTypes": [
+        "project.dependencies"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "runtime python dependencies",
+      "automerge": false
     }
   ],
   "ignoreDeps": [
