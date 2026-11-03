@@ -14,6 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
+import re
 from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
@@ -24,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .adf_related import (
     RelatedAdfActivity,
@@ -294,6 +296,10 @@ class AdfDataset(Asset):
     # SDK Methods
     # =========================================================================
 
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/factory/[^/]+/datasets/[^/]+$"
+    )
+
     def validate(self, for_creation: bool = False) -> None:
         """
         Dry-run validation of this AdfDataset instance.
@@ -318,6 +324,11 @@ class AdfDataset(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
         if errors:
             raise ValueError(f"AdfDataset validation failed: {errors}")
 
@@ -349,6 +360,52 @@ class AdfDataset(Asset):
         if self.guid is not UNSET:
             return RelatedAdfDataset(guid=self.guid)
         return RelatedAdfDataset(qualified_name=self.qualified_name)
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        adf_factory_name: str,
+        connection_qualified_name: str,
+        adf_linkedservice_name: Union[str, None] = None,
+    ) -> "AdfDataset":
+        """Create a new AdfDataset asset."""
+        validate_required_fields(
+            ["name", "adf_factory_name", "connection_qualified_name"],
+            [name, adf_factory_name, connection_qualified_name],
+        )
+        fields = connection_qualified_name.split("/")
+        connector_name = fields[1] if len(fields) > 1 else None
+        factory_qn = f"{connection_qualified_name}/factory/{adf_factory_name}"
+        return cls(
+            name=name,
+            qualified_name=f"{factory_qn}/datasets/{name}",
+            adf_factory_name=adf_factory_name,
+            adf_dataset_linked_service=adf_linkedservice_name
+            if adf_linkedservice_name
+            else UNSET,
+            adf_linkedservice=RelatedAdfLinkedservice(
+                unique_attributes={
+                    "qualifiedName": f"{factory_qn}/linkedservices/{adf_linkedservice_name}"
+                }
+            )
+            if adf_linkedservice_name
+            else UNSET,
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "AdfDataset":
+        """Create an AdfDataset instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "AdfDataset":
+        """Return only fields required for update operations."""
+        return AdfDataset.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
