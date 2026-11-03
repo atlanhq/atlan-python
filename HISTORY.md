@@ -1,3 +1,18 @@
+## 11.7.0 (November 3, 2026)
+
+### New Features
+
+- **Eight new connector types**: `AtlanConnectorType` gains `DREMIO`, `SSRS`, `MONGO`, `ANOMALO`, `AZURE_DATA_FACTORY`, `SAP_ANALYTICS_CLOUD`, `SAP_DATASPHERE` and `SAP_S4`, the names the matching connector apps already write, so `Connection.creator()` no longer needs `CREATE_CUSTOM` for them.
+
+### Experimental: pyatlan_v9
+
+- **`creator()` for 43 more asset types across 18 connectors**: SageMaker (5), SSRS (4), SAP Analytics Cloud (4), Unstructured/bridge (4), ADF (3), Dremio (3), DynamoDB (3), SAP ERP (3), Kafka and Schema Registry (3), MongoDB (2), Monte Carlo (2), and one each for `Function`, PowerCenter `Flow`, `MatillionComponent`, `FivetranConnector`, `AnomaloCheck`, `SnowflakeShare` and `SapDatasphereReplicationFlow`. Each creator reproduces the qualifiedName its connector app already emits, byte for byte, so no asset changes identity, and each comes with `updater()` / `trim_to_required()`, a tightened `_QUALIFIED_NAME_PATTERN` and per-type tests. `Function.creator()` takes a schema of any depth through the FND-3887 parent resolution, and `FivetranConnector` builds its hashed id and URLs exactly as the app does.
+
+### QOL Improvements
+
+- **pydantic advisories cleared on Python 3.10+**: The `pydantic` pin is split by interpreter: `~=2.14.2` on Python 3.10 and newer (clears GHSA-49g6-96jj-f7r9, GHSA-955g-x97g-8mcp, GHSA-jfv7-ghgv-gx4x and GHSA-qpmf-fgh3-ff25), `~=2.13.4` kept on 3.9, which the fixed release does not support. Installing pyatlan on 3.10+ now pulls pydantic 2.14.2 or later.
+- **CI**: `pyatlan-pr` runners are pinned to `ubuntu-24.04` (`ubuntu-latest` moved to 26.04, which has no Python 3.9 build), and the new authlib advisories are ignored on the Python 3.9 scans only, following the anyio precedent; 3.10+ already resolves the fixed authlib.
+
 ## 11.6.0 (October 26, 2026)
 
 ### New Features
