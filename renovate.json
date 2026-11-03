@@ -1,0 +1,119 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "pyatlan Renovate config: extends the Atlan fleet preset that application-sdk and the atlan-*-app repos use. Repo-local overrides below cover where pyatlan differs. It runs on the Mend-hosted app, not the self-hosted fleet runner (that runner only discovers atlan-*-app repos). It publishes a library with a py3.9 floor, and main has no required status checks yet.",
+  "extends": [
+    "github>atlanhq/application-sdk//renovate-config/default.json"
+  ],
+  "semanticCommitType": "chore",
+  "lockFileMaintenance": {
+    "description": "Two overrides of the preset's lock lane. (1) Clear postUpgradeTasks.commands: the preset's release-age bound runs as `renovate-uv-lock-bounded`, which exists only on the self-hosted fleet runner. Mend cannot run it and would publish a permanent red renovate/artifacts status, the same reason application-sdk clears it. (2) Do not auto-merge. Without that command the lock refresh has no release-age bound on transitive packages, so a human reviews it until a bound exists here (uv exclude-newer or a lock-cooldown workflow). Weekly, so the review cost stays at one PR a week.",
+    "schedule": [
+      "before 6am on monday"
+    ],
+    "automerge": false,
+    "postUpgradeTasks": {
+      "commands": [],
+      "fileFilters": [
+        "uv.lock"
+      ],
+      "executionMode": "branch"
+    }
+  },
+  "packageRules": [
+    {
+      "description": "No required status checks protect main yet: the only ruleset is the Copilot-review one. platformAutomerge hands the merge to GitHub native auto-merge, which waits only for REQUIRED checks, so it would merge a red PR. With platformAutomerge off, Renovate merges itself, and it does so only when every check on the branch is green. Flip this back to true once main has a ruleset that requires the pyatlan-pr checks. Matches every update, so it overrides each preset lane that sets platformAutomerge: true.",
+      "matchPackageNames": [
+        "*"
+      ],
+      "platformAutomerge": false
+    },
+    {
+      "description": "CI interpreter pins are not routine bumps. The github-actions manager reads each actions/setup-python `python-version` input as dep `python`, and a lookup dry-run proposed 3.9 / 3.11 / 3.12 -> 3.15. Those pins are deliberate here: 3.9 is the oldest interpreter pyatlan supports, so the publish and compatibility jobs must stay on it. The preset's github-actions group would otherwise auto-merge them alongside action bumps. application-sdk caps the same dep at <3.15. pyatlan disables it outright, because moving any of these pins is a support-matrix decision. The test matrices use `${{ matrix.python-version }}` and are not matched at all.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchDepNames": [
+        "python"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Review github-actions majors instead of auto-merging them. pyatlan-pr.yaml's change filter skips the unit and integration jobs when a PR touches only .github/, so a green check on an action-bump PR does not show the bumped action was exercised. Minor, patch and digest bumps keep the preset's auto-merge.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false
+    },
+    {
+      "description": "Hold third-party action releases for the fleet's 3-day release-age window, the same window the preset applies to third-party PyPI packages. The preset applies it only to the pypi datasource, so without this rule a freshly pushed (or re-pointed) action tag could be auto-merged within the hour. Positive matchUpdateTypes, so updates without a timestamp (digest) are not silently suppressed.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "Leave the py3.9 / py3.10 compatibility pins alone (BLDX-1571). pyproject.toml splits several dependencies with a `python_version < '3.10'` (networkx: `< '3.11'`) marker that holds the last release still supporting the older interpreter. Renovate's pep621 manager ignores markers, so it proposes moving those lines to the same release as their >=3.10 twins (measured with a lookup dry-run: pydantic ~=2.13.4 -> ~=2.14.2, pytest ~=8.4.2 -> ~=9.2.0, ...). The uv lock then has no py3.9 candidate, and because the preset groups every PyPI minor/patch into one 'non-critical python dependencies' PR, a single such line fails the whole group. Each entry matches one held line by its exact current value, so the >=3.10 twin keeps updating. In-range fixes for the held lines still arrive through lock maintenance. When a held pin is moved by hand, update its entry here. When py3.9 support is dropped, delete this rule along with the markers.",
+      "matchManagers": [
+        "pep621"
+      ],
+      "matchJsonata": [
+        "depName = \"pydantic\" and currentValue = \"~=2.13.4\"",
+        "depName = \"tenacity\" and currentValue = \"~=9.1.2\"",
+        "depName = \"httpx-retries\" and currentValue = \"~=0.4.6\"",
+        "depName = \"authlib\" and currentValue = \"~=1.6.12\"",
+        "depName = \"msgspec\" and currentValue = \"~=0.20.0\"",
+        "depName = \"mypy\" and currentValue = \"~=1.19.0\"",
+        "depName = \"types-setuptools\" and currentValue = \"~=81.0.0.20260209\"",
+        "depName = \"types-authlib\" and currentValue = \"~=1.6.7.20260208\"",
+        "depName = \"pytest\" and currentValue = \"~=8.4.2\"",
+        "depName = \"vcrpy\" and currentValue = \"~=7.0.0\"",
+        "depName = \"pre-commit\" and currentValue = \"~=4.3.0\"",
+        "depName = \"deepdiff\" and currentValue = \"~=8.6.2\"",
+        "depName = \"networkx\" and currentValue = \"~=3.2.1\"",
+        "depName = \"pytest-asyncio\" and currentValue = \"~=1.2.0\""
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Auto-merge dev and docs dependency updates (the [dependency-groups] in pyproject.toml) once every check is green. They never reach pyatlan's consumers: the published wheel carries only [project].dependencies. With platformAutomerge off (rule above), Renovate merges the PR itself, and only when every status and check run on the branch is green: unit/QA on 3.9\u20133.14, the vulnerability scans and the integration tests. A red or still-pending check blocks the merge. Majors stay reviewed (the preset gives them their own branch, and nothing here auto-merges them).",
+      "matchManagers": [
+        "pep621"
+      ],
+      "matchDepTypes": [
+        "dependency-groups"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Split runtime dependencies ([project].dependencies) out of the preset's single 'non-critical python dependencies' group. pyatlan is a published library, so a range change there changes what application-sdk and every connector may resolve. Those PRs stay reviewed. They need their own group because Renovate auto-merges a group only when every member auto-merges, so one shared group would keep the dev/docs PR from auto-merging.",
+      "matchManagers": [
+        "pep621"
+      ],
+      "matchDepTypes": [
+        "project.dependencies"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "runtime python dependencies",
+      "automerge": false
+    }
+  ],
+  "ignoreDeps": [
+    "cgr.dev/atlan.com/pyatlan-golden"
+  ]
+}
