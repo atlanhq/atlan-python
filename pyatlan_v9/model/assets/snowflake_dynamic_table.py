@@ -58,6 +58,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereDataProduct
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeDynamicTable,
@@ -185,6 +186,7 @@ class SnowflakeDynamicTable(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     COLUMNS: ClassVar[Any] = None
     QUERIES: ClassVar[Any] = None
     ATLAN_SCHEMA: ClassVar[Any] = None
@@ -502,6 +504,11 @@ class SnowflakeDynamicTable(Asset):
 
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this table."""
 
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this table."""
@@ -996,6 +1003,11 @@ class SnowflakeDynamicTableRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this table."""
+
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this table."""
 
@@ -1105,6 +1117,7 @@ _SNOWFLAKE_DYNAMIC_TABLE_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_data_products",
     "columns",
     "queries",
     "atlan_schema",
@@ -1601,6 +1614,9 @@ SnowflakeDynamicTable.USER_DEF_RELATIONSHIP_FROM = RelationField(
 SnowflakeDynamicTable.FILES = RelationField("files")
 SnowflakeDynamicTable.LINKS = RelationField("links")
 SnowflakeDynamicTable.README = RelationField("readme")
+SnowflakeDynamicTable.SAP_DATASPHERE_DATA_PRODUCTS = RelationField(
+    "sapDatasphereDataProducts"
+)
 SnowflakeDynamicTable.COLUMNS = RelationField("columns")
 SnowflakeDynamicTable.QUERIES = RelationField("queries")
 SnowflakeDynamicTable.ATLAN_SCHEMA = RelationField("atlanSchema")

@@ -59,6 +59,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereDataProduct
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
@@ -157,6 +158,7 @@ class View(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     COLUMNS: ClassVar[Any] = None
     QUERIES: ClassVar[Any] = None
     ATLAN_SCHEMA: ClassVar[Any] = None
@@ -411,6 +413,11 @@ class View(Asset):
 
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this view."""
 
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this view."""
@@ -935,6 +942,11 @@ class ViewRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this view."""
+
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this view."""
 
@@ -1029,6 +1041,7 @@ _VIEW_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_data_products",
     "columns",
     "queries",
     "atlan_schema",
@@ -1376,6 +1389,7 @@ View.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 View.FILES = RelationField("files")
 View.LINKS = RelationField("links")
 View.README = RelationField("readme")
+View.SAP_DATASPHERE_DATA_PRODUCTS = RelationField("sapDatasphereDataProducts")
 View.COLUMNS = RelationField("columns")
 View.QUERIES = RelationField("queries")
 View.ATLAN_SCHEMA = RelationField("atlanSchema")

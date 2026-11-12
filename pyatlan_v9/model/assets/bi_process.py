@@ -194,7 +194,7 @@ class BIProcess(Asset):
     """Individual Fabric activities contained in the process."""
 
     fivetran_connector: Union[RelatedFivetranConnector, None, UnsetType] = UNSET
-    """fivetranConnector in which this process exists."""
+    """Fivetran connector in which this process exists."""
 
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""
@@ -593,7 +593,7 @@ class BIProcessRelationshipAttributes(AssetRelationshipAttributes):
     """Individual Fabric activities contained in the process."""
 
     fivetran_connector: Union[RelatedFivetranConnector, None, UnsetType] = UNSET
-    """fivetranConnector in which this process exists."""
+    """Fivetran connector in which this process exists."""
 
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""

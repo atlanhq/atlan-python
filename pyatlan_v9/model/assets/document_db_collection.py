@@ -60,6 +60,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereDataProduct
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
@@ -197,6 +198,7 @@ class DocumentDBCollection(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     COLUMNS: ClassVar[Any] = None
     QUERIES: ClassVar[Any] = None
     ATLAN_SCHEMA: ClassVar[Any] = None
@@ -581,6 +583,11 @@ class DocumentDBCollection(Asset):
 
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this table."""
 
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this table."""
@@ -1186,6 +1193,11 @@ class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this table."""
+
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this table."""
 
@@ -1296,6 +1308,7 @@ _DOCUMENT_DB_COLLECTION_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_data_products",
     "columns",
     "queries",
     "atlan_schema",
@@ -1879,6 +1892,9 @@ DocumentDBCollection.USER_DEF_RELATIONSHIP_FROM = RelationField(
 DocumentDBCollection.FILES = RelationField("files")
 DocumentDBCollection.LINKS = RelationField("links")
 DocumentDBCollection.README = RelationField("readme")
+DocumentDBCollection.SAP_DATASPHERE_DATA_PRODUCTS = RelationField(
+    "sapDatasphereDataProducts"
+)
 DocumentDBCollection.COLUMNS = RelationField("columns")
 DocumentDBCollection.QUERIES = RelationField("queries")
 DocumentDBCollection.ATLAN_SCHEMA = RelationField("atlanSchema")

@@ -120,6 +120,15 @@ class RelatedSSRSReport(RelatedSSRS):
     ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
 
+    ssrs_report_is_linked_report: Union[bool, None, UnsetType] = UNSET
+    """Whether this report is a linked report (an alias of a source report). Missing is treated as false."""
+
+    ssrs_report_linked_from_report_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the source (parent) report this linked report aliases."""
+
+    ssrs_report_linked_from_report_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the source (parent) report this linked report aliases."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:

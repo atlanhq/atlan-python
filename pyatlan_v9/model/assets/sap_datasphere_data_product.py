@@ -55,7 +55,7 @@ from .sap_related import RelatedSapDatasphereDataProduct
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import RelatedSchema
+from .sql_related import RelatedColumn, RelatedSchema, RelatedTable, RelatedView
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -118,6 +118,9 @@ class SapDatasphereDataProduct(Asset):
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
     SAP_DATASPHERE_SCHEMA: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCT_TABLES: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCT_VIEWS: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCT_COLUMNS: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
@@ -282,6 +285,19 @@ class SapDatasphereDataProduct(Asset):
 
     sap_datasphere_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema (Datasphere space) whose objects this data product exposes."""
+
+    sap_datasphere_data_product_tables: Union[List[RelatedTable], None, UnsetType] = (
+        UNSET
+    )
+    """Tables exposed by this SAP Datasphere data product."""
+
+    sap_datasphere_data_product_views: Union[List[RelatedView], None, UnsetType] = UNSET
+    """Views exposed by this SAP Datasphere data product."""
+
+    sap_datasphere_data_product_columns: Union[List[RelatedColumn], None, UnsetType] = (
+        UNSET
+    )
+    """Columns exposed by this SAP Datasphere data product."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -593,6 +609,19 @@ class SapDatasphereDataProductRelationshipAttributes(AssetRelationshipAttributes
     sap_datasphere_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema (Datasphere space) whose objects this data product exposes."""
 
+    sap_datasphere_data_product_tables: Union[List[RelatedTable], None, UnsetType] = (
+        UNSET
+    )
+    """Tables exposed by this SAP Datasphere data product."""
+
+    sap_datasphere_data_product_views: Union[List[RelatedView], None, UnsetType] = UNSET
+    """Views exposed by this SAP Datasphere data product."""
+
+    sap_datasphere_data_product_columns: Union[List[RelatedColumn], None, UnsetType] = (
+        UNSET
+    )
+    """Columns exposed by this SAP Datasphere data product."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -659,6 +688,9 @@ _SAP_DATASPHERE_DATA_PRODUCT_REL_FIELDS: List[str] = [
     "links",
     "readme",
     "sap_datasphere_schema",
+    "sap_datasphere_data_product_tables",
+    "sap_datasphere_data_product_views",
+    "sap_datasphere_data_product_columns",
     "schema_registry_subjects",
     "soda_checks",
     "input_to_spark_jobs",
@@ -1004,6 +1036,15 @@ SapDatasphereDataProduct.FILES = RelationField("files")
 SapDatasphereDataProduct.LINKS = RelationField("links")
 SapDatasphereDataProduct.README = RelationField("readme")
 SapDatasphereDataProduct.SAP_DATASPHERE_SCHEMA = RelationField("sapDatasphereSchema")
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_TABLES = RelationField(
+    "sapDatasphereDataProductTables"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_VIEWS = RelationField(
+    "sapDatasphereDataProductViews"
+)
+SapDatasphereDataProduct.SAP_DATASPHERE_DATA_PRODUCT_COLUMNS = RelationField(
+    "sapDatasphereDataProductColumns"
+)
 SapDatasphereDataProduct.SCHEMA_REGISTRY_SUBJECTS = RelationField(
     "schemaRegistrySubjects"
 )
