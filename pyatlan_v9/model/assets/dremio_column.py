@@ -62,6 +62,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereDataProduct
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeDynamicTable,
@@ -255,6 +256,7 @@ class DremioColumn(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     TABLE: ClassVar[Any] = None
     NESTED_COLUMNS: ClassVar[Any] = None
     PARENT_COLUMN: ClassVar[Any] = None
@@ -777,6 +779,11 @@ class DremioColumn(Asset):
 
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this column."""
 
     table: Union[RelatedTable, None, UnsetType] = UNSET
     """Table in which this column exists."""
@@ -1477,6 +1484,11 @@ class DremioColumnRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this column."""
+
     table: Union[RelatedTable, None, UnsetType] = UNSET
     """Table in which this column exists."""
 
@@ -1615,6 +1627,7 @@ _DREMIO_COLUMN_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_data_products",
     "table",
     "nested_columns",
     "parent_column",
@@ -2317,6 +2330,7 @@ DremioColumn.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom
 DremioColumn.FILES = RelationField("files")
 DremioColumn.LINKS = RelationField("links")
 DremioColumn.README = RelationField("readme")
+DremioColumn.SAP_DATASPHERE_DATA_PRODUCTS = RelationField("sapDatasphereDataProducts")
 DremioColumn.TABLE = RelationField("table")
 DremioColumn.NESTED_COLUMNS = RelationField("nestedColumns")
 DremioColumn.PARENT_COLUMN = RelationField("parentColumn")

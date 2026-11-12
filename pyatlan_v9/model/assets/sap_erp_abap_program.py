@@ -53,6 +53,7 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .sap_related import (
     RelatedSapErpAbapProgram,
     RelatedSapErpComponent,
+    RelatedSapErpDataSource,
     RelatedSapErpFunctionModule,
     RelatedSapErpTransactionCode,
 )
@@ -112,6 +113,7 @@ class SapErpAbapProgram(Asset):
     SAP_ERP_TRANSACTION_CODES: ClassVar[Any] = None
     SAP_ERP_FUNCTION_MODULES: ClassVar[Any] = None
     SAP_ERP_COMPONENT: ClassVar[Any] = None
+    SAP_ERP_EXTRACTOR_DATA_SOURCES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
@@ -251,6 +253,11 @@ class SapErpAbapProgram(Asset):
 
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP ABAP Program that are associated with this SAP ERP Component."""
+
+    sap_erp_extractor_data_sources: Union[
+        List[RelatedSapErpDataSource], None, UnsetType
+    ] = UNSET
+    """SAP ERP DataSources that use this ABAP program (class pool) as their extractor."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -525,6 +532,11 @@ class SapErpAbapProgramRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP ABAP Program that are associated with this SAP ERP Component."""
 
+    sap_erp_extractor_data_sources: Union[
+        List[RelatedSapErpDataSource], None, UnsetType
+    ] = UNSET
+    """SAP ERP DataSources that use this ABAP program (class pool) as their extractor."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -593,6 +605,7 @@ _SAP_ERP_ABAP_PROGRAM_REL_FIELDS: List[str] = [
     "sap_erp_transaction_codes",
     "sap_erp_function_modules",
     "sap_erp_component",
+    "sap_erp_extractor_data_sources",
     "schema_registry_subjects",
     "soda_checks",
     "input_to_spark_jobs",
@@ -808,6 +821,9 @@ SapErpAbapProgram.README = RelationField("readme")
 SapErpAbapProgram.SAP_ERP_TRANSACTION_CODES = RelationField("sapErpTransactionCodes")
 SapErpAbapProgram.SAP_ERP_FUNCTION_MODULES = RelationField("sapErpFunctionModules")
 SapErpAbapProgram.SAP_ERP_COMPONENT = RelationField("sapErpComponent")
+SapErpAbapProgram.SAP_ERP_EXTRACTOR_DATA_SOURCES = RelationField(
+    "sapErpExtractorDataSources"
+)
 SapErpAbapProgram.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SapErpAbapProgram.SODA_CHECKS = RelationField("sodaChecks")
 SapErpAbapProgram.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")

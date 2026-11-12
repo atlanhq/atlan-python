@@ -64,6 +64,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereDataProduct
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
@@ -209,6 +210,7 @@ class CosmosMongoDBCollection(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     QUERIES: ClassVar[Any] = None
     ATLAN_SCHEMA: ClassVar[Any] = None
     DIMENSIONS: ClassVar[Any] = None
@@ -620,6 +622,11 @@ class CosmosMongoDBCollection(Asset):
 
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this table."""
 
     queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that access this table."""
@@ -1255,6 +1262,11 @@ class CosmosMongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes)
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this table."""
+
     queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that access this table."""
 
@@ -1367,6 +1379,7 @@ _COSMOS_MONGO_DB_COLLECTION_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_data_products",
     "queries",
     "atlan_schema",
     "dimensions",
@@ -1983,6 +1996,9 @@ CosmosMongoDBCollection.USER_DEF_RELATIONSHIP_FROM = RelationField(
 CosmosMongoDBCollection.FILES = RelationField("files")
 CosmosMongoDBCollection.LINKS = RelationField("links")
 CosmosMongoDBCollection.README = RelationField("readme")
+CosmosMongoDBCollection.SAP_DATASPHERE_DATA_PRODUCTS = RelationField(
+    "sapDatasphereDataProducts"
+)
 CosmosMongoDBCollection.QUERIES = RelationField("queries")
 CosmosMongoDBCollection.ATLAN_SCHEMA = RelationField("atlanSchema")
 CosmosMongoDBCollection.DIMENSIONS = RelationField("dimensions")
