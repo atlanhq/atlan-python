@@ -67,6 +67,9 @@ class AsyncAtlanTagTranslator(AsyncBaseTranslator):
             if key not in raw_json:
                 continue
             for classification in raw_json[key]:
+                # Skip non-dict entries like plain strings; only tag objects translate
+                if not isinstance(classification, dict):
+                    continue
                 tag_id = classification.get(self._TYPE_NAME)
                 if not tag_id:
                     continue
