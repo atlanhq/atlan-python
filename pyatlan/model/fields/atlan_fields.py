@@ -63,13 +63,36 @@ class RelationField(AtlanField):
     searchable.
     """
 
-    def __init__(self, atlan_field_name: StrictStr):
+    def __init__(
+        self,
+        atlan_field_name: StrictStr,
+        inverse: Optional[StrictStr] = None,
+        is_symmetric: bool = False,
+    ):
         """
         Default constructor.
 
+        Atlas stores every relationship on both ends, so each relationship
+        attribute has a counterpart on the asset at the other end: setting
+        `preferredTerms` on one term shows up as `preferredToTerms` on the
+        other. `inverse` names that counterpart, and `is_symmetric` is True
+        when both ends share one name (`seeAlso`, `synonyms`, `antonyms`), so
+        the two directions are the same edge rather than two.
+
+        Both are generated from the relationship typedef's endDef1/endDef2 and
+        so follow the metastore. Callers that walk a relationship graph need
+        them to fold an edge seen from both ends into one; deriving them by
+        hand means a hard-coded map that silently drifts from the typedefs.
+
         :param atlan_field_name: name of the attribute in the metastore
+        :param inverse: name of the attribute on the other end of the
+            relationship, if known
+        :param is_symmetric: True when the relationship carries the same
+            attribute name on both ends
         """
         self.atlan_field_name = atlan_field_name
+        self.inverse = inverse
+        self.is_symmetric = is_symmetric
 
 
 class SearchableField(AtlanField):

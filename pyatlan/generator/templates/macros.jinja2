@@ -58,7 +58,7 @@
 
 {%- macro gen_property_relationship_class_vars(type_name, relationship_attribute_defs) %}
     {%- for attribute_def in relationship_attribute_defs %}{% if (type_name != "AtlasGlossaryTerm" or attribute_def.name != "categories") and (type_name != "AtlasGlossaryCategory" or attribute_def.name != "parentCategory") and ((type_name != "AtlasGlossaryTerm" or type_name != "AtlasGlossaryCategory") and attribute_def.name != "anchor") and (type_name != "Asset" or attribute_def.name != "meanings") %}
-    {{ attribute_def.name | get_class_var_for_attr }}: ClassVar[RelationField] = RelationField("{{ attribute_def.name }}")
+    {{ attribute_def.name | get_class_var_for_attr }}: ClassVar[RelationField] = RelationField({{ attribute_def | get_relation_field_args }})
     """
     {{ attribute_def.description | default("TBC") }}
     """

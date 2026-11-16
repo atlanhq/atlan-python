@@ -14,7 +14,7 @@ import re
 from collections.abc import Iterable
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, NamedTuple, Optional, Set
+from typing import Any, Dict, List, NamedTuple, Optional, Set, Tuple
 
 import networkx as nx
 from jinja2 import Environment, PackageLoader
@@ -646,6 +646,46 @@ class RelationshipDefInfo:
                 )
 
 
+# Relationship typedef name -> the attribute name at each end. Atlas stores
+# every relationship on both ends, so this is what lets a generated
+# RelationField name its counterpart: `preferredTerms` on one term is
+# `preferredToTerms` on the other, and the two are one edge, not two. When both
+# ends carry the same name (seeAlso, synonyms, antonyms) the relationship is
+# symmetric. Taken from the typedefs so it follows the metastore instead of a
+# hand-written map that drifts (AICHAT-1068).
+RELATIONSHIP_ENDS: Dict[str, Tuple[str, str]] = {}
+
+
+def record_relationship_ends(relationship_defs: List[RelationshipDef]) -> None:
+    """Index every relationship typedef by the attribute name at each end."""
+    for rel_def in relationship_defs:
+        end1 = (rel_def.end_def1 or {}).get("name")
+        end2 = (rel_def.end_def2 or {}).get("name")
+        if rel_def.name and end1 and end2:
+            RELATIONSHIP_ENDS[rel_def.name] = (end1, end2)
+
+
+def get_relation_field_args(attr_def: Dict[str, Any]) -> str:
+    """The RelationField(...) argument list for a relationship attribute.
+
+    Just the name when the typedef is unknown — an unresolvable relationship
+    must still generate, and a caller then sees ``inverse is None`` rather than
+    a wrong answer.
+    """
+    name = str(attr_def.get("name"))
+    ends = RELATIONSHIP_ENDS.get(str(attr_def.get("relationshipTypeName")))
+    if not ends:
+        return f'"{name}"'
+    end1, end2 = ends
+    if end1 == end2:
+        return f'"{name}", inverse="{name}", is_symmetric=True'
+    if name == end1:
+        return f'"{name}", inverse="{end2}"'
+    if name == end2:
+        return f'"{name}", inverse="{end1}"'
+    return f'"{name}"'
+
+
 class AttributeType(Enum):
     PRIMITIVE = "PRIMITIVE"
     ENUM = "ENUM"
@@ -865,6 +905,7 @@ class Generator:
         self.environment.filters["get_search_type"] = get_search_type
         self.environment.filters["get_mapped_type"] = get_mapped_type
         self.environment.filters["get_class_var_for_attr"] = get_class_var_for_attr
+        self.environment.filters["get_relation_field_args"] = get_relation_field_args
 
     def merge_attributes(self, entity_def):
         def merge_them(s, a):
@@ -1870,6 +1911,7 @@ if __name__ == "__main__":
     add_source_tag_contract_attributes(type_defs.reserved_entity_defs)
     AssetInfo.sub_type_names_to_ignore = type_defs.custom_entity_def_names
     AssetInfo.set_entity_defs(type_defs.reserved_entity_defs)
+    record_relationship_ends(type_defs.relationship_defs)
     RelationshipDefInfo.create(type_defs.relationship_defs)
     AssetInfo.update_all_circular_dependencies()
     AssetInfo.create_modules()
