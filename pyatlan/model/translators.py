@@ -84,6 +84,9 @@ class AtlanTagTranslator(BaseTranslator):
         for key in self._CLASSIFICATION_KEYS:
             if key in raw_json:
                 for classification in raw_json[key]:
+                    # Skip non-dict entries like plain strings; only tag objects translate
+                    if not isinstance(classification, dict):
+                        continue
                     tag_id = classification.get(self._TYPE_NAME)
                     if tag_id:
                         tag_name = self.client.atlan_tag_cache.get_name_for_id(tag_id)
