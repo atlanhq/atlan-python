@@ -1,3 +1,10 @@
+## 11.7.1 (November 16, 2026)
+
+### Bug Fixes
+
+- **Workflow listing no longer crashes on string classifications**: `client.app.get_all()` (and any response that carries a workflow DAG) failed with `AttributeError: 'str' object has no attribute 'get'` when a workflow's filter stored `classifications` as a list of plain strings. The tag translators now skip an entry that is not a classification object and leave it exactly as the API sent it, so a tag object later in the same list is still translated. Applied to the sync and async translators in both `pyatlan` and `pyatlan_v9`; strings are not looked up as tag IDs. (AICHAT-2145)
+- **`pyatlan_v9` is safe to import from several threads**: a first import of `pyatlan_v9.model` from concurrent threads could deadlock (`_DeadlockError`) or hand one thread a half-loaded module, because `pyatlan_v9.model` star-imported the lazy `assets` package and so loaded all ~666 asset modules while still initialising. The names are now re-exported lazily through `__getattr__`, `__all__` and `__dir__`; `from pyatlan_v9.model import Table` and `dir()` behave as before, and asset modules load on first use. (FND-4960)
+
 ## 11.7.0 (November 3, 2026)
 
 ### New Features
