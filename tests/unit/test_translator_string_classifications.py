@@ -11,7 +11,10 @@ expected each entry to be a classification object (a dict with ``typeName``),
 so a ``list[str]`` raised ``AttributeError: 'str' object has no attribute 'get'``.
 
 There are four copies of the translator: sync and async, in ``pyatlan`` and in
-``pyatlan_v9``. All four sit on a live response path, so all four are covered.
+``pyatlan_v9``. All four sit on a live response path. This file covers the two
+``pyatlan`` copies; ``tests_v9/unit/test_translator_string_classifications.py``
+covers the ``pyatlan_v9`` pair, so ``mypy pyatlan tests`` never follows an
+import into ``pyatlan_v9``.
 
 No tenant calls: the tag cache is a small in-memory fake.
 """
@@ -24,16 +27,12 @@ from pyatlan.model.aio.translators import AsyncAtlanTagTranslator
 from pyatlan.model.constants import DELETED_
 from pyatlan.model.core import AtlanResponse
 from pyatlan.model.translators import AtlanTagTranslator
-from pyatlan_v9.model.aio.translators import (
-    AsyncAtlanTagTranslator as V9AsyncAtlanTagTranslator,
-)
-from pyatlan_v9.model.translators import AtlanTagTranslator as V9AtlanTagTranslator
 
 TAG_ID = "yiB7RLvdC2yeryLPjaDeHM"
 TAG_NAME = "PII"
 UNKNOWN_TAG_ID = "zzUnknownTagIdzz"
-# The key that keeps the original hashed ID differs by copy: "tag_id" in pyatlan,
-# "tagId" in pyatlan_v9. Tests read it from the class (translator_cls._TAG_ID).
+# The key that keeps the original hashed ID is read from the class
+# (translator_cls._TAG_ID), so the test does not hard-code it.
 
 
 class _FakeTagCache:
@@ -62,12 +61,10 @@ def _async_client():
     return SimpleNamespace(atlan_tag_cache=_AsyncFakeTagCache())
 
 
-# (translator class, is_async), one entry per copy of the translator
+# (translator class, is_async), one entry per pyatlan copy of the translator
 TRANSLATORS = [
     pytest.param(AtlanTagTranslator, False, id="pyatlan-sync"),
     pytest.param(AsyncAtlanTagTranslator, True, id="pyatlan-async"),
-    pytest.param(V9AtlanTagTranslator, False, id="pyatlan_v9-sync"),
-    pytest.param(V9AsyncAtlanTagTranslator, True, id="pyatlan_v9-async"),
 ]
 
 
