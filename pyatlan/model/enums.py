@@ -370,6 +370,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     NETEZZA = ("netezza", AtlanConnectionCategory.WAREHOUSE)
     AZURE_SERVICE_BUS = ("azureservicebus", AtlanConnectionCategory.EVENT_BUS)
     PREFECT = ("prefect", AtlanConnectionCategory.ELT)
+    DAGSTER = ("dagster", AtlanConnectionCategory.ELT)
     SUPERSET = ("superset", AtlanConnectionCategory.BI)
     DM = ("dm", AtlanConnectionCategory.DATABASE)
     MODEL = ("model", AtlanConnectionCategory.DATABASE)
