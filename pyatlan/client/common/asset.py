@@ -180,6 +180,9 @@ class Search:
                 count,
                 search_results_class._MASS_EXTRACT_THRESHOLD,
             )
+            # The first page was already logged; the re-fetch is the same search.
+            if criteria.request_metadata:
+                criteria.request_metadata.save_search_log = False
             return True
         else:
             return False

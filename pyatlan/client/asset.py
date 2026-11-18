@@ -2000,6 +2000,9 @@ class SearchResults(ABC, Iterable):
         :param is_bulk_search: whether to retrieve results for a bulk search.
         :returns: JSON for the next page of results, as-is
         """
+        # A paged search is logged once, on its first page.
+        if metadata := getattr(self._criteria, "request_metadata", None):
+            metadata.save_search_log = False
         raw_json = self._client._call_api(
             self._endpoint,
             request_obj=self._criteria,

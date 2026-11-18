@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import os
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
@@ -2068,9 +2069,9 @@ class IndexSearchRequest(SearchRequest):
     )
     request_metadata: Optional[IndexSearchRequestMetadata] = Field(
         default_factory=lambda: IndexSearchRequestMetadata(
-            # Set this to `False` to prevent the frequent
-            # Out of memory (OOM) issue in Metastore pods.
-            save_search_log=False,
+            # Off unless opted in: logging every SDK search ran Metastore out of memory.
+            save_search_log=os.environ.get("ATLAN_SAVE_SEARCH_LOG", "").strip().lower()
+            == "true",
             utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
         )
     )
