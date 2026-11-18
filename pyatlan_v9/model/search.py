@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json as json_lib
+import os
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
@@ -44,7 +45,6 @@ from pyatlan.model.search import (  # noqa: F401
     TextAttributes,
     Wildcard,
     get_with_string,
-    save_search_log_default,
 )
 from pyatlan_v9.model.aggregation import Aggregation
 
@@ -234,7 +234,11 @@ class IndexSearchRequest(msgspec.Struct, kw_only=True):
         # Set default request_metadata
         if self.request_metadata is None:
             self.request_metadata = IndexSearchRequestMetadata(
-                save_search_log=save_search_log_default(),
+                # Off unless opted in: logging every SDK search ran Metastore out of memory.
+                save_search_log=os.environ.get("ATLAN_SAVE_SEARCH_LOG", "")
+                .strip()
+                .lower()
+                == "true",
                 utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
             )
 
