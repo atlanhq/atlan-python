@@ -742,3 +742,93 @@ def test_dq_condition_missing_required_fields():
             target_table="target/table/qualified_name",
             target_column=None,
         ).build()
+
+
+def _string_length_template_config():
+    config = Mock()
+    config.dq_rule_template_config_rule_conditions = json.dumps(
+        {"enum": ["STRING_LENGTH_BETWEEN"]}
+    )
+    config.dq_rule_template_config_advanced_settings = json.dumps({})
+    config.dq_rule_template_config_threshold_object = json.dumps(
+        {
+            "properties": {
+                "dqRuleTemplateConfigThresholdCompareOperator": {
+                    "enum": ["LTE"],
+                    "default": "LTE",
+                }
+            }
+        }
+    )
+    return {
+        "name": "STRING_LENGTH",
+        "qualified_name": "test/template/123",
+        "config": config,
+    }
+
+
+def _string_length_conditions():
+    return (
+        DQRuleConditionsBuilder()
+        .add_condition(
+            type=DataQualityRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN,
+            min_value=5,
+            max_value=50,
+        )
+        .build()
+    )
+
+
+@pytest.mark.parametrize(
+    "given, expected",
+    [
+        (None, DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL),
+        (
+            DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
+            DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
+        ),
+        (
+            DataQualityRuleThresholdCompareOperator.EQUAL,
+            DataQualityRuleThresholdCompareOperator.EQUAL,
+        ),
+        ("EQ", DataQualityRuleThresholdCompareOperator.EQUAL),
+    ],
+)
+def test_rule_conditions_allow_at_most_n_invalid_rows(given, expected):
+    """Allowed invalid rows = N means at most N, so LTE is the default and allowed."""
+    assert (
+        DataQualityRule.Attributes._validate_template_features(
+            rule_type=DataQualityRuleTemplateType.STRING_LENGTH,
+            rule_conditions=_string_length_conditions(),
+            row_scope_filtering_enabled=False,
+            template_config=_string_length_template_config(),
+            threshold_compare_operator=given,
+        )
+        == expected
+    )
+
+
+def test_rule_conditions_reject_other_operators():
+    with pytest.raises(
+        InvalidRequestError,
+        match="EQUAL or LESS_THAN_EQUAL when rule_conditions are provided",
+    ):
+        DataQualityRule.Attributes._validate_template_features(
+            rule_type=DataQualityRuleTemplateType.STRING_LENGTH,
+            rule_conditions=_string_length_conditions(),
+            row_scope_filtering_enabled=False,
+            template_config=_string_length_template_config(),
+            threshold_compare_operator=DataQualityRuleThresholdCompareOperator.GREATER_THAN,
+        )
+
+
+def test_stored_operator_read_back_as_text_is_validated():
+    """The updater passes the stored operator as plain text, e.g. "GT"."""
+    with pytest.raises(InvalidRequestError, match="must be one of"):
+        DataQualityRule.Attributes._validate_template_features(
+            rule_type=DataQualityRuleTemplateType.STRING_LENGTH,
+            rule_conditions=None,
+            row_scope_filtering_enabled=False,
+            template_config=_string_length_template_config(),
+            threshold_compare_operator="GT",
+        )

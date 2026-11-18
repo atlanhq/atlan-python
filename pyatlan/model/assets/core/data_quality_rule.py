@@ -1322,6 +1322,11 @@ class DataQualityRule(DataQuality):
             asset: Optional[Asset] = None,
             target_table_asset: Optional[Asset] = None,
         ) -> Optional[DataQualityRuleThresholdCompareOperator]:
+            if isinstance(threshold_compare_operator, str):
+                threshold_compare_operator = DataQualityRuleThresholdCompareOperator(
+                    threshold_compare_operator
+                )
+
             if not template_config or not template_config.get("config"):
                 return None
 
@@ -1388,17 +1393,19 @@ class DataQualityRule(DataQuality):
                             f"condition type '{condition_type}' not supported, allowed: {allowed_rule_conditions}"
                         )
 
+                # Counts invalid rows: "Allowed invalid rows = N" means at most N.
                 if threshold_compare_operator is None:
-                    return DataQualityRuleThresholdCompareOperator.EQUAL
-                elif (
-                    threshold_compare_operator
-                    != DataQualityRuleThresholdCompareOperator.EQUAL
+                    return DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL
+                if threshold_compare_operator not in (
+                    DataQualityRuleThresholdCompareOperator.EQUAL,
+                    DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
                 ):
                     raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
                         f"threshold_compare_operator={threshold_compare_operator.value}",
                         "threshold_compare_operator",
-                        "EQUAL when rule_conditions are provided",
+                        "EQUAL or LESS_THAN_EQUAL when rule_conditions are provided",
                     )
+                return threshold_compare_operator
 
             if threshold_compare_operator is not None:
                 allowed_operators = (
