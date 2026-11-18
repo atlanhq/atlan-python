@@ -44,6 +44,7 @@ from pyatlan.model.search import (  # noqa: F401
     TextAttributes,
     Wildcard,
     get_with_string,
+    save_search_log_default,
 )
 from pyatlan_v9.model.aggregation import Aggregation
 
@@ -233,7 +234,7 @@ class IndexSearchRequest(msgspec.Struct, kw_only=True):
         # Set default request_metadata
         if self.request_metadata is None:
             self.request_metadata = IndexSearchRequestMetadata(
-                save_search_log=False,
+                save_search_log=save_search_log_default(),
                 utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
             )
 

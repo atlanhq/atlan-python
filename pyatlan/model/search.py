@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import os
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
@@ -1980,6 +1981,15 @@ class DSL(AtlanObject):
         return sort
 
 
+def save_search_log_default() -> bool:
+    """
+    Whether SDK searches are recorded in the tenant's search logs, read from
+    `ATLAN_SAVE_SEARCH_LOG` (`true` to record). Off unless set: recording every
+    SDK search ran Metastore out of memory, which is why 4.2.0 turned it off.
+    """
+    return os.environ.get("ATLAN_SAVE_SEARCH_LOG", "").strip().lower() == "true"
+
+
 class IndexSearchRequestMetadata(AtlanObject):
     save_search_log: bool = Field(
         default=False,
@@ -2068,9 +2078,7 @@ class IndexSearchRequest(SearchRequest):
     )
     request_metadata: Optional[IndexSearchRequestMetadata] = Field(
         default_factory=lambda: IndexSearchRequestMetadata(
-            # Set this to `False` to prevent the frequent
-            # Out of memory (OOM) issue in Metastore pods.
-            save_search_log=False,
+            save_search_log=save_search_log_default(),
             utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
         )
     )
