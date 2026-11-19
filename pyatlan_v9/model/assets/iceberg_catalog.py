@@ -122,6 +122,9 @@ class IcebergCatalog(Asset):
     SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
     SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_SOURCE_TYPE: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_STATUS: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_KIND: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     SCHEMA_COUNT: ClassVar[Any] = None
     SQL_IS_IMPORTED_VIA_DATA_SHARE: ClassVar[Any] = None
@@ -294,6 +297,15 @@ class IcebergCatalog(Asset):
 
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
+
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -767,6 +779,15 @@ class IcebergCatalogAttributes(AssetAttributes):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -1063,6 +1084,9 @@ def _populate_iceberg_catalog_attrs(
     attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
+    attrs.sql_fabric_mirroring_source_type = obj.sql_fabric_mirroring_source_type
+    attrs.sql_fabric_mirroring_status = obj.sql_fabric_mirroring_status
+    attrs.sql_fabric_mirroring_kind = obj.sql_fabric_mirroring_kind
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.schema_count = obj.schema_count
     attrs.sql_is_imported_via_data_share = obj.sql_is_imported_via_data_share
@@ -1124,6 +1148,9 @@ def _extract_iceberg_catalog_attrs(attrs: IcebergCatalogAttributes) -> dict:
     result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
+    result["sql_fabric_mirroring_source_type"] = attrs.sql_fabric_mirroring_source_type
+    result["sql_fabric_mirroring_status"] = attrs.sql_fabric_mirroring_status
+    result["sql_fabric_mirroring_kind"] = attrs.sql_fabric_mirroring_kind
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["schema_count"] = attrs.schema_count
     result["sql_is_imported_via_data_share"] = attrs.sql_is_imported_via_data_share
@@ -1345,6 +1372,15 @@ IcebergCatalog.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
 )
 IcebergCatalog.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
     "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
+IcebergCatalog.SQL_FABRIC_MIRRORING_SOURCE_TYPE = KeywordField(
+    "sqlFabricMirroringSourceType", "sqlFabricMirroringSourceType"
+)
+IcebergCatalog.SQL_FABRIC_MIRRORING_STATUS = KeywordField(
+    "sqlFabricMirroringStatus", "sqlFabricMirroringStatus"
+)
+IcebergCatalog.SQL_FABRIC_MIRRORING_KIND = KeywordField(
+    "sqlFabricMirroringKind", "sqlFabricMirroringKind"
 )
 IcebergCatalog.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"

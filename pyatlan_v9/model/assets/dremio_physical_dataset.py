@@ -63,6 +63,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereDataProduct
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
@@ -131,6 +132,9 @@ class DremioPhysicalDataset(Asset):
     SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
     SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_SOURCE_TYPE: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_STATUS: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_KIND: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     COLUMN_COUNT: ClassVar[Any] = None
     ROW_COUNT: ClassVar[Any] = None
@@ -196,6 +200,7 @@ class DremioPhysicalDataset(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     COLUMNS: ClassVar[Any] = None
     QUERIES: ClassVar[Any] = None
     ATLAN_SCHEMA: ClassVar[Any] = None
@@ -335,6 +340,15 @@ class DremioPhysicalDataset(Asset):
 
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
+
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -540,6 +554,11 @@ class DremioPhysicalDataset(Asset):
 
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this table."""
 
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this table."""
@@ -854,6 +873,15 @@ class DremioPhysicalDatasetAttributes(AssetAttributes):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -1063,6 +1091,11 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this table."""
+
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this table."""
 
@@ -1174,6 +1207,7 @@ _DREMIO_PHYSICAL_DATASET_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_data_products",
     "columns",
     "queries",
     "atlan_schema",
@@ -1241,6 +1275,9 @@ def _populate_dremio_physical_dataset_attrs(
     attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
+    attrs.sql_fabric_mirroring_source_type = obj.sql_fabric_mirroring_source_type
+    attrs.sql_fabric_mirroring_status = obj.sql_fabric_mirroring_status
+    attrs.sql_fabric_mirroring_kind = obj.sql_fabric_mirroring_kind
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.column_count = obj.column_count
     attrs.row_count = obj.row_count
@@ -1329,6 +1366,9 @@ def _extract_dremio_physical_dataset_attrs(
     result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
+    result["sql_fabric_mirroring_source_type"] = attrs.sql_fabric_mirroring_source_type
+    result["sql_fabric_mirroring_status"] = attrs.sql_fabric_mirroring_status
+    result["sql_fabric_mirroring_kind"] = attrs.sql_fabric_mirroring_kind
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["column_count"] = attrs.column_count
     result["row_count"] = attrs.row_count
@@ -1590,6 +1630,15 @@ DremioPhysicalDataset.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
 DremioPhysicalDataset.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
     "sqlShareQualifiedNames", "sqlShareQualifiedNames"
 )
+DremioPhysicalDataset.SQL_FABRIC_MIRRORING_SOURCE_TYPE = KeywordField(
+    "sqlFabricMirroringSourceType", "sqlFabricMirroringSourceType"
+)
+DremioPhysicalDataset.SQL_FABRIC_MIRRORING_STATUS = KeywordField(
+    "sqlFabricMirroringStatus", "sqlFabricMirroringStatus"
+)
+DremioPhysicalDataset.SQL_FABRIC_MIRRORING_KIND = KeywordField(
+    "sqlFabricMirroringKind", "sqlFabricMirroringKind"
+)
 DremioPhysicalDataset.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -1707,6 +1756,9 @@ DremioPhysicalDataset.USER_DEF_RELATIONSHIP_FROM = RelationField(
 DremioPhysicalDataset.FILES = RelationField("files")
 DremioPhysicalDataset.LINKS = RelationField("links")
 DremioPhysicalDataset.README = RelationField("readme")
+DremioPhysicalDataset.SAP_DATASPHERE_DATA_PRODUCTS = RelationField(
+    "sapDatasphereDataProducts"
+)
 DremioPhysicalDataset.COLUMNS = RelationField("columns")
 DremioPhysicalDataset.QUERIES = RelationField("queries")
 DremioPhysicalDataset.ATLAN_SCHEMA = RelationField("atlanSchema")
