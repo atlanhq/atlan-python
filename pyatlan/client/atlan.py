@@ -761,6 +761,31 @@ class AtlanClient(BaseSettings):
 
                 return None
             else:
+                # Retry with impersonation (if _user_id is present)
+                # on authentication failure (token may have expired)
+                if (
+                    (self._user_id or self._oauth_token_manager)
+                    and not self._401_has_retried.get()
+                    and response.status_code
+                    == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
+                ):
+                    try:
+                        LOGGER.debug("Starting 401 automatic token refresh.")
+                        return self._handle_401_token_refresh(
+                            api,
+                            path,
+                            params,
+                            binary_data=binary_data,
+                            download_file_path=download_file_path,
+                            text_response=text_response,
+                        )
+                    except Exception as e:
+                        LOGGER.debug(
+                            "API call failed after a successful 401 token refresh. Error details: %s",
+                            e,
+                        )
+                        raise
+
                 with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
                     error_info = json.loads(response.text)
                     error_code = (
@@ -792,31 +817,6 @@ class AtlanClient(BaseSettings):
                     error_cause_details_str = (
                         "\n".join(error_cause_details) if error_cause_details else ""
                     )
-
-                    # Retry with impersonation (if _user_id is present)
-                    # on authentication failure (token may have expired)
-                    if (
-                        (self._user_id or self._oauth_token_manager)
-                        and not self._401_has_retried.get()
-                        and response.status_code
-                        == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
-                    ):
-                        try:
-                            LOGGER.debug("Starting 401 automatic token refresh.")
-                            return self._handle_401_token_refresh(
-                                api,
-                                path,
-                                params,
-                                binary_data=binary_data,
-                                download_file_path=download_file_path,
-                                text_response=text_response,
-                            )
-                        except Exception as e:
-                            LOGGER.debug(
-                                "API call failed after a successful 401 token refresh. Error details: %s",
-                                e,
-                            )
-                            raise
 
                     if error_code and error_message:
                         error = ERROR_CODE_FOR_HTTP_STATUS.get(
