@@ -18,5 +18,14 @@ __PYATLAN_ASSETS__ = {
     {% endfor %}
 }
 
+# Every Atlas supertype of each asset type, in typedef order. A generated class has only
+# one Python parent (the first supertype), so use pyatlan.model.type_hierarchy rather than
+# issubclass() when a type has more than one.
+__PYATLAN_SUPER_TYPES__ = {
+    {% for asset in assets|sort(attribute="name") -%}
+        "{{ asset.name }}": [{% for super_type in asset.entity_def.super_types or [] %}"{{ super_type }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+    {% endfor %}
+}
+
 lazy_loader = lazy.attach(__name__, submod_attrs=__PYATLAN_ASSETS__)
 __getattr__, __dir__, __all__ = lazy_loader
