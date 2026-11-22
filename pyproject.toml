@@ -37,7 +37,7 @@ dependencies = [
     "lazy-loader~=0.5",
     "nanoid~=2.0.0",
     "pytz~=2026.2",
-    "python-dateutil~=2.9.0.post0",
+    "python-dateutil>=2.9.0.post0,<5",
     "PyYAML~=6.0.3",
     # httpx 0.28.1 is the latest stable (1.0 is still dev-only and drops py3.9);
     # when 1.0 GA lands, adopt via the same marker-split pattern (BLDX-1571).
