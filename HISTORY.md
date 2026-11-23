@@ -1,3 +1,14 @@
+## 11.8.0 (November 23, 2026)
+
+### New Features
+
+- **`RelationField` names the attribute at the relationship's other end**: every relationship field now carries `inverse` and `is_symmetric`, generated from the relationship typedefs rather than hand-written. `AtlasGlossaryTerm.PREFERRED_TERMS` knows its inverse is `preferredToTerms`, `SEE_ALSO` knows it is symmetric, and the same holds for `meanings` / `assignedEntities`, `categories` / `terms`, `readme` / `asset` and every other pair. Anything that walks a relationship graph can fold the two directions together without keeping its own map, and the values follow the metastore on every regeneration. (AICHAT-1068)
+- **`AtlanConnectorType.DAGSTER`**: `("dagster", ELT)`, matching the other orchestrators, so a Dagster connection can be created and parsed through the SDK. `pyatlan_v9` reuses the enum.
+
+### Bug Fixes
+
+- **Data quality rules with conditions mean "at most N invalid rows"**: for rules with rule conditions (valid values, valid values reference, string length, regex) the threshold is the number of allowed invalid rows, but the SDK forced the `EQUAL` operator and rejected any other, so `threshold_value=100` was saved as "exactly 100 invalid rows" and a clean run failed. Rules with conditions now default to `LESS_THAN_EQUAL`; `EQUAL` is still accepted, other operators are rejected with a clear message. Also fixes the updater crash `AttributeError: 'str' object has no attribute 'value'` when a stored operator came back from search as plain text. Same change in `pyatlan` and `pyatlan_v9`. Note: a rule-condition creator called without an operator now saves `LTE` instead of `EQ`; with the default threshold of 0 the two behave the same. (DQ-872)
+
 ## 11.7.1 (November 16, 2026)
 
 ### Bug Fixes
