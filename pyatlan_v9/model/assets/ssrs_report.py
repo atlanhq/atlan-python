@@ -72,6 +72,9 @@ class SSRSReport(Asset):
     SSRS_REPORT_PARAMETERS: ClassVar[Any] = None
     SSRS_REPORT_DATA_SET_COUNT: ClassVar[Any] = None
     SSRS_REPORT_DATA_SOURCE_COUNT: ClassVar[Any] = None
+    SSRS_REPORT_IS_LINKED_REPORT: ClassVar[Any] = None
+    SSRS_REPORT_LINKED_FROM_REPORT_QUALIFIED_NAME: ClassVar[Any] = None
+    SSRS_REPORT_LINKED_FROM_REPORT_NAME: ClassVar[Any] = None
     SSRS_PATH: ClassVar[Any] = None
     SSRS_USED_IN_REPORTS: ClassVar[Any] = None
     SSRS_HIDDEN: ClassVar[Any] = None
@@ -135,6 +138,15 @@ class SSRSReport(Asset):
 
     ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
+
+    ssrs_report_is_linked_report: Union[bool, None, UnsetType] = UNSET
+    """Whether this report is a linked report (an alias of a source report). Missing is treated as false."""
+
+    ssrs_report_linked_from_report_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the source (parent) report this linked report aliases."""
+
+    ssrs_report_linked_from_report_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the source (parent) report this linked report aliases."""
 
     ssrs_path: Union[str, None, UnsetType] = UNSET
     """Path of the asset in SSRS."""
@@ -483,6 +495,15 @@ class SSRSReportAttributes(AssetAttributes):
     ssrs_report_data_source_count: Union[int, None, UnsetType] = UNSET
     """Number of data sources in this report."""
 
+    ssrs_report_is_linked_report: Union[bool, None, UnsetType] = UNSET
+    """Whether this report is a linked report (an alias of a source report). Missing is treated as false."""
+
+    ssrs_report_linked_from_report_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the source (parent) report this linked report aliases."""
+
+    ssrs_report_linked_from_report_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the source (parent) report this linked report aliases."""
+
     ssrs_path: Union[str, None, UnsetType] = UNSET
     """Path of the asset in SSRS."""
 
@@ -717,6 +738,11 @@ def _populate_ssrs_report_attrs(attrs: SSRSReportAttributes, obj: SSRSReport) ->
     attrs.ssrs_report_parameters = obj.ssrs_report_parameters
     attrs.ssrs_report_data_set_count = obj.ssrs_report_data_set_count
     attrs.ssrs_report_data_source_count = obj.ssrs_report_data_source_count
+    attrs.ssrs_report_is_linked_report = obj.ssrs_report_is_linked_report
+    attrs.ssrs_report_linked_from_report_qualified_name = (
+        obj.ssrs_report_linked_from_report_qualified_name
+    )
+    attrs.ssrs_report_linked_from_report_name = obj.ssrs_report_linked_from_report_name
     attrs.ssrs_path = obj.ssrs_path
     attrs.ssrs_used_in_reports = obj.ssrs_used_in_reports
     attrs.ssrs_hidden = obj.ssrs_hidden
@@ -740,6 +766,13 @@ def _extract_ssrs_report_attrs(attrs: SSRSReportAttributes) -> dict:
     result["ssrs_report_parameters"] = attrs.ssrs_report_parameters
     result["ssrs_report_data_set_count"] = attrs.ssrs_report_data_set_count
     result["ssrs_report_data_source_count"] = attrs.ssrs_report_data_source_count
+    result["ssrs_report_is_linked_report"] = attrs.ssrs_report_is_linked_report
+    result["ssrs_report_linked_from_report_qualified_name"] = (
+        attrs.ssrs_report_linked_from_report_qualified_name
+    )
+    result["ssrs_report_linked_from_report_name"] = (
+        attrs.ssrs_report_linked_from_report_name
+    )
     result["ssrs_path"] = attrs.ssrs_path
     result["ssrs_used_in_reports"] = attrs.ssrs_used_in_reports
     result["ssrs_hidden"] = attrs.ssrs_hidden
@@ -879,6 +912,15 @@ SSRSReport.SSRS_REPORT_DATA_SET_COUNT = NumericField(
 )
 SSRSReport.SSRS_REPORT_DATA_SOURCE_COUNT = NumericField(
     "ssrsReportDataSourceCount", "ssrsReportDataSourceCount"
+)
+SSRSReport.SSRS_REPORT_IS_LINKED_REPORT = BooleanField(
+    "ssrsReportIsLinkedReport", "ssrsReportIsLinkedReport"
+)
+SSRSReport.SSRS_REPORT_LINKED_FROM_REPORT_QUALIFIED_NAME = KeywordField(
+    "ssrsReportLinkedFromReportQualifiedName", "ssrsReportLinkedFromReportQualifiedName"
+)
+SSRSReport.SSRS_REPORT_LINKED_FROM_REPORT_NAME = KeywordField(
+    "ssrsReportLinkedFromReportName", "ssrsReportLinkedFromReportName"
 )
 SSRSReport.SSRS_PATH = KeywordField("ssrsPath", "ssrsPath")
 SSRSReport.SSRS_USED_IN_REPORTS = BooleanField("ssrsUsedInReports", "ssrsUsedInReports")

@@ -91,6 +91,7 @@ class SnowflakeSemanticLogicalTable(Asset):
     SNOWFLAKE_SEMANTIC_TABLE_PRIMARY_KEYS: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_TABLE_UNIQUE_KEYS: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_TABLE_DISTINCT_RANGES: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_TABLE_JOINS: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -124,6 +125,9 @@ class SnowflakeSemanticLogicalTable(Asset):
     SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
     SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_SOURCE_TYPE: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_STATUS: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_KIND: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     SEMANTIC_EXPRESSION: ClassVar[Any] = None
     SEMANTIC_TYPE: ClassVar[Any] = None
@@ -175,6 +179,8 @@ class SnowflakeSemanticLogicalTable(Asset):
     SNOWFLAKE_SEMANTIC_METRICS: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SNOWFLAKE_BASE_TABLE: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_REFERENCING_TABLES: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_REFERENCED_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -196,6 +202,9 @@ class SnowflakeSemanticLogicalTable(Asset):
 
     snowflake_semantic_table_distinct_ranges: Union[List[str], None, UnsetType] = UNSET
     """Distinct ranges defined for the logical table."""
+
+    snowflake_semantic_table_joins: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Joins declared from this logical table (the side holding the foreign keys) to other logical tables in the same semantic view."""
 
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
@@ -297,6 +306,15 @@ class SnowflakeSemanticLogicalTable(Asset):
 
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
+
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -472,6 +490,16 @@ class SnowflakeSemanticLogicalTable(Asset):
 
     snowflake_base_table: Union[RelatedSQL, None, UnsetType] = UNSET
     """Base physical table or view referenced by this logical table."""
+
+    snowflake_semantic_referencing_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
+    """Logical tables that join to this logical table, which is the referenced side."""
+
+    snowflake_semantic_referenced_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
+    """Logical tables this logical table joins to, as the side holding the foreign keys."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -656,6 +684,9 @@ class SnowflakeSemanticLogicalTableAttributes(AssetAttributes):
     snowflake_semantic_table_distinct_ranges: Union[List[str], None, UnsetType] = UNSET
     """Distinct ranges defined for the logical table."""
 
+    snowflake_semantic_table_joins: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Joins declared from this logical table (the side holding the foreign keys) to other logical tables in the same semantic view."""
+
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 
@@ -756,6 +787,15 @@ class SnowflakeSemanticLogicalTableAttributes(AssetAttributes):
 
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
+
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -936,6 +976,16 @@ class SnowflakeSemanticLogicalTableRelationshipAttributes(AssetRelationshipAttri
     snowflake_base_table: Union[RelatedSQL, None, UnsetType] = UNSET
     """Base physical table or view referenced by this logical table."""
 
+    snowflake_semantic_referencing_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
+    """Logical tables that join to this logical table, which is the referenced side."""
+
+    snowflake_semantic_referenced_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
+    """Logical tables this logical table joins to, as the side holding the foreign keys."""
+
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
@@ -1025,6 +1075,8 @@ _SNOWFLAKE_SEMANTIC_LOGICAL_TABLE_REL_FIELDS: List[str] = [
     "snowflake_semantic_metrics",
     "snowflake_semantic_logical_tables",
     "snowflake_base_table",
+    "snowflake_semantic_referencing_tables",
+    "snowflake_semantic_referenced_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1052,6 +1104,7 @@ def _populate_snowflake_semantic_logical_table_attrs(
     attrs.snowflake_semantic_table_distinct_ranges = (
         obj.snowflake_semantic_table_distinct_ranges
     )
+    attrs.snowflake_semantic_table_joins = obj.snowflake_semantic_table_joins
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1089,6 +1142,9 @@ def _populate_snowflake_semantic_logical_table_attrs(
     attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
+    attrs.sql_fabric_mirroring_source_type = obj.sql_fabric_mirroring_source_type
+    attrs.sql_fabric_mirroring_status = obj.sql_fabric_mirroring_status
+    attrs.sql_fabric_mirroring_kind = obj.sql_fabric_mirroring_kind
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
@@ -1117,6 +1173,7 @@ def _extract_snowflake_semantic_logical_table_attrs(
     result["snowflake_semantic_table_distinct_ranges"] = (
         attrs.snowflake_semantic_table_distinct_ranges
     )
+    result["snowflake_semantic_table_joins"] = attrs.snowflake_semantic_table_joins
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1160,6 +1217,9 @@ def _extract_snowflake_semantic_logical_table_attrs(
     result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
+    result["sql_fabric_mirroring_source_type"] = attrs.sql_fabric_mirroring_source_type
+    result["sql_fabric_mirroring_status"] = attrs.sql_fabric_mirroring_status
+    result["sql_fabric_mirroring_kind"] = attrs.sql_fabric_mirroring_kind
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
@@ -1315,6 +1375,9 @@ SnowflakeSemanticLogicalTable.SNOWFLAKE_SEMANTIC_TABLE_UNIQUE_KEYS = KeywordFiel
 SnowflakeSemanticLogicalTable.SNOWFLAKE_SEMANTIC_TABLE_DISTINCT_RANGES = KeywordField(
     "snowflakeSemanticTableDistinctRanges", "snowflakeSemanticTableDistinctRanges"
 )
+SnowflakeSemanticLogicalTable.SNOWFLAKE_SEMANTIC_TABLE_JOINS = KeywordField(
+    "snowflakeSemanticTableJoins", "snowflakeSemanticTableJoins"
+)
 SnowflakeSemanticLogicalTable.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SnowflakeSemanticLogicalTable.QUERY_USER_COUNT = NumericField(
     "queryUserCount", "queryUserCount"
@@ -1406,6 +1469,15 @@ SnowflakeSemanticLogicalTable.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
 )
 SnowflakeSemanticLogicalTable.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
     "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
+SnowflakeSemanticLogicalTable.SQL_FABRIC_MIRRORING_SOURCE_TYPE = KeywordField(
+    "sqlFabricMirroringSourceType", "sqlFabricMirroringSourceType"
+)
+SnowflakeSemanticLogicalTable.SQL_FABRIC_MIRRORING_STATUS = KeywordField(
+    "sqlFabricMirroringStatus", "sqlFabricMirroringStatus"
+)
+SnowflakeSemanticLogicalTable.SQL_FABRIC_MIRRORING_KIND = KeywordField(
+    "sqlFabricMirroringKind", "sqlFabricMirroringKind"
 )
 SnowflakeSemanticLogicalTable.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
@@ -1518,6 +1590,12 @@ SnowflakeSemanticLogicalTable.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
     "snowflakeSemanticLogicalTables"
 )
 SnowflakeSemanticLogicalTable.SNOWFLAKE_BASE_TABLE = RelationField("snowflakeBaseTable")
+SnowflakeSemanticLogicalTable.SNOWFLAKE_SEMANTIC_REFERENCING_TABLES = RelationField(
+    "snowflakeSemanticReferencingTables"
+)
+SnowflakeSemanticLogicalTable.SNOWFLAKE_SEMANTIC_REFERENCED_TABLES = RelationField(
+    "snowflakeSemanticReferencedTables"
+)
 SnowflakeSemanticLogicalTable.SODA_CHECKS = RelationField("sodaChecks")
 SnowflakeSemanticLogicalTable.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SnowflakeSemanticLogicalTable.OUTPUT_FROM_SPARK_JOBS = RelationField(

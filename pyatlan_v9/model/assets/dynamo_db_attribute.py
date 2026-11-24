@@ -63,6 +63,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereDataProduct
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeDynamicTable,
@@ -210,6 +211,9 @@ class DynamoDBAttribute(Asset):
     SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
     SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_SOURCE_TYPE: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_STATUS: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_KIND: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -255,6 +259,7 @@ class DynamoDBAttribute(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     TABLE: ClassVar[Any] = None
     NESTED_COLUMNS: ClassVar[Any] = None
     PARENT_COLUMN: ClassVar[Any] = None
@@ -634,6 +639,15 @@ class DynamoDBAttribute(Asset):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -788,6 +802,11 @@ class DynamoDBAttribute(Asset):
 
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this column."""
 
     table: Union[RelatedTable, None, UnsetType] = UNSET
     """Table in which this column exists."""
@@ -1359,6 +1378,15 @@ class DynamoDBAttributeAttributes(AssetAttributes):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
+
 
 class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     """DynamoDBAttribute-specific relationship attributes for nested API format."""
@@ -1518,6 +1546,11 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this column."""
+
     table: Union[RelatedTable, None, UnsetType] = UNSET
     """Table in which this column exists."""
 
@@ -1657,6 +1690,7 @@ _DYNAMO_DB_ATTRIBUTE_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_data_products",
     "table",
     "nested_columns",
     "parent_column",
@@ -1805,6 +1839,9 @@ def _populate_dynamo_db_attribute_attrs(
     attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
+    attrs.sql_fabric_mirroring_source_type = obj.sql_fabric_mirroring_source_type
+    attrs.sql_fabric_mirroring_status = obj.sql_fabric_mirroring_status
+    attrs.sql_fabric_mirroring_kind = obj.sql_fabric_mirroring_kind
 
 
 def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> dict:
@@ -1944,6 +1981,9 @@ def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> di
     result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
+    result["sql_fabric_mirroring_source_type"] = attrs.sql_fabric_mirroring_source_type
+    result["sql_fabric_mirroring_status"] = attrs.sql_fabric_mirroring_status
+    result["sql_fabric_mirroring_kind"] = attrs.sql_fabric_mirroring_kind
     return result
 
 
@@ -2321,6 +2361,15 @@ DynamoDBAttribute.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
 DynamoDBAttribute.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
     "sqlShareQualifiedNames", "sqlShareQualifiedNames"
 )
+DynamoDBAttribute.SQL_FABRIC_MIRRORING_SOURCE_TYPE = KeywordField(
+    "sqlFabricMirroringSourceType", "sqlFabricMirroringSourceType"
+)
+DynamoDBAttribute.SQL_FABRIC_MIRRORING_STATUS = KeywordField(
+    "sqlFabricMirroringStatus", "sqlFabricMirroringStatus"
+)
+DynamoDBAttribute.SQL_FABRIC_MIRRORING_KIND = KeywordField(
+    "sqlFabricMirroringKind", "sqlFabricMirroringKind"
+)
 DynamoDBAttribute.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DynamoDBAttribute.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DynamoDBAttribute.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -2374,6 +2423,9 @@ DynamoDBAttribute.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshi
 DynamoDBAttribute.FILES = RelationField("files")
 DynamoDBAttribute.LINKS = RelationField("links")
 DynamoDBAttribute.README = RelationField("readme")
+DynamoDBAttribute.SAP_DATASPHERE_DATA_PRODUCTS = RelationField(
+    "sapDatasphereDataProducts"
+)
 DynamoDBAttribute.TABLE = RelationField("table")
 DynamoDBAttribute.NESTED_COLUMNS = RelationField("nestedColumns")
 DynamoDBAttribute.PARENT_COLUMN = RelationField("parentColumn")

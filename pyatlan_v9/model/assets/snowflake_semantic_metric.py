@@ -63,6 +63,7 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeSemanticLogicalTable,
     RelatedSnowflakeSemanticMetric,
+    RelatedSnowflakeSemanticView,
 )
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -123,6 +124,9 @@ class SnowflakeSemanticMetric(Asset):
     SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
     SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_SOURCE_TYPE: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_STATUS: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_KIND: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     METRIC_TYPE: ClassVar[Any] = None
     METRIC_SQL: ClassVar[Any] = None
@@ -169,6 +173,7 @@ class SnowflakeSemanticMetric(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_LOGICAL_TABLE: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_VIEW: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
@@ -298,6 +303,15 @@ class SnowflakeSemanticMetric(Asset):
 
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
+
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -452,6 +466,11 @@ class SnowflakeSemanticMetric(Asset):
         RelatedSnowflakeSemanticLogicalTable, None, UnsetType
     ] = UNSET
     """Logical table containing the metric."""
+
+    snowflake_semantic_view: Union[RelatedSnowflakeSemanticView, None, UnsetType] = (
+        UNSET
+    )
+    """Semantic view containing the metric, for metrics not scoped to a logical table."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -748,6 +767,15 @@ class SnowflakeSemanticMetricAttributes(AssetAttributes):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -906,6 +934,11 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
     ] = UNSET
     """Logical table containing the metric."""
 
+    snowflake_semantic_view: Union[RelatedSnowflakeSemanticView, None, UnsetType] = (
+        UNSET
+    )
+    """Semantic view containing the metric, for metrics not scoped to a logical table."""
+
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
     ] = UNSET
@@ -997,6 +1030,7 @@ _SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS: List[str] = [
     "readme",
     "schema_registry_subjects",
     "snowflake_semantic_logical_table",
+    "snowflake_semantic_view",
     "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
@@ -1066,6 +1100,9 @@ def _populate_snowflake_semantic_metric_attrs(
     attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
+    attrs.sql_fabric_mirroring_source_type = obj.sql_fabric_mirroring_source_type
+    attrs.sql_fabric_mirroring_status = obj.sql_fabric_mirroring_status
+    attrs.sql_fabric_mirroring_kind = obj.sql_fabric_mirroring_kind
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.metric_type = obj.metric_type
     attrs.metric_sql = obj.metric_sql
@@ -1139,6 +1176,9 @@ def _extract_snowflake_semantic_metric_attrs(
     result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
+    result["sql_fabric_mirroring_source_type"] = attrs.sql_fabric_mirroring_source_type
+    result["sql_fabric_mirroring_status"] = attrs.sql_fabric_mirroring_status
+    result["sql_fabric_mirroring_kind"] = attrs.sql_fabric_mirroring_kind
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["metric_type"] = attrs.metric_type
     result["metric_sql"] = attrs.metric_sql
@@ -1379,6 +1419,15 @@ SnowflakeSemanticMetric.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
 SnowflakeSemanticMetric.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
     "sqlShareQualifiedNames", "sqlShareQualifiedNames"
 )
+SnowflakeSemanticMetric.SQL_FABRIC_MIRRORING_SOURCE_TYPE = KeywordField(
+    "sqlFabricMirroringSourceType", "sqlFabricMirroringSourceType"
+)
+SnowflakeSemanticMetric.SQL_FABRIC_MIRRORING_STATUS = KeywordField(
+    "sqlFabricMirroringStatus", "sqlFabricMirroringStatus"
+)
+SnowflakeSemanticMetric.SQL_FABRIC_MIRRORING_KIND = KeywordField(
+    "sqlFabricMirroringKind", "sqlFabricMirroringKind"
+)
 SnowflakeSemanticMetric.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -1457,6 +1506,7 @@ SnowflakeSemanticMetric.SCHEMA_REGISTRY_SUBJECTS = RelationField(
 SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_LOGICAL_TABLE = RelationField(
     "snowflakeSemanticLogicalTable"
 )
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_VIEW = RelationField("snowflakeSemanticView")
 SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
     "snowflakeSemanticLogicalTables"
 )

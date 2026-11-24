@@ -146,6 +146,15 @@ class RelatedSQL(RelatedCatalog):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
