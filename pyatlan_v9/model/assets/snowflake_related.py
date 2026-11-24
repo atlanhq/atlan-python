@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -243,6 +243,17 @@ class RelatedSnowflakeSemanticView(RelatedSnowflake):
     snowflake_definition: Union[str, None, UnsetType] = UNSET
     """DDL definition of the semantic view (via GET_DDL)."""
 
+    snowflake_ai_sql_generation_instructions: Union[str, None, UnsetType] = UNSET
+    """Custom instructions Cortex Analyst follows when it generates SQL from this semantic view."""
+
+    snowflake_ai_question_categorization_instructions: Union[str, None, UnsetType] = (
+        UNSET
+    )
+    """Custom instructions Cortex Analyst follows when it categorizes questions asked of this semantic view."""
+
+    snowflake_ai_verified_queries: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Verified queries defined on this semantic view: questions paired with the SQL that answers them."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         if self.type_name is UNSET:
@@ -273,6 +284,9 @@ class RelatedSnowflakeSemanticLogicalTable(RelatedSnowflake):
 
     snowflake_semantic_table_distinct_ranges: Union[List[str], None, UnsetType] = UNSET
     """Distinct ranges defined for the logical table."""
+
+    snowflake_semantic_table_joins: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Joins declared from this logical table (the side holding the foreign keys) to other logical tables in the same semantic view."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

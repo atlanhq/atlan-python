@@ -66,6 +66,7 @@ from .semantic_related import (
 )
 from .snowflake_related import (
     RelatedSnowflakeSemanticLogicalTable,
+    RelatedSnowflakeSemanticMetric,
     RelatedSnowflakeSemanticView,
 )
 from .soda_related import RelatedSodaCheck
@@ -88,6 +89,9 @@ class SnowflakeSemanticView(Asset):
     """
 
     SNOWFLAKE_DEFINITION: ClassVar[Any] = None
+    SNOWFLAKE_AI_SQL_GENERATION_INSTRUCTIONS: ClassVar[Any] = None
+    SNOWFLAKE_AI_QUESTION_CATEGORIZATION_INSTRUCTIONS: ClassVar[Any] = None
+    SNOWFLAKE_AI_VERIFIED_QUERIES: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -121,6 +125,9 @@ class SnowflakeSemanticView(Asset):
     SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
     SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_SOURCE_TYPE: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_STATUS: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_KIND: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -163,6 +170,7 @@ class SnowflakeSemanticView(Asset):
     SEMANTIC_ENTITIES: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_VIEW_SCHEMA: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_METRICS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -172,6 +180,17 @@ class SnowflakeSemanticView(Asset):
 
     snowflake_definition: Union[str, None, UnsetType] = UNSET
     """DDL definition of the semantic view (via GET_DDL)."""
+
+    snowflake_ai_sql_generation_instructions: Union[str, None, UnsetType] = UNSET
+    """Custom instructions Cortex Analyst follows when it generates SQL from this semantic view."""
+
+    snowflake_ai_question_categorization_instructions: Union[str, None, UnsetType] = (
+        UNSET
+    )
+    """Custom instructions Cortex Analyst follows when it categorizes questions asked of this semantic view."""
+
+    snowflake_ai_verified_queries: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Verified queries defined on this semantic view: questions paired with the SQL that answers them."""
 
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
@@ -273,6 +292,15 @@ class SnowflakeSemanticView(Asset):
 
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
+
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -413,6 +441,11 @@ class SnowflakeSemanticView(Asset):
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
     ] = UNSET
     """Logical tables contained in the semantic view."""
+
+    snowflake_semantic_metrics: Union[
+        List[RelatedSnowflakeSemanticMetric], None, UnsetType
+    ] = UNSET
+    """Metrics scoped to the semantic view rather than to a logical table, such as derived metrics."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -573,6 +606,17 @@ class SnowflakeSemanticViewAttributes(AssetAttributes):
     snowflake_definition: Union[str, None, UnsetType] = UNSET
     """DDL definition of the semantic view (via GET_DDL)."""
 
+    snowflake_ai_sql_generation_instructions: Union[str, None, UnsetType] = UNSET
+    """Custom instructions Cortex Analyst follows when it generates SQL from this semantic view."""
+
+    snowflake_ai_question_categorization_instructions: Union[str, None, UnsetType] = (
+        UNSET
+    )
+    """Custom instructions Cortex Analyst follows when it categorizes questions asked of this semantic view."""
+
+    snowflake_ai_verified_queries: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Verified queries defined on this semantic view: questions paired with the SQL that answers them."""
+
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 
@@ -673,6 +717,15 @@ class SnowflakeSemanticViewAttributes(AssetAttributes):
 
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
+
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -818,6 +871,11 @@ class SnowflakeSemanticViewRelationshipAttributes(AssetRelationshipAttributes):
     ] = UNSET
     """Logical tables contained in the semantic view."""
 
+    snowflake_semantic_metrics: Union[
+        List[RelatedSnowflakeSemanticMetric], None, UnsetType
+    ] = UNSET
+    """Metrics scoped to the semantic view rather than to a logical table, such as derived metrics."""
+
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
@@ -905,6 +963,7 @@ _SNOWFLAKE_SEMANTIC_VIEW_REL_FIELDS: List[str] = [
     "semantic_entities",
     "snowflake_semantic_view_schema",
     "snowflake_semantic_logical_tables",
+    "snowflake_semantic_metrics",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -920,6 +979,13 @@ def _populate_snowflake_semantic_view_attrs(
     """Populate SnowflakeSemanticView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.snowflake_definition = obj.snowflake_definition
+    attrs.snowflake_ai_sql_generation_instructions = (
+        obj.snowflake_ai_sql_generation_instructions
+    )
+    attrs.snowflake_ai_question_categorization_instructions = (
+        obj.snowflake_ai_question_categorization_instructions
+    )
+    attrs.snowflake_ai_verified_queries = obj.snowflake_ai_verified_queries
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -957,6 +1023,9 @@ def _populate_snowflake_semantic_view_attrs(
     attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
+    attrs.sql_fabric_mirroring_source_type = obj.sql_fabric_mirroring_source_type
+    attrs.sql_fabric_mirroring_status = obj.sql_fabric_mirroring_status
+    attrs.sql_fabric_mirroring_kind = obj.sql_fabric_mirroring_kind
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -966,6 +1035,13 @@ def _extract_snowflake_semantic_view_attrs(
     """Extract all SnowflakeSemanticView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["snowflake_definition"] = attrs.snowflake_definition
+    result["snowflake_ai_sql_generation_instructions"] = (
+        attrs.snowflake_ai_sql_generation_instructions
+    )
+    result["snowflake_ai_question_categorization_instructions"] = (
+        attrs.snowflake_ai_question_categorization_instructions
+    )
+    result["snowflake_ai_verified_queries"] = attrs.snowflake_ai_verified_queries
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1009,6 +1085,9 @@ def _extract_snowflake_semantic_view_attrs(
     result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
+    result["sql_fabric_mirroring_source_type"] = attrs.sql_fabric_mirroring_source_type
+    result["sql_fabric_mirroring_status"] = attrs.sql_fabric_mirroring_status
+    result["sql_fabric_mirroring_kind"] = attrs.sql_fabric_mirroring_kind
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -1141,6 +1220,16 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 SnowflakeSemanticView.SNOWFLAKE_DEFINITION = TextField(
     "snowflakeDefinition", "snowflakeDefinition"
 )
+SnowflakeSemanticView.SNOWFLAKE_AI_SQL_GENERATION_INSTRUCTIONS = TextField(
+    "snowflakeAiSqlGenerationInstructions", "snowflakeAiSqlGenerationInstructions"
+)
+SnowflakeSemanticView.SNOWFLAKE_AI_QUESTION_CATEGORIZATION_INSTRUCTIONS = TextField(
+    "snowflakeAiQuestionCategorizationInstructions",
+    "snowflakeAiQuestionCategorizationInstructions",
+)
+SnowflakeSemanticView.SNOWFLAKE_AI_VERIFIED_QUERIES = KeywordField(
+    "snowflakeAiVerifiedQueries", "snowflakeAiVerifiedQueries"
+)
 SnowflakeSemanticView.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SnowflakeSemanticView.QUERY_USER_COUNT = NumericField(
     "queryUserCount", "queryUserCount"
@@ -1227,6 +1316,15 @@ SnowflakeSemanticView.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
 SnowflakeSemanticView.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
     "sqlShareQualifiedNames", "sqlShareQualifiedNames"
 )
+SnowflakeSemanticView.SQL_FABRIC_MIRRORING_SOURCE_TYPE = KeywordField(
+    "sqlFabricMirroringSourceType", "sqlFabricMirroringSourceType"
+)
+SnowflakeSemanticView.SQL_FABRIC_MIRRORING_STATUS = KeywordField(
+    "sqlFabricMirroringStatus", "sqlFabricMirroringStatus"
+)
+SnowflakeSemanticView.SQL_FABRIC_MIRRORING_KIND = KeywordField(
+    "sqlFabricMirroringKind", "sqlFabricMirroringKind"
+)
 SnowflakeSemanticView.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -1290,6 +1388,9 @@ SnowflakeSemanticView.SNOWFLAKE_SEMANTIC_VIEW_SCHEMA = RelationField(
 )
 SnowflakeSemanticView.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
     "snowflakeSemanticLogicalTables"
+)
+SnowflakeSemanticView.SNOWFLAKE_SEMANTIC_METRICS = RelationField(
+    "snowflakeSemanticMetrics"
 )
 SnowflakeSemanticView.SODA_CHECKS = RelationField("sodaChecks")
 SnowflakeSemanticView.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")

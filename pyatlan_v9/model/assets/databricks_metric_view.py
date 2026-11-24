@@ -60,6 +60,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereDataProduct
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
@@ -114,6 +115,9 @@ class DatabricksMetricView(Asset):
     SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
     SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_SOURCE_TYPE: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_STATUS: ClassVar[Any] = None
+    SQL_FABRIC_MIRRORING_KIND: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     COLUMN_COUNT: ClassVar[Any] = None
     ROW_COUNT: ClassVar[Any] = None
@@ -158,6 +162,7 @@ class DatabricksMetricView(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_DATA_PRODUCTS: ClassVar[Any] = None
     COLUMNS: ClassVar[Any] = None
     QUERIES: ClassVar[Any] = None
     ATLAN_SCHEMA: ClassVar[Any] = None
@@ -270,6 +275,15 @@ class DatabricksMetricView(Asset):
 
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
+
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -412,6 +426,11 @@ class DatabricksMetricView(Asset):
 
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
+
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this view."""
 
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this view."""
@@ -728,6 +747,15 @@ class DatabricksMetricViewAttributes(AssetAttributes):
     sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Qualified names of data shares this asset is granted to."""
 
+    sql_fabric_mirroring_source_type: Union[str, None, UnsetType] = UNSET
+    """Source system type of a Microsoft Fabric mirrored database, as reported by Fabric (for example: Snowflake, AzureSqlDatabase, AzureDatabricks, GoogleBigQuery, AzurePostgreSql, CosmosDb, or GenericMirror)."""
+
+    sql_fabric_mirroring_status: Union[str, None, UnsetType] = UNSET
+    """Replication status reported by Microsoft Fabric mirroring (for example: Running, Paused, Failed, or Replicating)."""
+
+    sql_fabric_mirroring_kind: Union[str, None, UnsetType] = UNSET
+    """Whether a Microsoft Fabric mirror replicates an External source (Mirrored Database, Mirrored Azure Databricks Catalog) or an Internal Fabric item (SQL Database, Cosmos DB, KQL database)."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -874,6 +902,11 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_data_products: Union[
+        List[RelatedSapDatasphereDataProduct], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere data products that expose this view."""
+
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this view."""
 
@@ -974,6 +1007,7 @@ _DATABRICKS_METRIC_VIEW_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_data_products",
     "columns",
     "queries",
     "atlan_schema",
@@ -1030,6 +1064,9 @@ def _populate_databricks_metric_view_attrs(
     attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
     attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
     attrs.sql_share_qualified_names = obj.sql_share_qualified_names
+    attrs.sql_fabric_mirroring_source_type = obj.sql_fabric_mirroring_source_type
+    attrs.sql_fabric_mirroring_status = obj.sql_fabric_mirroring_status
+    attrs.sql_fabric_mirroring_kind = obj.sql_fabric_mirroring_kind
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.column_count = obj.column_count
     attrs.row_count = obj.row_count
@@ -1089,6 +1126,9 @@ def _extract_databricks_metric_view_attrs(
     result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
     result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
+    result["sql_fabric_mirroring_source_type"] = attrs.sql_fabric_mirroring_source_type
+    result["sql_fabric_mirroring_status"] = attrs.sql_fabric_mirroring_status
+    result["sql_fabric_mirroring_kind"] = attrs.sql_fabric_mirroring_kind
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["column_count"] = attrs.column_count
     result["row_count"] = attrs.row_count
@@ -1307,6 +1347,15 @@ DatabricksMetricView.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
 DatabricksMetricView.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
     "sqlShareQualifiedNames", "sqlShareQualifiedNames"
 )
+DatabricksMetricView.SQL_FABRIC_MIRRORING_SOURCE_TYPE = KeywordField(
+    "sqlFabricMirroringSourceType", "sqlFabricMirroringSourceType"
+)
+DatabricksMetricView.SQL_FABRIC_MIRRORING_STATUS = KeywordField(
+    "sqlFabricMirroringStatus", "sqlFabricMirroringStatus"
+)
+DatabricksMetricView.SQL_FABRIC_MIRRORING_KIND = KeywordField(
+    "sqlFabricMirroringKind", "sqlFabricMirroringKind"
+)
 DatabricksMetricView.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -1367,6 +1416,9 @@ DatabricksMetricView.USER_DEF_RELATIONSHIP_FROM = RelationField(
 DatabricksMetricView.FILES = RelationField("files")
 DatabricksMetricView.LINKS = RelationField("links")
 DatabricksMetricView.README = RelationField("readme")
+DatabricksMetricView.SAP_DATASPHERE_DATA_PRODUCTS = RelationField(
+    "sapDatasphereDataProducts"
+)
 DatabricksMetricView.COLUMNS = RelationField("columns")
 DatabricksMetricView.QUERIES = RelationField("queries")
 DatabricksMetricView.ATLAN_SCHEMA = RelationField("atlanSchema")
