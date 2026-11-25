@@ -82,7 +82,6 @@ class TeradataCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-teradata",
-                connector_type="teradata",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -113,7 +112,6 @@ class TeradataCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-teradata",
-                connector_type="teradata",
                 auth_type="ldap",
                 username=username,
                 password=password,

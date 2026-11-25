@@ -90,7 +90,6 @@ class KafkaApache(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-apache-kafka",
-                connector_type="apache-kafka",
                 auth_type="noauth",
                 host=host,
                 extra=extras,
@@ -135,7 +134,6 @@ class KafkaApache(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-apache-kafka",
-                connector_type="apache-kafka",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -185,7 +183,6 @@ class KafkaApache(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-apache-kafka",
-                connector_type="apache-kafka",
                 auth_type="scram",
                 username=username,
                 password=password,
@@ -232,7 +229,6 @@ class KafkaApache(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-apache-kafka",
-                connector_type="apache-kafka",
                 auth_type="mtls",
                 host=host,
                 extra=extras,

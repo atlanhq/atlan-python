@@ -79,7 +79,6 @@ class AtlanDynamodb(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-dynamodb",
-                connector_type="dynamodb",
                 auth_type="iam_user",
                 username=username,
                 password=password,
@@ -120,7 +119,6 @@ class AtlanDynamodb(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-dynamodb",
-                connector_type="dynamodb",
                 auth_type="assume_role",
                 extra=extras,
             ),

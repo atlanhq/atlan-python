@@ -121,7 +121,6 @@ class SnowflakeCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-snowflake",
-                connector_type="snowflake",
                 auth_type="keypair",
                 username=username,
                 password=password,
@@ -165,7 +164,6 @@ class SnowflakeCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-snowflake",
-                connector_type="snowflake",
                 auth_type="okta",
                 username=username,
                 password=password,
@@ -212,7 +210,6 @@ class SnowflakeCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-snowflake",
-                connector_type="snowflake",
                 auth_type="entra_id",
                 username=username,
                 password=password,
@@ -253,7 +250,6 @@ class SnowflakeCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-snowflake",
-                connector_type="snowflake",
                 auth_type="basic",
                 username=username,
                 password=password,

@@ -84,7 +84,6 @@ class HiveCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-hive",
-                connector_type="hive",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -144,7 +143,6 @@ class HiveCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-hive",
-                connector_type="hive",
                 auth_type="kerberos",
                 host=host or "",
                 port=port or 10000,

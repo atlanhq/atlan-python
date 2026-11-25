@@ -74,7 +74,6 @@ class AtlanMetabase(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-metabase",
-                connector_type="metabase",
                 auth_type="basic",
                 username=username,
                 password=password,

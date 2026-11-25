@@ -129,7 +129,6 @@ class KafkaConfluent(AppBuilder):
                 # configmap's credentialType (atlan-connectors-confluent-kafka) is a
                 # different name the vault can't store ("failed to store credential").
                 connector_config_name="atlan-connectors-kafka-confluent-cloud",
-                connector_type="confluent-kafka",
                 auth_type="basic",
                 username=username,
                 password=password,

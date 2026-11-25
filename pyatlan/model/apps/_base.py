@@ -244,8 +244,13 @@ class AppBuilder:
             "name": cred.name or f"default-{self._CONNECTOR_NAME}-{epoch}-0",
             "connectorConfigName": cred.connector_config_name,
         }
-        if cred.connector_type:
-            out["connectorType"] = cred.connector_type
+        # connectorType is deliberately never sent. Heracles stores the requested
+        # value verbatim and only fills in the connector's configmap default
+        # (jdbc / dual / rest / event …) when it is absent. A connector name such
+        # as "bigquery" is not a connector type: the credential then never gets
+        # its JDBC url from /credentials/{id}/use, which breaks query and preview
+        # for every connection the builder creates. The generator omits it for
+        # the same reason (see generate_apps.py).
         if cred.host:
             out["host"] = cred.host
         if cred.port:
@@ -489,8 +494,12 @@ class AppBuilder:
         from pyatlan.model.credential import CredentialResponse
 
         endpoint, query_params = CredentialCreate.prepare_request(test=False)
+        # Never send connectorType: let heracles store the connector's configmap
+        # default (see _raw_credential).
         raw = self._client._call_api(
-            api=endpoint, query_params=query_params, request_obj=cred
+            api=endpoint,
+            query_params=query_params,
+            request_obj=cred.copy(update={"connector_type": None}),
         )
         return CredentialResponse(**raw).id or ""
 

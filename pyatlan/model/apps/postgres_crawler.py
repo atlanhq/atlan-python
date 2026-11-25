@@ -89,7 +89,6 @@ class PostgresCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-postgres",
-                connector_type="postgres",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -133,7 +132,6 @@ class PostgresCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-postgres",
-                connector_type="postgres",
                 auth_type="iam_user",
                 username=username,
                 password=password,
@@ -179,7 +177,6 @@ class PostgresCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-postgres",
-                connector_type="postgres",
                 auth_type="iam_role",
                 username=username,
                 host=host or "host",

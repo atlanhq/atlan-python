@@ -85,7 +85,6 @@ class AtlanRedash(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-redash",
-                connector_type="redash",
                 auth_type="api_key",
                 password=password,
                 host=host,

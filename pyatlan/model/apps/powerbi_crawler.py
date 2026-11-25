@@ -108,7 +108,6 @@ class PowerbiCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-powerbi",
-                connector_type="powerbi",
                 auth_type="service_principal",
                 host=host or "api.powerbi.com",
                 port=port or 443,
@@ -146,7 +145,6 @@ class PowerbiCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-powerbi",
-                connector_type="powerbi",
                 auth_type="basic",
                 username=username,
                 password=password,

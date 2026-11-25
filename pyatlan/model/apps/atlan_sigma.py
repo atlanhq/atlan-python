@@ -74,7 +74,6 @@ class AtlanSigma(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-sigma",
-                connector_type="sigma",
                 auth_type="api_token",
                 username=username,
                 password=password,

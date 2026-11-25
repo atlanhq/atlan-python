@@ -76,7 +76,6 @@ class AtlanMysql(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-mysql",
-                connector_type="mysql",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -110,7 +109,6 @@ class AtlanMysql(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-mysql",
-                connector_type="mysql",
                 auth_type="iam_user",
                 username=username,
                 password=password,
@@ -146,7 +144,6 @@ class AtlanMysql(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-mysql",
-                connector_type="mysql",
                 auth_type="iam_role",
                 username=username,
                 host=host,

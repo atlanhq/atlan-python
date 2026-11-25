@@ -93,7 +93,6 @@ class AtlanAthena(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-athena",
-                connector_type="athena",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -135,7 +134,6 @@ class AtlanAthena(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-athena",
-                connector_type="athena",
                 auth_type="role",
                 host=host,
                 port=port or 443,

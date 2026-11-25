@@ -85,7 +85,6 @@ class AtlanMssql(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-mssql",
-                connector_type="mssql",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -128,7 +127,6 @@ class AtlanMssql(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-mssql",
-                connector_type="mssql",
                 auth_type="azure-ad-sp",
                 host=host or "host",
                 port=port or 1433,
@@ -167,7 +165,6 @@ class AtlanMssql(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-mssql",
-                connector_type="mssql",
                 auth_type="ntlm",
                 username=username,
                 password=password,
