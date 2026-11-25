@@ -96,7 +96,6 @@ class AtlanKnowledgeCatalog(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-dataplex",
-                connector_type="dataplex",
                 auth_type="basic",
                 extra=extras,
             ),
@@ -140,7 +139,6 @@ class AtlanKnowledgeCatalog(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-dataplex",
-                connector_type="dataplex",
                 auth_type="gcp-wif",
                 extra=extras,
             ),

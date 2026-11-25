@@ -118,7 +118,6 @@ class DatabricksCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-databricks",
-                connector_type="databricks",
                 auth_type="basic",
                 password=password,
                 host=host,
@@ -150,7 +149,6 @@ class DatabricksCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-databricks",
-                connector_type="databricks",
                 auth_type="aws_service",
                 host=host,
                 port=port or 443,
@@ -184,7 +182,6 @@ class DatabricksCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-databricks",
-                connector_type="databricks",
                 auth_type="azure_service",
                 host=host,
                 port=port or 443,

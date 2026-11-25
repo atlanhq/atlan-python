@@ -80,7 +80,6 @@ class AtlanTrino(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-trino",
-                connector_type="trino",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -116,7 +115,6 @@ class AtlanTrino(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-trino",
-                connector_type="trino",
                 auth_type="jwt",
                 host=host,
                 port=port or 8080,

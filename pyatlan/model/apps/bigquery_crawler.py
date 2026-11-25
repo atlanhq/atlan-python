@@ -118,7 +118,6 @@ class BigqueryCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name=self._CONNECTOR_CONFIG,
-                connector_type=self._CONNECTOR_NAME,
                 auth_type="basic",
                 host=host or self._DEFAULT_HOST,
                 port=port or self._DEFAULT_PORT,
@@ -171,7 +170,6 @@ class BigqueryCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name=self._CONNECTOR_CONFIG,
-                connector_type=self._CONNECTOR_NAME,
                 auth_type="gcp-wif",
                 host=host or self._DEFAULT_HOST,
                 port=port or self._DEFAULT_PORT,

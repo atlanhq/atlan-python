@@ -74,7 +74,6 @@ class AtlanPresto(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-presto",
-                connector_type="presto",
                 auth_type="basic",
                 username=username,
                 password=password,

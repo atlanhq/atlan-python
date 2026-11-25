@@ -105,7 +105,6 @@ class AtlanTableau(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-tableau",
-                connector_type="tableau",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -147,7 +146,6 @@ class AtlanTableau(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-tableau",
-                connector_type="tableau",
                 auth_type="personal_access_token",
                 username=username,
                 password=password,
@@ -196,7 +194,6 @@ class AtlanTableau(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-tableau",
-                connector_type="tableau",
                 auth_type="jwt",
                 username=username,
                 host=host,

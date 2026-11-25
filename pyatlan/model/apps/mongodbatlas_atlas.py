@@ -90,7 +90,6 @@ class MongodbAtlas(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-mongodb",
-                connector_type="mongodb",
                 auth_type="basic",
                 username=username,
                 password=password,

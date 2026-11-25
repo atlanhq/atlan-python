@@ -74,7 +74,6 @@ class AtlanQuicksight(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-quicksight",
-                connector_type="quicksight",
                 auth_type="iam",
                 username=username,
                 password=password,

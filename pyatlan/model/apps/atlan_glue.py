@@ -74,7 +74,6 @@ class AtlanGlue(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-glue",
-                connector_type="glue",
                 auth_type="iam",
                 username=username,
                 password=password,
@@ -108,7 +107,6 @@ class AtlanGlue(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-glue",
-                connector_type="glue",
                 auth_type="role",
                 extra=extras,
             ),

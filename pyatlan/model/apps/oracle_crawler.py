@@ -98,7 +98,6 @@ class OracleCrawler(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-oracle",
-                connector_type="oracle",
                 auth_type="basic",
                 username=username,
                 password=password,

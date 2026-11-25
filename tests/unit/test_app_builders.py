@@ -172,6 +172,70 @@ def test_workload_identity_federation_auth_type():
 
 
 # --------------------------------------------------------------------------- #
+# connectorType is never sent — heracles must fill in the configmap default.
+# A connector name ("bigquery", "snowflake", …) stored as connectorType makes
+# /credentials/{id}/use skip the JDBC url, which breaks query and preview.
+# --------------------------------------------------------------------------- #
+@pytest.mark.parametrize("cls", BUILDERS, ids=BUILDER_IDS)
+def test_builder_source_never_sets_connector_type(cls):
+    # Hand-written builders must match the generator, which omits it on purpose.
+    assert "connector_type=" not in inspect.getsource(inspect.getmodule(cls))
+
+
+@pytest.mark.parametrize(
+    "stage",
+    [
+        lambda c: BigqueryCrawler(c).service_account(
+            email="svc@p.iam.gserviceaccount.com",
+            service_account_json='{"k":"v"}',
+            project_id="proj",
+        ),
+        lambda c: BigqueryCrawler(c).workload_identity_federation(
+            project_id="proj",
+            service_account_email="svc@proj.iam.gserviceaccount.com",
+            wif_pool_provider_id="pool/provider",
+            atlan_oauth_id="oauth-id",
+            atlan_oauth_secret="oauth-secret",
+        ),
+        lambda c: apps.SnowflakeCrawler(c).keypair(username="u", password="pk"),
+    ],
+    ids=["bigquery-service-account", "bigquery-wif", "snowflake-keypair"],
+)
+def test_run_payload_has_no_connector_type(client, stage):
+    stage(client).connection(name="c", admin_users=["u"]).run()
+    cred = client.app.create.call_args.kwargs["inputs"].to_inputs()["credential"]
+    assert "connectorType" not in cred
+
+
+def test_raw_credential_drops_connector_type_even_if_set():
+    from pyatlan.model.credential import Credential
+
+    cred = Credential(
+        connector_config_name="atlan-connectors-bigquery",
+        connector_type="bigquery",
+        auth_type="basic",
+    )
+    out = BigqueryCrawler(Mock())._raw_credential(cred, epoch=1)
+    assert "connectorType" not in out
+
+
+def test_vault_credential_strips_connector_type():
+    from pyatlan.model.credential import Credential
+
+    c = Mock()
+    c._call_api.return_value = {"id": "g-1"}
+    cred = Credential(
+        connector_config_name="atlan-connectors-bigquery",
+        connector_type="bigquery",
+        auth_type="basic",
+    )
+    assert BigqueryCrawler(c)._vault_credential(cred) == "g-1"
+    sent = c._call_api.call_args.kwargs["request_obj"]
+    assert sent.connector_type is None
+    assert cred.connector_type == "bigquery"  # caller's object is not mutated
+
+
+# --------------------------------------------------------------------------- #
 # create() — full flow with mocked client
 # --------------------------------------------------------------------------- #
 def test_run_embeds_raw_credential_for_server_to_vault(client):

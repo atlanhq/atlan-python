@@ -72,7 +72,6 @@ class Anaplan(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-anaplan",
-                connector_type="anaplan",
                 auth_type="basic",
                 username=username,
                 password=password,
@@ -104,7 +103,6 @@ class Anaplan(AppBuilder):
             "credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-anaplan",
-                connector_type="anaplan",
                 auth_type="ca_cert",
                 username=username,
                 password=password,
