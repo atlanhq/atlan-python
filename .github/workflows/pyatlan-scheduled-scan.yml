@@ -210,27 +210,27 @@ jobs:
           TITLE="[Security] $SERVICE — $TOTAL_VULNS CRITICAL,HIGH vulnerabilities ($DATE)"
 
           read -r -d '' DESCRIPTION << DESC_EOF || true
-## Scheduled Trivy Scan Results
+          ## Scheduled Trivy Scan Results
 
-**Service:** $SERVICE
-**Repository:** [$REPO](${{ github.server_url }}/${{ github.repository }})
-**Scan date:** $DATE
-**Workflow run:** [View logs]($RUN_URL)
+          **Service:** $SERVICE
+          **Repository:** [$REPO](${{ github.server_url }}/${{ github.repository }})
+          **Scan date:** $DATE
+          **Workflow run:** [View logs]($RUN_URL)
 
----
+          ---
 
-| Metric | Count |
-|--------|-------|
-| Image vulnerabilities | $IMAGE_VULNS |
-| Dependency vulnerabilities | $DEPS_VULNS |
-| **Total** | **$TOTAL_VULNS** |
+          | Metric | Count |
+          |--------|-------|
+          | Image vulnerabilities | $IMAGE_VULNS |
+          | Dependency vulnerabilities | $DEPS_VULNS |
+          | **Total** | **$TOTAL_VULNS** |
 
-$VULN_SUMMARY
+          $VULN_SUMMARY
 
----
+          ---
 
-*This ticket was automatically created by the scheduled Trivy scan workflow.*
-DESC_EOF
+          *This ticket was automatically created by the scheduled Trivy scan workflow.*
+          DESC_EOF
 
           # Build GraphQL mutation
           MUTATION=$(jq -n \
