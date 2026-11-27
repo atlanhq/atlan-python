@@ -2650,7 +2650,7 @@ requires-dist = [
     { name = "nanoid", specifier = "~=2.0.0" },
     { name = "pydantic", marker = "python_full_version < '3.10'", specifier = "~=2.13.4" },
     { name = "pydantic", marker = "python_full_version >= '3.10'", specifier = "~=2.14.2" },
-    { name = "python-dateutil", specifier = "~=2.9.0.post0" },
+    { name = "python-dateutil", specifier = ">=2.9.0.post0,<5" },
     { name = "pytz", specifier = "~=2026.2" },
     { name = "pyyaml", specifier = "~=6.0.3" },
     { name = "tenacity", marker = "python_full_version < '3.10'", specifier = "~=9.1.2" },
