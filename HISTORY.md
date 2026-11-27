@@ -1,3 +1,11 @@
+## 11.9.0 (November 27, 2026)
+
+One change, and it alters what every app builder stores on a credential, so it ships as a minor release rather than a patch.
+
+### Bug Fixes
+
+- **App builders no longer send the connector name as the credential `connectorType`**: the builders in `pyatlan.model.apps` set `Credential.connector_type` to the connector name (`"bigquery"`, `"snowflake"`, `"postgres"`, ...), but that field is the Heracles connector *type* (`jdbc`, `dual`, `rest`, `event`, `sdk`). Heracles stores a requested value verbatim, and only renders the JDBC credential template for `jdbc` / `dual`, so every credential vaulted through these builders came back from `/credentials/{id}/use` with no `url`. The 25 hand-written builders no longer set the field, and `AppBuilder` drops it from both credential paths (`_raw_credential` and `_vault_credential`) so it cannot leak back in; Heracles then stores the connector's configmap default, the same value the UI sends. Behaviour change: a credential created by a builder now stores `connectorType` as the configmap default (`jdbc` / `dual` on Argo-based tenants, `""` on native-app tenants) instead of the connector name. Credentials created by earlier 11.x builders keep the old value and need it reset to the configmap default. (GOV-1174)
+
 ## 11.8.0 (November 23, 2026)
 
 ### New Features
