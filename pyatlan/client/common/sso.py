@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
 
+import base64
+import binascii
 from typing import List
 
 from pydantic.v1 import ValidationError, parse_obj_as
@@ -8,13 +10,15 @@ from pydantic.v1 import ValidationError, parse_obj_as
 from pyatlan.client.constants import (
     CREATE_SSO_GROUP_MAPPING,
     DELETE_SSO_GROUP_MAPPING,
+    GET_ALL_IDPS,
     GET_ALL_SSO_GROUP_MAPPING,
     GET_SSO_GROUP_MAPPING,
+    UPDATE_IDP,
     UPDATE_SSO_GROUP_MAPPING,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.group import AtlanGroup
-from pyatlan.model.sso import SSOMapper, SSOMapperConfig
+from pyatlan.model.sso import SSOMapper, SSOMapperConfig, SSOProvider
 from pyatlan.utils import get_epoch_timestamp
 
 GROUP_MAPPER_ATTRIBUTE = "memberOf"
@@ -272,3 +276,95 @@ class SSOCheckExistingMappings:
                 raise ErrorCode.SSO_GROUP_MAPPING_ALREADY_EXISTS.exception_with_parameters(
                     atlan_group.alias, group_map.config.attribute_value
                 )
+
+
+class SSOGetAllIdentityProviders:
+    """Shared logic for retrieving all SSO identity providers."""
+
+    @staticmethod
+    def prepare_request() -> tuple:
+        """
+        Prepare the request for retrieving all identity providers.
+
+        :returns: tuple of (endpoint, request_obj)
+        """
+        return GET_ALL_IDPS, None
+
+    @staticmethod
+    def process_response(raw_json) -> List[SSOProvider]:
+        """
+        Process the raw API response into a list of identity providers.
+
+        :param raw_json: raw API response
+        :returns: list of the tenant's SSO identity providers
+        """
+        if not raw_json:
+            return []
+        try:
+            return parse_obj_as(List[SSOProvider], raw_json)
+        except ValidationError as err:
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
+
+
+class SSOUpdateIdentityProvider:
+    """Shared logic for updating an SSO identity provider."""
+
+    @staticmethod
+    def prepare_request(provider: SSOProvider) -> tuple:
+        """
+        Prepare the request for updating an identity provider.
+
+        The backend treats this update as a full replacement of the
+        provider's configuration, so `provider` must be the complete
+        object (retrieve it first, modify it, then pass it here) -
+        never a partial one, or omitted fields may be reset.
+
+        :param provider: the complete identity provider configuration to store
+        :returns: tuple of (endpoint, request_obj)
+        """
+        if not provider.alias:
+            raise ErrorCode.MISSING_REQUIRED_QUERY_PARAM.exception_with_parameters(
+                "the identity provider", "alias"
+            )
+        endpoint = UPDATE_IDP.format_path({"sso_alias": provider.alias})
+        return endpoint, provider
+
+
+def normalize_signing_certificate(certificate: str) -> str:
+    """
+    Convert an X.509 certificate to the form the SSO configuration stores:
+    a single line of base64, with no BEGIN/END lines and no whitespace.
+
+    Accepts PEM or already-normalized input. Exactly one certificate must
+    be provided.
+
+    :param certificate: certificate as PEM or single-line base64
+    :raises InvalidRequestError: if the input contains more than one
+        certificate, no certificate, or is not base64
+    :returns: single-line base64 certificate value
+    """
+    cert_count = certificate.count("BEGIN CERTIFICATE")
+    if cert_count > 1:
+        raise ErrorCode.INVALID_CERTIFICATE.exception_with_parameters(
+            f"found {cert_count} certificates, expected 1 (IdP metadata files "
+            "often include both the old and new certificate - pass only the new one)"
+        )
+    lines = [
+        line.strip()
+        for line in certificate.strip().splitlines()
+        if line.strip() and "CERTIFICATE" not in line
+    ]
+    normalized = "".join("".join(line.split()) for line in lines)
+    if not normalized:
+        raise ErrorCode.INVALID_CERTIFICATE.exception_with_parameters(
+            "no certificate content between the BEGIN/END lines"
+        )
+    try:
+        base64.b64decode(normalized, validate=True)
+    except binascii.Error as err:
+        raise ErrorCode.INVALID_CERTIFICATE.exception_with_parameters(
+            f"not base64 ({err}) - check for truncation or non-certificate text"
+        ) from err
+    return normalized
